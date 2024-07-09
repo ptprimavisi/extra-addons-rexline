@@ -79,6 +79,41 @@
             </field>
         </record>
 
+        <record id="seq_inquiry" model="ir.sequence">
+            <field name="name">Inquiry Inquiry</field>
+            <field name="code">INQ</field>
+            <field name="prefix">INQ/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_boq" model="ir.sequence">
+            <field name="name">BOQ</field>
+            <field name="code">BOQ</field>
+            <field name="prefix">BOQ/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_epr" model="ir.sequence">
+            <field name="name">Purchase Requisition</field>
+            <field name="code">EPR</field>
+            <field name="prefix">EPR/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_mrf" model="ir.sequence">
+            <field name="name">Material Request</field>
+            <field name="code">MRF</field>
+            <field name="prefix">MRF/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_payment_request" model="ir.sequence">
+            <field name="name">Payment Request</field>
+            <field name="code">PR</field>
+            <field name="prefix">PR/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
         <record id="seq_permintaan_dana" model="ir.sequence">
             <field name="name">Permintaan dana</field>
             <field name="code">DANA</field>
