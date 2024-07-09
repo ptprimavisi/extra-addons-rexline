@@ -13,6 +13,22 @@
             <field name="name">Accounting Custom</field>
         </record>
 
+        <record model="res.groups" id="engineering_custom_group">
+            <field name="name">Engineering Custom</field>
+        </record>
+
+        <record model="res.groups" id="production_custom_group">
+            <field name="name">Production Custom</field>
+        </record>
+
+        <record model="res.groups" id="inventory_custom_group">
+            <field name="name">Inventory Custom</field>
+        </record>
+        
+        <record model="res.groups" id="planner_custom_group">
+            <field name="name">Planner Custom</field>
+        </record>
+
       
     </data>
 </odoo>
