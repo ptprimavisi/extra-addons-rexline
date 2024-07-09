@@ -37,7 +37,8 @@
                         </tree>
                     </field>
                 </page>
-                <!-- <page string = "Product Detail" invisible="category_project not in ['project', 'service']"> -->
+                <!-- invisible="category_project not in ['project', 'service']" -->
+                <page string = "Product Detail" >
                     <field name="lead_product_detail" nolabel="1">
                         <tree editable="bottom" string="Products">
                             <field name="product_id"/>
