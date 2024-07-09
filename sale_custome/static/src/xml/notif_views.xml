@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+ <t t-name="systray_icon" owl="3">
+     <div id="card_menu" class="o-dropdown dropdown o-mail-DiscussSystray-class o-dropdown--no-caret">
+         <a id="button_clip" type="button" class="dropdown-toggle new_icon" role="button" data-bs-toggle="" aria-expanded="false">
+            <i class="fa fa-clipboard" role="img" aria-label="Activities"></i>
+<!--             <span class="o_MessagingMenu_counter badge badge-pill" id="isi">0</span>-->
+         </a>
+<!--            <li><a class="dropdown-item" href="#">Action</a></li>-->
+<!--            <li><a class="dropdown-item" href="#">Another action</a></li>-->
+<!--            <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+
+<!--         <div role="menu" class="o-dropdown&#45;&#45;menu dropdown-menu d-block p-0 o-mail-DiscussSystray" style="position: fixed; top: 45.6px; left: 837.588px;">-->
+<!--            <div class="d-flex flex-column flex-grow-1 bg-view o-mail-ActivityMenu">-->
+<!--                <div class="o-mail-ActivityMenu-empty align-items-center text-muted p-2 opacity-50 d-flex justify-content-center">-->
+<!--                    <span>Congratulations, you're done with your activities.</span>-->
+<!--                </div>-->
+<!--                <div class="d-flex flex-column list-group-flush" name="activityGroups"></div>-->
+<!--            </div>-->
+<!--         </div>-->
+     </div>
+<!--     <div class="new_icon">-->
+<!--         <div class="icon_div">-->
+<!--             <div class="toggle-icon" role="button">-->
+<!--               <i id='create_order' t-on-click="_onClick"-->
+<!--                  class="fa fa-shopping-cart fa-1.5x"-->
+<!--                  style="color: white; margin-bottom:10px; padding:13px;"-->
+<!--                  role="img" aria-label="Purchase Order"/>-->
+<!--             </div>-->
+<!--         </div>-->
+<!--     </div>-->
+ </t>
+</templates>
+
+<!--<div class="o-dropdown dropdown o-mail-DiscussSystray-class o-dropdown&#45;&#45;no-caret show">-->
+<!--    <button type="button" class="dropdown-toggle" tabindex="0" aria-expanded="true">-->
+<!--        <i class="fa fa-lg fa-clock-o" role="img" aria-label="Activities"></i>-->
+<!--    </button>-->
+<!--    <div role="menu" class="o-dropdown&#45;&#45;menu dropdown-menu d-block p-0 o-mail-DiscussSystray" style="position: fixed; top: 45.6px; left: 837.588px;">-->
+<!--        <div class="d-flex flex-column flex-grow-1 bg-view o-mail-ActivityMenu">-->
+<!--            <div class="o-mail-ActivityMenu-empty align-items-center text-muted p-2 opacity-50 d-flex justify-content-center">-->
+<!--                <span>Congratulations, you're done with your activities.</span>-->
+<!--            </div>-->
+<!--            <div class="d-flex flex-column list-group-flush" name="activityGroups"></div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+custom_sale_access,sale_access,model_inquiry_inquiry,group_sales_custom,1,1,1,1
+custom_inquiry_line,sale_inquiry_line,model_inquiry_line,group_sales_custom,1,1,1,1

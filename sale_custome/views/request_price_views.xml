@@ -1,0 +1,125 @@
+<odoo>
+    <data>
+        <record id="request_price_form_view" model="ir.ui.view">
+            <field name="name">request.price.view.form</field>
+            <field name="model">request.price</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                        <button name="action_confirm" string="Confirm" confirm="Are you sure you want to continue with the process?" groups="sale_custome.purchasing_custom_group" class="oe_highlight" type="object" invisible="state != 'draft' or id == False"/>
+                        <button name="action_print_report" string="Print Report" type="object" invisible="state != 'posted'"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="inquiry_id" string="Inquiry Ref" readonly="1"/>
+                            <field name="date" string="Request Date" readonly="1"/>
+                            <field name="partner_id" string="Customer" required="1" readonly="state == 'posted'"/>
+<!--                            <field name="date"/>-->
+<!--                            <field name="wo_state" invisible="1"/>-->
+<!--                            <field name="operation_type" required="1"/>-->
+<!--                            <field name="currency_id" />-->
+<!--                            <field name="inquiry_id" invisible="1"/>-->
+                        </group>
+                        <notebook>
+                            <page string="Product Lines">
+                                <field name="request_line_ids" readonly="state == 'posted'">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="description"/>
+                                        <field name="brand"/>
+                                        <field name="weight" string="Weight/kg"/>
+                                        <field name="vendor_id" required="1"/>
+                                        <field name="product_uom" string="Product Uom"/>
+                                        <field name="quantity"/>
+                                        <field name="product_uom_category_id" invisible="1" nolabel="1"/>
+                                        <field name="cost_price"/>
+                                        <field name="other_cost" widget="many2many_tags"/>
+                                        <field name="other_price" invisible="show_other_price == False" nolabel="1"/>
+                                        <field name="subtotal" readonly="1"/>
+                                        <field name="show_other_price" invisible="1" nolabel="1"/>
+<!--                                        <field name="edit_price" invisible="1"/>-->
+<!--                                        <field name="quantity"/>-->
+<!--                                        <field name="product_uom" string="Uom"/>-->
+<!--                                        <field name="price_unit" readonly="edit_price == False"/>-->
+<!--&lt;!&ndash;                                        <field name="rfq_id" invisible="1"/>&ndash;&gt;-->
+<!--                                        <field name="currency_id" readonly="edit_price == False"/>-->
+<!--                                        <field name="price_subtotal"/>-->
+                                    </tree>
+                                </field>
+                            </page>
+                            <!-- <page string="Other Lines">
+                                <field name="request_other_line_ids" readonly="state == 'posted'">
+                                    <tree editable="bottom">
+                                        <field name="item_id" string="Items"/>
+                                        <field name="description"/>
+                                        <field name="amount"/>
+                                    </tree>
+                                </field>
+                            </page> -->
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="request_price_tree_view" model="ir.ui.view">
+            <field name="name">request.price.tree.view</field>
+            <field name="model">request.price</field>
+            <field name="arch" type="xml">
+                <tree>
+<!--                    <field name="name"/>-->
+                    <field name="inquiry_id" string="Inquiry Reference"/>
+                    <field name="state"
+                            decoration-warning="state == 'draft'"
+                            decoration-success="state == 'posted'"
+                            widget="badge"
+                            optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="other_price_line_form_view" model="ir.ui.view">
+            <field name="name">other.price.line.form.view</field>
+            <field name="model">other.price.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" string="Name" required="1"/>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="other_price_line_tree_view" model="ir.ui.view">
+            <field name="name">other.price.line.tree.view</field>
+            <field name="model">other.price.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_other_price_line" model="ir.actions.act_window">
+            <field name="name">Other Price</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">other.price.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_other_price" name="Other Price Request" parent="purchase.menu_purchase_config" action="action_other_price_line" sequence="90"/>
+
+        <record id="action_rfp" model="ir.actions.act_window">
+            <field name="name">Price Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">request.price</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_rfq_tree" name="Price Request" parent="purchase.menu_procurement_management" action="action_rfp" sequence="90"/>
+    </data>
+</odoo>

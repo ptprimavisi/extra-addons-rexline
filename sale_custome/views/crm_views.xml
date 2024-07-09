@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_inherith_view" model="ir.ui.view">
+            <field name="name">crm.lead.inherit.view</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button string="Send Inquiry" name="action_send_inquiry" class="oe_highlight" type="object" confirm="Are you sure you want to continue with the process?" invisible="id == False or count_inquiry >= 1"/>
+                </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="cost_estimation" class="o_input_13ch" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="1"/>
+                    <field name="is_planner" invisible="1"/>
+                    <field name="category_project" readonly="is_planner == False"/>
+                </xpath>
+                <button name="action_schedule_meeting" position="before">
+                    <button class="oe_stat_button" type="object"
+                        name="action_view_inquiry" icon="fa-pencil-square-o" invisible="type == 'lead'">
+                        <field name="count_inquiry" widget="statinfo" string="Inquiry"/>
+                    </button>
+                </button>
+            </field>
+    </record>
+
+
+
+</odoo>

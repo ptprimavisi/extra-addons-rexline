@@ -1,0 +1,123 @@
+<odoo>
+    <data>
+        <record id="realisasi_dana_form_view" model="ir.ui.view">
+            <field name="name">realisasi.dana.form.view</field>
+            <field name="model">realisasi.dana</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                        <button name="action_post" string="Posted" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                    </header>
+                    <sheet>
+                        <div class="o_lead_opportunity_form_inline_fields">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" readonly="1" invisible="id == False"/>
+                                </h1>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id" string="Responsible" domain="[('id','=', uid)]" required="1" readonly="state == 'posted'"/>
+                                <field name="employee_id" string="Employee" required="1" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="permintaan_id" string="No Permintaan" readonly="1" required="1"/>
+                                <field name="request_date" required="1" readonly="state == 'posted'"/>
+                                <field name="saldo" readonly="1"/>
+                                <field name="saldo" invisible="1"/>
+                                <field name="source_account" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Lines">
+                                <field name="realisasi_line" readonly="state == 'posted'">
+                                    <tree editable="bottom">
+                                        <field name="description" required="1"/>
+                                        <field name="account_id" groups="sale_custome.accounting_custom_group"/>
+                                        <field name="amount" required="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group col="12" class="oe_invoice_lines_tab">
+                            <group colspan="8">
+                            <!--<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>-->
+                            </group>
+                            <group colspan="4">
+                                <group class="oe_subtotal_footer oe_right" >
+                                    <field name="total_amount" widget="monetary" string="Total Amount" readonly="1"/>
+
+                                </group>
+                            </group>
+                        </group>
+                        <field name="total_amount" invisible="1"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="realisasi_dana_tree_view" model="ir.ui.view">
+            <field name="name">realisasi.dana.tree.view</field>
+            <field name="model">realisasi.dana</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="name"/>
+                    <field name="permintaan_id" string="Permintaan Dana Ref"/>
+                    <field name="user_id" string="Responsible"/>
+                    <field name="employee_id"/>
+                    <field name="request_date"/>
+                    <field name="total_amount"/>
+                    <field name="state"
+                            decoration-warning="state == 'draft'"
+                            decoration-success="state == 'posted'"
+                            widget="badge"
+                            optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="saldo_dana_tree_view" model="ir.ui.view">
+            <field name="name">saldo.dana.tree.view</field>
+            <field name="model">saldo.dana</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="employee_id" string="Employee"/>
+                    <field name="saldo" string="Saldo"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_saldo_dana" model="ir.actions.act_window">
+            <field name="name">Informasi Saldo</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">saldo.dana</field>
+            <field name="view_mode">tree</field>
+        </record>
+        <menuitem id="menu_saldo_dana"
+                name="Saldo"
+                action="custom_account.action_saldo_dana"
+                parent="custom_account.kas_kecil"
+                sequence="3"/>
+
+        <record id="action_realisasi_dana" model="ir.actions.act_window">
+            <field name="name">Realisai Dana</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">realisasi.dana</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--        <menuitem id="kas_kecil" name="Kas Kecil" sequence="10"/>-->
+        <menuitem id="menu_realisasi_dana"
+                name="Realisasi Dana"
+                action="custom_account.action_realisasi_dana"
+                parent="custom_account.kas_kecil"
+                sequence="2"/>
+    </data>
+</odoo>

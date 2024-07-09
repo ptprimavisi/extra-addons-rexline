@@ -1,0 +1,71 @@
+<odoo>
+    <record id="mrp_bom_inherith_view" model="ir.ui.view">
+            <field name="name">mrp.bom.inherit.view</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <button string="Request for price" name="action_request_price" class="oe_highlight" type="object" confirm="Are you sure you want to continue with the process?" invisible="1"/>
+                    </header>
+                </xpath>
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="inquiry_id" readonly="1"/>
+                    <field name="state_cost" readonly="1" invisible="1"/>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="product_template_inherith_form_view" model="ir.ui.view">
+            <field name="name">product.template.inherit.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='uom_po_id']" position="after">
+                    <field name="weight"/>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="mrp_bom_inherith_tree_view" model="ir.ui.view">
+            <field name="name">mrp.bom.inherit.tree.view</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="//header" position="inside">-->
+<!--                    <button string="Send Inquiry" name="action_send_inquiry" class="oe_highlight" type="object"/>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='type']" position="after">
+<!--                    <field name="state_cost"/>-->
+                    <field name="state_cost"
+                            decoration-danger="state_cost == 'empty'"
+                            decoration-info="state_cost == 'request'"
+                            decoration-success="state_cost == 'ready'"
+                            widget="badge"
+                            optional="show" invisible="1"/>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="mrp_production_inherith_view" model="ir.ui.view">
+            <field name="name">mrp.production.inherit.view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="after">
+                    <button string="Compute Material Consume" name="action_compute_consume" type="object" invisible="id == False or count_report == 0"/>
+                </xpath>
+                <xpath expr="//header/button[@name='action_open_label_type']" position="after">
+                    <button string="Create Schedule" name="action_create_schedule" type="object" invisible="id == False or state != 'confirmed'"/>
+                </xpath>
+                <xpath expr="//button[@name='action_view_reception_report']" position="before">
+                    <button name="action_count_report"
+                            type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-wrench">
+                                    <field name="count_report" widget="statinfo" string="Schedule Progress"/>
+                    </button>
+                </xpath>
+            </field>
+    </record>
+</odoo>

@@ -1,0 +1,94 @@
+<odoo>
+    <menuitem id="formulir_root" name="Form Pendaftaran" sequence="10"/>
+    <data>
+        <record id="formulir_form_view" model="ir.ui.view">
+            <field name="name">formulir.pendaftaran.form.view</field>
+            <field name="model">formulir.pendaftaran</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="posisi"/>
+                            <field name="name"/>
+                            <field name="no_ktp"/>
+                            <field name="ttl"/>
+                            <field name="akses" readonly="1"/>
+                            <field name="jk"/>
+                            <field name="agama"/>
+                            <field name="gol_darah"/>
+                            <field name="status"/>
+                            <field name="alamat_tinggal"/>
+                            <field name="alamat_ktp"/>
+                            <field name="email"/>
+                            <field name="no_hp"/>
+                            <field name="no_keluarga"/>
+                            <field name="pendidikan_ids">
+                                <tree editable="bottom">
+                                    <field name="jenjang"/>
+                                    <field name="institude"/>
+                                    <field name="jurusan"/>
+                                    <field name="tahun"/>
+                                    <field name="ipk"/>
+                                </tree>
+                            </field>
+                            <field name="pelatihan_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="sertifikat"/>
+                                    <field name="tahun"/>
+                                </tree>
+                            </field>
+                            <field name="pekerjaan_ids">
+                                <tree editable="bottom">
+                                    <field name="nama"/>
+                                    <field name="posisi"/>
+                                    <field name="pendapatan"/>
+                                    <field name="tahun"/>
+                                </tree>
+                            </field>
+                            <field name="skill"/>
+                            <field name="brsedia_ditempatkan"/>
+                            <field name="salary"/>
+                            <field name="file_data" string="TTD" filename="file_name"/>
+                            <field name="file_name"/>>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="formulir_pendaftaran_tree_view" model="ir.ui.view">
+            <field name="name">formulir.pendaftaran.tree.view</field>
+            <field name="model">formulir.pendaftaran</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Nama"/>
+                    <field name="ttl" string="Tempat dan Tanggal Lahir"/>
+                    <field name="posisi" string="Posisi yang dilamar"/>
+                </tree>
+            </field>
+        </record>
+
+<!--        <record id="your_model_rule" model="ir.rule">-->
+<!--        <field name="name">Form Pendaftaran</field>-->
+<!--        <field name="model_id" ref="module_api.model_formulir_pendaftaran"/>-->
+<!--        <field name="domain_force">[('akses', '=', True)]</field>-->
+<!--    </record>-->
+
+        <record id="action_form_pendaftaran" model="ir.actions.act_window">
+            <field name="name">Formulir Pendaftaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">formulir.pendaftaran</field>
+            <field name="domain">[('akses', '=', '1')]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="form_pendaftaran_menuitem"
+        name="Pendaftaran"
+        sequence="1"
+        parent="formulir_root"
+        action="action_form_pendaftaran"
+        />
+    </data>
+</odoo>

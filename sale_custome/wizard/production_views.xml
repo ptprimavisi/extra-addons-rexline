@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="manufactur_wizard_form_view" model="ir.ui.view">
+            <field name="name">manufactur.wizard.form.view</field>
+            <field name="model">manufactur.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="product_id" required="1"/>
+                            <field name="schedule_date" required="1"/>
+                            <field name="product_qty" required="1"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_save" type="object" class="oe_highlight" string="Confirm"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

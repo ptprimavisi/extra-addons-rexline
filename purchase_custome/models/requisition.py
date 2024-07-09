@@ -1,0 +1,159 @@
+from odoo import models, api, fields
+from odoo.exceptions import UserError
+from datetime import date, datetime
+
+
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    requisition_id = fields.Many2one('purchase.requisition')
+
+    def default_get(self, vals):
+        defaults = super(PurchaseOrder, self).default_get(vals)
+
+        # Pastikan Anda memiliki konteks yang menyediakan partner_id
+        requisition_id = self.env.context.get('requisition_id', False)
+        order_line = self.env.context.get('order_line', False)
+        # raise UserError(partner_id)
+        if requisition_id and order_line:
+            defaults['requisition_id'] = requisition_id
+            defaults['order_line'] = order_line
+        return defaults
+
+
+class PurchaseRequisition(models.Model):
+    _name = 'purchase.requisition'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char()
+    responsible = fields.Many2one('res.users', default=lambda self: self.env.user.id)
+    employee_id = fields.Many2one('hr.employee', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]).id)
+    department_id = fields.Many2one('hr.department', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]).department_id.id)
+    requisition_date = fields.Date(default=lambda self: datetime.now())
+    is_ga = fields.Boolean(compute='_compute_ga')
+    is_purchase = fields.Boolean(compute='_compute_purchase')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'To Confirm'),
+        ('ready', 'Confirm'),
+        ('po', 'Purchase Order Created'),
+        ('to_purchase', 'Process to Purchase'),
+        ('cancel', 'Cancel'),
+    ], default="confirm")
+    requisition_line = fields.One2many('requisition.line', 'requisition_id')
+    count_po = fields.Integer(compute='_compute_count_po')
+    count_quotation = fields.Integer(compute='_compute_count_quotation')
+
+    @api.model
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        moves['name'] = self.env['ir.sequence'].next_by_code('EPR')
+        return moves
+
+    def _compute_count_po(self):
+        for line in self:
+            purchase = self.env['purchase.order'].search(
+                [('requisition_id', '=', int(line.id)), ('state', '=', 'purchase')])
+            line.count_po = 0
+            if purchase:
+                line.count_po = len(purchase)
+
+    def _compute_count_quotation(self):
+        for line in self:
+            purchase = self.env['purchase.order'].search(
+                [('requisition_id', '=', int(line.id)), ('state', '=', 'draft')])
+            line.count_quotation = 0
+            if purchase:
+                line.count_quotation = len(purchase)
+
+    def action_count_po(self):
+        pass
+
+    def action_count_quotation(self):
+        pass
+
+    def action_confirm(self):
+        for line in self:
+            req = self.env['purchase.requisition'].browse(int(line.id))
+            req.write({'state': 'ready'})
+
+    def action_to_purchase(self):
+        for line in self:
+            req = self.env['purchase.requisition'].browse(int(line.id))
+            req.write({'state': 'to_purchase'})
+
+    def action_create_po(self):
+        for line in self:
+            req = self.env['purchase.requisition'].browse(int(line.id))
+            req.write({'state': 'po'})
+
+    def _compute_ga(self):
+        for line in self:
+            line.is_ga = False
+            users = self.env['res.users'].browse(self.env.uid)
+            if users.is_ga:
+                line.is_ga = True
+
+    def _compute_purchase(self):
+        for line in self:
+            line.is_purchase = False
+            users = self.env['res.users'].browse(self.env.uid)
+            if users.is_purchase:
+                line.is_purchase = True
+
+    def action_create_quotation(self):
+        for line in self:
+            list_prod = []
+            for lines in line.requisition_line:
+                list_prod.append((0, 0, {
+                    'product_id': lines.product_id.id,
+                    'product_qty': lines.quantity,
+                    'price_unit': lines.price_unit,
+                    'product_uom': lines.product_uom.id
+                }))
+
+            if list_prod:
+                return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Requests for Quotation',
+                    'res_model': 'purchase.order',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'context': {
+                        'requisition_id': int(line.id),
+                        'order_line': list_prod
+                    }
+                }
+            else:
+                raise UserError('Product Not Found')
+
+
+class RequisitionLine(models.Model):
+    _name = 'requisition.line'
+
+    select = fields.Boolean(default=True)
+    product_id = fields.Many2one('product.product')
+    name = fields.Char()
+    quantity = fields.Float(default=1)
+    product_uom = fields.Many2one('uom.uom', compute="_default_product_uom", readonly=False, precompute=True)
+    price_unit = fields.Float(compute="_default_price_unit", readonly=False, precompute=True)
+    subtotal = fields.Float(compute='_compute_subtotal')
+    requisition_id = fields.Many2one('purchase.requisition')
+
+    @api.depends('product_id')
+    def _default_product_uom(self):
+        for line in self:
+            if line.product_id:
+                line.product_uom = line.product_id.uom_po_id.id
+
+    @api.depends('product_id')
+    def _default_price_unit(self):
+        for line in self:
+            line.price_unit = line.product_id.standard_price
+
+    @api.depends('quantity', 'price_unit')
+    def _compute_subtotal(self):
+        for line in self:
+            total = line.quantity * line.price_unit
+            line.subtotal = total
