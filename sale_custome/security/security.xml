@@ -24,7 +24,7 @@
         <record model="res.groups" id="inventory_custom_group">
             <field name="name">Inventory Custom</field>
         </record>
-        
+
         <record model="res.groups" id="planner_custom_group">
             <field name="name">Planner Custom</field>
         </record>
