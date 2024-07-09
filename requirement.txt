@@ -5,7 +5,7 @@ Add column in table res_users
   -  is_accounting
   -  is_inventory
   -  is_planner
-  - is_sales
+  -  is_sales
 
 insert data ir.sequence
 - inquiry (INQ)
