@@ -1,0 +1,124 @@
+<odoo>
+    <menuitem id="surat_kerja_root" name="Surat Kerja" sequence="20"/>
+    <data>
+        <record id="surat_kerja_form_view" model="ir.ui.view">
+            <field name="name">surat.kerja.form.view</field>
+            <field name="model">surat.kerja</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft, confirmed"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+<!--&lt;!&ndash;                        <button name="request_budget" string="Request Budget" type="object" class="oe_highlight" invisible="state != 'draft'"/>&ndash;&gt;-->
+<!--                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="state != 'confirm' or id == False or state == 'cancel'"/>-->
+<!--                        <button name="action_to_purchase" confirm="Do you want to proceed to purchase?" string="To Purchase" type="object" invisible="state != 'ready' or is_ga == False or id == False or state == 'cancel'"/>-->
+<!--                        <button name="action_create_po" confirm="Do you want to create PO?" string="Create PO"  type="object" invisible="state != 'ready' or is_ga == False or id == False or state == 'cancel'"/>-->
+<!--&lt;!&ndash;                        <button name="action_cancel" confirm="Do you want to cancel this proccess?" string="Cancel" type="object" invisible="state == 'draft' or id == False or state == 'cancel'"/>&ndash;&gt;-->
+<!--                        <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>-->
+                    </header>
+                    <sheet>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False"/>
+                            </h1>
+                        </div>
+                        <group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <field name="progres_id" required="1"/>
+                            <field name="date_from" required="1"/>
+                            <field name="date_to" required="1"/>
+                            <field name="work_hours" widget="time"/>
+                            <field name="description" required="1"/>
+                            <field name="type" required="1"/>
+<!--                            <field name="inquiry_id" readonly="1"/>-->
+<!--                            <field name="request_date"/>-->
+<!--                            <field name="due_date" required="1"/>-->
+<!--                            <field name="quotation_state" invisible="1"/>-->
+<!--                            <field name="is_accounting" invisible="1"/>-->
+<!--                            <button string="Cretae Quotation" name="action_rfq" type="object" class="oe_highlight" invisible="id == False"/>-->
+                        </group>
+                        <notebook>
+<!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
+                            <page string="Detail Employee">
+                                <field name="surat_kerja_line_ids" required="1">
+                                    <tree editable="bottom">
+                                        <field name="employee_id" required="1"/>
+                                        <field name="date_from" required="1"/>
+                                        <field name="date_to" required="1"/>
+                                        <field name="work_hour" widget="time"/>
+                                        <field name="work_hour_approve" widget="time" required="1"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+<!--                        <group col="12" class="oe_invoice_lines_tab">-->
+<!--                            <group colspan="8">-->
+<!--                            &lt;!&ndash;<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>&ndash;&gt;-->
+<!--                            </group>-->
+<!--                            <group colspan="4">-->
+<!--                                <group class="oe_subtotal_footer oe_right" >-->
+<!--                                    <field name="total_cost" widget="monetary" string="Total Cost" readonly="1"/>-->
+<!--                                    <field name="total_budget" widget="monetary" string="Total Budget" readonly="1"/>-->
+<!--&lt;!&ndash;                                <field name="amount_total" invisible="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <field name="amount_fix" string="Total Invoice Setelah Potongan" required="1"/>&ndash;&gt;-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </group>-->
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+<!--                    <div class="oe_chatter">-->
+<!--                            <field name="message_follower_ids"/>-->
+<!--                            <field name="activity_ids"/>-->
+<!--                            <field name="message_ids"/>-->
+<!--                        </div>-->
+<!--                     <footer>-->
+<!--                        <field name="total_cost" widget="monetary" readonly="1"/>-->
+<!--                    </footer>-->
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="seq_surat_kerja" model="ir.sequence">
+            <field name="name">Surat Kerja</field>
+            <field name="code">SK</field>
+            <field name="prefix">SK/%(y)s/000/</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="surat_kerja_tree_view" model="ir.ui.view">
+            <field name="name">surat.kerja.tree.view</field>
+            <field name="model">surat.kerja</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="work_hours"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_surat_kerja" model="ir.actions.act_window">
+            <field name="name">Surat Kerja</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">surat.kerja</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="surat_kerja_menuitem"
+        name="Surat Kerja"
+        sequence="1"
+        parent="surat_kerja_root"
+        action="action_surat_kerja"
+        />
+    </data>
+</odoo>

@@ -1,0 +1,42 @@
+<odoo>
+    <data>
+        <record id="rcount_quotation_form_wizard_view" model="ir.ui.view">
+            <field name="name">count.quotation.view.form</field>
+            <field name="model">count.quotation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="product_id" string="Product" readonly="1"/>
+<!--                            <field name="date" string="Request Date" readonly="1"/>-->
+                        </group>
+                        <notebook>
+                            <page string="Quotation List">
+                                <field name="count_line">
+                                    <tree editable="bottom" create="0">
+                                        <field name="vendor_id"/>
+                                        <field name="quantity"/>
+                                        <field name="price_unit"/>
+                                        <field name="subtotal"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+<!--        <record id="action_rfp" model="ir.actions.act_window">-->
+<!--            <field name="name">Price Request</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">request.price</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="menu_rfq_tree" name="Price Request" parent="purchase.menu_procurement_management" action="action_rfp" sequence="90"/>-->
+    </data>
+</odoo>

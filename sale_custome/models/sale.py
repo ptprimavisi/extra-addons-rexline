@@ -1,0 +1,1387 @@
+from abc import ABC
+
+from odoo import models, api, fields
+from odoo.exceptions import UserError
+from datetime import datetime, timedelta
+
+AVAILABLE_PRIORITIES = [
+    ('0', 'Low'),
+    ('1', 'Medium'),
+    ('2', 'High'),
+    ('3', 'Very High'),
+]
+
+
+# class ProductTemplateInherith(models.Model):
+#     _inherit = 'product.template'
+
+#     weight = fields.Float()
+
+
+class MrpProduction(models.Model):
+    _inherit = 'mrp.production'
+
+    count_report = fields.Integer(compute="_compute_count_report")
+
+    def action_compute_consume(self):
+        for line in self:
+            report_line = self.env['production.report.line'].search(
+                [('production_id.mo_id', '=', int(line.id)), ('state', '=', 'done')])
+            if report_line:
+                for lines in line.move_raw_ids:
+                    line_product = report_line.search([('product_id', '=', lines.product_id.id)])
+                    if line_product:
+                        lines.quantity = sum(line_product.mapped('qty_consume'))
+
+    def action_count_report(self):
+        for line in self:
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "production.report",
+                "domain": [('mo_id', '=', int(line.id))],
+                "context": {"create": False},
+                "name": "Progress",
+                'view_mode': 'tree,form',
+            }
+
+    def _compute_count_report(self):
+        for line in self:
+            count = 0
+            report = self.env['production.report'].search([('mo_id', '=', int(line.id))])
+            for lines in report:
+                count += 1
+            line.count_report = count
+
+    def action_create_schedule(self):
+        for line in self:
+            list = []
+            for lines in line.move_raw_ids:
+                list.append((0, 0, {
+                    'product_id': lines.product_id.id,
+                    # 'qty_to_consume': lines.product_uom_qty
+                }))
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "schedule.wizard",
+                # "context": {"create": False},
+                "name": "Schedule Wizard",
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'product_id': int(line.product_id.id),
+                    'mo_id': int(line.id),
+                    'production_line_ids': list
+                }
+            }
+            # return {
+            #     "type": "ir.actions.act_window",
+            #     "res_model": "production.report",
+            #     # "context": {"create": False},
+            #     "name": "Schedule progress",
+            #     'view_mode': 'form',
+            #     'target': 'new',
+            #     'context': {
+            #         'product_id': int(line.product_id.id),
+            #         'mo_id': int(line.id),
+            #         'production_line_ids': list
+            #     }
+            # }
+
+
+class MrpBom(models.Model):
+    _inherit = "mrp.bom"
+
+    inquiry_id = fields.Many2one('inquiry.inquiry')
+    request_state = fields.Boolean(default=False)
+    state_cost = fields.Selection([
+        ('empty', 'Cost Is Empty'),
+        ('request', 'Send Request'),
+        ('ready', 'Ready')
+    ], compute="_compute_state_cost", readonly=False, precompute=True)
+
+    def _compute_state_cost(self):
+        for line in self:
+            master = line.product_tmpl_id.id
+            if master:
+                material = self.env['mrp.bom.line'].search(
+                    [('bom_id', '=', line.id), ('product_id.product_tmpl_id.standard_price', '=', 0.0)])
+                if material or line.product_tmpl_id.standard_price == 0:
+                    # raise UserError(material)
+                    # ck_price_count = len(material)
+                    # if ck_price_count > 0:
+                    line.state_cost = 'empty'
+                    if line.request_state:
+                        line.state_cost = 'request'
+                else:
+                    line.state_cost = 'ready'
+
+            else:
+                line.state_cost = 'empty'
+
+    def action_request_price(self):
+        for line in self:
+            rp = self.env['request.price'].search([])
+            list_line = []
+            for lines in line.bom_line_ids:
+                product = self.env['product.template'].search(
+                    [('id', '=', int(lines.product_tmpl_id.id)), ('standard_price', '=', 0)])
+                if product:
+                    list_line.append((0, 0, {
+                        'product_id': lines.product_id.id
+                    }))
+
+                # else:
+                #     raise UserError('Product not found')
+
+            data = {
+                'bom_id': int(line.id),
+                'date': datetime.now().strftime("%Y-%m-%d"),
+                'request_line_ids': list_line
+            }
+            # print(data)
+            # exit()
+            rp.create(data)
+            bom = self.env['mrp.bom'].browse(int(line.id))
+            bom.write({'request_state': True})
+
+    def default_get(self, vals):
+        defaults = super(MrpBom, self).default_get(vals)
+
+        # Pastikan Anda memiliki konteks yang menyediakan partner_id
+        inquiry_id = self.env.context.get('inquiry_id', False)
+        # raise UserError(partner_id)
+        if inquiry_id:
+            defaults['inquiry_id'] = inquiry_id
+
+        return defaults
+
+
+class MrpProduction(models.Model):
+    _inherit = "mrp.production"
+
+    # def default_get(self, fields_list):
+    #     defaults = super(MrpProduction, self).default_get(fields_list)
+    #
+    #     product_id = self.env.context.get('product_id', False)
+    #     product_qty = self.env.context.get('product_qty', False)
+    #     origin = self.env.context.get('origin', False)
+    #     state = self.env.context.get('state', False)
+    #     if origin:
+    #         # defaults['product_id'] = [('id', '=', product_id)]
+    #         defaults['product_id'] = product_id
+    #         defaults['product_qty'] = product_qty
+    #         defaults['origin'] = origin
+    #         # defaults['state'] = state
+    #
+    #     return defaults
+
+
+# class SaleOrderInherith(models.Model):
+#     _inherit = 'sale.order'
+
+#     is_revisi = fields.Boolean()
+
+
+class CrmLead(models.Model):
+    _inherit = "crm.lead"
+
+    count_inquiry = fields.Integer(compute="_compute_count_inquiry")
+    cost_estimation = fields.Float(compute="_compute_estimation_cost")
+    is_planner = fields.Boolean(compute="_compute_is_planner")
+    state_inquiry = fields.Char(compute="_compute_state_inq")
+
+    def get_selection_label(self, model, field_name, value):
+        """Get the label of a selection field."""
+        selection = self.env[model]._fields[field_name].selection
+        if selection:
+            for key, label in selection:
+                if key == value:
+                    return label
+        return None
+
+    def _compute_state_inq(self):
+        for line in self:
+            line.state_inquiry = 'no inquiry'
+            inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(line.id))])
+            if inquiry:
+                state_value = inquiry.state
+                state_label = self.get_selection_label('inquiry.inquiry', 'state', state_value)
+                line.state_inquiry = str(state_label)
+
+    def _compute_is_planner(self):
+        for line in self:
+            uid = self.env.uid
+            user = self.env['res.users'].browse(int(uid))
+            line.is_planner = False
+            if user.is_planner:
+                line.is_planner = True
+
+    @api.depends('lead_product_detail.subtotal')
+    def _compute_estimation_cost(self):
+        for line in self:
+            cost = 0
+            for lines in line.lead_product_detail:
+                cost += lines.subtotal
+            line.cost_estimation = cost
+
+    def _compute_count_inquiry(self):
+        for line in self:
+            line.count_inquiry = 0
+            inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(line.id))])
+            if inquiry:
+                for liness in inquiry:
+                    print(liness)
+                    line.count_inquiry += 1
+
+    def process_attachments(self):
+        for record in self:
+            attachments = self.env['ir.attachment'].search([('res_model', '=', self._name), ('res_id', '=', record.id)])
+            return attachments
+
+    def action_view_inquiry(self):
+        # self.process_attachments()
+        # exit()
+        for line in self:
+            inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(line.id))])
+            if inquiry:
+                list = len(inquiry)
+                # raise UserError(list)
+                # list = 0
+                # # for liness in inquiry:
+                #     list += 1
+                if list == 1:
+                    inquiry_record = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(line.id))],
+                                                                        limit=1)
+                    result = {
+                        "type": "ir.actions.act_window",
+                        "res_model": "inquiry.inquiry",
+                        "domain": [('opportunity_id', '=', int(line.id))],
+                        "context": {"create": False},
+                        "name": "Inquiry",
+                        'view_mode': 'form',
+                        'view_type': 'form',
+                        'res_id': inquiry_record.id
+                    }
+
+                elif list > 1:
+                    result = {
+                        "type": "ir.actions.act_window",
+                        "res_model": "inquiry.inquiry",
+                        "domain": [('opportunity_id', '=', int(line.id))],
+                        "context": {"create": False},
+                        "name": "Inquiry",
+                        'view_mode': 'tree,form',
+                    }
+                return result
+            else:
+                pass
+
+    def action_send_inquiry(self):
+        for line in self:
+            if not line.category_project:
+                raise UserError('project category is empty!')
+            if not line.id:
+                raise UserError('ID CRM tidak ditemukan')
+            else:
+                data = {
+                    "partner_id": line.partner_id.id,
+                    'project_category': line.category_project,
+                    "date": line.date_deadline,
+                    "opportunity_id": int(line.id),
+                    "priority": line.priority,
+                    "note": line.description
+                }
+                # inquiry = self.env['inquiry.inquiry'].search([])
+                inquiry = self.env['inquiry.inquiry'].create(data)
+                # raise UserError(inquiry)
+                attch = self.process_attachments()
+                if attch:
+                    attachments = self.env['ir.attachment'].search([])
+                    for attch_line in attch:
+                        datass = {
+                            'name': attch_line.name,
+                            'datas': attch_line.datas,  # Binary data attachment
+                            # 'datas_fname': attch_line.datas_fname,  # File name of attachment
+                            'res_model': 'inquiry.inquiry',  # Model name of sale.order
+                            'res_id': int(inquiry.id),
+                            'type': 'binary',  # ID of the sale.order record
+                            # Add other required fields for the attachment
+                        }
+                        self.env['ir.attachment'].create(datass)
+                        # attachments.create({
+                        #     'res_id': int(inquiry.id),
+                        #     'company_id': attch_line.company_id.id,
+                        #     'file_size': attch_line.file_size,
+                        #     'create_uid': attch_line.create_uid.id,
+                        #     'name': attch_line.name or '',
+                        #     'res_model': 'inquiry.inquiry',
+                        #     'type': attch_line.type,
+                        #     'store_fname': attch_line.store_fname,
+                        #     'checksum': attch_line.checksum,
+                        #     'mimetype': attch_line.mimetype,
+                        #     'index_content': attch_line.index_content
+                        #
+                        # })
+                # result = {
+                #     "type": "ir.actions.act_window",
+                #     "res_model": "rfq.rfq",
+                #     "domain": [('opportunity_id', '=', int(line.id))],
+                #     "context": {"create": False},
+                #     "name": "RFQ",
+                #     'view_mode': 'tree,form',
+                # }
+                # return result
+
+
+class InquirySales(models.Model):
+    _name = 'inquiry.inquiry'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(readonly=True)
+    partner_id = fields.Many2one('res.partner')
+    note = fields.Html()
+    date = fields.Date()
+    attachment = fields.Binary(string='Attachment')
+    attachment_filename = fields.Char(string='Attachment Filename')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('boq', 'BOQ'),
+        ('request', 'Price Request'),
+        ('cost', 'Cost Estimation'),
+        ('won', 'Won'),
+        ('done', 'Material Request'),
+        ('cancel', 'Cancel')
+    ], default='draft')
+    count_rfq = fields.Integer(compute="_compute_count_rfq")
+    state_count_rfq = fields.Boolean(compute="_compute_state_count")
+    project_category = fields.Selection([
+        ('project', 'Project'),
+        ('service', 'Service'),
+        ('supply', 'Supply')
+    ])
+    priority = fields.Selection(AVAILABLE_PRIORITIES, select=True)
+    opportunity_id = fields.Many2one('crm.lead')
+    count_bom = fields.Integer(compute="_compute_use_bom")
+    count_mrf = fields.Integer(compute="_compute_use_mrf")
+    state_material = fields.Boolean(compute="_compute_state_mrf")
+    count_so = fields.Integer(compute="_compute_count_so")
+    mrp_production_count = fields.Integer(compute="_compute_mo_count")
+    count_rfp = fields.Integer(compute="_compute_count_rfp")
+    due_date = fields.Datetime(default=lambda self: fields.Datetime.today() + timedelta(days=1))
+    operation_type = fields.Selection([
+        ('project', 'Project'),
+        ('wo', 'Work Order')
+    ])
+    crm_state = fields.Char(compute="_compute_state_crm")
+    inquiry_line_detail = fields.One2many('inquiry.line.detail', 'inquiry_id')
+    inquiry_line_ids = fields.One2many('inquiry.line', 'inquiry_id')
+    inquiry_line_task = fields.One2many('inquiry.line.task', 'inquiry_id')
+    pic_user = fields.Many2one('res.users', domain=[('is_engineering', '=', True)])
+    pic_akses = fields.Boolean(compute="_compute_akses_pic")
+    is_planner = fields.Boolean(compute="_compute_user_planner")
+    total_amount = fields.Float(compute="_compute_total_cost")
+
+    @api.depends('inquiry_line_detail.subtotal')
+    def _compute_total_cost(self):
+        for line in self:
+            cost = 0
+            for lines in line.inquiry_line_detail:
+                cost += lines.subtotal
+            line.total_amount = cost
+
+    def _compute_user_planner(self):
+        for line in self:
+            line.is_planner = False
+            uid = self.env.uid
+            user = self.env['res.users'].browse(uid)
+            if user.is_planner == True:
+                line.is_planner = True
+
+    def _compute_akses_pic(self):
+        for line in self:
+            user_id = self.env.uid
+            line.pic_akses = False
+            if line.pic_user:
+                if user_id == int(line.pic_user.id):
+                    line.pic_akses = True
+
+    def _compute_state_crm(self):
+        for line in self:
+            line.crm_state = 'To Quotations'
+            quotation = self.env['sale.order'].search(
+                [('opportunity_id', '=', int(line.opportunity_id.id)), ('state', '=', 'draft')])
+            if quotation:
+                line.crm_state = 'Quotations'
+            so = self.env['sale.order'].search(
+                [('opportunity_id', '=', int(line.opportunity_id.id)), ('state', '=', 'sale')])
+            if so:
+                line.crm_state = 'Sale Order'
+
+    def action_mark_won(self):
+        for line in self:
+            line.state = 'won'
+
+    def action_reset_toboq(self):
+        for line in self:
+            line.state = 'boq'
+
+    def _compute_count_so(self):
+        for line in self:
+            sale_order = self.env['sale.order'].search(
+                [('state', '=', 'sale'), ('opportunity_id', '=', int(line.opportunity_id.id))])
+            line.count_so = 0
+            if sale_order:
+                line.count_so = len(sale_order)
+
+    def action_so(self):
+        pass
+
+    def _compute_count_rfp(self):
+        for line in self:
+            line.count_rfp = 0
+            request_price = self.env['request.price'].search([('inquiry_id', '=', int(line.id))])
+            if request_price:
+                line.count_rfp = len(request_price)
+
+    def action_count_rfp(self):
+        for line in self:
+            result = {
+                "type": "ir.actions.act_window",
+                "res_model": "request.price",
+                "domain": [('inquiry_id', '=', int(line.id))],
+                "context": {"create": False},
+                "name": "RFP",
+                'view_mode': 'tree,form',
+            }
+            return result
+
+    def action_create_mo(self):
+        for line in self:
+            for lines in line.inquiry_line_ids:
+                if lines.bom_id:
+                    product_id = self.env['product.product'].search(
+                        [('product_tmpl_id', '=', int(lines.bom_id.product_tmpl_id.id))])
+                    self.env['mrp.production'].create({
+                        'product_id': product_id.id,
+                        'bom_id': int(lines.bom_id.id)
+                    })
+
+    # attachment_ids = fields.One2many('ir.attachment', 'res_id', domain=[('res_model', '=', 'inquiry.inquiry')],
+    #                                  string='Attachments')
+    def action_compute_material(self):
+        for line in self:
+            bom = self.env['mrp.bom'].search([('id', 'in', line.inquiry_line_ids.bom_id.ids)])
+            if bom:
+                bom_global = self.env['mrp.bom'].search([])
+                bom_line = self.env['inquiry.line.detail'].search([('inquiry_id', '=', int(line.id))])
+                bom_line.unlink()
+                list_product = []
+                for lines in bom:
+                    for liness in lines.bom_line_ids:
+                        if not any(
+                                liness.product_id.product_tmpl_id.id == item.product_tmpl_id.id for item in bom_global):
+                            # print(liness.product_id.product_tmpl_id.name)
+                            desc = liness.product_id.product_tmpl_id.name
+                            if liness.product_id.product_tmpl_id.description:
+                                desc = liness.product_id.product_tmpl_id.description
+                            list_product.append((0, 0, {
+                                'product_id': liness.product_id.id,
+                                'name': str(desc),
+                                'product_uom_quantity': liness.product_qty,
+                                'cost_price': liness.product_id.product_tmpl_id.standard_price,
+                                'unit_weight': liness.product_id.product_tmpl_id.weight,
+                                'product_uom': liness.product_uom_id.id
+                            }))
+
+                        # jika product memiliki BOM
+                        if any(liness.product_id.product_tmpl_id.id == items.product_tmpl_id.id for items in
+                               bom_global):
+                            bom_line_kit = self.env['mrp.bom'].search(
+                                [('product_tmpl_id', '=', liness.product_id.product_tmpl_id.id)])
+                            if bom_line_kit:
+                                if len(bom_line_kit) > 1:
+                                    raise UserError('The product (' + str(
+                                        bom_line_kit.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                                else:
+                                    for line_kit in bom_line_kit.bom_line_ids:
+                                        bom_line_kit2 = self.env['mrp.bom'].search(
+                                            [('product_tmpl_id', '=', line_kit.product_id.product_tmpl_id.id)])
+                                        if bom_line_kit2:
+                                            if len(bom_line_kit2) > 1:
+                                                raise UserError('The product (' + str(
+                                                    bom_line_kit2.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                                            else:
+                                                for line_kit2 in bom_line_kit2.bom_line_ids:
+                                                    bom_line_kit3 = self.env['mrp.bom'].search(
+                                                        [('product_tmpl_id', '=',
+                                                          line_kit2.product_id.product_tmpl_id.id)])
+                                                    if bom_line_kit3:
+                                                        if len(bom_line_kit3) > 1:
+                                                            raise UserError('The product (' + str(
+                                                                bom_line_kit3.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                                                        else:
+                                                            for line_kit3 in bom_line_kit3.bom_line_ids:
+                                                                bom_line_kit4 = self.env['mrp.bom'].search(
+                                                                    [('product_tmpl_id', '=',
+                                                                      line_kit3.product_id.product_tmpl_id.id)])
+                                                                if bom_line_kit4:
+                                                                    if len(bom_line_kit4) > 1:
+                                                                        raise UserError('The product (' + str(
+                                                                            bom_line_kit4.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                                                                    else:
+                                                                        for line_kit4 in bom_line_kit4.bom_line_ids:
+                                                                            if not any(
+                                                                                    line_kit4.product_id.product_tmpl_id.id == items.product_tmpl_id.id
+                                                                                    for items in bom_global):
+                                                                                description = line_kit4.product_id.product_tmpl_id.name
+                                                                                if line_kit4.product_id.product_tmpl_id.description:
+                                                                                    description = line_kit4.product_id.product_tmpl_id.description
+                                                                                list_product.append((0, 0, {
+                                                                                    'product_id': line_kit4.product_id.id,
+                                                                                    'name': str(description),
+                                                                                    'product_uom_quantity': line_kit4.product_qty,
+                                                                                    'cost_price': line_kit4.product_id.product_tmpl_id.standard_price,
+                                                                                    'unit_weight': line_kit4.product_id.product_tmpl_id.weight,
+                                                                                    'product_uom': line_kit4.product_uom_id.id
+                                                                                }))
+                                                                if not any(
+                                                                        line_kit3.product_id.product_tmpl_id.id == items.product_tmpl_id.id
+                                                                        for items in bom_global):
+                                                                    description = line_kit3.product_id.product_tmpl_id.name
+                                                                    if line_kit3.product_id.product_tmpl_id.description:
+                                                                        description = line_kit3.product_id.product_tmpl_id.description
+                                                                    list_product.append((0, 0, {
+                                                                        'product_id': line_kit3.product_id.id,
+                                                                        'name': str(description),
+                                                                        'product_uom_quantity': line_kit3.product_qty,
+                                                                        'cost_price': line_kit3.product_id.product_tmpl_id.standard_price,
+                                                                        'unit_weight': line_kit3.product_id.product_tmpl_id.weight,
+                                                                        'product_uom': line_kit3.product_uom_id.id
+                                                                    }))
+                                                    if not any(
+                                                            line_kit2.product_id.product_tmpl_id.id == items.product_tmpl_id.id
+                                                            for items in bom_global):
+                                                        description = line_kit2.product_id.product_tmpl_id.name
+                                                        if line_kit2.product_id.product_tmpl_id.description:
+                                                            description = line_kit2.product_id.product_tmpl_id.description
+                                                        list_product.append((0, 0, {
+                                                            'product_id': line_kit2.product_id.id,
+                                                            'name': str(description),
+                                                            'product_uom_quantity': line_kit2.product_qty,
+                                                            'cost_price': line_kit2.product_id.product_tmpl_id.standard_price,
+                                                            'unit_weight': line_kit2.product_id.product_tmpl_id.weight,
+                                                            'product_uom': line_kit2.product_uom_id.id
+                                                        }))
+                                        description = line_kit.product_id.product_tmpl_id.name
+                                        if line_kit.product_id.product_tmpl_id.description:
+                                            description = line_kit.product_id.product_tmpl_id.description
+                                        if not any(
+                                                line_kit.product_id.product_tmpl_id.id == items.product_tmpl_id.id for
+                                                items in bom_global):
+                                            list_product.append((0, 0, {
+                                                'product_id': line_kit.product_id.id,
+                                                'name': str(description),
+                                                'product_uom_quantity': line_kit.product_qty,
+                                                'cost_price': line_kit.product_id.product_tmpl_id.standard_price,
+                                                'unit_weight': line_kit.product_id.product_tmpl_id.weight,
+                                                'product_uom': line_kit.product_uom_id.id
+                                            }))
+
+                line.inquiry_line_detail = list_product
+            # pass
+            # line.inquiry_line_detail =
+
+    def action_request_price(self):
+        for line in self:
+            list = []
+            for lines in line.inquiry_line_detail:
+                list.append((0, 0, {
+                    'product_id': lines.product_id.id,
+                    'description': lines.name,
+                    'quantity': lines.product_uom_quantity,
+                    'product_uom': lines.product_uom.id,
+                    'cost_price': lines.cost_price
+                }))
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Request Price',
+                'res_model': 'request.price.wizard',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'inquiry_id': int(line.id),
+                    'date': str(datetime.now()),
+                    'request_line_ids': list
+                }
+            }
+            # rp = self.env['request.price'].search([])
+            # list_line = []
+            # bom = self.env['mrp.bom.line'].search([('bom_id', 'in', line.inquiry_line_ids.bom_id.ids)])
+            # # raise UserError(bom)
+            # for boms in bom:
+            #     product = self.env['product.product'].search(
+            #         [('product_tmpl_id', 'in', line.inquiry_line_ids.bom_id.product_tmpl_id.ids)])
+            #     if not any(boms.product_id.id == item.id for item in product):
+            #         list_line.append((0, 0, {
+            #             'product_id': boms.product_id.product_tmpl_id.id,
+            #             'cost_price': float(boms.product_id.product_tmpl_id.standard_price)
+            #         }))
+            # data = {
+            #     'inquiry_id': int(line.id),
+            #     'date': datetime.now().strftime("%Y-%m-%d"),
+            #     'request_line_ids': list_line
+            # }
+            # rp.create(data)
+            # bom = self.env['inquiry.inquiry'].browse(int(line.id))
+            # bom.write({'state': 'request'})
+
+            # for lines in line.inquiry_line_ids:
+            #     product = self.env['product.template'].search(
+            #         [('id', '=', int(lines.product_tmpl_id.id)), ('standard_price', '=', 0)])
+            #     if product:
+            #         list_line.append((0, 0, {
+            #             'product_id': lines.product_id.id
+            #         }))
+            #
+            #     # else:
+            #     #     raise UserError('Product not found')
+            #
+            # data = {
+            #     'bom_id': int(line.id),
+            #     'date': datetime.now().strftime("%Y-%m-%d"),
+            #     'request_line_ids': list_line
+            # }
+            # # print(data)
+            # # exit()
+            # rp.create(data)
+            # bom = self.env['mrp.bom'].browse(int(line.id))
+            # bom.write({'request_state': True})
+
+    def _compute_state_mrf(self):
+        for line in self:
+            mrf = self.env['mrf.mrf'].search([('inquiry_id', '=', int(line.id)), ('state', '!=', 'cancel')])
+            line.state_material = False
+            if mrf:
+                line.state_material = True
+
+    def get_data(self):
+        return 1
+
+    def action_compute_task(self):
+        for line in self:
+            # for line in self:
+            new_line = self.env['inquiry.line.task'].search([])
+            so = self.env['sale.order'].search(
+                [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
+            # line.mrp_production_count = 0
+            if so:
+                mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
+                for mos in mo:
+                    task_line = self.env['inquiry.line.task'].search([('id', 'in', line.inquiry_line_task.ids)])
+                    if task_line:
+                        task_line.unlink()
+                    new_line.create({
+                        'inquiry_id': int(line.id),
+                        'mo_id': int(mos.id),
+                        'product_id': int(mos.product_id.id),
+                        'production_ref': str(mos.product_id.product_tmpl_id.name)
+
+                    })
+                    sub_mo_ids = mos._get_children().ids
+                    mo_task = self.env['mrp.production'].search([('id', 'in', sub_mo_ids)])
+                    if mo_task:
+                        for moss in mo_task:
+
+                            new_line.create({
+                                'inquiry_id': int(line.id),
+                                'mo_id': int(moss.id),
+                                'product_id': int(moss.product_id.id),
+                                'production_ref': str(mos.product_id.product_tmpl_id.name)
+
+                            })
+                            mo_task2 = self.env['mrp.production'].search([('id', 'in', moss._get_children().ids)])
+                            if mo_task2:
+                                for task2 in mo_task2:
+                                    new_line.create({
+                                        'inquiry_id': int(line.id),
+                                        'mo_id': int(task2.id),
+                                        'product_id': int(task2.product_id.id),
+                                        'production_ref': str(task2.product_id.product_tmpl_id.name)
+
+                                    })
+                                    mo_task3 = self.env['mrp.production'].search(
+                                        [('id', 'in', task2._get_children().ids)])
+                                    if mo_task3:
+                                        for task3 in mo_task3:
+                                            new_line.create({
+                                                'inquiry_id': int(line.id),
+                                                'mo_id': int(task3.id),
+                                                'product_id': int(task3.product_id.id),
+                                                'production_ref': str(task3.product_id.product_tmpl_id.name)
+
+                                            })
+                                            mo_task4 = self.env['mrp.production'].search(
+                                                [('id', 'in', task3._get_children().ids)])
+                                            if mo_task4:
+                                                for task4 in mo_task4:
+                                                    new_line.create({
+                                                        'inquiry_id': int(line.id),
+                                                        'mo_id': int(task4.id),
+                                                        'product_id': int(task4.product_id.id),
+                                                        'production_ref': str(task4.product_id.product_tmpl_id.name)
+
+                                                    })
+
+    def action_mrf(self):
+        for line in self:
+            # for line in self:
+            so = self.env['sale.order'].search(
+                [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
+            # line.mrp_production_count = 0
+            if so:
+                mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
+                for mos in mo:
+                    sub_mo_ids = mos._get_children().ids
+                    mo_task = self.env['mrp.production'].search([('id', 'in', sub_mo_ids)])
+                    if mo_task:
+                        task_line = self.env['inquiry.line.task'].search([('id', 'in', line.inquiry_line_task.ids)])
+                        if task_line:
+                            task_line.unlink()
+                        for moss in mo_task:
+                            new_line = self.env['inquiry.line.task'].search([])
+                            new_line.create({
+                                'inquiry_id': int(line.id),
+                                'mo_id': int(moss.id),
+                                'product_id': int(moss.product_id.id),
+                                'production_ref': str(mos.product_id.product_tmpl_id.name)
+
+                            })
+
+                        # print('mo_task')
+            # exit()
+            list = []
+            bom = self.env['mrp.bom'].search([('id', 'in', line.inquiry_line_ids.bom_id.ids)])
+            # raise UserError(bom)
+            public = self.env['mrp.bom'].search([])
+            sale = self.env['sale.order'].search(
+                [('opportunity_id', '=', int(line.opportunity_id.id)), ('state', '=', 'sale')])
+            if sale:
+                if len(sale) > 1:
+                    raise UserError('Sale order more than 1')
+                    exit()
+                bom_line = self.env['mrp.bom.line'].search([('bom_id', 'in', bom.ids)])
+                for lines in line.inquiry_line_detail:
+                    # if not any(lines.product_tmpl_id.id == items.product_tmpl_id.id for items in bom):
+                    # product = self.env['product.product'].search(
+                    #     [('product_tmpl_id', '=', int(lines.product_tmpl_id.id))])
+                    list.append((0, 0, {
+                        'product_id': int(lines.product_id.id),
+                        'type': str(line.project_category),
+                        'quantity': lines.product_uom_quantity,
+                        'product_uom': lines.product_uom.id,
+                        'unit_weight': lines.unit_weight,
+                        'description': str(lines.name),
+                        'specs_detail': str(lines.specs),
+                        'brand': str(lines.brand),
+                        'unit_cost': lines.cost_price
+
+                    }))
+                return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Material Request',
+                    'res_model': 'rfq.wizard',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'context': {
+                        'inquiry_id': int(line.id),
+                        'partner_id': line.partner_id.id,
+                        'sale_id': int(sale.id),
+                        'due_date': str(line.due_date),
+                        'rfq_line_ids': list
+                    }
+                }
+            else:
+                raise UserError('there are no sale orders !')
+            # raise UserError(list)
+
+    def action_count_mrf(self):
+        for line in self:
+            mrf = self.env['mrf.mrf'].search([('inquiry_id', '=', int(line.id))])
+            list = len(mrf)
+            if list == 1:
+                # inquiry_record = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(line.id))],
+                #                                                     limit=1)
+                quotations = self.env['mrf.mrf'].search(
+                    [('inquiry_id', '=', int(line.id))], limit=1)
+                result = {
+                    "type": "ir.actions.act_window",
+                    "res_model": "mrf.mrf",
+                    "domain": [('inquiry_id', '=', int(line.id))],
+                    "context": {"create": False},
+                    "name": "PO",
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_id': int(quotations.id)
+                }
+
+            elif list > 1:
+                result = {
+                    "type": "ir.actions.act_window",
+                    "res_model": "mrf.mrf",
+                    "domain": [('inquiry_id', '=', int(line.id))],
+                    "context": {"create": False},
+                    "name": "PO",
+                    'view_mode': 'tree,form',
+                }
+            return result
+
+    def action_update_state_boq(self):
+        for line in self:
+            inquiry = self.env['inquiry.inquiry'].browse(int(line.id))
+            # for lines in line.inquiry_line_ids:
+            #     if lines:
+            inquiry.write({
+                'state': 'boq'
+            })
+
+    def action_view_mrp_productions(self):
+        for line in self:
+            so = self.env['sale.order'].search(
+                [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
+            mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
+            sub_mo = self.env['mrp.production'].search([('id', 'in', mo._get_children().ids)])
+
+            id = []
+            if mo:
+                for mos in mo:
+                    id.append(int(mos.id))
+            if sub_mo:
+                for sub_mos in sub_mo:
+                    id.append(int(sub_mos.id))
+                    sub2_mo = self.env['mrp.production'].search([('id', 'in', sub_mos._get_children().ids)])
+                    if sub2_mo:
+                        for sub2_mos in sub2_mo:
+                            id.append(int(sub2_mos.id))
+                            sub3_mo = self.env['mrp.production'].search([('id', 'in', sub2_mos._get_children().ids)])
+                            if sub3_mo:
+                                for sub3_mos in sub3_mo:
+                                    id.append(int(sub3_mos.id))
+                                    sub4_mo = self.env['mrp.production'].search(
+                                        [('id', 'in', sub3_mos._get_children().ids)])
+                                    if sub4_mo:
+                                        for sub4_mos in sub4_mo:
+                                            id.append(int(sub4_mos.id))
+
+            result = {
+                "type": "ir.actions.act_window",
+                "res_model": "mrp.production",
+                "domain": [('id', 'in', id)],
+                "context": {"create": False},
+                "name": "Manufactur",
+                'view_mode': 'tree,form',
+            }
+            return result
+
+    def _compute_mo_count(self):
+        for line in self:
+            so = self.env['sale.order'].search(
+                [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
+            line.mrp_production_count = 0
+            if so:
+                mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
+                # sub_mo = self.env['mrp.production'].search([('origin', '=', str(mo.name))])
+                line.mrp_production_count = len(mo)
+
+    def _compute_use_bom(self):
+        for line in self:
+            line.count_bom = 0
+            bom = self.env['mrp.bom'].search([('inquiry_id', '=', int(line.id))])
+            if bom:
+                for i in bom:
+                    print(i)
+                    line.count_bom += 1
+
+    def _compute_use_mrf(self):
+        for line in self:
+            line.count_mrf = 0
+            mrf = self.env['mrf.mrf'].search([('inquiry_id', '=', int(line.id))])
+            if mrf:
+                jumlah = len(mrf)
+                line.count_mrf = jumlah
+
+    def action_create_bom(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create BOM',
+            'res_model': 'mrp.bom',
+            'view_type': 'form',
+            'view_mode': 'form',
+            # 'target': 'new',
+            'context': {
+                'inquiry_id': int(self.id),
+            }
+        }
+
+    def action_count_bom(self):
+        for line in self:
+            result = {
+                "type": "ir.actions.act_window",
+                "res_model": "mrp.bom",
+                "domain": [('inquiry_id', '=', int(line.id))],
+                "context": {"create": False},
+                "name": "BOM",
+                'view_mode': 'tree,form',
+            }
+            return result
+        # raise UserError('Test action BOM')
+
+    def action_count_rfq(self):
+        for line in self:
+            if line.id:
+                rfq = self.env['rfq.rfq'].search([('inquiry_id', '=', int(line.id))])
+                if rfq:
+                    result = {
+                        "type": "ir.actions.act_window",
+                        "res_model": "rfq.rfq",
+                        "domain": [('inquiry_id', '=', int(line.id))],
+                        "context": {"create": False},
+                        "name": "RFQ",
+                        'view_mode': 'tree,form',
+                    }
+                    return result
+                else:
+                    raise UserError('Data RFQ pada form ini tidak tersedia')
+
+            else:
+                raise UserError('ID Inquiry tidak ada!')
+
+    def _compute_count_rfq(self):
+        count = 0
+        for line in self:
+            rfq = self.env['rfq.rfq'].search([('inquiry_id', '=', int(line.id))])
+
+            if rfq:
+                # line.state = "rfq"
+                for liness in rfq:
+                    if liness.id:
+                        count += 1
+            line.count_rfq = int(count)
+
+    def _compute_state_count(self):
+        for line in self:
+            line.state_count_rfq = False
+            rfq = self.env['rfq.rfq'].search([('inquiry_id', '=', int(line.id))])
+            if rfq:
+                line.state_count_rfq = True
+
+    def action_cancel(self):
+        for line in self:
+            inquiry = self.env['inquiry.inquiry'].browse(int(line.id))
+            inquiry.write({
+                'state': 'cancel'
+            })
+
+    def action_update_cost(self):
+        for line in self:
+            bom = self.env['mrp.bom'].search([('id', 'in', line.inquiry_line_ids.bom_id.ids)])
+            bom_global = self.env['mrp.bom'].search([])
+            product = self.env['product.product'].search([('product_tmpl_id', 'in', bom.product_tmpl_id.ids)])
+            bom_line = self.env['mrp.bom.line'].search(
+                [('bom_id', 'in', bom.ids), ('product_id', 'not in', product.ids)])
+            # for boms in bom_line:
+            #     if boms.product_id.product_tmpl_id.standard_price == 0:
+            #         raise UserError('There is a material product price of 0 !!')
+            #     else:
+            #         continue
+            lead_line_detail = self.env['lead.line.detail'].search([('lead_line_id', '=', line.opportunity_id.id)])
+            # if lead_line_detail:
+            # if lead_line_detail:
+            for cek in line.inquiry_line_detail:
+                if cek.cost_price == 0:
+                    raise UserError('There is a material product price of 0 !!')
+            if line.project_category == 'project':
+                lead_line_detail.unlink()
+                for line_detail in line.inquiry_line_detail:
+                    self.env['lead.line.detail'].create({
+                        'lead_line_id': int(line.opportunity_id.id),
+                        'product_id': line_detail.product_id.id,
+                        'name': line_detail.name,
+                        'product_uom_quantity': line_detail.product_uom_quantity,
+                        'product_uom': line_detail.product_uom.id,
+                        'cost_price': line_detail.cost_price
+                    })
+            # else:
+            #     for line_detail in line.inquiry_line_detail:
+            #         if line_detail.cost_price == 0:
+            #             raise UserError('There is a material product price of 0 !!')
+            #         else:
+            #             continue
+            #         self.env['lead.line.detail'].create({
+            #             'lead_line_id': int(line.opportunity_id.id),
+            #             'product_id': line_detail.product_id.id,
+            #             'name': line_detail.name,
+            #             'product_uom_quantity': line_detail.product_uom_quantity,
+            #             'product_uom': line_detail.product_uom.id,
+            #             'cost_price': line_detail.cost_price
+            #         })
+
+            for lines in line.inquiry_line_ids:
+                cost = 0
+                for biaya in lines.bom_id.bom_line_ids:
+                    # cost += product.cost_price * biaya.product_qty
+                    if any(biaya.product_id.product_tmpl_id == item.product_tmpl_id for item in bom_global):
+                        # print(biaya.product_id.product_tmpl_id.name)
+                        sub_bom = self.env['mrp.bom'].search(
+                            [('product_tmpl_id', '=', biaya.product_id.product_tmpl_id.id)])
+                        if len(sub_bom) > 1:
+                            raise UserError(
+                                'Duplicate Bills of Materila for Product' + str(biaya.product_id.product_tmpl_id.name))
+                        for subline in sub_bom.bom_line_ids:
+                            product = self.env['inquiry.line.detail'].search(
+                                [('inquiry_id', '=', int(line.id)), ('product_id', '=', int(subline.product_id.id))],
+                                limit=1)
+                            cost += product.cost_price * subline.product_qty
+                            # print('any product' + subline.product_id.product_tmpl_id.name)
+                    else:
+                        # print('core bom'+biaya.product_id.product_tmpl_id.name)
+                        product = self.env['inquiry.line.detail'].search(
+                            [('inquiry_id', '=', int(line.id)), ('product_id', '=', int(biaya.product_id.id))],
+                            limit=1)
+                        cost += product.cost_price * biaya.product_qty
+                inquiry_line = self.env['inquiry.line'].browse(lines.id)
+                inquiry_line.write({
+                    'bom_cost': float(line.total_amount)
+                })
+            lead_line = self.env['lead.line'].search([('lead_line_id', '=', line.opportunity_id.id)])
+
+            if lead_line:
+                lead_line.unlink()
+                if line.project_category == 'project':
+                    for bom_lead in line.inquiry_line_ids:
+                        if bom_lead.bom_id.product_tmpl_id.is_master:
+                            # list_product_crm.append()
+                            des = bom_lead.bom_id.product_tmpl_id.description
+                            deskripsi = bom_lead.bom_id.product_tmpl_id.name
+                            if des:
+                                deskripsi = bom_lead.bom_id.product_tmpl_id.description
+                            product_bom = self.env['product.product'].search(
+                                [('product_tmpl_id', '=', bom_lead.bom_id.product_tmpl_id.id)])
+                            self.env['lead.line'].create({
+                                'lead_line_id': int(line.opportunity_id.id),
+                                'product_id': product_bom.id,
+                                'name': str(deskripsi),
+                                'product_uom_quantity': bom_lead.bom_id.product_qty,
+                                'product_uom': bom_lead.bom_id.product_uom_id.id,
+                                'tax_id': product_bom.taxes_id or False,
+                                'cost_price': bom_lead.bom_cost
+                            })
+                            crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+                            crm.write({
+                                'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
+                            })
+                elif line.project_category == 'supply':
+                    for product_supply in line.inquiry_line_detail:
+                        if product_supply.product_id.product_tmpl_id.is_master:
+                            # list_product_crm.append()
+                            des = product_supply.product_id.product_tmpl_id.description
+                            deskripsi = product_supply.product_id.product_tmpl_id.name
+                            if des:
+                                deskripsi = product_supply.product_id.product_tmpl_id.description
+                            product_bom = self.env['product.product'].search(
+                                [('product_tmpl_id', '=', product_supply.product_id.product_tmpl_id.id)])
+                            self.env['lead.line'].create({
+                                'lead_line_id': int(line.opportunity_id.id),
+                                'product_id': product_bom.id,
+                                'name': str(deskripsi),
+                                'product_uom_quantity': product_supply.product_uom_quantity,
+                                'product_uom': product_supply.product_uom.id,
+                                'tax_id': product_bom.taxes_id or False,
+                                'cost_price': product_supply.cost_price
+                            })
+                            # crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+                            # crm.write({
+                            #     'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
+                            # })
+            else:
+                # raise UserError('product_bom')
+                if line.project_category == 'project':
+                    for bom_lead in line.inquiry_line_ids:
+                        if bom_lead.bom_id.product_tmpl_id.is_master:
+                            # list_product_crm.append()
+                            des = bom_lead.bom_id.product_tmpl_id.description
+                            deskripsi = bom_lead.bom_id.product_tmpl_id.name
+                            if des:
+                                deskripsi = bom_lead.bom_id.product_tmpl_id.description
+                            product_bom = self.env['product.product'].search(
+                                [('product_tmpl_id', '=', bom_lead.bom_id.product_tmpl_id.id)])
+                            self.env['lead.line'].create({
+                                'lead_line_id': int(line.opportunity_id.id),
+                                'product_id': product_bom.id,
+                                'name': str(deskripsi),
+                                'product_uom_quantity': bom_lead.bom_id.product_qty,
+                                'product_uom': bom_lead.bom_id.product_uom_id.id,
+                                'tax_id': product_bom.taxes_id or False,
+                                'cost_price': bom_lead.bom_cost
+                            })
+                            crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+                            crm.write({
+                                'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
+                            })
+                elif line.project_category == 'supply':
+                    for product_supply in line.inquiry_line_detail:
+                        if product_supply.product_id.product_tmpl_id.is_master:
+                            # list_product_crm.append()
+                            des = product_supply.product_id.product_tmpl_id.description
+                            deskripsi = product_supply.product_id.product_tmpl_id.name
+                            if des:
+                                deskripsi = product_supply.product_id.product_tmpl_id.description
+                            product_bom = self.env['product.product'].search(
+                                [('product_tmpl_id', '=', product_supply.product_id.product_tmpl_id.id)])
+                            self.env['lead.line'].create({
+                                'lead_line_id': int(line.opportunity_id.id),
+                                'product_id': product_bom.id,
+                                'name': str(deskripsi),
+                                'product_uom_quantity': product_supply.product_uom_quantity,
+                                'product_uom': product_supply.product_uom.id,
+                                'tax_id': product_bom.taxes_id or False,
+                                'cost_price': product_supply.cost_price
+                            })
+                            # crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+                            # crm.write({
+                            #     'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
+                            # })
+
+            inq = self.env['inquiry.inquiry'].browse(int(line.id))
+            inq.write({'state': 'cost'})
+
+    def action_create_rfq(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create RFQ',
+            'res_model': 'rfq.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'partner_id': self.partner_id.id,
+            }
+        }
+
+    def action_send_send(self):
+        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
+        self.ensure_one()
+        # self.order_line._validate_analytic_distribution()
+        lang = self.env.context.get('lang')
+        # mail_template = self._find_mail_template()
+        # if mail_template and mail_template.lang:
+        #     lang = mail_template._render_lang(self.ids)[self.id]
+        ctx = {
+            'default_model': 'inquiry.inquiry',
+            'default_res_ids': self.ids,
+            # 'default_template_id': mail_template.id if mail_template else None,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+            'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
+            'proforma': self.env.context.get('proforma', False),
+            'force_email': True,
+            'model_description': self.with_context(lang=lang).name,
+        }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(False, 'form')],
+            'view_id': False,
+            'target': 'new',
+            'context': ctx,
+        }
+
+    @api.model
+    def create(self, vals):
+        # if vals.get('name', '/') == '/':
+        vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
+        return super(InquirySales, self).create(vals)
+
+
+class InquiryLine(models.Model):
+    _name = 'inquiry.line'
+
+    bom_id = fields.Many2one('mrp.bom')
+    inquiry_id = fields.Many2one('inquiry.inquiry')
+    bom_cost = fields.Float()
+    kategory = fields.Selection([
+        ('project', 'Project'),
+        ('service', 'Service'),
+        ('supply', 'Supply')
+    ], related='inquiry_id.project_category')
+    state_mo = fields.Boolean(compute='_compute_state_mo')
+    count_so = fields.Integer(related="inquiry_id.count_so")
+    pic_akses = fields.Boolean(related="inquiry_id.pic_akses")
+
+    def _compute_state_mo(self):
+        for line in self:
+            line.state_mo = False
+            sale_order = self.env['sale.order'].search(
+                [('state', '=', 'sale'), ('opportunity_id', '=', int(line.inquiry_id.opportunity_id.id))], limit=1)
+            if sale_order:
+                # bom = self.env['mrp.bom'].browse(int(line.bom_id.id))
+                # if bom:
+                product = self.env['product.product'].search(
+                    [('product_tmpl_id', '=', int(line.bom_id.product_tmpl_id.id))])
+                mo = self.env['mrp.production'].search(
+                    [('origin', '=', str(sale_order.name)), ('product_id', '=', int(product.id))])
+                if mo:
+                    line.state_mo = True
+            # raise UserError(line.state_mo)
+
+    def action_create_mo(self):
+        for line in self:
+            product = self.env['product.product'].search(
+                [('product_tmpl_id', '=', int(line.bom_id.product_tmpl_id.id))])
+            so = self.env['sale.order'].search([('opportunity_id', '=', line.inquiry_id.opportunity_id.id)])
+            # mo = self.env['mrp.production'].search([])
+            # create_mo = mo.create({
+            #     'product_id': int(product.id),
+            #     'product_qty': 1.0,
+            #     'origin': str(so.name),
+            #     'state': 'draft'
+            # })
+            # if create_mo:
+            #     create_mo.action_confirm()
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Create Manufactur Order',
+                'res_model': 'manufactur.wizard',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'product_id': int(product.id),
+                    'schedule_date': datetime.now(),
+                    'product_qty': 1,
+                    'origin': str(so.name),
+                }
+            }
+
+
+class InquiryLineTask(models.Model):
+    _name = 'inquiry.line.task'
+
+    mo_id = fields.Many2one('mrp.production')
+    product_id = fields.Many2one('product.product')
+    production_ref = fields.Char()
+    componen_status = fields.Char(compute='_compute_componen_state')
+    task_state = fields.Selection([
+        ('confirm', 'Comfirmed'),
+        ('done', 'Done'),
+        ('cancel', 'Canceled')
+    ], compute='_compute_state_task')
+    inquiry_id = fields.Many2one('inquiry.inquiry')
+
+    @api.depends('mo_id')
+    def _compute_componen_state(self):
+        for line in self:
+            mo = self.env['mrp.production'].search([('id', '=', int(line.mo_id.id))])
+            if mo:
+                line.componen_status = str(mo.components_availability)
+
+    def action_view_task(self):
+        for line in self:
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "mrp.production",
+                "domain": [('id', '=', int(line.mo_id.id))],
+                "context": {"create": False},
+                "name": "Manufactur",
+                'view_mode': 'form',
+                'res_id': int(line.mo_id.id)
+            }
+
+    @api.depends('mo_id')
+    def _compute_state_task(self):
+        for line in self:
+            mo = self.env['mrp.production'].search([('id', '=', int(line.mo_id.id))])
+            if mo:
+                if mo.state == 'confirmed':
+                    line.task_state = 'confirm'
+                elif mo.state == 'done':
+                    line.task_state = 'done'
+                elif mo.state == 'cancel':
+                    line.task_state = 'cancel'
+
+
+class InquiryLineDetail(models.Model):
+    _name = 'inquiry.line.detail'
+
+    inquiry_id = fields.Many2one('inquiry.inquiry')
+    product_id = fields.Many2one('product.product')
+    name = fields.Text(string='Description', required=True)
+    specs = fields.Char()
+    brand = fields.Char()
+    unit_weight = fields.Float()
+    total_weight = fields.Float(compute="_compute_weight", store=True)
+    product_uom_quantity = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True,
+                                        default=1.0)
+    product_uom = fields.Many2one('uom.uom', string='Unit of Measure',
+                                  domain="[('category_id', '=', product_uom_category_id)]")
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
+
+    @api.onchange('product_id')
+    def _compute_default_price(self):
+        for line in self:
+            line.cost_price = False
+            line.unit_weight = False
+            if line.product_id:
+                line.cost_price = line.product_id.product_tmpl_id.standard_price
+                line.unit_weight = line.product_id.product_tmpl_id.weight
+
+    cost_price = fields.Float('Unit Price')
+    due_date = fields.Datetime(compute="_compute_due_date")
+
+    subtotal = fields.Float(
+        string='Subtotal',
+        compute='_compute_totals', store=True,
+        # currency_field=None,
+    )
+
+    @api.depends('unit_weight', 'product_uom_quantity')
+    def _compute_weight(self):
+        for line in self:
+            total = line.product_uom_quantity * line.unit_weight
+            line.total_weight = total
+
+    @api.depends('inquiry_id.due_date')
+    def _compute_due_date(self):
+        for line in self:
+            line.due_date = False
+            if line.inquiry_id.due_date:
+                line.due_date = line.inquiry_id.due_date
+
+    @api.depends('product_uom_quantity', 'cost_price')
+    def _compute_totals(self):
+        for line in self:
+            # if line.display_type != 'product':
+            #     line.price_total = line.price_subtotal = False
+            # # Compute 'price_subtotal'.
+            # line_discount_price_unit = line.price_unit * (1 - (line.discount / 100.0))
+            subtotal = line.product_uom_quantity * line.cost_price
+            line.subtotal = subtotal
+
+
+class ProductInherith(models.Model):
+    _inherit = 'product.template'
+
+    is_master = fields.Boolean()
+    edit_cost = fields.Boolean(cmpute="_compute_edit_cost", default=False)
+
+    def _compute_edit_cost(self):
+        for line in self:
+            user_id = self.env.uid
+            user_login = self.env['res.users'].browse(user_id)
+            if user_login:
+                if user_login.is_purchase:
+                    line.edit_cost = True
+            else:
+                line.edit_cost = False

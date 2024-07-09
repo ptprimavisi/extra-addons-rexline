@@ -1,0 +1,218 @@
+<odoo>
+    <data>
+        <record id="inquiry_inquiry_form_view" model="ir.ui.view">
+            <field name="name">inquiry.inquiry.view.form</field>
+            <field name="model">inquiry.inquiry</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,boq,request,cost,won,done, cancel"/>
+                        <button string="Update State to BOQ" name="action_update_state_boq" type="object" class="oe_highlight" confirm="Are you sure you want to update status to BOQ" invisible="id == False or state != 'draft' or pic_akses == False"/>
+                        <button string="Material Request" name="action_mrf" type="object" class="oe_highlight" confirm="Are you sure you want to continue with the process?" invisible="id == False or count_so == 0 or pic_akses == False or state not in ['won', 'done']"/>
+                        <button name="action_update_cost" string="Update Cost" class="oe_highlight" type="object" confirm="Are you sure you want to continue to update cost?" invisible="id == False or state not in ['request','cost'] or pic_akses == False"/>
+                        <button string="Request for price" name="action_request_price" class="oe_highlight" type="object" confirm="Are you sure you want to continue with the process?" invisible="id == False or state != 'boq' or pic_akses == False"/>
+                        <button name="action_create_bom" string="Create Bills of Materials" class="oe_highlight" type="object" invisible="1" />
+                        <button name="action_cancel" string="Cancel" type="object" confirm="Are you sure you want to cancel this proccess?" invisible="id == False or state == 'cancel' or pic_akses == False"/>
+                        <button name="action_reset_toboq" string="Reset to BOQ" type="object" confirm="Do you want reset state to BOQ?" invisible="id == False or state != 'cost'"/>
+                        <button name="action_mark_won" string="Mark as Won" type="object" confirm="Do you want to update status to Won?" invisible="crm_state != 'Sale Order' or state != 'cost' or pic_akses == False"/>
+<!--                        <button name="action_create_rfq" string="Create RFQ" class="oe_highlight" type="object" invisible="state_count_rfq == True or id == False"/>-->
+<!--                        <button name="action_send_send" string="Request For Information" class="oe_highlight" type="object" invisible="state_count_rfq == True or id == False"/>-->
+
+                    </header>
+                    <sheet>
+<!--                        <div class="oe_button_box" name="button_box">-->
+<!--                            <button name="action_count_rfq"-->
+<!--                                    type="object"-->
+<!--                                    class="oe_stat_button"-->
+<!--                                    icon="fa-pencil-square-o"-->
+<!--                                    invisible="count_rfq == 0">-->
+<!--                                    <field name="count_rfq" widget="statinfo" string="RFQ"/>-->
+<!--                            </button>-->
+<!--                        </div>-->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_count_bom"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    invisible="count_bom == 0"
+                                    icon="fa-flask">
+                                    <field name="count_bom" widget="statinfo" string="New Bills of Materials"/>
+                            </button>
+                            <button name="action_so"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    invisible="count_so == 0"
+                                    icon="fa-pencil">
+                                    <field name="count_so" widget="statinfo" string="Sale Order"/>
+                            </button>
+                            <button name="action_count_rfp"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-dollar">
+                                    <field name="count_rfp" widget="statinfo" string="Price Request"/>
+                            </button>
+                            <button name="action_count_mrf"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    invisible="count_mrf == 0"
+                                    icon="fa-dollar">
+                                    <field name="count_mrf" widget="statinfo" string="Material Request"/>
+                            </button>
+                            <button class="oe_stat_button" name="action_view_mrp_productions" type="object" icon="fa-wrench" invisible=" id == False or mrp_production_count == 0">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="mrp_production_count"/></span>
+                                    <span class="o_stat_text">Manufacturing</span>
+                                </div>
+                            </button>
+                        </div>
+<!--                        <div class="oe_button_box" name="button_box">-->
+<!--                            -->
+<!--                        </div>-->
+
+                        <div class="o_lead_opportunity_form_inline_fields">
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+                                <field name="priority" widget="priority" nolabel="1" class="oe_inline align-top"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" string="Customer" required="1"/>
+                                <field name="project_category" required="1"/>
+                                <field name="pic_user"/>
+                                <field name="pic_akses" invisible="1"/>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="due_date"/>
+<!--                            <field name="due_date" string="Lead Time" optional="show" widget="remaining_days"/>-->
+                                <field name="state_material" invisible="1"/>
+                                <field name="crm_state"/>
+                            </group>
+
+<!--                            <field name="validity" string="Validity"/>-->
+
+
+<!--                            <field name="operation_type"/>-->
+
+<!--                            <field name="attachment" string="Attachment" widget="binary" filename="attachment_filename"/>-->
+
+<!--                            <field name="attachment_filename" invisible="1"/>-->
+<!--                            <field name="state_count_rfq" readonly="1"/>-->
+                        </group>
+                        <button name="action_compute_material" string="Compute Item Detail" confirm="This process will cause the price to become 0.0 again" class="oe_highlight" type="object" invisible="id == False or state == 'draft' or project_category not in ['project', 'service']"/>
+                        <button name="action_compute_task" string="Compute Task" type="object" invisible="id == False or mrp_production_count == 0 or project_category not in ['project', 'service']" />
+                        <notebook>
+                            <page string="Bom Lines" invisible="project_category not in ['project', 'service']">
+                                <field name="inquiry_line_ids" >
+                                    <tree editable="bottom">
+                                        <field name="bom_id" required="1"/>
+                                        <field name="kategory" readonly="1"/>
+                                        <field name="state_mo" invisible="1" nolabel="1"/>
+                                        <button name="action_create_mo" class="oe_highlight" type="object" confirm="Do you want to create Manifacturing Orders?" string="Create MO" invisible="id == False or state_mo == True or count_so == 0 or pic_akses == False or kategory not in ['project', 'service']"/>
+                                        <field name="bom_cost" readonly="1"/>
+                                        <field name="count_so" invisible="1" nolabel="1"/>
+                                        <field name="pic_akses" invisible="1" nolabel="1"/>
+                                        <field name="inquiry_id" invisible="1" nolabel="1"/>
+
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Detail Material">
+                                <field name="inquiry_line_detail">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="specs"/>
+                                        <field name="brand"/>
+                                        <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+                                        <field name="product_uom_quantity"/>
+                                        <field name="product_uom" string="Uom"/>
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="unit_weight"/>
+                                        <field name="total_weight"/>
+                                        <field name="cost_price"/>
+                                        <field name="subtotal" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Task Line" invisible="project_category not in ['project', 'service']">
+                                <field name="inquiry_line_task">
+                                    <tree editable="bottom" create="0">
+                                        <field name="mo_id"/>
+                                        <field name="product_id"/>
+                                        <field name="production_ref"/>
+                                        <field name="componen_status"
+                                               decoration-danger="componen_status == 'Not Available'"
+                                               decoration-success="componen_status == 'Available'"
+                                               widget="badge"
+                                               optional="show"/>
+                                        <field name="task_state"
+                                               decoration-primary="task_state == 'confirm'"
+                                               decoration-success="task_state == 'done'"
+                                               decoration-danger="task_state == 'cancel'"
+                                               widget="badge"
+                                               optional="show"
+                                        string="Task Status"/>
+                                        <button name="action_view_task" type="object" class="oe_highlight" string="View Task"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Internal Notes">
+                                <field name="note" widget="html"/>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="inquiry_inquiry_tree_view" model="ir.ui.view">
+            <field name="name">inquiry.tree.view</field>
+            <field name="model">inquiry.inquiry</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="priority" widget="priority"/>
+                    <field name="name"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="date"/>
+                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+<!--                    <field name="state_count_rfq" string="RFQ Status" widget="boolean_toggle"/>-->
+                    <field name="state"
+                            decoration-warning="state == 'draft'"
+                            decoration-success="state == 'done'"
+                            widget="badge"
+                            optional="show"/>
+                    <field name="crm_state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_inquiry_inquiry" model="ir.actions.act_window">
+            <field name="name">Inquiry</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">inquiry.inquiry</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_mrp_workorder_todddd"
+                name="Inquiry"
+                action="sale_custome.action_inquiry_inquiry"
+                parent="mrp.menu_mrp_manufacturing"
+                sequence="100"/>
+<!--        <menuitem action="action_inquiry_inquiry"-->
+<!--                  id="menu_inquiry_tree"-->
+<!--                  name="Inquiry"-->
+<!--            parent="mrp.menu_mrp_manufacturing"-->
+<!--            sequence="1"/>-->
+<!--        <menuitem id="menu_inquiry_tree" name="Inquiry" parent="mrp.menu_mrp_manufacturing" action="action_inquiry_inquiry" sequence="100"/>-->
+    </data>
+</odoo>

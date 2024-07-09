@@ -1,0 +1,518 @@
+from abc import ABC
+
+from odoo import models, api, fields
+from datetime import datetime
+from odoo.exceptions import UserError
+
+
+class PermintaanDana(models.Model):
+    _name = 'permintaan.dana'
+
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char()
+    description = fields.Text()
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
+
+    def _default_employee(self):
+        # for line in self:
+        employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+        return int(employee.id)
+
+    def default_saldo(self):
+        for line in self:
+            saldo = 0.0
+            data_saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)])
+            if data_saldo:
+                saldo = float(data_saldo.saldo)
+            return saldo
+
+    employee_id = fields.Many2one('hr.employee')
+    date_request = fields.Date(default=lambda self: datetime.now())
+    saldo = fields.Float()
+    journal_id = fields.Many2one('account.account')
+    dana_line = fields.One2many('permintaan.dana.line', 'dana_id')
+    source_account = fields.Many2one('account.journal', domain="[('type','in', ['bank','cash'])]")
+    department = fields.Many2one('hr.department', compute='_compute_department')
+    total_amount = fields.Float(compute="_compute_total_cost")
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'Confirm'),
+        ('transfer', 'Transfer Done')
+    ], default='draft')
+    count_realisasi = fields.Float(compute='_compute_count_realisasi')
+    count_refund = fields.Float(compute="_compute_count_refund")
+
+    def _compute_count_refund(self):
+        for line in self:
+            line.count_refund = 0.0
+            refund = self.env['refund.dana'].search([('dana_id', '=', int(line.id))])
+            if refund:
+                line.count_refund = float(refund.amount)
+
+    def action_count_refund(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Refund',
+            'res_model': 'refund.dana',
+            "context": {"create": False},
+            'view_mode': 'tree,form',
+            'domain': [('dana_id', '=', int(self.id))]
+        }
+
+    def _compute_count_realisasi(self):
+        for line in self:
+            line.count_realisasi = 0.0
+            realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id))])
+            if realisasi:
+                line.count_realisasi = float(realisasi.total_amount)
+
+    def action_count_realisasi(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Realisasi Dana',
+            'res_model': 'realisasi.dana',
+            "context": {"create": False},
+            'view_mode': 'tree,form',
+            'domain': [('permintaan_id', '=', int(self.id))]
+        }
+
+    def unlink(self):
+        for line in self:
+            if line.state == 'transfer':
+                raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
+        return super().unlink()
+
+    @api.onchange('employee_id')
+    def onchange_employee(self):
+        for line in self:
+            line.saldo = False
+            if line.employee_id:
+                data_saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)])
+                # raise UserError(data_saldo.saldo)
+                if data_saldo:
+                    line.saldo = float(data_saldo.saldo)
+
+            # return int(employee.id)
+
+    @api.depends('user_id')
+    def _compute_department(self):
+        for line in self:
+            if line.user_id:
+                line.department = False
+                employee = self.env['hr.employee'].search([('user_id', '=', line.user_id.id)])
+                if employee.department_id:
+                    line.department = employee.department_id.id
+
+    @api.depends('dana_line.amount')
+    def _compute_total_cost(self):
+        for line in self:
+            cost = 0
+            for lines in line.dana_line:
+                cost += lines.amount
+            line.total_amount = cost
+
+    # @api.onchange('employee_id')
+    # def oc_employee(self):
+    #     employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+    #     raise UserError({'domain': {'employee_id': [('department_id', '=', employee.department_id.id)]}})
+    #     return {'domain': {'employee_id': [('department_id', '=', employee.department_id.id)]}}
+    # for line in self:
+    # if line.employee_id:
+
+    # @api.depends('user_id')
+    # def _compute_domain_employee(self):
+    #     for line in self:
+    #         employee = self.env['hr.employee'].search([('user_id', '=', line.user_id.id)])
+    #         # print(employee.department_id)
+    #         # if employee:
+    #             # print({'domain': {'employee_id': [('department_id', '=', employee.department_id.id)]}})
+    #         return {'domain': {'employee_id': [('department_id', '=', employee.department_id.id)]}}
+
+    def action_confirm(self):
+        for line in self:
+            if not line.dana_line:
+                raise UserError('Lines cannot be empty!')
+            else:
+                for lines in line.dana_line:
+                    if not lines.description or not lines.amount:
+                        raise UserError('description and amount is mandatory field!')
+            self.message_post(body="This document has been confirm.")
+            line.state = 'confirm'
+
+    def action_transfer(self):
+        for line in self:
+            if not line.source_account:
+                raise UserError('Source account is mandatory fields!')
+            if not line.journal_id:
+                raise UserError('Destination account is not set!')
+            cek_data_saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)])
+            if not cek_data_saldo:
+                self.env['saldo.dana'].create({
+                    'employee_id': line.employee_id.id,
+                })
+            amount = 0.0
+            for lines in line.dana_line:
+                amount += lines.amount
+
+            saldo_data = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)])
+            # move_journal
+            partner_id = self.env['res.users'].browse(line.user_id.id).partner_id
+            move = self.env['account.move'].create({
+                'journal_id': 3,
+                'date': line.date_request,
+                # 'branch_id': line.branch_id.id,
+                'ref': line.name,
+                'line_ids': [
+                    (0, 0, {
+                        'account_id': line.journal_id.id,
+                        # Ganti dengan akun yang sesuai
+                        'name': str(line.name) + " " + str(line.description or ''),
+                        'partner_id': int(partner_id.id),
+                        'debit': line.total_amount,
+                        'credit': 0.0,
+                    }),
+                    (0, 0, {
+                        'account_id': line.source_account.default_account_id.id,
+                        # Ganti dengan akun yang sesuai
+                        'name': str(line.name) + " " + str(line.description or ''),
+                        'partner_id': int(partner_id.id),
+                        'debit': 0.0,
+                        'credit': line.total_amount,
+                    }),
+                ],
+            })
+
+            # credit
+            # self.env['account.move.line'].create({
+            #     'move_id': move.id,
+            #     'account_id': line.source_account.default_account_id.id,
+            #     'partner_id': int(partner_id.id),
+            #     'credit': line.total_amount,
+            #     'name': str(line.name) + " " + str(line.description or '')
+            # })
+            # # debit
+            # self.env['account.move.line'].create({
+            #     'move_id': move.id,
+            #     'account_id': line.journal_id.id,
+            #     'debit': line.total_amount,
+            #     'partner_id': int(partner_id.id),
+            #     'name': str(line.name) + " " + str(line.description or '')
+            # })
+
+            move.action_post()
+            update_saldo = saldo_data.saldo + line.total_amount
+            saldo_data.write({
+                'saldo': float(update_saldo)
+            })
+        self.message_post(body=f"Transfer success. {str(line.total_amount)}")
+        line.state = 'transfer'
+
+    def action_realisasi(self):
+        for line in self:
+            saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)]).saldo
+            realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', line.id), ('state', '=', 'draft')])
+            if saldo <= 0.0:
+                raise UserError('Saldo anda 0')
+                exit()
+            if realisasi:
+                saldo = float(saldo) - float(realisasi.saldo)
+                if saldo <= 0.0:
+                    raise UserError('Saldo anda 0')
+                    exit()
+            self.message_post(body=f"Realisasi Created.")
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Realisasi Dana',
+                'res_model': 'realisasi.dana',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'permintaan_id': int(line.id),
+                    'saldo': float(saldo),
+                    'employee_id': line.employee_id.id,
+                    'source_account': line.journal_id.id
+                }
+            }
+
+    def action_refund(self):
+        for line in self:
+            saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)]).saldo
+            realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', line.id), ('state','=', 'draft')])
+            if realisasi:
+                saldos = float(saldo) - float(realisasi.total_amount)
+                if saldos <= 0.0:
+                    raise UserError('Saldo anda 0!')
+                    exit()
+            if saldo <= 0.0:
+                raise UserError('Saldo anda 0!')
+                exit()
+            # if realisasi:
+            #     saldo = float(saldo) - float(realisasi.saldo)
+            # if saldo <= 0:
+            #     raise UserError(f"Saldo tidak mencukupi, saldo saati ini adalah : {str(saldo)}")
+            #     exit()
+            # else:
+            self.message_post(body=f"Refund Created.")
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Refund Dana',
+                'res_model': 'refund.dana',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'dana_id': int(line.id),
+                    'amount': float(saldo),
+                    'employee_id': line.employee_id.id,
+                    'department_id': line.department.id,
+                    'source_account': line.journal_id.id,
+                    'dest_account': line.source_account.default_account_id.id
+                }
+            }
+
+    @api.model
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        moves['name'] = self.env['ir.sequence'].next_by_code('DANA')
+        return moves
+
+
+class DanaLine(models.Model):
+    _name = 'permintaan.dana.line'
+
+    dana_id = fields.Many2one('permintaan.dana')
+    description = fields.Text()
+    amount = fields.Float()
+
+
+class RealisasiDana(models.Model):
+    _name = 'realisasi.dana'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char()
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
+    employee_id = fields.Many2one('hr.employee')
+    permintaan_id = fields.Many2one('permintaan.dana')
+    request_date = fields.Date(default=lambda self: datetime.now())
+    source_account = fields.Many2one('account.account')
+    saldo = fields.Float()
+    realisasi_line = fields.One2many('realisasi.line', 'realisasi_id')
+    total_amount = fields.Float(compute="_compute_total_cost", readonly=False)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('posted', 'Posted')
+    ], default='draft')
+
+    def unlink(self):
+        for line in self:
+            if line.state == 'posted':
+                raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
+        return super().unlink()
+
+    def action_post(self):
+        for line in self:
+            if line.total_amount <= 0:
+                raise UserError('amount tidak boleh 0.0')
+            if not line.realisasi_line:
+                raise UserError('lines item tidak boleh kosong')
+            if line.total_amount > line.saldo:
+                raise UserError('saldo tidak mencukupi')
+            for linesss in line.realisasi_line:
+                if not linesss.account_id:
+                    raise UserError('account id tidak boleh kosong')
+            partner_id = self.env['res.users'].browse(line.user_id.id).partner_id
+            move = self.env['account.move'].create({
+                'journal_id': 3,
+                'date': line.request_date,
+                # 'branch_id': line.branch_id.id,
+                'ref': line.name,
+            })
+            if move:
+                move_line = []
+                for i in range(1):
+                    move_line.append((0, 0, {
+                        'account_id': line.source_account.id,
+                        # Ganti dengan akun yang sesuai
+                        'name': str(line.name),
+                        'partner_id': int(partner_id.id),
+                        'debit': 0.0,
+                        'credit': line.total_amount,
+                    }))
+                for lines in line.realisasi_line:
+                    move_line.append((0, 0, {
+                        'account_id': lines.account_id.id,
+                        # Ganti dengan akun yang sesuai
+                        'name': str(line.name) + " " + str(lines.description or ''),
+                        'partner_id': int(partner_id.id),
+                        'debit': lines.amount,
+                        'credit': 0.0,
+                    }))
+                move.write({
+                    'line_ids': move_line
+                })
+                move.action_post()
+                saldo_data = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)])
+                new_saldo = float(saldo_data.saldo) - float(line.total_amount)
+                saldo_data.write({
+                    'saldo': float(new_saldo)
+                })
+            self.message_post(body="This document has been posted.")
+            line.state = 'posted'
+
+    def default_get(self, fields_list):
+        defaults = super(RealisasiDana, self).default_get(fields_list)
+
+        permintaan_id = self.env.context.get('permintaan_id', False)
+        saldo = self.env.context.get('saldo', False)
+        employee_id = self.env.context.get('employee_id', False)
+        source_account = self.env.context.get('source_account', False)
+
+        if permintaan_id and saldo:
+            defaults['permintaan_id'] = permintaan_id
+            defaults['saldo'] = saldo
+            defaults['employee_id'] = employee_id
+            defaults['source_account'] = source_account
+        return defaults
+
+    @api.depends('realisasi_line.amount')
+    def _compute_total_cost(self):
+        for line in self:
+            cost = 0
+            for lines in line.realisasi_line:
+                cost += lines.amount
+            line.total_amount = cost
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if any(vals['total_amount'] > vals['saldo'] for vals in vals_list):
+            raise UserError('Saldo Tidak mencukupi')
+        if not any(vals['realisasi_line'] for vals in vals_list):
+            raise UserError('Silahkan tambahkan item pada line terlebih dahulu')
+        # if vals_list.get('total_amount') > vals_list.get('saldo'):
+        #     raise UserError('Saldo tidak mencukupi!')
+        for value in vals_list:
+            for lines in value['realisasi_line']:
+                # print(lines[2]['amount'])
+                if lines[2]['amount'] <= 0:
+                    raise UserError('Amount tidak boleh 0.0')
+        # for line in self:
+        #     if not line.realisasi_line:
+        #         raise UserError('Silahkan tambahkan item pada line terlebih dahulu')
+        #     for lines in line.realisasi_line:
+        #         if lines.saldo == 0:
+        #             raise UserError('Amount tidak boleh 0.0')
+        moves = super().create(vals_list)
+        moves['name'] = self.env['ir.sequence'].next_by_code('REALISASI')
+
+        return moves
+
+
+class RealisasiLine(models.Model):
+    _name = 'realisasi.line'
+
+    description = fields.Text()
+    amount = fields.Float()
+    account_id = fields.Many2one('account.account')
+    realisasi_id = fields.Many2one('realisasi.dana')
+
+
+class RefundDana(models.Model):
+    _name = 'refund.dana'
+
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char()
+    user_id = fields.Many2one('res.users')
+    employee_id = fields.Many2one('hr.employee')
+    department_id = fields.Many2one('hr.department')
+    dana_id = fields.Many2one('permintaan.dana')
+    date = fields.Date(required=True)
+    amount = fields.Float()
+    source_account = fields.Many2one('account.account')
+    dest_account = fields.Many2one('account.account')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('posted', 'Posted')
+    ], default='draft')
+
+    def unlink(self):
+        for line in self:
+            if line.state == 'posted':
+                raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
+        return super().unlink()
+
+    def action_post(self):
+        for line in self:
+            if line.source_account and line.dest_account:
+                partner_id = self.env['res.users'].browse(line.user_id.id).partner_id
+                move = self.env['account.move'].create({
+                    'journal_id': 3,
+                    'date': line.date,
+                    # 'branch_id': line.branch_id.id,
+                    'ref': line.name,
+                    'line_ids': [
+                        (0, 0, {
+                            'account_id': line.dest_account.id,
+                            # Ganti dengan akun yang sesuai
+                            'name': str(line.name),
+                            'partner_id': int(partner_id.id),
+                            'debit': line.amount,
+                            'credit': 0.0,
+                        }),
+                        (0, 0, {
+                            'account_id': line.source_account.id,
+                            # Ganti dengan akun yang sesuai
+                            'name': str(line.name),
+                            'partner_id': int(partner_id.id),
+                            'debit': 0.0,
+                            'credit': line.amount,
+                        }),
+                    ],
+                })
+                saldo_data = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)])
+                move.action_post()
+                update_saldo = saldo_data.saldo - line.amount
+                saldo_data.write({
+                    'saldo': float(update_saldo)
+                })
+                line.state = 'posted'
+
+            self.message_post(body=f"This document has been posted. Refund amount : {str(line.amount)}")
+
+    def default_get(self, fields_list):
+        defaults = super(RefundDana, self).default_get(fields_list)
+
+        dana_id = self.env.context.get('dana_id', False)
+        amount = self.env.context.get('amount', False)
+        employee_id = self.env.context.get('employee_id', False)
+        department_id = self.env.context.get('department_id', False)
+        source_account = self.env.context.get('source_account', False)
+        dest_account = self.env.context.get('dest_account', False)
+
+        if dana_id:
+            defaults['dana_id'] = dana_id
+            defaults['user_id'] = self.env.uid
+            defaults['amount'] = amount
+            defaults['employee_id'] = employee_id
+            defaults['department_id'] = department_id
+            defaults['source_account'] = source_account
+            defaults['dest_account'] = dest_account
+            defaults['date'] = datetime.today()
+
+        return defaults
+
+
+    @api.model
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        moves['name'] = self.env['ir.sequence'].next_by_code('REFUND')
+        return moves
+
+
+class SaldoKas(models.Model):
+    _name = 'saldo.dana'
+
+    employee_id = fields.Many2one('hr.employee')
+    saldo = fields.Float()

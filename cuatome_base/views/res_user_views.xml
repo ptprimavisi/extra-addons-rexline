@@ -1,0 +1,24 @@
+<odoo>
+    <data>
+        <record id="view_res_users_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.res.users</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='login']" position="after">
+                        <group>
+                            <field name="is_purchase" string="Purchase"/>
+                            <field name="is_ga" string="GA"/>
+                            <field name="is_sales" string="Sales"/>
+                            <field name="is_accounting" string="Is Accounting"/>
+                            <field name="is_engineering" string="Engineering"/>
+                            <field name="is_planner" string="Is Planner"/>
+                            <field name="is_inventory" string="Is Inventory"/>
+                        </group>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

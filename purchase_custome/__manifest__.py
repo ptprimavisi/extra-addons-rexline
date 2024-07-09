@@ -1,0 +1,15 @@
+{
+    'name': 'Purchase Custom',
+    'category': 'Accounting',
+    'description': 'odoo Purchase Custom',
+    'depends': ['account', 'purchase', 'sale', 'base','sale_custome', 'hr'],
+    'data': [
+        "views/purchase_views.xml",
+        'views/requisition_views.xml',
+        "wizard/count_quotation_views.xml"
+    ],
+
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+}

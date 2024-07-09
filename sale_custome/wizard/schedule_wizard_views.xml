@@ -1,0 +1,39 @@
+<odoo>
+    <data>
+        <record id="schedule_wizard_form_view" model="ir.ui.view">
+            <field name="name">schedule.wizard.view.form</field>
+            <field name="model">schedule.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date_from" string="Date From" required="1"/>
+                            </group>
+                            <group>
+                                <field name="date_to" string="Date To" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button
+                            name="button_save"
+                            string="Confirm"
+                            type="object"
+                            class="oe_highlight"
+                        />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+<!--        <record id="action_inquiry_inquiry" model="ir.actions.act_window">-->
+<!--            <field name="name">Inquiry</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">inquiry.inquiry</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="menu_inquiry_tree" name="Inquiry" parent="sale.sale_order_menu" action="action_inquiry_inquiry" sequence="1"/>-->
+    </data>
+</odoo>

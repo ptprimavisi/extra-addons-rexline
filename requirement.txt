@@ -1,0 +1,15 @@
+Add column in table res_users
+  -  is_purchase = fields.Boolean()
+  -  is_ga = fields.Boolean()
+  -  is_engineering = fields.Boolean()
+  -  is_accounting
+  -  is_inventory
+  -  is_planner
+  - is_sales
+
+insert data ir.sequence
+- inquiry (INQ)
+- rfq (RFQ)
+- boq (BOQ)
+- requisition (EPR)
+- MRF (MRF)

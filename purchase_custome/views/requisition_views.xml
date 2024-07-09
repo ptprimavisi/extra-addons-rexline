@@ -1,0 +1,115 @@
+<odoo>
+    <menuitem id="requisition_root" name="Purchase Requisition" sequence="10"/>
+    <data>
+        <record id="requisition_form_view" model="ir.ui.view">
+            <field name="name">purchase.requisition.form.view</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_count_po"
+                                    type="object"
+                                    class="oe_stat_button"
+
+                                    icon="fa-list">
+                                    <field name="count_po" widget="statinfo" string="Purchase Order"/>
+                            </button>
+                            <button name="action_count_quotation"
+                                    type="object"
+                                    class="oe_stat_button"
+
+                                    icon="fa-list">
+                                    <field name="count_quotation" widget="statinfo" string="Quotation"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False"/>
+                            </h1>
+                        </div>
+                        <group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <field name="responsible"/>
+                            <field name="employee_id" required="1"/>
+                            <field name="department_id" required="1"/>
+                            <field name="is_ga" invisible="1"/>
+                            <field name="is_purchase" invisible="1"/>
+                            <field name="requisition_date" required="1"/>
+<!--                            <field name="inquiry_id" readonly="1"/>-->
+<!--                            <field name="request_date"/>-->
+<!--                            <field name="due_date" required="1"/>-->
+<!--                            <field name="quotation_state" invisible="1"/>-->
+<!--                            <field name="is_accounting" invisible="1"/>-->
+<!--                            <button string="Cretae Quotation" name="action_rfq" type="object" class="oe_highlight" invisible="id == False"/>-->
+                        </group>
+                        <notebook>
+<!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
+                            <page string="Requisition Lines">
+                                <field name="requisition_line" required="1">
+                                    <tree editable="bottom">
+                                        <field name="select"/>
+                                        <field name="product_id" string="Product"/>
+                                        <field name="name" string="Description"/>
+                                        <field name="quantity"/>
+                                        <field name="product_uom"/>
+                                        <field name="price_unit"/>
+                                        <field name="subtotal" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+<!--                        <group col="12" class="oe_invoice_lines_tab">-->
+<!--                            <group colspan="8">-->
+<!--                            &lt;!&ndash;<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>&ndash;&gt;-->
+<!--                            </group>-->
+<!--                            <group colspan="4">-->
+<!--                                <group class="oe_subtotal_footer oe_right" >-->
+<!--                                    <field name="total_cost" widget="monetary" string="Total Cost" readonly="1"/>-->
+<!--                                    <field name="total_budget" widget="monetary" string="Total Budget" readonly="1"/>-->
+<!--&lt;!&ndash;                                <field name="amount_total" invisible="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <field name="amount_fix" string="Total Invoice Setelah Potongan" required="1"/>&ndash;&gt;-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </group>-->
+                    </sheet>
+                    <div class="oe_chatter">
+                            <field name="message_follower_ids"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
+<!--                     <footer>-->
+<!--                        <field name="total_cost" widget="monetary" readonly="1"/>-->
+<!--                    </footer>-->
+
+                </form>
+            </field>
+        </record>
+
+        <record id="requisition_tree_view" model="ir.ui.view">
+            <field name="name">purchase.requisition.tree.view</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Number"/>
+                    <field name="responsible" string="Requisition Responsible"/>
+                    <field name="requisition_date" string="Requisition Date"/>
+                    <field name="state" string="Stage"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_requisition" model="ir.actions.act_window">
+            <field name="name">Purchase Requisition</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="purchase_requisition_menuitem"
+        name="Purchase Requisition"
+        sequence="1"
+        parent="requisition_root"
+        action="action_requisition"
+        />
+    </data>
+</odoo>

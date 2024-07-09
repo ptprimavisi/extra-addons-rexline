@@ -1,0 +1,202 @@
+<odoo>
+    <data>
+        <record id="mrf_form_view" model="ir.ui.view">
+            <field name="name">mrf.mrf.form.view</field>
+            <field name="model">mrf.mrf</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,to_inventory,request,confirm,cancel"/>
+                        <button name="action_inventory" string="To Inventory" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="request_budget" string="Request Budget" type="object" class="oe_highlight" invisible="state != 'to_inventory'"/>
+                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="state == 'confirm' or id == False or state != 'request' or state == 'cancel'"/>
+                        <button name="action_cancel" confirm="Do you want to cancel this proccess?" string="Cancel" type="object" invisible="state == 'draft' or id == False or state == 'cancel'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_count_quotation"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    invisible="count_quotation == 0"
+                                    icon="fa-list">
+                                    <field name="count_quotation" widget="statinfo" string="Quotations"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="partner_id" string="Customer" required="1"/>
+                            <field name="inquiry_id" readonly="1"/>
+                            <field name="request_date"/>
+                            <field name="to_inventory" invisible="1"/>
+                            <field name="due_date" required="1"/>
+                            <field name="quotation_state" invisible="1"/>
+                            <field name="is_accounting" invisible="1"/>
+<!--                            <field name="bol" invisible="1"/>-->
+<!--                            <button string="Cretae Quotation" name="action_rfq" type="object" class="oe_highlight" invisible="id == False"/>-->
+                        </group>
+                        <group>
+                            <field name="validity"/>
+                            <field name="lead_time"/>
+                        </group>
+                        <button string="Create Quotation" name="action_rfq" type="object" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
+                        <notebook>
+<!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
+                            <page string="Product Lines">
+                                <field name="mrf_line_ids" required="1">
+                                    <tree editable="bottom">
+                                        <field name="select"/>
+                                        <button name="action_count_quotation" string="View Quotation" type="object" class="oe_highlight" invisible="count_quotation == 0"/>
+                                        <field name="sale_id" string="SO No."/>
+                                        <field name="product_id"/>
+                                        <field name="type" string="type / category"/>
+                                        <field name="description"/>
+                                        <field name="specs_detail" string="Specs detail"/>
+                                        <field name="brand" required="1"/>
+                                        <field name="count_quotation"/>
+                                        <field name="quantity"/>
+                                        <field name="avilable_qty"/>
+                                        <field name="qty_purchase"/>
+                                        <field name="product_uom_id"/>
+                                        <field name="unit_weight" string="Unit weight/kg"/>
+                                        <field name="total_weight" string="Total weight/kg"/>
+                                        <field name="budget" readonly="is_accounting != True"/>
+                                        <field name="unit_cost"/>
+                                        <field name="subtotal" readonly="1"/>
+                                        <field name="product_uom_category_id" invisible="1" nolabel="1"/>
+                                        <field name="wh_id" string="Dest Location"/>
+<!--                                        <field name="vendor_id" string="Vendor" required="1"/>-->
+                                        <field name="attachment" widget="binary" filename="attachment_name"/>
+                                        <field name="is_accounting" invisible="1" nolabel="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group col="12" class="oe_invoice_lines_tab">
+                            <group colspan="8">
+                            <!--<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>-->
+                            </group>
+                            <group colspan="4">
+                                <group class="oe_subtotal_footer oe_right" >
+                                    <field name="total_cost" widget="monetary" string="Total Cost" readonly="1"/>
+                                    <field name="total_budget" widget="monetary" string="Total Budget" readonly="1"/>
+<!--                                <field name="amount_total" invisible="1"/>-->
+<!--                                <field name="amount_fix" string="Total Invoice Setelah Potongan" required="1"/>-->
+                                </group>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                            <field name="message_follower_ids"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
+<!--                     <footer>-->
+<!--                        <field name="total_cost" widget="monetary" readonly="1"/>-->
+<!--                    </footer>-->
+
+                </form>
+            </field>
+        </record>
+
+        <record id="mrf_mrf_tree_view" model="ir.ui.view">
+            <field name="name">mrf.mrf.tree.view</field>
+            <field name="model">mrf.mrf</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+<!--                    <field name="to_inventory"/>-->
+                    <field name="partner_id" string="Customer"/>
+                    <field name="request_date" string="Date"/>
+<!--                    <field name="quotation_state" />-->
+                    <field name="quotation_state" string="Quotation Status"
+                            decoration-danger="quotation_state == 'no'"
+                            decoration-success="quotation_state == 'yes'"
+                            widget="badge"
+                            optional="show"/>
+                    <field name="state" string="Status"
+                            decoration-info="state == 'draft'"
+                            decoration-success="state == 'confirm'"
+                            decoration-muted="state == 'cancel'"
+                            widget="badge"
+                            optional="show"/>
+<!--                    <field name="note"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="purchase_order_form_view_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.inherit.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='picking_type_id']" position="after">
+                    <field name="dp_status" readonly="1"/>
+                </xpath>
+<!--                <xpath expr="//button[@name='button_cancel']" position="before">-->
+<!--                    <button name="action_create_dp" string="Create DP" confirm="Do you want to cretae Down payment" type="object" invisible="invoice_count == 0 or dp_status == True"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//notebook" position="inside">-->
+<!--                    <page string="Down Paymnt" invisible="invoice_count == 0 or state in ('draft','sent','to approve')">-->
+<!--                        <field name="dp_lines_ids" readonly="dp_status == True">-->
+<!--                            <tree editable="bottom">-->
+<!--                                <field name="name" string="Description"/>-->
+<!--                                <field name="journal_id" required="1"/>-->
+<!--                                <field name="invoice_count" invisible="1" nolabel="1"/>-->
+<!--                                <field name="amount" required="1"/>-->
+<!--                                <field name="percentage" string="Percentage %" required="1"/>-->
+<!--                                <field name="fix_amount" required="1"/>-->
+<!--                                <field name="remaining"/>-->
+<!--                            </tree>-->
+<!--                        </field>-->
+<!--                        <group colspan="4">-->
+<!--                                <group class="oe_subtotal_footer oe_right" >-->
+<!--                                    <field name="dp_total" widget="monetary" string="Total DP" readonly="1"/>-->
+<!--&lt;!&ndash;                                    <field name="total_budget" widget="monetary" string="Total Budget" readonly="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <field name="amount_total" invisible="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <field name="amount_fix" string="Total Invoice Setelah Potongan" required="1"/>&ndash;&gt;-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                    </page>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
+
+        <record id="mrf_mrf_filtered_view" model="ir.ui.view">
+            <field name="name">mrf.mrf.filtered.view</field>
+            <field name="model">mrf.mrf</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Check by Inventory" name="inventory_check" domain="[('state', '=', 'to_inventory')]"/>
+                        <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>
+                        <!-- Other filters -->
+                    </search>
+
+            </field>
+        </record>
+
+        <record id="action_mrf_mrf" model="ir.actions.act_window">
+            <field name="name">Material Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrf.mrf</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_mrf_mrf_inventory" model="ir.actions.act_window">
+            <field name="name">Material Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="context">{"search_default_inventory_check":1}</field>
+            <field name="res_model">mrf.mrf</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_mrf" name="Material Request" parent="purchase.menu_procurement_management" action="action_mrf_mrf" sequence="100"/>
+        <menuitem id="menu_mrf_inventory" name="Material Request" parent="stock.menu_stock_warehouse_mgmt" action="action_mrf_mrf_inventory" sequence="100"/>
+    </data>
+</odoo>
