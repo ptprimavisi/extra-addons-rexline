@@ -386,12 +386,12 @@ class PaymentRequest(models.Model):
             if line.type == 'dp':
                 if not line.payment_request_dp_ids:
                     raise UserError('Please add Down Paymnet line first')
-                    for lines in line.payment_request_dp_ids:
-                        po = self.env['purchase.order'].browse(line.order_id.id)
-                        amount_po = po.amount_total
-                        amount_dp = po.dp_info + lines.amount
-                        if amount_dp > amount_po:
-                            raise UserError('Amount / amount yang sudah dibayarkan melebihi harga PO')
+                for lines in line.payment_request_dp_ids:
+                    po = self.env['purchase.order'].browse(lines.order_id.id)
+                    amount_po = po.amount_total - po.down_payment
+                    amount_dp = lines.amount
+                    if amount_dp > amount_po:
+                        raise UserError('Amount / amount yang sudah dibayarkan melebihi harga PO')
             if line.type == 'bill':
                 if not line.payment_request_bill_ids:
                     raise UserError('Please add bill line first')
@@ -411,13 +411,20 @@ class PaymentRequest(models.Model):
                             payment = self.env['account.payment'].search([('request_payment_id', '=', int(dp_line.id))])
                             if payment.state != 'posted':
                                 raise UserError(f'Please Confirm Vendor Payment for this PO. {dp_line.order_id.name}')
+
+                            po = self.env['purchase.order'].browse(dp_line.order_id.id)
+                            if po:
+                                dp_po = po.down_payment + dp_line.amount
+                                po.write({
+                                    'down_payment': float(dp_po)
+                                })
             if line.type == 'bill':
                 if not line.payment_request_bill_ids:
                     raise UserError('Please add bill line first')
                 if line.payment_request_bill_ids:
                     # raise UserError('test bill')
                     for bill_line in line.payment_request_bill_ids:
-                        if bill_line.state == False:
+                        if bill_line.bill_status == False:
                             raise UserError('Please Create Payment First')
             self.message_post(body=f"This document has been Validate")
             line.state = 'validate'
@@ -512,11 +519,31 @@ class PaymentRequestBill(models.Model):
     bill_id = fields.Many2one('account.move',
                               domain="[('journal_id','=', 2), ('move_type','=', 'in_invoice'), ('state','=', 'posted'), ('payment_state', '!=', 'paid')]")
     amount = fields.Float(compute='_compute_amount')
+    bill_status = fields.Boolean(compute="_compute_bill_status")
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirm'),
+        ('validate', 'Validate')
+    ], related="payment_id.state")
+
+    @api.depends('bill_id')
+    def _compute_bill_status(self):
+        for line in self:
+            line.bill_status = False
+            if line.bill_id.payment_state == 'paid':
+                line.bill_status = True
 
     @api.depends('bill_id')
     def _compute_amount(self):
         for line in self:
             line.amount = float(line.bill_id.amount_total)
+            if line.bill_id.amount_residual:
+                line.amount = line.bill_id.amount_residual
+
+    def action_register_payment(self):
+        for line in self:
+            # raise UserError('tst')
+            return line.bill_id.action_register_payment()
 
 
 class AccountPaymentInherit(models.Model):
@@ -543,6 +570,3 @@ class AccountPaymentInherit(models.Model):
 #             defaults['inquiry_id'] = inquiry_id
 
 #         return defaults
-
-
-

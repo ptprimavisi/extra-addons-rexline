@@ -8,7 +8,7 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,validate"/>
-                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
                         <button name="action_validate" string="Validate" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
                     </header>
                     <sheet>
@@ -45,6 +45,10 @@
                                     <tree editable="bottom">
 
                                         <field name="bill_id" string="No. Bill" required=""/>
+                                        <field name="bill_status" string="Status Pembayaran"/>
+                                        <field name="state" invisible="1" nolabel="1"/>
+
+                                        <button name="action_register_payment" string="Reguster Payment" type="object" class="oe_highlight" groups="sale_custome.accounting_custom_group" invisible="id == False or bill_status == True or state != 'confirmed'" />
                                         <field name="amount" string="Amount" required="1"/>
 <!--                                        <field name="quantity"/>-->
 <!--                                        <field name="product_uom"/>-->
