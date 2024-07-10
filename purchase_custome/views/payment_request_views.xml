@@ -1,0 +1,94 @@
+<odoo>
+<!--    <menuitem id="requisition_root" name="Purchase Requisition" sequence="10"/>-->
+    <data>
+        <record id="payment_request_form_view" model="ir.ui.view">
+            <field name="name">payment.request.form.view</field>
+            <field name="model">payment.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,validate"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_validate" string="Validate" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <field name="user_id" string="Responsible"/>
+                            <field name="date" string="Date Request" required="1"/>
+                            <field name="type" required="1"/>
+
+                        </group>
+                        <notebook>
+<!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
+                            <page string="Down Payment Lines" invisible="type != 'dp'">
+                                <field name="payment_request_dp_ids" required="1" readonly="state != 'draft'">
+                                    <tree editable="bottom">
+                                        <field name="order_id" string="No. PO" required="1"/>
+                                        <field name="amount_total" string="Amount PO"/>
+                                        <field name="percentage" string="Persentase %"/>
+                                        <field name="state" invisible="1" nolabel="1"/>
+                                        <field name="payment_state" invisible="1" nolabel="1"/>
+                                        <field name="amount" string="Amount"/>
+                                        <button name="action_create_dp" string="Create DP" type="object" class="oe_highlight" groups="sale_custome.accounting_custom_group" invisible="state not in ['confirmed','validate'] or payment_state == True"/>
+                                        <button name="action_view_payment" string="View DP" type="object" class="oe_highlight" invisible="payment_state != True"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Bill Lines" invisible="type != 'bill'">
+                                <field name="payment_request_bill_ids" required="1" readonly="state != 'draft'">
+                                    <tree editable="bottom">
+
+                                        <field name="bill_id" string="No. Bill" required=""/>
+                                        <field name="amount" string="Amount" required="1"/>
+<!--                                        <field name="quantity"/>-->
+<!--                                        <field name="product_uom"/>-->
+<!--                                        <field name="price_unit"/>-->
+<!--                                        <field name="subtotal" readonly="1"/>-->
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                            <field name="message_follower_ids"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="payment_request_tree_view" model="ir.ui.view">
+            <field name="name">payment.request.tree.view</field>
+            <field name="model">payment.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Number"/>
+                    <field name="date" string="Request Date"/>
+                    <field name="type" string="Type"/>
+                    <field name="state" string="Stage"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_payment_request" model="ir.actions.act_window">
+            <field name="name">Payment Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">payment.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="payment_request_menuitem"
+        name="Payment Request"
+        sequence="10"
+        parent="purchase.menu_procurement_management"
+        action="action_payment_request"
+        />
+    </data>
+</odoo>

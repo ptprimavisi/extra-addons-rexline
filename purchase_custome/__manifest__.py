@@ -6,7 +6,8 @@
     'data': [
         "views/purchase_views.xml",
         'views/requisition_views.xml',
-        "wizard/count_quotation_views.xml"
+        "wizard/count_quotation_views.xml",
+        "views/payment_request_views.xml"
     ],
 
     'installable': True,
