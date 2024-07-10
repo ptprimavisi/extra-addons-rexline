@@ -415,7 +415,7 @@ class PaymentRequest(models.Model):
                 if not line.payment_request_bill_ids:
                     raise UserError('Please add bill line first')
                 if line.payment_request_bill_ids:
-                    raise UserError('test bill')
+                    # raise UserError('test bill')
                     for bill_line in line.payment_request_bill_ids:
                         if bill_line.state == False:
                             raise UserError('Please Create Payment First')
