@@ -1,4 +1,6 @@
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+
 
 class lead_line(models.Model):
     _name = 'lead.line'
@@ -10,20 +12,7 @@ class lead_line(models.Model):
     product_uom_quantity = fields.Float(string='Order Quantity', digits='Product Unit of Measure', required=True, default=1.0)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure',domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
-    margin = fields.Selection([
-        ('0', '0 %'),
-        ('10', '10 %'),
-        ('20', '20 %'),
-        ('30', '30 %'),
-        ('40', '40 %'),
-        ('50', '50 %'),
-        ('60', '60 %'),
-        ('70', '70 %'),
-        ('80', '80 %'),
-        ('90', '90 %'),
-        ('100', '100 %'),
-
-    ])
+    margin = fields.Float()
     cost_price = fields.Float('Cost Price', default=0.0)
     price_unit = fields.Float('Unit Price', default=0.0)
     tax_id = fields.Many2many('account.tax', string='Taxes')
@@ -37,6 +26,17 @@ class lead_line(models.Model):
                 persentase = line.cost_price * margin
                 fix_margin = persentase / 100
                 line.price_unit = line.cost_price + fix_margin
+
+    @api.model
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        # Check if 'margin' exists in vals_list or in the record
+        margin = vals_list.get('margin', self.margin)
+
+        # Perform validation on margin
+        if margin < 0 or margin > 100:
+            raise UserError('Margin should be between 0 and 100.')
+        return moves
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
