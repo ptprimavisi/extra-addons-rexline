@@ -137,32 +137,6 @@
                 <xpath expr="//field[@name='picking_type_id']" position="after">
                     <field name="dp_status" readonly="1"/>
                 </xpath>
-<!--                <xpath expr="//button[@name='button_cancel']" position="before">-->
-<!--                    <button name="action_create_dp" string="Create DP" confirm="Do you want to cretae Down payment" type="object" invisible="invoice_count == 0 or dp_status == True"/>-->
-<!--                </xpath>-->
-<!--                <xpath expr="//notebook" position="inside">-->
-<!--                    <page string="Down Paymnt" invisible="invoice_count == 0 or state in ('draft','sent','to approve')">-->
-<!--                        <field name="dp_lines_ids" readonly="dp_status == True">-->
-<!--                            <tree editable="bottom">-->
-<!--                                <field name="name" string="Description"/>-->
-<!--                                <field name="journal_id" required="1"/>-->
-<!--                                <field name="invoice_count" invisible="1" nolabel="1"/>-->
-<!--                                <field name="amount" required="1"/>-->
-<!--                                <field name="percentage" string="Percentage %" required="1"/>-->
-<!--                                <field name="fix_amount" required="1"/>-->
-<!--                                <field name="remaining"/>-->
-<!--                            </tree>-->
-<!--                        </field>-->
-<!--                        <group colspan="4">-->
-<!--                                <group class="oe_subtotal_footer oe_right" >-->
-<!--                                    <field name="dp_total" widget="monetary" string="Total DP" readonly="1"/>-->
-<!--&lt;!&ndash;                                    <field name="total_budget" widget="monetary" string="Total Budget" readonly="1"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                <field name="amount_total" invisible="1"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                <field name="amount_fix" string="Total Invoice Setelah Potongan" required="1"/>&ndash;&gt;-->
-<!--                                </group>-->
-<!--                            </group>-->
-<!--                    </page>-->
-<!--                </xpath>-->
             </field>
         </record>
 
