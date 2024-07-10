@@ -51,8 +51,9 @@ class RequestPrice(models.Model):
                             inquiry_line_detail = self.env['inquiry.line.detail'].search(
                                 [('inquiry_id', '=', line.inquiry_id.id), ('product_id', '=', int(product.id))])
                             cost = lines.cost_price
-                            if inquiry.other_cost:
-                                cost = lines.cost_price + lines.other_price
+                            if lines.other_cost:
+                                sesudah_dibagi = lines.other_price / lines.quantity
+                                cost = lines.cost_price + sesudah_dibagi
                             # else:
 
                             inquiry_line_detail.write({'cost_price': cost})
