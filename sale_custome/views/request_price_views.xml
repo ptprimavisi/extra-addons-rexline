@@ -35,7 +35,7 @@
                                         <field name="product_uom_category_id" invisible="1" nolabel="1"/>
                                         <field name="cost_price"/>
                                         <field name="other_cost" widget="many2many_tags"/>
-                                        <field name="other_price" invisible="show_other_price == False" nolabel="1"/>
+                                        <field name="other_price" invisible="show_other_price == False"/>
                                         <field name="subtotal" readonly="1"/>
                                         <field name="show_other_price" invisible="1" nolabel="1"/>
 <!--                                        <field name="edit_price" invisible="1"/>-->
