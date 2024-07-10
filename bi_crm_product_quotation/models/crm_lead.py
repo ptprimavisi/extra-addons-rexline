@@ -10,6 +10,7 @@ class crm_lead(models.Model):
     lead_product_ids = fields.One2many('lead.line', 'lead_line_id', string='Products', copy=True)
     lead_product_detail = fields.One2many('lead.line.detail', 'lead_line_id', string="Product Detail", copy=True)
     crm_count = fields.Integer(string="Quotation",compute="get_quotation_count")
+    note_header = fields.Text()
     category_project = fields.Selection([
         ('project', 'Project'),
         ('service', 'Service'),
