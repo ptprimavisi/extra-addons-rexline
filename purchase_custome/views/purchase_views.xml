@@ -1,5 +1,24 @@
 <odoo>
     <data>
+        <record id="view_move_form_inherit_purchase" model="ir.ui.view">
+        <field name="name">account.move.inherit.purchase</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                    <field name="count_dp" invisible="1"/>
+                </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button"
+                        name="action_view_dp"
+                        type="object"
+                        icon="fa-pencil-square-o"
+                        invisible="count_dp == 0 or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt') or state != 'posted'">
+                    <field string="Down Payment Info" name="count_dp" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
         <record id="mrf_form_view" model="ir.ui.view">
             <field name="name">mrf.mrf.form.view</field>
             <field name="model">mrf.mrf</field>
@@ -139,6 +158,8 @@
                 </xpath>
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="down_payment" string="Down Payment" readonly="1"/>
+                    <field name="tp_value" invisible="1"/>
+                    <field name="paymen_term_id" readonly="state in ['purchase','done']"/>
                 </xpath>
             </field>
         </record>

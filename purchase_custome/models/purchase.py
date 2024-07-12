@@ -2,12 +2,82 @@ from odoo import models, api, fields
 from odoo.exceptions import UserError
 
 
+class AcoountMove(models.Model):
+    _inherit = 'account.move'
+
+    count_dp = fields.Float(compute="_compute_dp")
+
+    def action_view_dp(self):
+        for line in self:
+            ids = []
+            purchase_ids = line.mapped('line_ids.purchase_line_id.order_id')
+
+
+            purchase_ids = list(set(purchase_ids))
+            # Mengambil record purchase.order berdasarkan purchase_ids
+            purchase = self.env['purchase.order'].browse(purchase_ids)
+
+            payment_dp = self.env['payment.request.dp'].search([('order_id', '=', int(purchase.id)), ('payment_state','=', True)])
+            # raise UserError(payment_dp)
+            if payment_dp:
+                for pay in payment_dp:
+                    ids.append(pay.id)
+            result = {
+                "type": "ir.actions.act_window",
+                "res_model": "account.payment",
+                "domain": [('request_payment_id', 'in', ids)],
+                "context": {"create": False},
+                "name": "PO",
+                'view_mode': 'tree,form',
+            }
+            return result
+
+
+    def _compute_dp(self):
+        for line in self:
+            dp = 0
+            purchase_ids = line.mapped('line_ids.purchase_line_id.order_id')
+            # raise UserError(purchase_ids)
+
+            # Memastikan purchase_ids adalah daftar unik
+
+            purchase_ids = list(set(purchase_ids))
+            # Mengambil record purchase.order berdasarkan purchase_ids
+            purchase = self.env['purchase.order'].browse(purchase_ids)
+
+            payment_dp = self.env['payment.request.dp'].search([('order_id', '=', int(purchase.id)), ('payment_state','=', True)])
+            # raise UserError(payment_dp)
+            if payment_dp:
+                for pay in payment_dp:
+                    account_payment = self.env['account.payment'].search([('request_payment_id', '=', int(pay.id)),('state','=', 'posted')])
+                    if account_payment:
+                        for pays in account_payment:
+                            dp += float(pays.amount)
+            line.count_dp = dp
+
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     mrf_id = fields.Many2one('mrf.mrf')
     down_payment = fields.Float()
     dp_status = fields.Boolean()
+    tp_value = fields.Integer(compute="_compute_tp_value")
+    paymen_term_id = fields.Many2one('account.payment.term')
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        for line in self:
+            line.paymen_term_id = False
+            if line.partner_id:
+                if line.partner_id.property_supplier_payment_term_id:
+                    line.paymen_term_id = line.partner_id.property_supplier_payment_term_id.id
+
+    @api.depends('partner_id')
+    def _compute_tp_value(self):
+        for line in self:
+            line.tp_value = False
+            if line.partner_id.property_supplier_payment_term_id:
+                line.tp_value = line.partner_id.property_supplier_payment_term_id.id
 
     @api.model
     def create(self, vals_list):
