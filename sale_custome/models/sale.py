@@ -197,7 +197,37 @@ class CrmLead(models.Model):
             for key, label in selection:
                 if key == value:
                     return label
-        return None
+
+    def write(self, vals):
+        for record in self:
+            old_category_value = record.category_project
+            old_note = record.description
+
+            # Panggil metode 'write' dari superclass
+        res = super(CrmLead, self).write(vals)
+
+        # Ambil nilai field 'category' setelah pembaruan
+        for record in self:
+            new_category_value = record.category_project
+            new_note = record.description
+
+            # Cek apakah nilai 'category' berubah
+            if old_category_value != new_category_value:
+                message = f'Category value changed from {old_category_value} to {new_category_value}'
+                record.message_post(body=message)
+            inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(record.id))])
+            # raise UserError('test')
+            if inquiry:
+                if old_note != new_note:
+                    user = self.env['res.users'].browse(self.env.uid)
+                    inquiry.message_post(body=f'{user.login} Update Note')
+
+        return res
+    # def write(self, vals):
+    #     res = super(IrActions, self).write(vals)
+    #     # self.get_bindings() depends on action records
+    #     self.env.registry.clear_cache()
+    #     return res
 
     def _compute_state_inq(self):
         for line in self:
@@ -293,6 +323,18 @@ class CrmLead(models.Model):
                 }
                 # inquiry = self.env['inquiry.inquiry'].search([])
                 inquiry = self.env['inquiry.inquiry'].create(data)
+                if line.category_project == 'supply':
+                    list_product = []
+                    for lines in line.lead_product_ids:
+                        list_product.append((0,0, {
+                            'product_id' : lines.product_id.id,
+                            'name': lines.product_id.product_tmpl_id.description or '',
+                            'product_uom_quantity': lines.product_uom_quantity,
+                            'product_uom': lines.product_uom.id,
+                            'unit_weight': lines.product_id.product_tmpl_id.weight,
+                            'cost_price': lines.product_id.product_tmpl_id.standard_price
+                        }))
+                    inquiry.write({'inquiry_line_detail': list_product})
                 # raise UserError(inquiry)
                 attch = self.process_attachments()
                 if attch:
