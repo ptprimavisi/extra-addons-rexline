@@ -21,8 +21,8 @@ class RequestPrice(models.Model):
             for lines in line.request_line_ids:
                 list.append({
                     'product': lines.product_id.product_tmpl_id.name,
-                    'Brand': lines.brand,
-                    'Weight': lines.weight,
+                    'brand': lines.brand,
+                    'weight': lines.weight,
                     'supplier': lines.vendor_id.name,
                     'uom': lines.product_uom.name,
                     'qty': lines.quantity,

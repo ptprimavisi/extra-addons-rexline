@@ -2,7 +2,8 @@
 <odoo>
         <template id="report_request_price">
             <t t-call="web.html_container">
-                <div class="header" style="font-family: Calibri, sans-serif;">
+                <t t-call="web.external_layout">
+                    <div class="header" style="font-family: Calibri, sans-serif;">
                     <h4 style="text-align: center; padding-top: 10px !important;">
 <!--                        <t t-esc="company_name"/><br/>-->
                         PRICE REQUEST
@@ -14,58 +15,53 @@
                         <tr>
                             <td>INQUIRY NO</td>
                             <td>:</td>
-                            <td><t t-esc="inquiry_name"/></td>
+                            <td><t t-esc="inquiry_name or 'Unknow'"/></td>
                         </tr>
                         <tr>
                             <td>DATE</td>
                             <td>:</td>
-                            <td><t t-esc="date"/></td>
+                            <td><t t-esc="date or 'Unknow'"/></td>
                         </tr>
                         <tr>
                             <td>Customer</td>
                             <td>:</td>
-                            <td><t t-esc="customer"/></td>
+                            <td><t t-esc="customer or 'Unknow'"/></td>
                         </tr>
                     </table>
 
-<!--                    <t t-if="penjualan">-->
-<!--                        <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">-->
-<!--                            <tbody>-->
-<!--                              <tr>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Nama Produk</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Cukai Produk</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Quantity Keluar (BKS)</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Quantity Retur (BKS)</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Sub Total (Rp)</th>-->
-<!--                              </tr>-->
-<!--                                <t t-foreach="penjualan" t-as="data">-->
-<!--                                    <tr>-->
-<!--                                        <t t-foreach="data" t-as="item">-->
-<!--                                            <td t-if="item == data[0]" style="text-align: left; border: 1px solid black; padding: 8px;">-->
-<!--                                                <t t-esc="item"/>-->
-<!--                                            </td>-->
-<!--                                            <td t-else="item != data[0]" style="text-align: center; border: 1px solid black; padding: 8px;">-->
-<!--                                                <t t-esc="item"/>-->
-<!--                                            </td>-->
-<!--                                        </t>-->
-<!--                                    </tr>-->
-<!--                                </t>-->
-<!--                                <tr>-->
-<!--                                  <th colspan="2" style="text-align: align-right !important;border: 1px solid black; padding: 8px;">Total Produk (BKS)</th>-->
-<!--                                  <th style="text-align: align-right !important;border: 1px solid black; padding: 8px;"><t t-esc="total_quantity"/></th>-->
-<!--                                  <th style="text-align: align-right !important;border: 1px solid black; padding: 8px;"><t t-esc="total_ret"/></th>-->
-<!--                                  <th style="text-align: align-right !important;border: 1px solid black; padding: 8px;"/>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                  <th colspan="4" style="text-align: align-right !important;border: 1px solid black; padding: 8px;">Total Penjualan (Rp)</th>-->
-<!--                                  <th style="text-align: align-right !important;border: 1px solid black; padding: 8px;"><t t-esc="total_invoice"/></th>-->
-<!--                                </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </t>-->
+                        <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
+                            <tbody>
+                              <tr>
+                                <th style="border: 1px solid black; padding: 8px;">Produk</th>
+                                <th style="border: 1px solid black; padding: 8px;">Brand</th>
+                                <th style="border: 1px solid black; padding: 8px;">Weight</th>
+                                <th style="border: 1px solid black; padding: 8px;">Supplier</th>
+                                <th style="border: 1px solid black; padding: 8px;">UoM</th>
+                                  <th style="border: 1px solid black; padding: 8px;">Quantity</th>
+                                  <th style="border: 1px solid black; padding: 8px;">Cost</th>
+                                  <th style="border: 1px solid black; padding: 8px;">Subtotal</th>
+                              </tr>
+                                <t t-foreach="item_detail" t-as="data">
+                                    <tr>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['product']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['brand']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['weight']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['supplier']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['uom']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['qty']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['cost']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['subtotal']"/></td>
+                                    </tr>
+                                </t>
+
+                            </tbody>
+                        </table>
+
 
                     <!-- <p style="font-size: 14px;">Total Uang Diterima : <t t-esc="total_diterima"/></p> -->
                 </div>
+                </t>
+
             </t>
         </template>
 </odoo>
