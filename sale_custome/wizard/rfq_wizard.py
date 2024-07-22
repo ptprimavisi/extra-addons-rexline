@@ -48,6 +48,7 @@ class RfqWizard(models.TransientModel):
             # exit()
             data = {
                 # "name": self.env['ir.sequence'].next_by_code('RFQ'),
+                'state': 'to_inventory',
                 "partner_id": line.partner_id.id,
                 "request_date": datetime.now(),
                 'due_date': str(line.due_date),

@@ -1,0 +1,7 @@
+<odoo>
+    <data>
+        <record id="stock.menu_stock_transfers" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('sale_custome.inventory_adjustments_group'))]"/>
+        </record>
+    </data>
+</odoo>

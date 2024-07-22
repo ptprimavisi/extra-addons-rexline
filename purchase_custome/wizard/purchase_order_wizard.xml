@@ -1,0 +1,46 @@
+<odoo>
+    <data>
+        <record id="purchase_order_form_wizard_view" model="ir.ui.view">
+            <field name="name">purchase.order.wizard.view.form</field>
+            <field name="model">purchase.order.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="mrf_id" string="No Mrf" readonly="1" required="1"/>
+                            <field name="partner_id" string="Vendor" required="1"/>
+<!--                            <field name="date" string="Request Date" readonly="1"/>-->
+                        </group>
+                        <notebook>
+                            <page string="Product List">
+                                <field name="order_line">
+                                    <tree editable="bottom" create="0">
+                                        <field name="product_uom_category_id" invisible="1" nolabel="1"/>
+                                        <field name="product_id" required="1"/>
+                                        <field name="name" />
+                                        <field name="product_qty" required="1"/>
+                                        <field name="unit_price" required="1"/>
+                                        <field name="budget" required="1"/>
+                                        <field name="product_uom" required="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+<!--        <record id="action_rfp" model="ir.actions.act_window">-->
+<!--            <field name="name">Price Request</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">request.price</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="menu_rfq_tree" name="Price Request" parent="purchase.menu_procurement_management" action="action_rfp" sequence="90"/>-->
+    </data>
+</odoo>
