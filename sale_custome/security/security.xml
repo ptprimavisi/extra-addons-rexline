@@ -29,6 +29,10 @@
             <field name="name">Planner Custom</field>
         </record>
 
+        <record model="res.groups" id="inventory_adjustments_group">
+            <field name="name">Inventory / Adjustments Access Menu</field>
+        </record>
+
       
     </data>
 </odoo>

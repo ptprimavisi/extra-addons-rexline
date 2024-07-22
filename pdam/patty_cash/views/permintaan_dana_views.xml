@@ -1,0 +1,115 @@
+<odoo>
+    <data>
+        <record id="permintaan_dana_form_view" model="ir.ui.view">
+            <field name="name">permintaan.dana.form.view</field>
+            <field name="model">permintaan.dana</field>
+            <field name="arch" type="xml">
+                <form>
+<!--                    <header>-->
+<!--                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,transfer"/>-->
+<!--                        <button name="action_confirm" string="Confirm" confirm="Apakah anda sudah yakin?" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>-->
+<!--                        <button name="action_transfer" string="Transfer" confirm="Apakah anda infin melakukan transfer?" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="id == False or state != 'confirm'"/>-->
+<!--                        <button name="action_realisasi" string="Realisasi" confirm="Apakah anda ingin membuat realisasi?" type="object" invisible="state != 'transfer'"/>-->
+<!--                        <button name="action_refund" string="Refund" confirm="Apakah anda ingin melakukan refund?" type="object" invisible="state != 'transfer'"/>-->
+
+<!--                    </header>-->
+                    <sheet>
+<!--                        <div class="oe_button_box" name="button_box">-->
+<!--                            <button name="action_count_realisasi"-->
+<!--                                    type="object"-->
+<!--                                    class="oe_stat_button"-->
+<!--                                    icon="fa-dollar">-->
+<!--                                    <field name="count_realisasi" widget="statinfo" string="Realisasi"/>-->
+<!--                            </button>-->
+<!--                            <button name="action_count_refund"-->
+<!--                                    type="object"-->
+<!--                                    class="oe_stat_button"-->
+<!--                                    icon="fa-dollar">-->
+<!--                                    <field name="count_refund" widget="statinfo" string="Refund"/>-->
+<!--                            </button>-->
+<!--                        </div>-->
+                        <div class="o_lead_opportunity_form_inline_fields">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" readonly="1" invisible="id == False"/>
+                                </h1>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id" string="Responsible" domain="[('id', '=', uid)]" required="1"/>
+                                <field name="date"/>
+<!--                                <field name="employee_id" required="1" domain="[('department_id', '=', department)]" readonly="department == False or state == 'transfer'"/>-->
+<!--                                <field name="description" required="1" readonly="state == 'transfer'"/>-->
+                            </group>
+<!--                            <group>-->
+<!--                                <field name="date_request" required="1" readonly="state == 'transfer'"/>-->
+<!--                                <field name="saldo" string="Saldo" readonly="1"/>-->
+<!--                                <field name="source_account" groups="sale_custome.accounting_custom_group" readonly="state == 'transfer'"/>-->
+<!--                                <field name="journal_id" groups="sale_custome.accounting_custom_group" readonly="state == 'transfer'"/>-->
+<!--                            </group>-->
+                        </group>
+                        <notebook>
+                            <page string="Lines">
+                                <field name="dana_line">
+                                    <tree editable="bottom">
+                                        <field name="description" required="1"/>
+                                        <field name="amount" required="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+<!--                        <group col="12" class="oe_invoice_lines_tab">-->
+<!--                            <group colspan="8">-->
+<!--                            &lt;!&ndash;<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>&ndash;&gt;-->
+<!--                            </group>-->
+<!--                            <group colspan="4">-->
+<!--                                <group class="oe_subtotal_footer oe_right" >-->
+<!--                                    <field name="total_amount" widget="monetary" string="Total Amount" readonly="1"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </group>-->
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="seq_dana" model="ir.sequence">
+            <field name="name">Permintaan Dana</field>
+            <field name="code">DANA</field>
+            <field name="prefix">DANA/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="permintaan_dana_tree_view" model="ir.ui.view">
+            <field name="name">permintaan.dana.tree.view</field>
+            <field name="model">permintaan.dana</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="user_id" string="Responsible"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_permintaan_dana" model="ir.actions.act_window">
+            <field name="name">Permintaan Dana</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">permintaan.dana</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="kas_kecil" name="Patty Cash" parent="account.menu_finance" sequence="10"/>
+        <menuitem id="menu_permintaan_dana"
+                name="Permintaan Dana"
+                action="patty_cash.action_permintaan_dana"
+                parent="patty_cash.kas_kecil"
+                sequence="1"/>
+    </data>
+</odoo>

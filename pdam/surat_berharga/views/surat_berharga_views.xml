@@ -1,0 +1,123 @@
+<odoo>
+    <data>
+        <record id="surat_berharga_form_view" model="ir.ui.view">
+            <field name="name">surat.berharga.form.view</field>
+            <field name="model">surat.berharga</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approve,payment"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" confirm="Apakah anda ingin mengkonfirmasi proses ini?" invisible="id == False or state != 'draft'"/>
+                        <button name="action_payment" groups="surat_berharga.group_kas_bank" string="Payment" type="object" class="oe_highlight" confirm="Apakah anda ingin melakukan pembayaran?" invisible="id == False or state != 'approve'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_count_payment"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    invisible="count_payment == 0"
+                                    icon="fa-dollar">
+                                    <field name="count_payment" widget="statinfo" string="Payment"/>
+                            </button>
+                        </div>
+                        <div class="o_lead_opportunity_form_inline_fields">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" string="No dokumen" readonly="1" invisible="id == False"/>
+                                </h1>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="document_type" string="Tipe dokumen" required="1" readonly="state != 'draft'"/>
+                                <field name="reference" string="No referensi" readonly="state != 'draft'"/>
+                                <field name="date" string="Tanggal dokumen" required="1" readonly="state != 'draft'"/>
+                                <field name="partner_id" required="1" readonly="state != 'draft'"/>
+                                <field name="requisition_id" required="1" readonly="state != 'draft'"/>
+                                <field name="amount" required="1" readonly="state != 'draft'"/>
+
+
+<!--                                <field name="employee_id" required="1" domain="[('department_id', '=', department)]" readonly="department == False or state == 'transfer'"/>-->
+<!--                                <field name="description" required="1" readonly="state == 'transfer'"/>-->
+                            </group>
+                            <group>
+                                <field name="description" string="Keterangan" readonly="state != 'draft'"/>
+                               <field name="note" string="Catatan" readonly="state != 'draft'"/>
+                                <field name="due_date" required="1" string="Tanggal jatuh tempo" readonly="state != 'draft'"/>
+                                <field name="due_date" string="Remaining" optional="show" widget="remaining_days" readonly="1"/>
+                                <field name="user_id" string="Responsible" default="uid" domain="[('id', '=', uid)]" required="1" readonly="state != 'draft'"/>
+                                <field name="payment_date" string="Tanggal pembayaran" readonly="1" />
+                                <field name="payment_date" string="Tanggal pembayaran" invisible="1"/>
+
+                            </group>
+                        </group>
+<!--                        <notebook>-->
+<!--                            <page string="Lines">-->
+<!--                                <field name="dana_line">-->
+<!--                                    <tree editable="bottom">-->
+<!--                                        <field name="description" required="1"/>-->
+<!--                                        <field name="amount" required="1"/>-->
+<!--                                    </tree>-->
+<!--                                </field>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
+<!--                        <group col="12" class="oe_invoice_lines_tab">-->
+<!--                            <group colspan="8">-->
+<!--                            &lt;!&ndash;<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>&ndash;&gt;-->
+<!--                            </group>-->
+<!--                            <group colspan="4">-->
+<!--                                <group class="oe_subtotal_footer oe_right" >-->
+<!--                                    <field name="total_amount" widget="monetary" string="Total Amount" readonly="1"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </group>-->
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="seq_suratberharga" model="ir.sequence">
+            <field name="name">Surat Berharga</field>
+            <field name="code">BS</field>
+            <field name="prefix">BS/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="surat_berharga_tree_view" model="ir.ui.view">
+            <field name="name">surat.berharga.tree.view</field>
+            <field name="model">surat.berharga</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="No dokumen"/>
+                    <field name="document_type" string="Tipe dokumen"/>
+                    <field name="reference" string="No referensi"/>
+                    <field name="date" string="Tanggal dokumen"/>
+                    <field name="user_id" string="Responsible"/>
+                    <field name="due_date" string="Tanggal jatuh tempo"/>
+                    <field name="payment_date" string="Tanggal pembayaran"/>
+                    <field name="amount"/>
+                    <field name="state" string="Status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_surat_berharga" model="ir.actions.act_window">
+            <field name="name">Surat Berharga</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">surat.berharga</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="surat_berharga" name="Surat Berharga" parent="account.menu_finance" sequence="10"/>
+        <menuitem id="menu_surat_berharga"
+                name="Surat Berharga"
+                action="surat_berharga.action_surat_berharga"
+                parent="surat_berharga.surat_berharga"
+                sequence="1"/>
+    </data>
+</odoo>

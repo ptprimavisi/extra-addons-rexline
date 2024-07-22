@@ -772,7 +772,6 @@ class InquirySales(models.Model):
                                                         'mo_id': int(task4.id),
                                                         'product_id': int(task4.product_id.id),
                                                         'production_ref': str(task4.product_id.product_tmpl_id.name)
-
                                                     })
 
     def action_mrf(self):

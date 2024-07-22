@@ -109,13 +109,10 @@
                         </group>
                     </sheet>
                     <div class="oe_chatter">
-                            <field name="message_follower_ids"/>
-                            <field name="activity_ids"/>
-                            <field name="message_ids"/>
-                        </div>
-<!--                     <footer>-->
-<!--                        <field name="total_cost" widget="monetary" readonly="1"/>-->
-<!--                    </footer>-->
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
 
                 </form>
             </field>
@@ -152,7 +149,6 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-
                 <xpath expr="//field[@name='picking_type_id']" position="after">
                     <field name="dp_status" readonly="1"/>
                 </xpath>
@@ -160,6 +156,11 @@
                     <field name="down_payment" string="Down Payment" readonly="1"/>
                     <field name="tp_value" invisible="1"/>
                     <field name="paymen_term_id" readonly="state in ['purchase','done']"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                    <field name="budget"/>
+                    <field name="best_price"/>
+                    <field name="source_po"/>
                 </xpath>
             </field>
         </record>
@@ -173,9 +174,8 @@
                         <!-- Define your filters here -->
                         <filter string="Check by Inventory" name="inventory_check" domain="[('state', '=', 'to_inventory')]"/>
                         <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>
-                        <!-- Other filters -->
-                    </search>
 
+                    </search>
             </field>
         </record>
 

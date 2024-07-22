@@ -12,12 +12,12 @@ class AcoountMove(models.Model):
             ids = []
             purchase_ids = line.mapped('line_ids.purchase_line_id.order_id')
 
-
             purchase_ids = list(set(purchase_ids))
             # Mengambil record purchase.order berdasarkan purchase_ids
             purchase = self.env['purchase.order'].browse(purchase_ids)
 
-            payment_dp = self.env['payment.request.dp'].search([('order_id', '=', int(purchase.id)), ('payment_state','=', True)])
+            payment_dp = self.env['payment.request.dp'].search(
+                [('order_id', '=', int(purchase.id)), ('payment_state', '=', True)])
             # raise UserError(payment_dp)
             if payment_dp:
                 for pay in payment_dp:
@@ -32,7 +32,6 @@ class AcoountMove(models.Model):
             }
             return result
 
-
     def _compute_dp(self):
         for line in self:
             dp = 0
@@ -45,15 +44,47 @@ class AcoountMove(models.Model):
             # Mengambil record purchase.order berdasarkan purchase_ids
             purchase = self.env['purchase.order'].browse(purchase_ids)
 
-            payment_dp = self.env['payment.request.dp'].search([('order_id', '=', int(purchase.id)), ('payment_state','=', True)])
+            payment_dp = self.env['payment.request.dp'].search(
+                [('order_id', '=', int(purchase.id)), ('payment_state', '=', True)])
             # raise UserError(payment_dp)
             if payment_dp:
                 for pay in payment_dp:
-                    account_payment = self.env['account.payment'].search([('request_payment_id', '=', int(pay.id)),('state','=', 'posted')])
+                    account_payment = self.env['account.payment'].search(
+                        [('request_payment_id', '=', int(pay.id)), ('state', '=', 'posted')])
                     if account_payment:
                         for pays in account_payment:
                             dp += float(pays.amount)
             line.count_dp = dp
+
+
+class PurchaseOrderLine(models.Model):
+    _inherit = 'purchase.order.line'
+
+    budget = fields.Float()
+    best_price = fields.Float(compute="_compute_best_price")
+    source_po = fields.Many2one('purchase.order', compute="_compute_source_po")
+
+    def _compute_source_po(self):
+        for line in self:
+            line.source_po = False
+            order_lines = self.env['purchase.order.line'].search(
+                [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
+                 ('qty_received', '!=', 0)])
+            if order_lines:
+                min_price_line = min(order_lines, key=lambda x: x.price_unit)
+
+                line.source_po = min_price_line.order_id.id
+
+    def _compute_best_price(self):
+        for line in self:
+            line.best_price = 0
+            order_lines = self.env['purchase.order.line'].search(
+                [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
+                 ('qty_received', '!=', 0)])
+            if order_lines:
+                min_price_unit = min(order_lines.mapped('price_unit'))
+                line.best_price = min_price_unit
+
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -252,6 +283,7 @@ class MaterialRequestForm(models.Model):
                                 'product_id': lines.product_id.id,
                                 'name': str(lines.product_id.product_tmpl_id.name),
                                 'product_qty': lines.qty_purchase,
+                                'budget': lines.budget,
                                 'product_uom': lines.product_uom_id.id,
                                 # 'price_unit': float(700.0)
                             }))
@@ -263,14 +295,14 @@ class MaterialRequestForm(models.Model):
             if list_product:
                 return {
                     'type': 'ir.actions.act_window',
-                    'name': 'Requests for Quotation',
-                    'res_model': 'purchase.order',
+                    'name': 'Create PO',
+                    'res_model': 'purchase.order.wizard',
                     'view_type': 'form',
                     'view_mode': 'form',
                     'target': 'new',
                     'context': {
-                        'mrf_id': int(line.id),
-                        'order_line': list_product
+                        'default_mrf_id': int(line.id),
+                        'default_order_line': list_product
                     }
                 }
             else:
