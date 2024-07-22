@@ -33,6 +33,7 @@
                     <sheet>
                         <group>
                             <field name="name" required="1"/>
+                            <field name="mrf_ids" widget="many2many_tags"/>
                             <field name="product_id" required="1"/>
                             <field name="activity_date" required="1"/>
                             <field name="note"/>
