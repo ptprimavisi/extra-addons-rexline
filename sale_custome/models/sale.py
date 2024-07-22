@@ -23,6 +23,7 @@ class MrpProduction(models.Model):
 
     count_report = fields.Integer(compute="_compute_count_report")
 
+
     def action_compute_consume(self):
         for line in self:
             report_line = self.env['production.report.line'].search(

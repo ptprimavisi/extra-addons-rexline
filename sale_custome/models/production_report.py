@@ -12,10 +12,56 @@ class ProductionReport(models.Model):
     activity_date = fields.Date()
     note = fields.Text()
     production_line_ids = fields.One2many('production.report.line', 'production_id')
+    mrf_ids = fields.Many2many('mrf.mrf', compute="_compute_mrf_ids")
+    inquiry_id = fields.Many2one('inquiry.inquiry')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done')
     ], default="draft")
+
+    @api.depends('mo_id')
+    def _compute_mrf_ids(self):
+        for record in self:
+            mo = self.env['mrp.production'].browse(record.mo_id.id)
+            if mo.origin:
+                sale = self.env['sale.order'].search([('name','=', str(mo.origin))])
+                if sale:
+                    mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                    record.mrf_ids = mrf
+                else:
+                    mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                    if mo.origin:
+                        sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                        if sale:
+                            mrf = self.env['mrf.mrf'].search(
+                                [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                            record.mrf_ids = mrf
+                        else:
+                            mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                            if mo.origin:
+                                sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                if sale:
+                                    mrf = self.env['mrf.mrf'].search(
+                                        [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                                    record.mrf_ids = mrf
+                                else:
+                                    mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                                    if mo.origin:
+                                        sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                        if sale:
+                                            mrf = self.env['mrf.mrf'].search(
+                                                [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                                            record.mrf_ids = mrf
+                                        else:
+                                            mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                                            if mo.origin:
+                                                sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                                if sale:
+                                                    mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id','=', sale.opportunity_id.id)])
+                                                    record.mrf_ids = mrf
+
+            # mrf_records = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', record.mo_id.opportunity_id.id)])
+            # record.mrf_ids = mrf_records
 
     def action_confirm(self):
         for line in self:
