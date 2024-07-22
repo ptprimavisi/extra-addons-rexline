@@ -196,6 +196,26 @@
                 </tree>
             </field>
         </record>
+        <record id="inquiry_inquiry_filtered_view" model="ir.ui.view">
+            <field name="name">inquiry.inquiry.filtered.view</field>
+            <field name="model">inquiry.inquiry</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Inquiry Supply" name="inquiry_supply" domain="[('project_category', '=', 'supply')]"/>
+<!--                        <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>-->
+
+                    </search>
+            </field>
+        </record>
+
+        <record id="action_inquiry_supply" model="ir.actions.act_window">
+            <field name="name">Inquiry Supply</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="context">{"search_default_inquiry_supply":1}</field>
+            <field name="res_model">inquiry.inquiry</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <record id="action_inquiry_inquiry" model="ir.actions.act_window">
             <field name="name">Inquiry</field>
@@ -207,6 +227,11 @@
                 name="Inquiry"
                 action="sale_custome.action_inquiry_inquiry"
                 parent="mrp.menu_mrp_manufacturing"
+                sequence="100"/>
+        <menuitem id="menu_inquiry_supply"
+                name="Inquiry"
+                action="sale_custome.action_inquiry_supply"
+                parent="purchase.menu_procurement_management"
                 sequence="100"/>
 <!--        <menuitem action="action_inquiry_inquiry"-->
 <!--                  id="menu_inquiry_tree"-->

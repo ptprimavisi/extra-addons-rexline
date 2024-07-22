@@ -12,9 +12,12 @@
                     <field name="cost_estimation" class="o_input_13ch" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="1"/>
                     <field name="is_planner" invisible="1"/>
                     <field name="category_project" readonly="is_planner == False"/>
+                    <field name="process_to" invisible="category_project != 'supply'" required="category_project == 'supply'"/>
+                    <field name="pic_supply" domain="[('groups_id', 'in', group_ids)]" invisible="process_to != 'purchase'" required="process_to == 'purchase'"/>
                     <field name="note_header" string="Header Note"/>
                     <field name="date_deadline" string="Due Date Submission" optional="show" widget="remaining_days" readonly="1"/>
                     <field name="state_inquiry" string="Status Inquiry"/>
+                    <field name="group_ids" invisible="1"/>
                 </xpath>
                 <button name="action_schedule_meeting" position="before">
                     <button class="oe_stat_button" type="object"
