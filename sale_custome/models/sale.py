@@ -190,6 +190,26 @@ class CrmLead(models.Model):
     cost_estimation = fields.Float(compute="_compute_estimation_cost")
     is_planner = fields.Boolean(compute="_compute_is_planner")
     state_inquiry = fields.Char(compute="_compute_state_inq")
+    process_to = fields.Selection([
+        ('purchase', 'Purchase'),
+        ('engineering', 'Engineering')
+    ])
+
+    pic_supply = fields.Many2one('res.users')
+    group_ids = fields.Many2one('res.groups',compute="_compute_group")
+
+    def _compute_group(self):
+        for line in self:
+            groups = self.env.ref('sale_custome.purchasing_custom_group')
+            line.group_ids = groups.id
+
+    # @api.onchange('process_to')
+    # def action_pic(self):
+    #     for line in self:
+    #         if line.process_to:
+    #             groups = self.env.ref('sales_team.group_sale_salesman')
+    #             domain = [('groups_id', '=', groups.id)]
+    #             return {'domain': {'pic_supply': domain}}
 
     def get_selection_label(self, model, field_name, value):
         """Get the label of a selection field."""
@@ -326,6 +346,8 @@ class CrmLead(models.Model):
                 inquiry = self.env['inquiry.inquiry'].create(data)
                 if line.category_project == 'supply':
                     list_product = []
+                    if not line.lead_product_ids:
+                        raise UserError('Pl add product first')
                     for lines in line.lead_product_ids:
                         list_product.append((0,0, {
                             'product_id' : lines.product_id.id,
@@ -336,6 +358,10 @@ class CrmLead(models.Model):
                             'cost_price': lines.product_id.product_tmpl_id.standard_price
                         }))
                     inquiry.write({'inquiry_line_detail': list_product})
+                    if line.process_to == 'purchase':
+                        if line.pic_supply:
+                            inquiry.write({'pic_user': line.pic_supply})
+                            # line.pic_user = line.pic_supply
                 # raise UserError(inquiry)
                 attch = self.process_attachments()
                 if attch:
