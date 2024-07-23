@@ -108,7 +108,7 @@ class RequestPrice(models.Model):
                             cost = lines.cost_price
                             if lines.other_cost:
                                 sesudah_dibagi = lines.other_price / lines.quantity
-                                cost = lines.cost_price + sesudah_dibagi
+                                cost = lines.final_cost + sesudah_dibagi
                             # else:
 
                             inquiry_line_detail.write({'cost_price': cost})
