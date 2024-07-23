@@ -35,6 +35,42 @@
             </field>
         </record>
 
+        <record id="price_compute_form_wizard_view" model="ir.ui.view">
+            <field name="name">price.compute.view.form</field>
+            <field name="model">price.compute</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="shipment_cost" string="Shipment Cost" required="1"/>
+                                <field name="fob_cost" string="FOB Cost"/>
+                                <field name="vat" string="VAT"/>
+                            </group>
+
+
+                            <group>
+                                <label for="duty"/>
+                                <div class="o_row" name="duty">
+                                    <field name="duty" string="Duty" class="oe_inline"/>
+                                    <span>%</span>
+                                </div>
+                                <label for="tax"/>
+                                <div class="o_row" name="tax">
+                                    <field name="tax" string="TAX (PPH23)" class="oe_inline"/>
+                                    <span class="text-left">%</span>
+                                </div>
+                            </group>
+                        </group>
+
+                    </sheet>
+                    <footer>
+                        <button name="action_compute" string="Compute Cost" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
 <!--        <record id="action_rfp" model="ir.actions.act_window">-->
 <!--            <field name="name">Price Request</field>-->
 <!--            <field name="type">ir.actions.act_window</field>-->

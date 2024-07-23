@@ -1,5 +1,8 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+import math
+
+
 #
 #
 class RequestPriceWizard(models.TransientModel):
@@ -12,7 +15,6 @@ class RequestPriceWizard(models.TransientModel):
     ], default="draft")
     date = fields.Date()
     request_line_ids = fields.One2many('request.price.line.wizard', 'request_id')
-
 
     def default_get(self, vals):
         defaults = super(RequestPriceWizard, self).default_get(vals)
@@ -79,6 +81,8 @@ class RequestPriceWizard(models.TransientModel):
     #                     raise UserError('Product is empty')
     #             else:
     #                 raise UserError('Product is empty')
+
+
 #
 #
 class RequestPriceLineWizard(models.TransientModel):
@@ -108,4 +112,41 @@ class RequestPriceLineWizard(models.TransientModel):
             # line_discount_price_unit = line.price_unit * (1 - (line.discount / 100.0))
             subtotal = line.quantity * line.cost_price
             line.subtotal = subtotal
+
+
 #
+
+class PriceComputation(models.TransientModel):
+    _name = 'price.compute'
+
+    shipment_cost = fields.Float()
+    fob_cost = fields.Float()
+    duty = fields.Float()
+    vat = fields.Float()
+    tax = fields.Float()
+
+    def action_compute(self):
+        for line in self:
+            active_id = self.env.context.get('active_id')
+            request_price = self.env['request.price'].browse(int(active_id))
+            if request_price:
+                duty_total = (line.duty / 100) * (
+                        request_price.total_price + (0.10 * request_price.total_price) + (
+                        0.005 * (request_price.total_price + (0.10 * request_price.total_price))))
+                tax_total =  ((line.tax / 100)*(request_price.total_price+(request_price.total_price+(0.1*request_price.total_price)+(0.005*(request_price.total_price+(0.1*request_price.total_price))))+request_price.total_duty))
+                request_price.write({
+                    'total_duty': duty_total,
+                    'total_tax': math.ceil(tax_total / 1000) * 1000
+                })
+                request_line = self.env['request.price.line'].search([('request_id','=', int(request_price.id))])
+                for lines in request_line:
+                    line_req = self.env['request.price.line'].browse(lines.id)
+                    persen = line_req.total_price / line_req.request_id.total_price
+                    duty = persen * request_price.total_duty
+                    cost = persen * line.shipment_cost
+                    tax = persen * request_price.total_tax
+                    line_req.write({
+                        'shipment_cost': cost,
+                        'duty': duty,
+                        'tax': int(tax)
+                    })

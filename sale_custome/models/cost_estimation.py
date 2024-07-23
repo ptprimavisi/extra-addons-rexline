@@ -32,6 +32,7 @@ class CostEstimationLine(models.Model):
     quantity = fields.Float()
     product_uom = fields.Many2one('uom.uom')
     price_unit = fields.Float()
+
     edit_price = fields.Boolean()
     currency_id = fields.Many2one(
         comodel_name='res.currency',
