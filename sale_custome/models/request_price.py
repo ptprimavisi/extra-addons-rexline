@@ -187,7 +187,7 @@ class RequestPriceLine(models.Model):
             # line_discount_price_unit = line.price_unit * (1 - (line.discount / 100.0))
             subtotal = line.quantity * line.final_cost
             if line.other_price:
-                subtotal = subtotal + line.other_price
+                line.subtotal = subtotal + line.other_price
             else:
                 line.subtotal = subtotal
 
