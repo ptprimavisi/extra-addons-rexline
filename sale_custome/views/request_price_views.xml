@@ -9,17 +9,13 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                         <button name="action_confirm" string="Confirm" confirm="Are you sure you want to continue with the process?" groups="sale_custome.purchasing_custom_group" class="oe_highlight" type="object" invisible="state != 'draft' or id == False"/>
                         <button name="action_print_report" string="Print Report" type="object" invisible="state != 'posted'"/>
+                        <button name="action_other_cost" string="Add other cost" type="object" invisible="id == False or state != 'draft'"/>
                     </header>
                     <sheet>
                         <group>
                             <field name="inquiry_id" string="Inquiry Ref" readonly="1"/>
                             <field name="date" string="Request Date" readonly="1"/>
                             <field name="partner_id" string="Customer" required="1" readonly="state == 'posted'"/>
-<!--                            <field name="date"/>-->
-<!--                            <field name="wo_state" invisible="1"/>-->
-<!--                            <field name="operation_type" required="1"/>-->
-<!--                            <field name="currency_id" />-->
-<!--                            <field name="inquiry_id" invisible="1"/>-->
                         </group>
                         <notebook>
                             <page string="Product Lines">
@@ -34,8 +30,14 @@
                                         <field name="quantity"/>
                                         <field name="product_uom_category_id" invisible="1" nolabel="1"/>
                                         <field name="cost_price"/>
+                                        <field name="total_price"/>
+                                        <field name="shipment_cost"/>
+                                        <field name="duty" readonly="1"/>
+                                        <field name="tax" string="Tax (PPH23)" readonly="1"/>
+                                        <field name="percentage"/>
                                         <field name="other_cost" widget="many2many_tags"/>
                                         <field name="other_price" invisible="show_other_price == False"/>
+                                        <field name="final_cost"/>
                                         <field name="subtotal" readonly="1"/>
                                         <field name="show_other_price" invisible="1" nolabel="1"/>
 <!--                                        <field name="edit_price" invisible="1"/>-->
@@ -58,6 +60,20 @@
                                 </field>
                             </page> -->
                         </notebook>
+                        <group col="12" class="oe_invoice_lines_tab">
+                            <group colspan="8">
+                            <!--<field name="narration" placeholder="Terms and Conditions" class="oe_inline text-break" nolabel="1"/>-->
+                            </group>
+                            <group colspan="4">
+                                <group class="oe_subtotal_footer oe_right" >
+                                    <field name="total_price" widget="monetary" string="Total Price" readonly="1"/>
+                                    <field name="total_shipment_cost" widget="monetary" string="Total Shipment Cost" readonly="1"/>
+                                    <field name="total_duty" widget="monetary" string="Total Duty" readonly="1"/>
+                                    <field name="total_tax" widget="monetary" string="Total Tax (PPH23)" readonly="1"/>
+                                    <field name="total_duty_tax" widget="monetary" string="Duty/Tax" readonly="1"/>
+                                </group>
+                            </group>
+                        </group>
                     </sheet>
                 </form>
             </field>
