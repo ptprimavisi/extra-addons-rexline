@@ -130,6 +130,8 @@ class PriceComputation(models.TransientModel):
             active_id = self.env.context.get('active_id')
             request_price = self.env['request.price'].browse(int(active_id))
             if request_price:
+                if request_price.total_price == 0:
+                    raise UserError('cost price caanot be empty')
                 duty_total = (line.duty / 100) * (
                         request_price.total_price + (0.10 * request_price.total_price) + (
                         0.005 * (request_price.total_price + (0.10 * request_price.total_price))))
