@@ -20,7 +20,7 @@ class SystrayIcon extends Component {
                     var c = 0;
                     result.forEach(function(count) {
                         console.log('data',count);
-                        $('#dropdown_ul').append('<li><a class="dropdown-item" href="' +'web#id='+count['id'] + '&cids=1&menu_id=420&action=652&model=request.price&view_type=form'+ '">'+count['name']+'</a></li>');
+                        $('#dropdown_ul').append('<li><a class="dropdown-item" href="' +'web#id='+count['id'] + '&cids=1&menu_id=385&action=580&model=request.price&view_type=form'+ '">'+count['name']+'</a></li>');
 //                        http://localhost:8069/web#id=22&cids=1&menu_id=420&action=652&model=request.price&view_type=form
 //                        var ele = $('<a role="menuitem" href="'+'/web#id=' + order['id'] + '&view_type=form&model=sale.order'+'" class="dropdown-item">'+order['name']+'</a>')
 //                        self.$('#order_list').append(ele);
