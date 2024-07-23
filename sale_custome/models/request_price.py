@@ -167,9 +167,12 @@ class RequestPriceLine(models.Model):
     @api.depends('cost_price')
     def _compute_percentage(self):
         for line in self:
-            total = line.request_id.total_price
-            cost = line.total_price / total
-            line.percentage = round(cost * 100)
+            if line.cost_price:
+                total = line.request_id.total_price
+                cost = line.total_price / total
+                line.percentage = round(cost * 100)
+            else:
+                line.percentage = 0
 
     @api.depends('other_cost')
     def _compute_show(self):
