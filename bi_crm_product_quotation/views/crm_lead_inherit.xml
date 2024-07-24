@@ -31,6 +31,7 @@
                             <field name="product_uom"/>
                             <field name="cost_price"/>
                             <field name="margin" required="1"/>
+                            <field name="is_under" invisible="margin == 0 or margin > 50"/>
                             <field name="price_unit"/>
                             <field name="tax_id" widget="many2many_tags"/>
                             <field name="product_uom_category_id" invisible="1"/>
