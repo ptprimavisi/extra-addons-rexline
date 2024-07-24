@@ -74,7 +74,7 @@ class ReportStockWizard(models.Model):
                             b.state = 'done'
                 ),
                 
-                WITH stock_penjualan_sebelum AS (
+                stock_penjualan_sebelum AS (
                     SELECT
                         COALESCE(SUM(a.quantity), 0) AS penjualan_sebelum
                     FROM 
