@@ -16,6 +16,15 @@ class lead_line(models.Model):
     cost_price = fields.Float('Cost Price', default=0.0)
     price_unit = fields.Float('Unit Price', default=0.0)
     tax_id = fields.Many2many('account.tax', string='Taxes')
+    is_under = fields.Boolean()
+
+    # @api.onchange('margin')
+    # def oc_margin(self):
+    #     for line in self:
+    #         # line.is_under = False
+    #         if line.margin:
+    #             if line.margin > 50:
+    #                 line.is_under = False
 
     @api.onchange('margin')
     def action_margin(self):
@@ -26,6 +35,27 @@ class lead_line(models.Model):
                 persentase = line.cost_price * margin
                 fix_margin = persentase / 100
                 line.price_unit = line.cost_price + fix_margin
+                if line.margin <= 50 and line.is_under == True:
+                    marg = line.margin / 100
+                    fix_marg = 1 - marg
+                    line.price_unit = line.cost_price / fix_marg
+            if line.margin > 50:
+                line.is_under = False
+
+    @api.onchange('is_under')
+    def oc_is_under(self):
+        for line in self:
+            if line.is_under and line.margin <= 50:
+                marg = line.margin / 100
+                fix_marg = 1 - marg
+                line.price_unit = line.cost_price / fix_marg
+            else:
+                margin = int(line.margin)
+                persentase = line.cost_price * margin
+                fix_margin = persentase / 100
+                line.price_unit = line.cost_price + fix_margin
+
+
 
     @api.model
     def create(self, vals_list):

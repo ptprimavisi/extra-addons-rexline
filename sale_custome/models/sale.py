@@ -1150,6 +1150,7 @@ class InquirySales(models.Model):
                                 'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
                             })
                 elif line.project_category == 'supply':
+
                     for product_supply in line.inquiry_line_detail:
                         if product_supply.product_id.product_tmpl_id.is_master:
                             # list_product_crm.append()
@@ -1198,6 +1199,7 @@ class InquirySales(models.Model):
                                 'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
                             })
                 elif line.project_category == 'supply':
+                    # raise UserError(line.inquiry_line_detail)
                     for product_supply in line.inquiry_line_detail:
                         if product_supply.product_id.product_tmpl_id.is_master:
                             # list_product_crm.append()
