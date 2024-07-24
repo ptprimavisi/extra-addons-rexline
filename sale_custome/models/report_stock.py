@@ -72,7 +72,7 @@ class ReportStockWizard(models.Model):
                             b.date::date < '""" + str(line.date_from) + """' AND 
                             a.product_id = """ + str(products) + """ AND
                             b.state = 'done'
-                )
+                ),
                 
                 WITH stock_penjualan_sebelum AS (
                     SELECT
