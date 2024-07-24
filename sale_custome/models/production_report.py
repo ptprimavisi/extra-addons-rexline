@@ -27,7 +27,7 @@ class ProductionReport(models.Model):
                 sale = self.env['sale.order'].search([('name','=', str(mo.origin))])
                 if sale:
                     mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                    record.mrf_ids = mrf.ids
+                    record.mrf_ids = mrf
                 else:
                     mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
                     if mo.origin:
@@ -35,7 +35,7 @@ class ProductionReport(models.Model):
                         if sale:
                             mrf = self.env['mrf.mrf'].search(
                                 [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                            record.mrf_ids = mrf.ids
+                            record.mrf_ids = mrf
                         else:
                             mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
                             if mo.origin:
@@ -43,7 +43,7 @@ class ProductionReport(models.Model):
                                 if sale:
                                     mrf = self.env['mrf.mrf'].search(
                                         [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                                    record.mrf_ids = mrf.ids
+                                    record.mrf_ids = mrf
                                 else:
                                     mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
                                     if mo.origin:
@@ -51,14 +51,14 @@ class ProductionReport(models.Model):
                                         if sale:
                                             mrf = self.env['mrf.mrf'].search(
                                                 [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                                            record.mrf_ids = mrf.ids
+                                            record.mrf_ids = mrf
                                         else:
                                             mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
                                             if mo.origin:
                                                 sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
                                                 if sale:
                                                     mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id','=', sale.opportunity_id.id)])
-                                                    record.mrf_ids = mrf.ids
+                                                    record.mrf_ids = mrf
 
             # mrf_records = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', record.mo_id.opportunity_id.id)])
             # record.mrf_ids = mrf_records
