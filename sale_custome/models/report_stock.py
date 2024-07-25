@@ -85,6 +85,7 @@ class ReportStockWizard(models.Model):
                 operation_receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')])
                 operation_do = self.env['stock.picking.type'].search(
                     [('name', '=', 'Delivery Orders')])
+                do_operation_ids = tuple(operation_do.ids)
                 operation_mo = self.env['stock.picking.type'].search(
                     [('default_location_src_id', '=', line.location_id.id), ('name', '=', 'Manufacturing')])
                 self._cr.execute("""
@@ -123,7 +124,7 @@ class ReportStockWizard(models.Model):
                         stock_move a
                     WHERE
                             a.state = 'done' AND
-                            a.picking_type_id in """ + str(tuple(operation_do.ids)) + """ AND
+                            a.picking_type_id in """ + str(do_operation_ids) + """ AND
                             a.write_date::date >= '""" + str(line.date_from) + """' AND
                             a.write_date::date <= '""" + str(line.date_to) + """' AND
                             a.location_id = """ + str(line.location_id.id) + """ AND
