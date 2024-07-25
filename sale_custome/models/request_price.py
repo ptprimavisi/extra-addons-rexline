@@ -17,16 +17,18 @@ class RequestPrice(models.Model):
     total_price = fields.Float(compute="_total_total_price")
     total_shipment_cost = fields.Float(compute="_total_shipment_cost")
     total_duty = fields.Float()
+    total_vat = fields.Float()
     total_tax = fields.Float()
     total_duty_tax = fields.Float(compute="_compute_total_pajak")
+    total_delivery = fields.Float()
 
-    @api.depends('request_line_ids.tax', 'request_line_ids.duty')
+    @api.depends('request_line_ids.tax', 'request_line_ids.duty', 'request_line_ids.vat')
     def _compute_total_pajak(self):
         for line in self:
             cost = 0
             for lines in line.request_line_ids:
-                cost += lines.duty + lines.tax
-            line.total_duty_tax = int(cost)
+                cost += lines.duty + lines.tax + lines.vat + lines.fob
+            line.total_duty_tax = cost
 
     @api.depends('request_line_ids.cost_price')
     def _total_total_price(self):
@@ -133,7 +135,9 @@ class RequestPriceLine(models.Model):
     cost_price = fields.Float()
     weight = fields.Float()
     shipment_cost = fields.Float()
+    fob = fields.Float()
     duty = fields.Float()
+    vat = fields.Float()
     tax = fields.Float()
     other_cost = fields.Many2many('other.price.line')
     other_price = fields.Float()
@@ -155,7 +159,7 @@ class RequestPriceLine(models.Model):
     @api.depends('total_price', 'shipment_cost')
     def _compute_final(self):
         for line in self:
-            cost = line.total_price + (line.shipment_cost + line.duty + line.tax)
+            cost = line.total_price + (line.shipment_cost + line.vat + line.duty + line.tax + line.fob)
             cost = cost / line.quantity
             line.final_cost = round(cost)
 
