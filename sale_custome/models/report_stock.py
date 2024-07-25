@@ -85,7 +85,19 @@ class ReportStockWizard(models.Model):
                 operation_receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')])
                 operation_do = self.env['stock.picking.type'].search(
                     [('name', '=', 'Delivery Orders')])
+
+                receipts_operation_ids = tuple(operation_receipt.ids)
+                if len(receipts_operation_ids) == 1:
+                    operation_receipts_ids = f"({receipts_operation_ids[0]})"
+                else:
+                    operation_receipts_ids = str(receipts_operation_ids)
+
+
                 do_operation_ids = tuple(operation_do.ids)
+                if len(do_operation_ids) == 1:
+                    operation_do_ids = f"({do_operation_ids[0]})"
+                else:
+                    operation_do_ids = str(do_operation_ids)
                 operation_mo = self.env['stock.picking.type'].search(
                     [('default_location_src_id', '=', line.location_id.id), ('name', '=', 'Manufacturing')])
                 self._cr.execute("""
@@ -124,7 +136,7 @@ class ReportStockWizard(models.Model):
                         stock_move a
                     WHERE
                             a.state = 'done' AND
-                            a.picking_type_id in """ + str(do_operation_ids) + """ AND
+                            a.picking_type_id in """ + str(operation_do_ids) + """ AND
                             a.write_date::date >= '""" + str(line.date_from) + """' AND
                             a.write_date::date <= '""" + str(line.date_to) + """' AND
                             a.location_id = """ + str(line.location_id.id) + """ AND
@@ -142,7 +154,7 @@ class ReportStockWizard(models.Model):
                         stock_move a
                     WHERE
                             a.state = 'done' AND
-                            a.picking_type_id in """ + str(tuple(operation_receipt.ids)) + """ AND
+                            a.picking_type_id in """ + str(operation_receipts_ids) + """ AND
                             a.write_date::date >= '""" + str(line.date_from) + """' AND
                             a.write_date::date <= '""" + str(line.date_to) + """' AND
                             a.location_dest_id = """ + str(line.location_id.id) + """ AND
