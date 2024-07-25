@@ -11,7 +11,7 @@
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="cost_estimation" class="o_input_13ch" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="1"/>
                     <field name="is_planner" invisible="1"/>
-                    <field name="category_project" readonly="is_planner == False"/>
+                    <field name="category_project"/>
                     <field name="process_to" invisible="category_project != 'supply'" required="category_project == 'supply'"/>
                     <field name="pic_supply" domain="[('groups_id', 'in', group_ids)]" invisible="process_to != 'purchase'" required="process_to == 'purchase'"/>
                     <field name="note_header" string="Header Note"/>

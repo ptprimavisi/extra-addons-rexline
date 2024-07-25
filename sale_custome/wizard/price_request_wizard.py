@@ -134,11 +134,19 @@ class PriceComputation(models.TransientModel):
                     raise UserError('cost price caanot be empty')
                 duty_total = (line.duty / 100) * (
                         request_price.total_price + (0.10 * request_price.total_price) + (
-                        0.005 * (request_price.total_price + (0.10 * request_price.total_price))))
-                tax_total =  ((line.tax / 100)*(request_price.total_price+(request_price.total_price+(0.1*request_price.total_price)+(0.005*(request_price.total_price+(0.1*request_price.total_price))))+request_price.total_duty))
+                        0.005 * (request_price.total_price + (0.10 * request_price.total_price)))) or 0
+                tax_total = (line.tax / 100)*(request_price.total_price+(request_price.total_price+(0.1*request_price.total_price)+(0.005*(request_price.total_price+(0.1*request_price.total_price))))+request_price.total_duty)
+                # CEILING((L15 * (I22 + (I22 + (10 % * I22) + (0.5 % * (I22 + (10 % * I22)))) + L22)), 1000)
+                # raise UserError(request_price.total_price)
+                # (L14*(I22+(I22+(10%*I22)+(0.5%*(I22+(10%*I22))))+L22))
+
+                total_vat = ((line.vat / 100)*(request_price.total_price+(request_price.total_price+(0.1*request_price.total_price)+(0.005*(request_price.total_price+(0.1*request_price.total_price))))+duty_total))
+                # raise UserError(total_vat)
                 request_price.write({
                     'total_duty': duty_total,
-                    'total_tax': math.ceil(tax_total / 1000) * 1000
+                    'total_tax': math.ceil(tax_total / 1000) * 1000,
+                    'total_vat': math.ceil(total_vat / 1000) * 1000,
+                    'total_delivery': line.fob_cost
                 })
                 request_line = self.env['request.price.line'].search([('request_id','=', int(request_price.id))])
                 for lines in request_line:
@@ -147,8 +155,12 @@ class PriceComputation(models.TransientModel):
                     duty = persen * request_price.total_duty
                     cost = persen * line.shipment_cost
                     tax = persen * request_price.total_tax
+                    vat = persen * request_price.total_vat
+                    fob = persen * line.fob_cost
                     line_req.write({
                         'shipment_cost': cost,
                         'duty': duty,
-                        'tax': int(tax)
+                        'tax': int(tax),
+                        'vat': vat,
+                        'fob': fob
                     })

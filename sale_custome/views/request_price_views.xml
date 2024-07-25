@@ -30,10 +30,12 @@
                                         <field name="quantity"/>
                                         <field name="product_uom_category_id" invisible="1" nolabel="1"/>
                                         <field name="cost_price"/>
-                                        <field name="total_price"/>
-                                        <field name="shipment_cost"/>
-                                        <field name="duty" readonly="1"/>
-                                        <field name="tax" string="Tax (PPH23)" readonly="1"/>
+                                        <field name="total_price" readonly="1"/>
+                                        <field name="shipment_cost" readonly="1"/>
+                                        <field name="fob"/>
+                                        <field name="duty"/>
+                                        <field name="vat"/>
+                                        <field name="tax"/>
                                         <field name="percentage"/>
                                         <field name="other_cost" widget="many2many_tags"/>
                                         <field name="other_price" invisible="show_other_price == False"/>
@@ -69,8 +71,10 @@
                                     <field name="total_price" widget="monetary" string="Total Price" readonly="1"/>
                                     <field name="total_shipment_cost" widget="monetary" string="Total Shipment Cost" readonly="1"/>
                                     <field name="total_duty" widget="monetary" string="Total Duty" readonly="1"/>
+                                    <field name="total_vat" widget="monetary" string="Total Vat" readonly="1"/>
                                     <field name="total_tax" widget="monetary" string="Total Tax (PPH23)" readonly="1"/>
                                     <field name="total_duty_tax" widget="monetary" string="Duty/Tax" readonly="1"/>
+                                    <field name="total_delivery" readonly="1"/>
                                 </group>
                             </group>
                         </group>
