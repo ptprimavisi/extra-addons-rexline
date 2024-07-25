@@ -45,7 +45,12 @@
                             <group>
                                 <field name="shipment_cost" string="Shipment Cost" required="1"/>
                                 <field name="fob_cost" string="FOB Cost"/>
-                                <field name="vat" string="VAT"/>
+<!--                                <field name="vat" string="VAT"/>-->
+                                <label for="vat"/>
+                                <div class="o_row" name="duty">
+                                    <field name="vat" string="VAT" class="oe_inline"/>
+                                    <span>%</span>
+                                </div>
                             </group>
 
 
