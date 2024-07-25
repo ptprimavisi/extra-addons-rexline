@@ -123,7 +123,7 @@ class ReportStockWizard(models.Model):
                         stock_move a
                     WHERE
                             a.state = 'done' AND
-                            a.picking_type_id in """ + str(tuple(operation_do.ids)) + """ AND
+                            a.picking_type_id in """ + str(operation_do.ids) + """ AND
                             a.write_date::date >= '""" + str(line.date_from) + """' AND
                             a.write_date::date <= '""" + str(line.date_to) + """' AND
                             a.location_id = """ + str(line.location_id.id) + """ AND
