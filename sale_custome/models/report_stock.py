@@ -7,28 +7,146 @@ class ReportStockProject(models.Model):
 
     name = fields.Char()
     product_id = fields.Many2one('product.product')
+    category = fields.Char()
     inquiry_id = fields.Many2one('inquiry.inquiry')
     location_id = fields.Many2one('stock.location')
     date_from = fields.Date()
     date_to = fields.Date()
-    # select = fields.Selection([
-    #     ('in', 'Inbound'),
-    #     ('out', 'Outbound')
-    # ])
-    stock_awal = fields.Float()
     stock_in = fields.Float()
     stock_out = fields.Float()
-    finel_stock = fields.Float()
+    # final_stock = fields.Float()
+
+    def action_generate_period(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "stock.project.wizard",
+            # "context": {"create": False},
+            "name": "Generate Report",
+            'view_mode': 'form',
+            'target': 'new',
+        }
 
 
 class ReportStockProjectWizard(models.Model):
     _name = 'stock.project.wizard'
 
-    product_id = fields.Many2one('product.product')
+    product_id = fields.Many2many('product.product')
     inquiry_id = fields.Many2one('inquiry.inquiry')
-    location_id = fields.Many2one('stock.location')
+    location_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal')])
     date_from = fields.Date()
     date_to = fields.Date()
+
+    def action_save(self):
+        for line in self:
+            self._cr.execute("DELETE FROM stock_report_project;")
+
+            product_ids = self.env['product.product'].search([('detailed_type', '=', 'product')], order="id asc").ids
+            if line.product_id:
+                product_ids = line.product_id.ids
+            # raise UserError(product_ids)
+            for products in product_ids:
+                stock_in = 0.0
+                stock_out = 0.0
+                # final_stock = 0.0
+                project_category = 'False'
+                if line.inquiry_id:
+                    project_category = line.inquiry_id.project_category
+
+                product = self.env['product.product'].search([('id', '=', int(products))])
+                mutasi = self.env['stock.report.project'].create({
+                    'name': str(product.product_tmpl_id.name),
+                    'product_id': product.id
+                })
+                operation_receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')])
+                operation_do = self.env['stock.picking.type'].search(
+                    [('name', '=', 'Delivery Orders')])
+
+                receipts_operation_ids = tuple(operation_receipt.ids)
+                if len(receipts_operation_ids) == 1:
+                    operation_receipts_ids = f"({receipts_operation_ids[0]})"
+                else:
+                    operation_receipts_ids = str(receipts_operation_ids)
+
+                do_operation_ids = tuple(operation_do.ids)
+                if len(do_operation_ids) == 1:
+                    operation_do_ids = f"({do_operation_ids[0]})"
+                else:
+                    operation_do_ids = str(do_operation_ids)
+                operation_mo = self.env['stock.picking.type'].search(
+                    [('default_location_src_id', '=', line.location_id.id), ('name', '=', 'Manufacturing')])
+                self._cr.execute("""
+                WITH stock_masuk_project AS (
+                    SELECT
+                        COALESCE(SUM(sm.quantity), 0) AS stock_masuk
+                    FROM
+                        stock_move sm
+                    JOIN
+                        stock_picking sp on sm.picking_id = sp.id 
+                    JOIN
+                        purchase_order_line pol  on sm.purchase_line_id  = pol.id
+                    JOIN
+                        purchase_order po on pol.order_id = po.id
+                    JOIN
+                        mrf_mrf mm on po.mrf_id = mm.id
+                    
+                    WHERE
+                        sm.state = 'done' AND
+                        sm.write_date::date >= '""" + str(line.date_from) + """' AND
+                        sm.write_date::date <= '""" + str(line.date_to) + """' AND
+                        sm.location_dest_id = """ + str(line.location_id.id) + """ AND
+                        sm.date::date >= '""" + str(line.date_from) + """' AND
+                        sm.date::date <= '""" + str(line.date_to) + """' AND  
+                        sm.product_id = """ + str(products) + """ AND
+                        mm.inquiry_id = """ + str(line.inquiry_id.id) + """
+                ),
+                stock_consume_project AS (
+                    SELECT
+                        COALESCE(SUM(prl.qty_consume), 0) AS stock_consume
+                    FROM
+                        
+                        mrp_production mp
+                    JOIN
+                        inquiry_line_task ilt on mp.id = ilt.mo_id
+                    JOIN
+                        inquiry_inquiry ii on ilt.inquiry_id = ii.id 
+                    JOIN
+                        production_report pr on pr.mo_id = mp.id
+                    JOIN 
+                        production_report_line prl on prl.production_id = pr.id
+                    
+                    WHERE
+                        pr.state = 'done' AND
+                        mp.location_src_id = """ + str(line.location_id.id) + """ AND
+                        pr.activity_date::date >= '""" + str(line.date_from) + """' AND
+                        pr.activity_date::date <= '""" + str(line.date_to) + """' AND  
+                        prl.product_id = """ + str(products) + """ AND
+                        ii.id = """ + str(line.inquiry_id.id) + """
+                )
+                SELECT 
+                    COALESCE((SELECT stock_masuk FROM stock_masuk_project), 0) AS stock_masuk,
+                    COALESCE((SELECT stock_consume FROM stock_consume_project), 0) AS stock_metu
+                FROM 
+                    stock_move a
+                WHERE
+                    a.state = 'done';
+
+                                """)
+                for initial in self._cr.dictfetchall():
+                    stock_in = initial['stock_masuk']
+                    stock_out = initial['stock_metu']
+                    # final_stock = initial['stok_akhir']
+                # raise UserError(line.inquiry_id.id)
+                inq_id = line.inquiry_id.id
+                mutasi.write({
+                    'category': str(project_category),
+                    'inquiry_id': inq_id,
+                    'location_id': line.location_id.id,
+                    'date_from': line.date_from,
+                    'date_to': line.date_to,
+                    'stock_in': stock_in,
+                    'stock_out': stock_out,
+                    # 'final_stock': 0
+                })
 
 
 class ReportStock(models.Model):
@@ -91,7 +209,6 @@ class ReportStockWizard(models.Model):
                     operation_receipts_ids = f"({receipts_operation_ids[0]})"
                 else:
                     operation_receipts_ids = str(receipts_operation_ids)
-
 
                 do_operation_ids = tuple(operation_do.ids)
                 if len(do_operation_ids) == 1:

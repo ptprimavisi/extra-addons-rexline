@@ -23,16 +23,19 @@ class MrpProduction(models.Model):
 
     count_report = fields.Integer(compute="_compute_count_report")
 
-
     def action_compute_consume(self):
         for line in self:
-            report_line = self.env['production.report.line'].search(
-                [('production_id.mo_id', '=', int(line.id)), ('state', '=', 'done')])
-            if report_line:
-                for lines in line.move_raw_ids:
-                    line_product = report_line.search([('product_id', '=', lines.product_id.id)])
-                    if line_product:
-                        lines.quantity = sum(line_product.mapped('qty_consume'))
+            for lines in line.move_raw_ids:
+                lines.quantity = 0
+                report_line = self.env['production.report.line'].search(
+                    [('production_id.mo_id', '=', int(line.id)), ('product_id', '=', lines.product_id.id),
+                     ('state', '=', 'done')])
+                if report_line:
+                    jumlah = 0
+                    for consume in report_line:
+                        jumlah += consume.qty_consume
+
+                    lines.quantity = jumlah
 
     def action_count_report(self):
         for line in self:
@@ -196,7 +199,7 @@ class CrmLead(models.Model):
     ])
 
     pic_supply = fields.Many2one('res.users')
-    group_ids = fields.Many2one('res.groups',compute="_compute_group")
+    group_ids = fields.Many2one('res.groups', compute="_compute_group")
 
     def _compute_group(self):
         for line in self:
@@ -244,6 +247,7 @@ class CrmLead(models.Model):
                     inquiry.message_post(body=f'{user.login} Update Note')
 
         return res
+
     # def write(self, vals):
     #     res = super(IrActions, self).write(vals)
     #     # self.get_bindings() depends on action records
@@ -349,8 +353,8 @@ class CrmLead(models.Model):
                     if not line.lead_product_ids:
                         raise UserError('Pl add product first')
                     for lines in line.lead_product_ids:
-                        list_product.append((0,0, {
-                            'product_id' : lines.product_id.id,
+                        list_product.append((0, 0, {
+                            'product_id': lines.product_id.id,
                             'name': lines.product_id.product_tmpl_id.description or '',
                             'product_uom_quantity': lines.product_uom_quantity,
                             'product_uom': lines.product_uom.id,
