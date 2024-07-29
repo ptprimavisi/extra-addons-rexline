@@ -12,8 +12,10 @@ class ReportStockProject(models.Model):
     location_id = fields.Many2one('stock.location')
     date_from = fields.Date()
     date_to = fields.Date()
+    stock_awal = fields.Float()
     stock_in = fields.Float()
     stock_out = fields.Float()
+    unbuild = fields.Float()
     # final_stock = fields.Float()
 
     def action_generate_period(self):
@@ -45,6 +47,7 @@ class ReportStockProjectWizard(models.Model):
                 product_ids = line.product_id.ids
             # raise UserError(product_ids)
             for products in product_ids:
+                stock_awal = 0.0
                 stock_in = 0.0
                 stock_out = 0.0
                 # final_stock = 0.0
@@ -121,10 +124,38 @@ class ReportStockProjectWizard(models.Model):
                         pr.activity_date::date <= '""" + str(line.date_to) + """' AND  
                         prl.product_id = """ + str(products) + """ AND
                         ii.id = """ + str(line.inquiry_id.id) + """
+                ),
+                stock_yang_dibutuhakan AS (
+                    SELECT COALESCE(SUM(id.product_uom_quantity), 0) AS stock_awal
+                    FROM
+                        inquiry_line_detail id
+                    WHERE
+                        id.inquiry_id = """+ str(line.inquiry_id.id) +""" AND 
+                        id.product_id = """+ str(products) +"""
+                ),
+                stock_unbuild_project AS (
+                    SELECT COALESCE(SUM(sm.quantity),0) AS stock_unbuild
+                    FROM 
+                        stock_move sm
+                    JOIN
+                        mrp_unbuild mu on sm.unbuild_id = mu.id
+                    JOIN
+                        mrp_production mp on mu.mo_id = mp.id
+                    JOIN 
+                        inquiry_line_task ilt on mp.id = ilt.mo_id
+                    WHERE
+                        sm.state = 'done' AND
+                        sm.location_dest_id = """ + str(line.location_id.id) + """ AND
+                        sm.date::date >= '""" + str(line.date_from) + """' AND
+                        sm.date::date <= '""" + str(line.date_to) + """' AND  
+                        sm.product_id = """ + str(products) + """ AND
+                        ilt.inquiry_id = """ + str(line.inquiry_id.id) + """
                 )
                 SELECT 
                     COALESCE((SELECT stock_masuk FROM stock_masuk_project), 0) AS stock_masuk,
-                    COALESCE((SELECT stock_consume FROM stock_consume_project), 0) AS stock_metu
+                    COALESCE((SELECT stock_consume FROM stock_consume_project), 0) AS stock_metu,
+                    COALESCE((SELECT stock_awal FROM stock_yang_dibutuhakan), 0) AS stock_awal,
+                    COALESCE((SELECT stock_unbuild FROM stock_unbuild_project), 0) AS unbuild_in
                 FROM 
                     stock_move a
                 WHERE
@@ -132,8 +163,10 @@ class ReportStockProjectWizard(models.Model):
 
                                 """)
                 for initial in self._cr.dictfetchall():
+                    stock_awal = initial['stock_awal']
                     stock_in = initial['stock_masuk']
                     stock_out = initial['stock_metu']
+                    unbuild = initial['unbuild_in']
                     # final_stock = initial['stok_akhir']
                 # raise UserError(line.inquiry_id.id)
                 inq_id = line.inquiry_id.id
@@ -143,8 +176,10 @@ class ReportStockProjectWizard(models.Model):
                     'location_id': line.location_id.id,
                     'date_from': line.date_from,
                     'date_to': line.date_to,
+                    'stock_awal': stock_awal,
                     'stock_in': stock_in,
                     'stock_out': stock_out,
+                    'unbuild': unbuild
                     # 'final_stock': 0
                 })
 
