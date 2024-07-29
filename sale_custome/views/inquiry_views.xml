@@ -115,7 +115,6 @@
                                         <field name="count_so" invisible="1" nolabel="1"/>
                                         <field name="pic_akses" invisible="1" nolabel="1"/>
                                         <field name="inquiry_id" invisible="1" nolabel="1"/>
-
                                     </tree>
                                 </field>
                             </page>

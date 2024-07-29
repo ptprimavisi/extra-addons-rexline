@@ -98,14 +98,13 @@
                             display="always"/>
                     </header>
                         <field name="name"/>
-                        <field name="name"/>
                         <field name="product_id"/>
                         <field name="category"/>
                         <field name="inquiry_id"/>
                         <field name="location_id" required="1"/>
                         <field name="date_from" required="1"/>
                         <field name="date_to" required="1"/>
-                        <field name="stock_awal"/>
+                        <field name="stock_awal" string="Early Stock"/>
                         <field name="stock_in"/>
                         <field name="stock_out"/>
                         <field name="unbuild" string="Unbuild IN"/>
