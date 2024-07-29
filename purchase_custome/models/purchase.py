@@ -164,6 +164,17 @@ class MaterialRequestForm(models.Model):
     total_cost = fields.Float(compute="_compute_total_cost")
     total_budget = fields.Float(compute="_compute_total_budget")
 
+    def unlink(self):
+        for line in self:
+            mrf_line = self.env['mrf.line'].search([('mrf_id', '=', int(line.id))])
+            if mrf_line:
+                mrf_line.unlink()
+            po = self.env['purchase.order'].search([('mrf_id','=', int(line.id))])
+            if po:
+                po.unlink()
+
+        return super().unlink()
+
     @api.depends('state')
     def _compute_to_inventory(self):
         for line in self:
