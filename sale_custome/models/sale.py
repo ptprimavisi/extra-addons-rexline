@@ -462,6 +462,26 @@ class InquirySales(models.Model):
                 cost += lines.subtotal
             line.total_amount = cost
 
+    def unlink(self):
+        for line in self:
+            inquiry_line = self.env['inquiry.line'].search([('inquiry_id', '=', int(line.id))])
+            inquiry_line_detail = self.env['inquiry.line.detail'].search([('inquiry_id', '=', int(line.id))])
+            inquiry_line_task = self.env['inquiry.line.task'].search([('inquiry_id', '=', int(line.id))])
+            if inquiry_line:
+                inquiry_line.unlink()
+            if inquiry_line_detail:
+                inquiry_line_detail.unlink()
+            if inquiry_line_task:
+                inquiry_line_task.unlink()
+            request_price = self.env['price.request'].serach([('inquiry_id', '=', int(line.id))])
+            if request_price:
+                request_price.unlink()
+            mrf = self.env['mrf.mrf'].search([('inquiry_id','=', int(line.id))])
+            if mrf:
+                mrf.unlink()
+                # raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
+        return super().unlink()
+
     def _compute_user_planner(self):
         for line in self:
             line.is_planner = False

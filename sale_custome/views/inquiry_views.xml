@@ -13,7 +13,7 @@
                         <button string="Request for price" name="action_request_price" class="oe_highlight" type="object" confirm="Are you sure you want to continue with the process?" invisible="id == False or state != 'boq' or pic_akses == False"/>
                         <button name="action_create_bom" string="Create Bills of Materials" class="oe_highlight" type="object" invisible="1" />
                         <button name="action_cancel" string="Cancel" type="object" confirm="Are you sure you want to cancel this proccess?" invisible="id == False or state == 'cancel' or pic_akses == False"/>
-                        <button name="action_reset_toboq" string="Reset to BOQ" type="object" confirm="Do you want reset state to BOQ?" invisible="id == False or state != 'cost'"/>
+                        <button name="action_reset_toboq" string="Reset to BOQ" type="object" confirm="Do you want reset state to BOQ?" invisible="id == False or state != 'cost' or pic_akses == False"/>
                         <button name="action_mark_won" string="Mark as Won" type="object" confirm="Do you want to update status to Won?" invisible="crm_state != 'Sale Order' or state != 'cost' or pic_akses == False"/>
 <!--                        <button name="action_create_rfq" string="Create RFQ" class="oe_highlight" type="object" invisible="state_count_rfq == True or id == False"/>-->
 <!--                        <button name="action_send_send" string="Request For Information" class="oe_highlight" type="object" invisible="state_count_rfq == True or id == False"/>-->
@@ -105,7 +105,7 @@
                         <button name="action_compute_task" string="Compute Task" type="object" invisible="id == False or mrp_production_count == 0 or project_category not in ['project', 'service']" />
                         <notebook>
                             <page string="Bom Lines" invisible="project_category not in ['project', 'service']">
-                                <field name="inquiry_line_ids" >
+                                <field name="inquiry_line_ids" readonly="pic_akses == False" >
                                     <tree editable="bottom">
                                         <field name="bom_id" required="1"/>
                                         <field name="kategory" readonly="1"/>
@@ -120,7 +120,7 @@
                                 </field>
                             </page>
                             <page string="Detail Material">
-                                <field name="inquiry_line_detail">
+                                <field name="inquiry_line_detail" readonly="pic_akses == False">
                                     <tree editable="bottom">
                                         <field name="product_id"/>
                                         <field name="name"/>
@@ -138,7 +138,7 @@
                                 </field>
                             </page>
                             <page string="Task Line" invisible="project_category not in ['project', 'service']">
-                                <field name="inquiry_line_task">
+                                <field name="inquiry_line_task" readonly="pic_akses == False">
                                     <tree editable="bottom" create="0">
                                         <field name="mo_id"/>
                                         <field name="product_id"/>
