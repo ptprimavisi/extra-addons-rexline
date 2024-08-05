@@ -118,8 +118,9 @@
                                     <tree editable="bottom">
                                         <field name="bom_id" required="1"/>
                                         <field name="kategory" readonly="1"/>
+                                        <field name="process_to" invisible="1" nolabel="1"/>
                                         <field name="state_mo" invisible="1" nolabel="1"/>
-                                        <button name="action_create_mo" class="oe_highlight" type="object" confirm="Do you want to create Manifacturing Orders?" string="Create MO" invisible="id == False or state_mo == True or count_so == 0 or pic_akses == False or kategory not in ['project', 'service']"/>
+                                        <button name="action_create_mo" class="oe_highlight" type="object" confirm="Do you want to create Manifacturing Orders?" string="Create MO" invisible="id == False or state_mo == True or count_so == 0 or pic_akses == False or kategory == 'supply' and process_to == 'purchase'"/>
                                         <field name="bom_cost" readonly="1"/>
                                         <field name="count_so" invisible="1" nolabel="1"/>
                                         <field name="pic_akses" invisible="1" nolabel="1"/>
