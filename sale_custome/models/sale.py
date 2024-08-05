@@ -66,6 +66,7 @@ class MrpProduction(models.Model):
             for lines in line.move_raw_ids:
                 list.append((0, 0, {
                     'product_id': lines.product_id.id,
+                    'raw_id': int(lines.id)
                     # 'qty_to_consume': lines.product_uom_qty
                 }))
             return {
@@ -674,17 +675,19 @@ class InquirySales(models.Model):
                             desc = liness.product_id.product_tmpl_id.name
                             if liness.product_id.product_tmpl_id.description:
                                 desc = liness.product_id.product_tmpl_id.description
-                            if not any(liness.product_id.id == item['product_id'] for item in list_product):
-                                list_product.append({
+                            if not any(item[2]['product_id'] == liness.product_id.id for item in list_product):
+                                list_product.append((0,0,{
                                     'product_id': liness.product_id.id,
                                     'name': str(desc),
                                     'product_uom_quantity': liness.product_qty,
                                     'cost_price': liness.product_id.product_tmpl_id.standard_price,
                                     'unit_weight': liness.product_id.product_tmpl_id.weight,
                                     'product_uom': liness.product_uom_id.id
-                                })
-                            if any(liness.product_id.id == item['product_id'] for item in list_product):
-                                list_product.product_uom_quantity = list_product.product_uom_quantity + liness.product_qty
+                                }))
+                            else:
+                                for list_data in list_product:
+                                    if list_data[2]['product_id'] == liness.product_id.id:
+                                        list_data[2]['product_uom_quantity'] += liness.product_qty
 
 
                         # jika product memiliki BOM
@@ -731,7 +734,7 @@ class InquirySales(models.Model):
                                                                                 if line_kit4.product_id.product_tmpl_id.description:
                                                                                     description = line_kit4.product_id.product_tmpl_id.description
                                                                                 if not any(
-                                                                                        line_kit4.product_id.id == item['product_id']
+                                                                                        line_kit4.product_id.id == item[2]['product_id']
                                                                                         for item in list_product):
                                                                                     list_product.append({
                                                                                         'product_id': line_kit4.product_id.id,
@@ -741,9 +744,10 @@ class InquirySales(models.Model):
                                                                                         'unit_weight': line_kit4.product_id.product_tmpl_id.weight,
                                                                                         'product_uom': line_kit4.product_uom_id.id
                                                                                     })
-                                                                                if any(line_kit4.product_id.id == item['product_id']
-                                                                                        for item in list_product):
-                                                                                    list_product['product_uom_quantity'] += line_kit4.product_qty
+                                                                                else:
+                                                                                    for list_data in list_product:
+                                                                                        if list_data[2]['product_id'] == line_kit4.product_id.id:
+                                                                                            list_data[2]['product_uom_quantity'] += line_kit4.product_qty
                                                                 if not any(
                                                                         line_kit3.product_id.product_tmpl_id.id == items.product_tmpl_id.id
                                                                         for items in bom_global):
@@ -751,7 +755,7 @@ class InquirySales(models.Model):
                                                                     if line_kit3.product_id.product_tmpl_id.description:
                                                                         description = line_kit3.product_id.product_tmpl_id.description
                                                                     if not any(
-                                                                            line_kit3.product_id.id == item['product_id']
+                                                                            line_kit3.product_id.id == item[2]['product_id']
                                                                             for item in list_product):
                                                                         list_product.append({
                                                                             'product_id': line_kit3.product_id.id,
@@ -761,10 +765,10 @@ class InquirySales(models.Model):
                                                                             'unit_weight': line_kit3.product_id.product_tmpl_id.weight,
                                                                             'product_uom': line_kit3.product_uom_id.id
                                                                         })
-                                                                    if any(
-                                                                            line_kit3.product_id.id == item['product_id']
-                                                                            for item in list_product):
-                                                                        list_product['product_uom_quantity'] += line_kit3.product_qty
+                                                                    else:
+                                                                        for list_data in list_product:
+                                                                            if list_data[2]['product_id'] == line_kit3.product_id.id:
+                                                                                list_data[2]['product_uom_quantity'] += line_kit3.product_qty
                                                     if not any(
                                                             line_kit2.product_id.product_tmpl_id.id == items.product_tmpl_id.id
                                                             for items in bom_global):
@@ -772,7 +776,7 @@ class InquirySales(models.Model):
                                                         if line_kit2.product_id.product_tmpl_id.description:
                                                             description = line_kit2.product_id.product_tmpl_id.description
                                                         if not any(
-                                                                line_kit2.product_id.id == item['product_id']
+                                                                line_kit2.product_id.id == item[2]['product_id']
                                                                 for item in list_product):
                                                             list_product.append({
                                                                 'product_id': line_kit2.product_id.id,
@@ -782,10 +786,10 @@ class InquirySales(models.Model):
                                                                 'unit_weight': line_kit2.product_id.product_tmpl_id.weight,
                                                                 'product_uom': line_kit2.product_uom_id.id
                                                             })
-                                                        if not any(
-                                                                line_kit2.product_id.id == item['product_id']
-                                                                for item in list_product):
-                                                            list_product['product_uom_quantity'] += line_kit2.product_qty
+                                                        else:
+                                                            for list_data in list_product:
+                                                                if list_data[2]['product_id'] == line_kit2.product_id.id:
+                                                                    list_data[2]['product_uom_quantity'] += line_kit2.product_qty
                                         description = line_kit.product_id.product_tmpl_id.name
                                         if line_kit.product_id.product_tmpl_id.description:
                                             description = line_kit.product_id.product_tmpl_id.description
@@ -793,7 +797,7 @@ class InquirySales(models.Model):
                                                 line_kit.product_id.product_tmpl_id.id == items.product_tmpl_id.id for
                                                 items in bom_global):
                                             if not any(
-                                                    line_kit.product_id.id == item['product_id']
+                                                    line_kit.product_id.id == item[2]['product_id']
                                                     for item in list_product):
                                                 list_product.append({
                                                     'product_id': line_kit.product_id.id,
@@ -803,14 +807,16 @@ class InquirySales(models.Model):
                                                     'unit_weight': line_kit.product_id.product_tmpl_id.weight,
                                                     'product_uom': line_kit.product_uom_id.id
                                                 })
-                                            if not any(
-                                                    line_kit.product_id.id == item['product_id']
-                                                    for item in list_product):
-                                                list_product['product_uom_quantity'] += line_kit.product_qty
-                print(list_product)
-                exit()
+                                            else:
+                                                for list_data in list_product:
+                                                    if list_data[2]['product_id'] == line_kit.product_id.id:
+                                                        list_data[2]['product_uom_quantity'] += line_kit.product_qty
+                # print(list_product)
+                # exit()
+                # to_create = [(0, 0, item) for item in list_product]
 
-                line.inquiry_line_detail = ([0,0, list_product])
+                line.inquiry_line_detail = list_product
+                line.message_post(body='Update Cost')
             # pass
             # line.inquiry_line_detail =
 
@@ -957,6 +963,8 @@ class InquirySales(models.Model):
 
     def action_mrf(self):
         for line in self:
+            if not line.due_date:
+                raise UserError('Due Date is Mandatory Field')
             # for line in self:
             so = self.env['sale.order'].search(
                 [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
@@ -1442,6 +1450,10 @@ class InquiryLine(models.Model):
         ('service', 'Service'),
         ('supply', 'Supply')
     ], related='inquiry_id.project_category')
+    process_to = fields.Selection([
+        ('purchase', 'Purchase'),
+        ('engineering', 'Engineering')
+    ], related='inquiry_id.process_to')
     state_mo = fields.Boolean(compute='_compute_state_mo')
     count_so = fields.Integer(related="inquiry_id.count_so")
     pic_akses = fields.Boolean(related="inquiry_id.pic_akses")

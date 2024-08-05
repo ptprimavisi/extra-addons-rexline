@@ -23,43 +23,46 @@ class ProductionReport(models.Model):
     def _compute_mrf_ids(self):
         for record in self:
             mo = self.env['mrp.production'].browse(record.mo_id.id)
-            if mo.origin:
-                sale = self.env['sale.order'].search([('name','=', str(mo.origin))])
-                if sale:
-                    mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                    record.mrf_ids = mrf
-                else:
-                    mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
-                    if mo.origin:
-                        sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
-                        if sale:
-                            mrf = self.env['mrf.mrf'].search(
-                                [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                            record.mrf_ids = mrf
-                        else:
-                            mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
-                            if mo.origin:
-                                sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
-                                if sale:
-                                    mrf = self.env['mrf.mrf'].search(
-                                        [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                                    record.mrf_ids = mrf
-                                else:
-                                    mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
-                                    if mo.origin:
-                                        sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
-                                        if sale:
-                                            mrf = self.env['mrf.mrf'].search(
-                                                [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
-                                            record.mrf_ids = mrf
-                                        else:
-                                            mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
-                                            if mo.origin:
-                                                sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
-                                                if sale:
-                                                    mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id','=', sale.opportunity_id.id)])
-                                                    record.mrf_ids = mrf
-
+            # raise UserError(mo)
+            if mo:
+                if mo.origin:
+                    sale = self.env['sale.order'].search([('name','=', str(mo.origin))])
+                    if sale:
+                        mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                        record.mrf_ids = mrf
+                    else:
+                        mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                        if mo.origin:
+                            sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                            if sale:
+                                mrf = self.env['mrf.mrf'].search(
+                                    [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                                record.mrf_ids = mrf
+                            else:
+                                mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                                if mo.origin:
+                                    sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                    if sale:
+                                        mrf = self.env['mrf.mrf'].search(
+                                            [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                                        record.mrf_ids = mrf
+                                    else:
+                                        mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                                        if mo.origin:
+                                            sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                            if sale:
+                                                mrf = self.env['mrf.mrf'].search(
+                                                    [('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
+                                                record.mrf_ids = mrf
+                                            else:
+                                                mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
+                                                if mo.origin:
+                                                    sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                                    if sale:
+                                                        mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id','=', sale.opportunity_id.id)])
+                                                        record.mrf_ids = mrf
+            else:
+                record.mrf_ids = False
             # mrf_records = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', record.mo_id.opportunity_id.id)])
             # record.mrf_ids = mrf_records
 
@@ -110,17 +113,18 @@ class ProductionReportLine(models.Model):
     qty_to_consume = fields.Float(compute="_compute_to_consume", readonly=False)
     weight = fields.Integer()
     production_id = fields.Many2one('production.report')
+    raw_id = fields.Many2one('stock.move')
 
     def _compute_to_consume(self):
         for line in self:
             # material = self.env['stock.move'].search([('raw_material_production_id', '=', line.production_id.mo_id.id), ('product_id', '=', )])
             # line.qty_to_consume = 0.0
             material = line.production_id.mo_id.move_raw_ids
-            schedule_done = self.env['production.report.line'].search(
-                [('production_id.mo_id', '=', line.production_id.mo_id.id), ('production_id.state', '=', 'done'),
-                 ('product_id', '=', line.product_id.id)])
-            if material:
-                materials = self.env['stock.move'].search(
-                    [('raw_material_production_id', '=', line.production_id.mo_id.id),
-                     ('product_id', '=', line.product_id.id)])
+
+            materials = self.env['stock.move'].search(
+                [('raw_material_production_id', '=', line.production_id.mo_id.id),
+                 ('id', '=', line.raw_id.id)])
+            if materials:
+                schedule_done = self.env['production.report.line'].search(
+                    [('raw_id', '=', materials.id), ('production_id.state', '=', 'done')])
                 line.qty_to_consume = materials.product_uom_qty - sum(schedule_done.mapped('qty_consume'))
