@@ -74,5 +74,19 @@
                 </tree>
             </field>
         </record>
+
+        <record id="action_production_report" model="ir.actions.act_window">
+            <field name="name">Production Schedule</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">production.report</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--        <menuitem id="kas_kecil" name="Kas Kecil" sequence="10"/>-->
+        <menuitem id="menu_production_schedule"
+                name="Production Schedule"
+                action="action_production_report"
+                parent="mrp.menu_mrp_manufacturing"
+                sequence="100"/>
     </data>
 </odoo>
