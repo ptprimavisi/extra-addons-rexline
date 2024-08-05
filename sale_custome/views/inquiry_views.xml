@@ -87,6 +87,7 @@
                             <group>
                                 <field name="partner_id" string="Customer" required="1"/>
                                 <field name="project_category" required="1"/>
+                                <field name="process_to" readonly="1" required="project_category == 'project'" invisible="project_category != 'supply'"/>
                                 <field name="count_inquiry_log" invisible="1"/>
                                 <field name="pic_user"/>
                                 <field name="pic_akses" invisible="1"/>
@@ -112,7 +113,7 @@
                         <button name="action_compute_material" string="Compute Item Detail" confirm="This process will cause the price to become 0.0 again" class="oe_highlight" type="object" invisible="id == False or state == 'draft' or project_category not in ['project', 'service']"/>
                         <button name="action_compute_task" string="Compute Task" type="object" invisible="id == False or mrp_production_count == 0 or project_category not in ['project', 'service']" />
                         <notebook>
-                            <page string="Bom Lines" invisible="project_category not in ['project', 'service']">
+                            <page string="Bom Lines" invisible="project_category == 'supply' and process_to == 'purchase'">
                                 <field name="inquiry_line_ids" readonly="pic_akses == False" >
                                     <tree editable="bottom">
                                         <field name="bom_id" required="1"/>
@@ -144,7 +145,7 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Task Line" invisible="project_category not in ['project', 'service']">
+                            <page string="Task Line" invisible="project_category == 'supply' and process_to == 'purchase'">
                                 <field name="inquiry_line_task" readonly="pic_akses == False">
                                     <tree editable="bottom" create="0">
                                         <field name="mo_id"/>
