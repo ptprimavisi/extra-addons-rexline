@@ -21,7 +21,8 @@
         "views/product_views.xml",
         "views/request_price_views.xml",
         "views/production_report_views.xml",
-        "views/surat_kerja_views.xml"
+        "views/surat_kerja_views.xml",
+        "views/inquiry_log_views.xml"
     ],
     'assets': {
         'web.assets_backend': [

@@ -7,13 +7,15 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="is_crm_quotation" invisible='1'/>
+<!--                <field name="is_approve" invisible="1"/>-->
                 <field name="category_project" invisible="1"/>
             </xpath>
 <!--            <xpath expr="//field[@name='company_id']" position="after">-->
 <!--                <field name="category_project"/>-->
 <!--            </xpath>-->
             <xpath expr="//button[@name='iap_enrich']" position="after">
-                <button string="New Details Quotation" name="action_quotations_view" type="object" class="oe_highlight" invisible="type == 'lead' and probability == 0 or not active or is_crm_quotation"/>
+                <button string="Create and View Quotation" name="action_quotations_view" type="object" class="oe_highlight" invisible="type == 'lead' and probability == 0 or not active or is_crm_quotation"/>
+<!--                <button string="Approve Cost Estimation" name="action_approve_cost_estimation" type="object" invisible="id == False or is_approve == True"/>-->
             </xpath>
             <xpath expr="//button[@name='action_schedule_meeting']" position="before">
                 <button class="oe_stat_button" type="object"
@@ -31,9 +33,10 @@
                             <field name="product_uom_quantity"/>
                             <field name="product_uom"/>
                             <field name="cost_price"/>
-                            <field name="margin" required="1"/>
-                            <field name="is_under" invisible="margin == 0 or margin > 50"/>
-                            <field name="price_unit"/>
+                            <field name="margin" required="1" readonly="is_approve == False"/>
+                            <field name="is_approve" invisible="1" nolabel="1"/>
+                            <field name="is_under" invisible="margin == 0 or margin > 50" readonly="is_approve == False"/>
+                            <field name="price_unit" readonly="is_approve == False"/>
                             <field name="tax_id" widget="many2many_tags"/>
                             <field name="product_uom_category_id" invisible="1"/>
                         </tree>

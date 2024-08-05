@@ -82,7 +82,7 @@
         <record id="seq_inquiry" model="ir.sequence">
             <field name="name">Inquiry Inquiry</field>
             <field name="code">INQ</field>
-            <field name="prefix">INQ/%(y)s/000</field>
+            <field name="prefix">CRF/REX/%(y)s/000</field>
             <field name="company_id" eval="False"/>
         </record>
 
@@ -113,6 +113,7 @@
             <field name="prefix">PR/%(y)s/000</field>
             <field name="company_id" eval="False"/>
         </record>
+
 
         <record id="seq_permintaan_dana" model="ir.sequence">
             <field name="name">Permintaan dana</field>

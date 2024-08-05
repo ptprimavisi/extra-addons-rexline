@@ -5,8 +5,12 @@
             <field name="model">crm.lead</field>
             <field name="inherit_id" ref="crm.crm_lead_view_form"/>
             <field name="arch" type="xml">
+<!--                <xpath expr="//button[@name='iap_enrich']" position="after">-->
+<!--                    <button string="Approve Cost Estimation" name="action_approve_cost_estimation" type="object" invisible="id == False or is_approve == True"/>-->
+<!--                </xpath>-->
                 <xpath expr="//header" position="inside">
                     <button string="Send Inquiry" name="action_send_inquiry" class="oe_highlight" type="object" confirm="Are you sure you want to continue with the process?" invisible="id == False or count_inquiry >= 1"/>
+                    <button string="Approve Cost Estimation" confirm="Apakah anda ingin menyetujui dokumen ini?" name="action_approve_cost_estimation" type="object" invisible="id == False or is_approve == True"/>
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="cost_estimation" class="o_input_13ch" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="1"/>
@@ -18,6 +22,7 @@
                     <field name="date_deadline" string="Due Date Submission" optional="show" widget="remaining_days" readonly="1"/>
                     <field name="state_inquiry" string="Status Inquiry"/>
                     <field name="group_ids" invisible="1"/>
+                    <field name="is_approve" invisible="1"/>
                 </xpath>
                 <button name="action_schedule_meeting" position="before">
                     <button class="oe_stat_button" type="object"

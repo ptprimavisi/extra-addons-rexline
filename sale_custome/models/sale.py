@@ -18,6 +18,10 @@ AVAILABLE_PRIORITIES = [
 #     weight = fields.Float()
 
 
+class MailActivity(models.TransientModel):
+    _inherit = 'mail.activity.schedule'
+
+
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
@@ -193,6 +197,7 @@ class CrmLead(models.Model):
     cost_estimation = fields.Float(compute="_compute_estimation_cost")
     is_planner = fields.Boolean(compute="_compute_is_planner")
     state_inquiry = fields.Char(compute="_compute_state_inq")
+    is_approve = fields.Boolean(default=False)
     process_to = fields.Selection([
         ('purchase', 'Purchase'),
         ('engineering', 'Engineering')
@@ -200,6 +205,15 @@ class CrmLead(models.Model):
 
     pic_supply = fields.Many2one('res.users')
     group_ids = fields.Many2one('res.groups', compute="_compute_group")
+
+    def action_approve_cost_estimation(self):
+        for line in self:
+            line.is_approve = True
+            message = f'Approve cost estimtion'
+            line.message_post(body=message)
+
+
+
 
     def _compute_group(self):
         for line in self:
@@ -242,6 +256,7 @@ class CrmLead(models.Model):
             inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(record.id))])
             # raise UserError('test')
             if inquiry:
+                inquiry.write({'due_date': record.date_deadline})
                 if old_note != new_note:
                     user = self.env['res.users'].browse(self.env.uid)
                     inquiry.message_post(body=f'{user.login} Update Note')
@@ -341,7 +356,8 @@ class CrmLead(models.Model):
                 data = {
                     "partner_id": line.partner_id.id,
                     'project_category': line.category_project,
-                    "date": line.date_deadline,
+                    "due_date": line.date_deadline,
+                    "date": datetime.now(),
                     "opportunity_id": int(line.id),
                     "priority": line.priority,
                     "note": line.description
@@ -453,6 +469,29 @@ class InquirySales(models.Model):
     pic_akses = fields.Boolean(compute="_compute_akses_pic")
     is_planner = fields.Boolean(compute="_compute_user_planner")
     total_amount = fields.Float(compute="_compute_total_cost")
+    count_inquiry_log = fields.Integer(compute="_compute_count_log")
+
+    def _compute_count_log(self):
+        for line in self:
+            count = 0
+            inquiry = self.env['log.inquiry'].search([('inquiry_id','=',int(line.id))])
+            if inquiry:
+                for lines in inquiry:
+                    count += 1
+
+            line.count_inquiry_log = count
+
+    def action_count_log(self):
+        for line in self:
+            result = {
+                "type": "ir.actions.act_window",
+                "res_model": "log.inquiry",
+                "domain": [('inquiry_id', '=', int(line.id))],
+                "context": {"create": False},
+                "name": "Revisi Inquiry",
+                'view_mode': 'tree,form',
+            }
+            return result
 
     @api.depends('inquiry_line_detail.subtotal')
     def _compute_total_cost(self):
@@ -476,7 +515,7 @@ class InquirySales(models.Model):
             request_price = self.env['price.request'].serach([('inquiry_id', '=', int(line.id))])
             if request_price:
                 request_price.unlink()
-            mrf = self.env['mrf.mrf'].search([('inquiry_id','=', int(line.id))])
+            mrf = self.env['mrf.mrf'].search([('inquiry_id', '=', int(line.id))])
             if mrf:
                 mrf.unlink()
                 # raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
@@ -516,6 +555,43 @@ class InquirySales(models.Model):
 
     def action_reset_toboq(self):
         for line in self:
+            log_inq = self.env['log.inquiry'].search([])
+            bom_line = []
+            line_detail = []
+            for lines in line.inquiry_line_ids:
+                bom_line.append((0,0, {
+                    'bom_id': lines.bom_id.id,
+                    'bom_cost': lines.bom_cost
+                }))
+            for liness in line.inquiry_line_detail:
+                line_detail.append((0,0, {
+                    'product_id': liness.product_id.id,
+                    'name': liness.name,
+                    'specs': liness.specs,
+                    'brand': liness.brand,
+                    'unit_weight': liness.unit_weight,
+                    'total_weight': liness.total_weight,
+                    'product_uom_quantity': liness.product_uom_quantity,
+                    'product_uom': liness.product_uom.id,
+                    'product_uom_category_id': liness.product_uom_category_id.id,
+                    'cost_price': liness.cost_price,
+                    'due_date': liness.due_date,
+                }))
+            log_inq.create(
+                {
+                    'inquiry_id': int(line.id),
+                    'name': f"{line.name} Revisi ({datetime.now()})" ,
+                    'partner_id': line.partner_id.id,
+                    'project_category': line.project_category,
+                    'pic_user': line.pic_user.id,
+                    'date': line.date,
+                    'due_date': line.due_date,
+                    'note': line.note,
+                    'crm_state': line.crm_state,
+                    'bom_line': bom_line,
+                    'line_detail': line_detail,
+                }
+            )
             line.state = 'boq'
 
     def _compute_count_so(self):
@@ -1088,6 +1164,8 @@ class InquirySales(models.Model):
             #     else:
             #         continue
             lead_line_detail = self.env['lead.line.detail'].search([('lead_line_id', '=', line.opportunity_id.id)])
+            if line.opportunity_id:
+                line.opportunity_id.is_approve = False
             # if lead_line_detail:
             # if lead_line_detail:
             for cek in line.inquiry_line_detail:
@@ -1479,3 +1557,64 @@ class ProductInherith(models.Model):
                     line.edit_cost = True
             else:
                 line.edit_cost = False
+
+
+class LogInquiry(models.Model):
+    _name = 'log.inquiry'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Log Inquiry'
+
+    inquiry_id = fields.Many2one('inquiry.inquiry')
+    name = fields.Char()
+    partner_id = fields.Many2one('res.partner')
+    project_category = fields.Char()
+    pic_user = fields.Many2one('res.users')
+    date = fields.Date()
+    due_date = fields.Date()
+    note = fields.Text()
+    crm_state = fields.Char()
+    bom_line = fields.One2many('bom.line.log', 'inquiry_id')
+    line_detail = fields.One2many('line.detail.log', 'inquiry_id')
+
+
+class LogBomLine(models.Model):
+    _name = 'bom.line.log'
+
+    bom_id = fields.Many2one('mrp.bom')
+    bom_cost = fields.Float()
+    inquiry_id = fields.Many2one('log.inquiry')
+
+
+class LineDetailLog(models.Model):
+    _name = 'line.detail.log'
+
+    inquiry_id = fields.Many2one('log.inquiry')
+    product_id = fields.Many2one('product.product')
+    name = fields.Text(string='Description', required=True)
+    specs = fields.Char()
+    brand = fields.Char()
+    unit_weight = fields.Float()
+    total_weight = fields.Float()
+    product_uom_quantity = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True,
+                                        default=1.0)
+    product_uom = fields.Many2one('uom.uom', string='Unit of Measure',
+                                  domain="[('category_id', '=', product_uom_category_id)]")
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
+
+    cost_price = fields.Float('Unit Price')
+    due_date = fields.Datetime()
+
+    subtotal = fields.Float(
+        string='Subtotal',
+        compute='_compute_totals', store=True,
+    )
+
+    @api.depends('product_uom_quantity', 'cost_price')
+    def _compute_totals(self):
+        for line in self:
+            # if line.display_type != 'product':
+            #     line.price_total = line.price_subtotal = False
+            # # Compute 'price_subtotal'.
+            # line_discount_price_unit = line.price_unit * (1 - (line.discount / 100.0))
+            subtotal = line.product_uom_quantity * line.cost_price
+            line.subtotal = subtotal
