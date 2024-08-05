@@ -17,6 +17,13 @@ class lead_line(models.Model):
     price_unit = fields.Float('Unit Price', default=0.0)
     tax_id = fields.Many2many('account.tax', string='Taxes')
     is_under = fields.Boolean()
+    is_approve = fields.Boolean(compute="_compute_approve")
+
+    def _compute_approve(self):
+        for line in self:
+            line.is_approve = False
+            if line.lead_line_id.is_approve:
+                line.is_approve = True
 
     # @api.onchange('margin')
     # def oc_margin(self):

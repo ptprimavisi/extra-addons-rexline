@@ -2,7 +2,7 @@
     'name': 'Purchase Custom',
     'category': 'Accounting',
     'description': 'odoo Purchase Custom',
-    'depends': ['account', 'purchase', 'sale', 'base','sale_custome', 'hr','stock'],
+    'depends': ['account', 'purchase', 'sale', 'base','sale_custome', 'hr','stock','mail'],
     'data': [
         "views/purchase_views.xml",
         'views/requisition_views.xml',

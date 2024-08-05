@@ -1,0 +1,98 @@
+<odoo>
+    <data>
+        <record id="log_inquiry_form_view" model="ir.ui.view">
+            <field name="name">log.inquiry.view.form</field>
+            <field name="model">log.inquiry</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="o_lead_opportunity_form_inline_fields">
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="inquiry_id" invisible="1"/>
+                                <field name="partner_id" string="Customer" required="1"/>
+                                <field name="project_category" required="1"/>
+                                <field name="pic_user"/>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="due_date"/>
+                                <field name="crm_state"/>
+                            </group>
+                        </group>
+                       <notebook>
+                            <page string="Bom Lines" invisible="project_category not in ['project', 'service']">
+                                <field name="bom_line" readonly="1" >
+                                    <tree editable="bottom">
+                                        <field name="bom_id" required="1"/>
+                                        <field name="bom_cost" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Detail Material">
+                                <field name="line_detail" readonly="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="specs"/>
+                                        <field name="brand"/>
+                                        <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+                                        <field name="product_uom_quantity"/>
+                                        <field name="product_uom" string="Uom"/>
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="unit_weight"/>
+                                        <field name="total_weight"/>
+                                        <field name="cost_price"/>
+                                        <field name="subtotal" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Internal Notes">
+                                <field name="note" widget="html"/>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="log_inquiry_tree_view" model="ir.ui.view">
+            <field name="name">log.inquiry.tree.view</field>
+            <field name="model">log.inquiry</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="date"/>
+                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+                    <field name="crm_state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_log_inquiry" model="ir.actions.act_window">
+            <field name="name">Inquiry</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">log.inquiry</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+<!--        <menuitem id="menu_mrp_workorder_todddd"-->
+<!--                name="Inquiry"-->
+<!--                action="sale_custome.action_log_inquiry"-->
+<!--                parent="crm.crm_menu_sales"-->
+<!--                sequence="100"/>-->
+    </data>
+</odoo>
