@@ -30,6 +30,7 @@ class ProductionReport(models.Model):
                     if sale:
                         mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
                         record.mrf_ids = mrf
+                        raise UserError(mrf)
                     else:
                         mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
                         if mo.origin:
