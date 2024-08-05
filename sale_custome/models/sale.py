@@ -362,9 +362,11 @@ class CrmLead(models.Model):
                     "priority": line.priority,
                     "note": line.description
                 }
+                if line.category_project == 'supply':
+                    data['process_to'] = line.process_to
                 # inquiry = self.env['inquiry.inquiry'].search([])
                 inquiry = self.env['inquiry.inquiry'].create(data)
-                if line.category_project == 'supply':
+                if line.category_project == 'supply' and line.process_to == 'purchase':
                     list_product = []
                     if not line.lead_product_ids:
                         raise UserError('Pl add product first')
@@ -382,6 +384,20 @@ class CrmLead(models.Model):
                         if line.pic_supply:
                             inquiry.write({'pic_user': line.pic_supply})
                             # line.pic_user = line.pic_supply
+                if line.category_project == 'supply' and line.process_to == 'engineering':
+                    list_product = []
+                    if not line.lead_product_ids:
+                        raise UserError('Pl add product first')
+                    for lines in line.lead_product_ids:
+                        list_product.append((0, 0, {
+                            'product_id': lines.product_id.id,
+                            'name': lines.product_id.product_tmpl_id.description or '',
+                            'product_uom_quantity': lines.product_uom_quantity,
+                            'product_uom': lines.product_uom.id,
+                            'unit_weight': lines.product_id.product_tmpl_id.weight,
+                            'cost_price': lines.product_id.product_tmpl_id.standard_price
+                        }))
+                    inquiry.write({'inquiry_line_detail': list_product})
                 # raise UserError(inquiry)
                 attch = self.process_attachments()
                 if attch:
@@ -470,6 +486,10 @@ class InquirySales(models.Model):
     is_planner = fields.Boolean(compute="_compute_user_planner")
     total_amount = fields.Float(compute="_compute_total_cost")
     count_inquiry_log = fields.Integer(compute="_compute_count_log")
+    process_to = fields.Selection([
+        ('purchase', 'Purchase'),
+        ('engineering', 'Engineering')
+    ])
 
     def _compute_count_log(self):
         for line in self:
@@ -512,7 +532,7 @@ class InquirySales(models.Model):
                 inquiry_line_detail.unlink()
             if inquiry_line_task:
                 inquiry_line_task.unlink()
-            request_price = self.env['price.request'].serach([('inquiry_id', '=', int(line.id))])
+            request_price = self.env['request.price'].search([('inquiry_id', '=', int(line.id))])
             if request_price:
                 request_price.unlink()
             mrf = self.env['mrf.mrf'].search([('inquiry_id', '=', int(line.id))])
