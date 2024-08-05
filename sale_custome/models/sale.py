@@ -218,6 +218,7 @@ class CrmLead(models.Model):
     def _compute_group(self):
         for line in self:
             groups = self.env.ref('sale_custome.purchasing_custom_group')
+            # raise UserError(groups.name)
             line.group_ids = groups.id
 
     # @api.onchange('process_to')
@@ -1191,7 +1192,7 @@ class InquirySales(models.Model):
             for cek in line.inquiry_line_detail:
                 if cek.cost_price == 0:
                     raise UserError('There is a material product price of 0 !!')
-            if line.project_category == 'project':
+            if line.project_category == 'project' or line.project_category == 'supply' and line.process_to == 'engineering':
                 lead_line_detail.unlink()
                 for line_detail in line.inquiry_line_detail:
                     self.env['lead.line.detail'].create({
@@ -1248,7 +1249,7 @@ class InquirySales(models.Model):
 
             if lead_line:
                 lead_line.unlink()
-                if line.project_category == 'project':
+                if line.project_category == 'project' or line.project_category == 'supply' and line.process_to == 'engineering':
                     for bom_lead in line.inquiry_line_ids:
                         if bom_lead.bom_id.product_tmpl_id.is_master:
                             # list_product_crm.append()
@@ -1271,7 +1272,7 @@ class InquirySales(models.Model):
                             crm.write({
                                 'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
                             })
-                elif line.project_category == 'supply':
+                elif line.project_category == 'supply' and line.process_to == 'purchase':
 
                     for product_supply in line.inquiry_line_detail:
                         if product_supply.product_id.product_tmpl_id.is_master:
@@ -1320,7 +1321,7 @@ class InquirySales(models.Model):
                             crm.write({
                                 'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
                             })
-                elif line.project_category == 'supply':
+                elif line.project_category == 'supply' and line.process_to == 'purchase':
                     # raise UserError(line.inquiry_line_detail)
                     for product_supply in line.inquiry_line_detail:
                         if product_supply.product_id.product_tmpl_id.is_master:
