@@ -106,12 +106,15 @@ class RequestPrice(models.Model):
             inquiry = self.env['inquiry.inquiry'].search(
                 [('id', '=', line.inquiry_id.id)])
             if inquiry:
-                for inq in inquiry:
-                    if hasattr(inq, 'x_review_result') and hasattr(inq, 'x_has_request_approval'):
-                        inq.write({'approve_mng_engineer': False,
-                                   'x_review_result': None,
-                                   'x_has_request_approval': None
-                                   })
+                if inquiry.process_to == 'purchase':
+                    pass
+                else:
+                    for inq in inquiry:
+                        if hasattr(inq, 'x_review_result') and hasattr(inq, 'x_has_request_approval'):
+                            inq.write({'approve_mng_engineer': False,
+                                       'x_review_result': None,
+                                       'x_has_request_approval': None
+                                       })
 
             for lines in line.request_line_ids:
                 if lines.product_id:
