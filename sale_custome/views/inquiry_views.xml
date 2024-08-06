@@ -98,7 +98,7 @@
 <!--                            <field name="due_date" string="Lead Time" optional="show" widget="remaining_days"/>-->
                                 <field name="state_material" invisible="1"/>
                                 <field name="crm_state"/>
-                                <field name="approve_mng_engineer"/>
+                                <field name="approve_mng_engineer" invisible="1"/>
                             </group>
 
 <!--                            <field name="validity" string="Validity"/>-->
