@@ -14,6 +14,11 @@ class RequestPriceWizard(models.TransientModel):
         ('posted', 'Confirm')
     ], default="draft")
     date = fields.Date()
+    project_category = fields.Selection([
+        ('project', 'Project'),
+        ('service', 'Service'),
+        ('supply', 'Supply')
+    ])
     request_line_ids = fields.One2many('request.price.line.wizard', 'request_id')
 
     def default_get(self, vals):
@@ -48,6 +53,7 @@ class RequestPriceWizard(models.TransientModel):
                 data = {
                     'inquiry_id': line.inquiry_id.id,
                     'date': line.date,
+                    'project_category': line.project_category,
                     'partner_id': line.inquiry_id.opportunity_id.partner_id.id,
                     'request_line_ids': list_product
                 }

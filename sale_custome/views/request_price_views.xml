@@ -15,6 +15,7 @@
                         <group>
                             <field name="inquiry_id" string="Inquiry Ref" readonly="1"/>
                             <field name="date" string="Request Date" readonly="1"/>
+                            <field name="project_category" readonly="1"/>
                             <field name="partner_id" string="Customer" required="1" readonly="state == 'posted'"/>
                         </group>
                         <notebook>
