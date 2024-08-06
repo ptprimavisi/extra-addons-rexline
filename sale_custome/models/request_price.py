@@ -21,6 +21,11 @@ class RequestPrice(models.Model):
     total_tax = fields.Float()
     total_duty_tax = fields.Float(compute="_compute_total_pajak")
     total_delivery = fields.Float()
+    project_category = fields.Selection([
+        ('project', 'Project'),
+        ('service', 'Service'),
+        ('supply', 'Supply')
+    ])
 
     @api.depends('request_line_ids.tax', 'request_line_ids.duty', 'request_line_ids.vat')
     def _compute_total_pajak(self):

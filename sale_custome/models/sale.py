@@ -841,6 +841,7 @@ class InquirySales(models.Model):
                 'context': {
                     'inquiry_id': int(line.id),
                     'date': str(datetime.now()),
+                    'default_project_category': line.project_category,
                     'request_line_ids': list
                 }
             }
@@ -1613,6 +1614,16 @@ class ProductInherith(models.Model):
 
     is_master = fields.Boolean()
     edit_cost = fields.Boolean(cmpute="_compute_edit_cost", default=False)
+
+    @api.model
+    def create(self, vals):
+        # if vals.get('name', '/') == '/':
+        # raise UserError('test func')
+        value = vals.get('name')
+        if not value.isupper():
+            raise UserError('Nama Harus Menggunakan Huruf Kapital')
+        # vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
+        return super(ProductInherith, self).create(vals)
 
     def _compute_edit_cost(self):
         for line in self:
