@@ -6,6 +6,7 @@
     'data': [
         "views/permintaan_dana_views.xml",
         "views/realisai_dana_views.xml",
+        "views/inquiry_estimate_views.xml",
         "views/refund_views.xml",
     ],
 

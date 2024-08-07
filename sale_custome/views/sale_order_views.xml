@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sale_order_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.sale.order.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="validity" invisible="state == 'sale'"/>
+                    <field name="ref_quotation" string="Quotation Ref" readonly="1"/>
+                </xpath>
+                <button name="action_view_delivery" position="before">
+                    <button class="oe_stat_button" type="object"
+                        name="action_view_estimate" icon="fa-pencil-square-o" invisible="count_estimate == 0">
+                        <field name="count_estimate" widget="statinfo" string="Estimate"/>
+                    </button>
+                </button>
+            </field>
+
+        </record>
+    </data>
+</odoo>

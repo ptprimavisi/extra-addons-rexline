@@ -1,0 +1,85 @@
+<odoo>
+    <data>
+        <record id="inquiry_estimate_form_view" model="ir.ui.view">
+            <field name="name">inquiry.estimate.view.form</field>
+            <field name="model">inquiry.estimate</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="o_lead_opportunity_form_inline_fields">
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name" readonly="1"/>
+                                    </h1>
+                                </div>
+                        </div>
+                        <group>
+                            <field name="partner_id" string="Customer" readonly="1"/>
+                            <field name="category"/>
+                            <field name="date"/>
+                            <field name="due_date"/>
+                        </group>
+                       <notebook>
+                            <page string="Product Line">
+                                <field name="estimate_line" readonly="1" >
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="product_uom_quantity"/>
+                                        <field name="product_uom"/>
+                                        <field name="cost_price"/>
+                                        <field name="margin" required="1"/>
+                                        <field name="is_under"/>
+                                        <field name="price_unit"/>
+                                        <field name="tax_id" widget="many2many_tags"/>
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Detail Material">
+                                <field name="estimate_line_detail" readonly="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="product_uom_quantity"/>
+                                        <field name="product_uom"/>
+                                        <field name="cost_price" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="subtotal" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                       </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="inquiry_estimate_tree_view" model="ir.ui.view">
+            <field name="name">inquiry.estimate.tree.view</field>
+            <field name="model">inquiry.estimate</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="date"/>
+                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="seq_ast" model="ir.sequence">
+            <field name="name">Estimate</field>
+            <field name="code">EST</field>
+            <field name="prefix">EST/%(y)s/00</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+<!--        <record id="action_log_inquiry" model="ir.actions.act_window">-->
+<!--            <field name="name">Inquiry</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">log.inquiry</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+    </data>
+</odoo>

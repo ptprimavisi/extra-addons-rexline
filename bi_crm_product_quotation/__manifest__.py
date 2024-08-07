@@ -11,11 +11,12 @@
     """,
     "author": "BrowseInfo",
     'website': 'https://www.browseinfo.com',
-    "depends" : ['base','crm','product','account','sale_management','sale_crm'],
+    "depends" : ['base','crm','product','account','sale_management','sale_crm','sale'],
     "data": [
           'security/ir.model.access.csv',
           'views/crm_lead_inherit.xml',
-          'views/sale_crm_view.xml',          
+          'views/sale_crm_view.xml',
+          'views/inquiry_estimate_views.xml'
     ],
     "license":'OPL-1',
     "auto_install": False,
