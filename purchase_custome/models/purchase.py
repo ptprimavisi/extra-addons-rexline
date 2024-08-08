@@ -94,6 +94,7 @@ class PurchaseOrder(models.Model):
     dp_status = fields.Boolean()
     tp_value = fields.Integer(compute="_compute_tp_value")
     paymen_term_id = fields.Many2one('account.payment.term')
+    source_doc = fields.Char()
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -498,6 +499,7 @@ class PaymentRequest(models.Model):
     name = fields.Char()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     date = fields.Date()
+    due_date = fields.Date()
     type = fields.Selection([
         ('dp', 'Down Payment'),
         ('bill', 'Bill')

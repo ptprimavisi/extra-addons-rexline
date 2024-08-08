@@ -19,9 +19,10 @@
                         </div>
                         <group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
-                            <field name="user_id" string="Responsible"/>
-                            <field name="date" string="Date Request" required="1"/>
-                            <field name="type" required="1"/>
+                            <field name="user_id" string="Responsible" readonly="state != 'draft'"/>
+                            <field name="date" string="Date Request" required="1" readonly="state != 'draft'"/>
+                            <field name="due_date" required="1" readonly="state != 'draft'"/>
+                            <field name="type" required="1" readonly="state != 'draft'"/>
 
                         </group>
                         <notebook>
