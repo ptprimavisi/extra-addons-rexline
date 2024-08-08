@@ -25,9 +25,16 @@ class PurchaseWizard(models.TransientModel):
                     'price_unit': lines.unit_price,
                     'budget': lines.budget
                 }))
+            doc = ''
+            so = self.env['sale.order'].search([('opportunity_id', '=', line.mrf_id.inquiry_id.opportunity_id.id), ('state','=','sale')])
+            if so:
+                if len(so) > 1:
+                    raise UserError('SO WON dokumen tidak boleh lebih dari 1 ')
+                doc = str(so.name)
             po = self.env['purchase.order'].create({
                 'mrf_id': line.mrf_id.id,
                 'partner_id': line.partner_id.id,
+                'source_doc': doc,
                 'paymen_term_id' : line.partner_id.property_supplier_payment_term_id.id or False,
                 'order_line': list_line
             })

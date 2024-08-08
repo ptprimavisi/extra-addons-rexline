@@ -152,7 +152,7 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='picking_type_id']" position="after">
-                    <field name="dp_status" readonly="1"/>
+                    <field name="source_doc"/>
                 </xpath>
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="down_payment" string="Down Payment" readonly="1"/>

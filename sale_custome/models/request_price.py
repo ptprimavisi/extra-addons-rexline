@@ -152,6 +152,7 @@ class RequestPriceLine(models.Model):
     brand = fields.Char()
     cost_price = fields.Float()
     weight = fields.Float()
+    total_weight = fields.Float(compute="_compute_total_weight")
     shipment_cost = fields.Float()
     fob = fields.Float()
     duty = fields.Float()
@@ -173,6 +174,11 @@ class RequestPriceLine(models.Model):
     percentage = fields.Float(compute="_compute_percentage")
     total_price = fields.Float(compute="_compute_total_price")
     final_cost = fields.Float(compute="_compute_final")
+
+    @api.depends('weight')
+    def _compute_total_weight(self):
+        for line in self:
+            line.total_weight = line.weight * line.quantity
 
     @api.depends('total_price', 'shipment_cost')
     def _compute_final(self):

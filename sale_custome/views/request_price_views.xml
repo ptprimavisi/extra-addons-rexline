@@ -26,6 +26,7 @@
                                         <field name="description"/>
                                         <field name="brand"/>
                                         <field name="weight" string="Weight/kg"/>
+                                        <field name="total_weight"/>
                                         <field name="vendor_id" required="1"/>
                                         <field name="product_uom" string="Product Uom"/>
                                         <field name="quantity"/>
