@@ -335,6 +335,8 @@ class MrfLine(models.Model):
     quantity = fields.Float(default=1)
     avilable_qty = fields.Float(compute="_compute_available_qty")
     qty_purchase = fields.Float(compute='_compute_qty_purchase', readonly=False)
+    qty_ordered = fields.Float(compute='_compute_ordered')
+    qty_received = fields.Float(compute='_compute_received')
     unit_cost = fields.Float()
     subtotal = fields.Float(compute="_compute_subtotal")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
@@ -355,6 +357,18 @@ class MrfLine(models.Model):
     wh_id = fields.Many2one('stock.warehouse', domain=lambda self: [
         ('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)])
     count_quotation = fields.Integer(compute="_compute_quotation")
+
+    def _compute_ordered(self):
+        for line in self:
+            purchase = self.env['purchase.order.line'].search([('order_id.mrf_id','=', int(line.mrf_id.id)), ('state','=','purchase'), ('product_id', '=', line.product_id.id)])
+            line.qty_ordered = sum(purchase.mapped('product_qty'))
+
+    def _compute_received(self):
+        for line in self:
+            purchase = self.env['purchase.order.line'].search(
+                [('order_id.mrf_id', '=', int(line.mrf_id.id)), ('order_id.state', '=', 'purchase'), ('product_id', '=', line.product_id.id)])
+            print(purchase)
+            line.qty_received = sum(purchase.mapped('qty_received'))
 
     def action_count_quotation(self):
         for line in self:
