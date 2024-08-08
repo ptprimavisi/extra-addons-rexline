@@ -279,6 +279,18 @@ class CrmLead(models.Model):
         ('engineering', 'Engineering')
     ])
 
+    @api.onchange('process_to')
+    def rmove_pic(self):
+        for line in self:
+            if line.process_to == 'engineering':
+                line.pic_supply = False
+
+    @api.onchange('category_project')
+    def rmove_pic(self):
+        for line in self:
+            if line.category_project != 'supply':
+                line.process_to = False
+
     pic_supply = fields.Many2one('res.users')
     group_ids = fields.Many2one('res.groups', compute="_compute_group")
 

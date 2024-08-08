@@ -79,6 +79,8 @@
                                         <field name="quantity"/>
                                         <field name="avilable_qty"/>
                                         <field name="qty_purchase"/>
+                                        <field name="qty_ordered"/>
+                                        <field name="qty_received"/>
                                         <field name="product_uom_id"/>
                                         <field name="unit_weight" string="Unit weight/kg"/>
                                         <field name="total_weight" string="Total weight/kg"/>
