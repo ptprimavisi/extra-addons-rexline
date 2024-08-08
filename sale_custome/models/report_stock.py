@@ -41,8 +41,11 @@ class ReportStockProjectWizard(models.Model):
     def action_save(self):
         for line in self:
             self._cr.execute("DELETE FROM stock_report_project;")
+            if line.inquiry_id:
+                product_ids = line.inquiry_id.inquiry_line_detail.mapped('product_id.id')
+                # for liness in line.inquiry_id.inquiry_line_detail:
 
-            product_ids = self.env['product.product'].search([('detailed_type', '=', 'product')], order="id asc").ids
+            # product_ids = self.env['product.product'].search([('detailed_type', '=', 'product')], order="id asc").ids
             if line.product_id:
                 product_ids = line.product_id.ids
             # raise UserError(product_ids)
