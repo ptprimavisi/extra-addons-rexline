@@ -192,6 +192,11 @@ class SaleOrderInherith(models.Model):
     ref_quotation = fields.Char()
     count_estimate = fields.Integer(compute="_compute_count_estimate")
 
+    def action_print_report(self):
+        for line in self:
+            return self.env.ref('sale_custome.action_report_quotation').with_context(
+                paperformat=4, landscape=False).report_action(self)
+
     def action_view_estimate(self):
         for line in self:
             return {
