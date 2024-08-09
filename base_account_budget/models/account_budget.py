@@ -20,7 +20,7 @@
 #
 #############################################################################
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class AccountBudgetPost(models.Model):
@@ -45,6 +45,7 @@ class AccountBudgetPost(models.Model):
             account_ids = vals['account_ids']
         else:
             account_ids = self.account_ids
+        # raise UserError(account_ids)
         if not account_ids:
             raise ValidationError(
                 _('The budget must have at least one account.'))
@@ -133,15 +134,17 @@ class BudgetLines(models.Model):
             date_from = self.env.context.get(
                 'wizard_date_from') or line.date_from
             if line.analytic_account_id.id:
+                pa = self.env['account.analytic.line'].search([('date','>=',date_from), ('date','<=',date_to), ('auto_account_id','=',line.analytic_account_id.id), ('general_account_id','in',acc_ids)])
+                # raise UserError(pa)
                 self.env.cr.execute("""
                     SELECT SUM(amount)
                     FROM account_analytic_line
-                    WHERE account_id=%s
-                        AND date between %s AND %s
+                    WHERE date between %s AND %s
                         AND general_account_id=ANY(%s)""",
-                                    (line.analytic_account_id.id, date_from,
+                                    ( date_from,
                                      date_to, acc_ids,))
-                result = self.env.cr.fetchone()[0] or 0.0
+                result = sum(pa.mapped('amount'))
+                # raise UserError(result)
             line.practical_amount = result
 
     def _compute_theoretical_amount(self):

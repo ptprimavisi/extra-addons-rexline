@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-<record id="action_report_request_price" model="ir.actions.report">
+     <record id="action_report_request_price" model="ir.actions.report">
         <field name="name">Request Price</field>
         <field name="model">request.price</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">sale_custome.report_request_price</field>
         <field name="report_file">sale_custome.report_request_price</field>
+    </record>
+
+    <record id="action_report_quotation" model="ir.actions.report">
+        <field name="name">Quotation</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_custome.report_sale_quotation</field>
+        <field name="report_file">sale_custome.report_sale_quotation</field>
     </record>
 </odoo>

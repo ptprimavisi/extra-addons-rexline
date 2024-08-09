@@ -94,7 +94,6 @@ class ReportStockProjectWizard(models.Model):
                         purchase_order po on pol.order_id = po.id
                     JOIN
                         mrf_mrf mm on po.mrf_id = mm.id
-                    
                     WHERE
                         sm.state = 'done' AND
                         sm.write_date::date >= '""" + str(line.date_from) + """' AND

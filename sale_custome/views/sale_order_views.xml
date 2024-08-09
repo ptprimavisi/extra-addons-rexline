@@ -16,6 +16,9 @@
                         <field name="count_estimate" widget="statinfo" string="Estimate"/>
                     </button>
                 </button>
+                <button name="action_cancel" position="after">
+                    <button name="action_print_report" string="Print Quotation" type="object" invisible="id == False"/>
+                </button>
             </field>
 
         </record>
