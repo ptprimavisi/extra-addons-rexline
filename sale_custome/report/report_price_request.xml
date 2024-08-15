@@ -73,27 +73,51 @@
                 <t t-set="doc" t-value="docs"/>
                 <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.street)"/>
             <t t-set="address">
-                <div class="row mb-1 p-1" style="background-color: #7489a1; color: white; width: 60%;">
-                    <div class="col-lg-5">
-                        <strong class="ms-2">DATE </strong>
-                    </div>
-                    <div class="col-lg">
-                        <strong class="me-2"  t-field="doc.date_order"/>
-                    </div>
+                <div class="row mb-1 p-1" style="background-color: #7489a1; color: white;">
+                    <table>
+                        <thead>
+                            <tr class="mb-4">
+                                <th class="text-start" style="width: 40%; color: white;"><strong class="ms-2">DATE </strong></th>
+                                <th class="text-start"><strong class="me-2" style="color: white;"  t-field="doc.date_order"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <!--<div class="col-sm-2">-->
+                    <!--    <strong class="ms-2">DATE </strong>-->
+                    <!--</div>-->
+                    <!--<div class="col-sm">-->
+                    <!--    <strong class="me-2" t-field="doc.date_order"/>-->
+                    <!--</div>-->
                 </div>
-                <div class="row mb-1 p-1" style="background-color: #7489a1; color: white; width: 60%;">
-                    <div class="col-lg-5">
-                        <strong class="ms-2">QUOTE # </strong>
-                    </div>
-                    <div class="col-lg">
-                        <t t-if="doc.state == 'sale' and doc.ref_quotation">
-                            <strong class="me-2"  t-field="doc.ref_quotation"/>
-                        </t>
-                        <t t-else="doc.state != 'sale'">
-                            <strong class="me-2"  t-field="doc.name"/>
-                        </t>
+                <div class="row mb-1 p-1" style="background-color: #7489a1; color: white;">
+                    <table>
+                        <thead>
+                            <tr class="mb-4">
+                                <th class="text-start" style="width: 40%; color: white;"><strong class="ms-2">QUOTE #</strong></th>
+                                <!--<th class="text-start"><strong class="me-2" style="color: white;"/>-->
+                                    <t t-if="doc.state == 'sale' and doc.ref_quotation">
+                                        <th class="text-start"><strong class="me-2" style="color: white;"  t-field="doc.ref_quotation"/></th>
+                                        <!--<strong style="color: white;" class="me-2" t-field="doc.ref_quotation"/>-->
+                                    </t>
+                                    <t t-else="doc.state != 'sale'">
+                                        <th class="text-start"><strong class="me-2" style="color: white;"  t-field="doc.name"/></th>
+                                    </t>
+                                <!--</th>-->
+                            </tr>
+                        </thead>
+                    </table>
+                    <!--<div class="col-sm-2">-->
+                    <!--    <strong class="ms-2">QUOTE # </strong>-->
+                    <!--</div>-->
+                    <!--<div class="col-sm">-->
+                    <!--    <t t-if="doc.state == 'sale' and doc.ref_quotation">-->
+                    <!--        <strong class="me-2" t-field="doc.ref_quotation"/>-->
+                    <!--    </t>-->
+                    <!--    <t t-else="doc.state != 'sale'">-->
+                    <!--        <strong class="me-2" t-field="doc.name"/>-->
+                    <!--    </t>-->
 
-                    </div>
+                    <!--</div>-->
                 </div>
                 <!--<table>-->
                 <!--    <thead>-->
@@ -206,17 +230,17 @@
             <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report)"/>
 
             <div class="oe_structure"/>
-            <table class="table table-sm o_main_table table-borderless mt-4" >
+            <table class="table table-sm o_main_table table-borderless mt-4">
                 <!-- In case we want to repeat the header, remove "display: table-row-group" -->
                 <thead style="display: table-row-group">
                     <tr style="background-color: #7489a1; color: white;">
-                        <td name="th_description" class="text-start" >Description</td>
-                        <td name="th_quantity" class="text-end" >Quantity</td>
-                        <td name="th_priceunit" class="text-end" >Unit Price</td>
-                        <td name="th_discount" t-if="display_discount" class="text-end" >
+                        <td name="th_description" class="text-start">Description</td>
+                        <td name="th_quantity" class="text-end">Quantity</td>
+                        <td name="th_priceunit" class="text-end">Unit Price</td>
+                        <td name="th_discount" t-if="display_discount" class="text-end">
                             <span>Disc.%</span>
                         </td>
-                        <td name="th_taxes" class="text-end" >Taxes</td>
+                        <td name="th_taxes" class="text-end">Taxes</td>
                         <td name="th_subtotal" class="text-end">
                             <span>Amount</span>
                         </td>
@@ -233,24 +257,24 @@
                         <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
                             <t t-if="not line.display_type">
                                 <td name="td_name"><span t-field="line.name">Bacon Burger</span></td>
-                                <td name="td_quantity" class="text-end" >
+                                <td name="td_quantity" class="text-end">
                                     <span t-field="line.product_uom_qty">3</span>
                                     <span t-field="line.product_uom">units</span>
                                     <span t-if="line.product_packaging_id">
                                         (<span t-field="line.product_packaging_qty" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/> <span t-field="line.product_packaging_id"/>)
                                     </span>
                                 </td>
-                                <td name="td_priceunit" class="text-end" >
+                                <td name="td_priceunit" class="text-end">
                                     <span t-field="line.price_unit">3</span>
                                 </td>
-                                <td t-if="display_discount" class="text-end" >
+                                <td t-if="display_discount" class="text-end">
                                     <span t-field="line.discount">-</span>
                                 </td>
                                 <t t-set="taxes" t-value="', '.join([(tax.name or tax.name) for tax in line.tax_id])"/>
-                                <td name="td_taxes" t-attf-class="text-end {{ 'text-nowrap' if len(taxes) &lt; 10 else '' }}" >
+                                <td name="td_taxes" t-attf-class="text-end {{ 'text-nowrap' if len(taxes) &lt; 10 else '' }}">
                                     <span t-out="taxes">Tax 15%</span>
                                 </td>
-                                <td t-if="not line.is_downpayment" name="td_subtotal" class="text-end o_price_total" >
+                                <td t-if="not line.is_downpayment" name="td_subtotal" class="text-end o_price_total">
                                     <span t-field="line.price_subtotal">27.00</span>
                                 </td>
                             </t>
@@ -280,7 +304,7 @@
 
                 </tbody>
             </table>
-            <hr></hr>
+            <hr/>
 
             <div class="clearfix" name="so_total_summary">
                 <div id="total" class="row" name="total">
@@ -333,7 +357,7 @@
         <!--    </td>-->
         <!--</tr>-->
         <tr>
-            <td >
+            <td>
                 <div t-field="doc.note" t-attf-style="#{'text-align:left;margin: 0px;' if doc.company_id.terms_type != 'html' else ''}" name="order_note"/>
             </td>
         </tr>
