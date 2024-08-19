@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the existing hr.employee tree view -->
+        <record id="view_employee_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.tree.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//header" position="inside">
+<!--                    <header>-->
+                    <button name="action_sync_employee" string="Sync Employee" type="object"
+                            class="btn-primary ms-1"
+                            display="always"/>
+<!--                        <button name="action_sync_employee" type="object" string="Approve All" class="btn-primary"/>-->
+<!--                    </header>-->
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_employee_kanban_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.kanban.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="inside">
+                    <header>
+                        <button name="action_sync_employee" string="Sync Employee" type="object"
+                                class="btn-primary ms-1"
+                                display="always"/>
+                    </header>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>
