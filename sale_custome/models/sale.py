@@ -464,7 +464,7 @@ class CrmLead(models.Model):
                     for lines in line.lead_product_ids:
                         list_product.append((0, 0, {
                             'product_id': lines.product_id.id,
-                            'name': lines.product_id.product_tmpl_id.description or '',
+                            'name': lines.name or '',
                             'product_uom_quantity': lines.product_uom_quantity,
                             'product_uom': lines.product_uom.id,
                             'unit_weight': lines.product_id.product_tmpl_id.weight,
@@ -482,7 +482,7 @@ class CrmLead(models.Model):
                     for lines in line.lead_product_ids:
                         list_product.append((0, 0, {
                             'product_id': lines.product_id.id,
-                            'name': lines.product_id.product_tmpl_id.description or '',
+                            'name': lines.name or '',
                             'product_uom_quantity': lines.product_uom_quantity,
                             'product_uom': lines.product_uom.id,
                             'unit_weight': lines.product_id.product_tmpl_id.weight,
@@ -1717,8 +1717,8 @@ class ProductInherith(models.Model):
         # if vals.get('name', '/') == '/':
         # raise UserError('test func')
         value = vals.get('name')
-        # if not value.isupper():
-        #     raise UserError('Nama Harus Menggunakan Huruf Kapital')
+        if not value.isupper():
+            raise UserError('Nama Harus Menggunakan Huruf Kapital')
         # vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
         return super(ProductInherith, self).create(vals)
 
