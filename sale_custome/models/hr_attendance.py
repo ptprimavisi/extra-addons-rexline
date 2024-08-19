@@ -1,0 +1,61 @@
+from odoo import api, models, fields
+import requests
+from odoo.exceptions import UserError
+import json
+
+
+class HrEmployee(models.Model):
+    _inherit = 'hr.employee'
+
+    def action_sync_employee(self):
+        url = f'https://rexline.primasen.id/api/attendance/cek-users'
+
+        # Melakukan permintaan GET ke API eksternal
+        response = requests.get(url)
+        # print(response)
+        # raise UserError('TET')
+
+        # Mengecek apakah permintaan berhasil
+        if response.status_code == 200:
+            data = response.json()
+            if data['status'] == 'success':
+                # Mengambil data user dari response API
+                lst_id = []
+                user_data = data['data']
+                for users in user_data:
+                    lst_id.append(users['ref_id'])
+                employee = self.env['hr.employee'].search([('id','not in',lst_id)])
+                print(employee)
+                if employee:
+                    for employes in employee:
+                        urls = 'https://rexline.primasen.id/api/attendance/add-users'
+
+                        if employes.work_email:
+                            email = employes.work_email
+                        if employes.private_email:
+                            email = employes.private_email
+                        data = {
+                            "name": str(employes.name),
+                            "email": email or '',
+                            "role": 3,
+                            "password": 'rexline123',
+                            "id": int(employes.id)
+                        }
+                        headers = {
+                            'Content-Type': 'application/json',
+                            # 'Authorization': 'Bearer your_access_token',  # Jika ada token atau autentikasi lainnya
+                        }
+
+                        # Melakukan permintaan POST ke API eksternal
+                        responses = requests.post(urls, headers=headers, data=json.dumps(data))
+                        print(responses)
+            else:
+                print('User Data not found')
+                # Jika user tidak ditemukan
+                # self.env.user.notify_warning('User not found.')
+        else:
+            # Jika permintaan gagal
+            # self.env.user.notify_warning('Failed to access external API.')
+
+            print('User Data Not Found')
+        # for line in self:
