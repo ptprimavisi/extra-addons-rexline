@@ -35,5 +35,20 @@
 
             </field>
         </record>
+
+        <record id="view_contract_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.contract.form.inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="om_hr_payroll.hr_contract_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='allowances']" position="inside">
+                    <label for="position_allowance"/>
+                    <div class="o_row">
+                        <field name="position_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
