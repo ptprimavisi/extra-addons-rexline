@@ -27,7 +27,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//kanban" position="inside">
                     <header>
-                        <button name="action_sync_employee" string="Sync Employee" type="object"
+                        <button name="action_sync_employee" confirm="APakah Anda Ingin Update Employee?" string="Sync Employee" type="object"
                                 class="btn-primary ms-1"
                                 display="always"/>
                     </header>
