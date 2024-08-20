@@ -59,3 +59,9 @@ class HrEmployee(models.Model):
 
             print('User Data Not Found')
         # for line in self:
+
+
+class HrContarct(models.Model):
+    _inherit = 'hr.contract'
+
+    position_allowance = fields.Monetary()
