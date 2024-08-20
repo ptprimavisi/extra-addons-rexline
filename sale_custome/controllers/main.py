@@ -42,7 +42,7 @@ class SaleOrderController(http.Controller):
         request.session.uid = odoo.SUPERUSER_ID
         data = request.params
         employee = request.env['hr.employee'].search(
-            [('id', '=', data['email'])])
+            [('id', '=', data['ref_id'])])
         if not employee:
             return {
                 "message": "employee not found"
