@@ -42,7 +42,7 @@ class SaleOrderController(http.Controller):
         request.session.uid = odoo.SUPERUSER_ID
         data = request.params
         employee = request.env['hr.employee'].search(
-            ['|', ('work_email', '=', data['email']), ('private_email', '=', data['email'])])
+            [('id', '=', data['email'])])
         if not employee:
             return {
                 "message": "employee not found"
@@ -96,7 +96,7 @@ class SaleOrderController(http.Controller):
         uid = request.session.authenticate(db, 'admin', 'admin123')
         request.session.db = db
         request.session.uid = odoo.SUPERUSER_ID
-        employe_id = request.env['hr.employee'].search([('work_email', '=', rec['email'])])
+        employe_id = request.env['hr.employee'].search([('id', '=', rec['ref_id'])])
 
         cek = request.env['hr.leave'].search(
             [('employee_id', '=', int(employe_id.id)), ('date_from', '=', rec['date_from'])])
