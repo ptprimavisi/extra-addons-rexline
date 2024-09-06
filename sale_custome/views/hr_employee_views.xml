@@ -27,7 +27,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//kanban" position="inside">
                     <header>
-                        <button name="action_sync_employee" confirm="APakah Anda Ingin Update Employee?" string="Sync Employee" type="object"
+                        <button name="action_sync_employee" confirm="Apakah Anda Ingin Update Employee?" string="Sync Employee" type="object"
                                 class="btn-primary ms-1"
                                 display="always"/>
                     </header>
@@ -45,6 +45,11 @@
                     <label for="position_allowance"/>
                     <div class="o_row">
                         <field name="position_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="backpay_salary"/>
+                    <div class="o_row">
+                        <field name="backpay_salary" nolabel="1"/>
                         <span>/ month</span>
                     </div>
                 </xpath>

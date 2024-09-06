@@ -85,6 +85,8 @@
                                         <field name="unit_weight" string="Unit weight/kg"/>
                                         <field name="total_weight" string="Total weight/kg"/>
                                         <field name="budget" readonly="is_accounting != True"/>
+                                        <field name="best_price"/>
+                                        <field name="year" readonly="is_accounting != True"/>
                                         <field name="unit_cost"/>
                                         <field name="subtotal" readonly="1"/>
                                         <field name="product_uom_category_id" invisible="1" nolabel="1"/>

@@ -168,7 +168,7 @@
             <field name="res_model">permintaan.dana</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem id="kas_kecil" name="Kas Kecil" sequence="10"/>
+        <menuitem id="kas_kecil" name="Cash Advance" sequence="10"/>
         <menuitem id="menu_permintaan_dana"
                 name="Permintaan Dana"
                 action="custom_account.action_permintaan_dana"
