@@ -172,7 +172,15 @@ class HrPayslip(models.Model):
             if not contract_ids:
                 raise ValidationError(_("No running contract found for the employee: %s or no contract in the given period" % payslip.employee_id.name))
             lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
+            # print(lines)
+            # overtime = self.env['hr.salary.rule']
             payslip.write({'line_ids': lines, 'number': number})
+            for slip_line in payslip.line_ids:
+                if slip_line.salary_rule_id.code == 'OVT':
+                    # basic_salary = self.env['hr.payslip.line'].search([('slip_id','=', payslip.id), ('salary_rule_id.code','=', 'BASIC')])
+                    # slip_line.amount = (1/173) * 1 * basic_salary.amount * 1.5
+                    sk = self.env['surat.kerja.line'].search([('employee_id','=',payslip.employee_id.id), ('sk_id.type','=','overtime'),('state','=','approved'),('date_from','>=',payslip.date_from),('date_from','<=',payslip.date_to)])
+                    slip_line.quantity = sum(sk.mapped('work_hour'))
         return True
 
     @api.model

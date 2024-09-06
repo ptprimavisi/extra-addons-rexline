@@ -14,12 +14,12 @@ class HrPayslipLine(models.Model):
         """
         # use partner of salary rule or fallback on employee's address
         register_partner_id = self.salary_rule_id.register_id.partner_id
-        partner_id = register_partner_id.id or self.slip_id.employee_id.address_home_id.id
+        partner_id = register_partner_id.id
         if credit_account:
-            if register_partner_id or self.salary_rule_id.account_credit.internal_type in ('asset_receivable', 'liability_payable'):
+            if register_partner_id :
                 return partner_id
         else:
-            if register_partner_id or self.salary_rule_id.account_debit.internal_type in ('asset_receivable', 'liability_payable'):
+            if register_partner_id :
                 return partner_id
         return False
 
@@ -84,6 +84,11 @@ class HrPayslip(models.Model):
                 #     raise UserError(_('Missing Debit Or Credit Account in salary rule: "%s" !') % (
                 #         line.salary_rule_id))
                 if debit_account_id:
+                    id_anlytic = str(line.salary_rule_id.analytic_account_id.id)
+
+                    analytic = {
+                        id_anlytic : 100.0
+                    }
                     debit_line = (0, 0, {
                         'name': line.name,
                         'partner_id': line._get_partner_id(credit_account=False),
@@ -92,13 +97,18 @@ class HrPayslip(models.Model):
                         'date': date,
                         'debit': amount > 0.0 and amount or 0.0,
                         'credit': amount < 0.0 and -amount or 0.0,
-                        'analytic_account_id': line.salary_rule_id.analytic_account_id.id,
+                        'analytic_distribution': analytic,
                         'tax_line_id': line.salary_rule_id.account_tax_id.id,
                     })
                     line_ids.append(debit_line)
                     debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
 
                 if credit_account_id:
+                    id_anlytic = str(line.salary_rule_id.analytic_account_id.id)
+
+                    analytic = {
+                        id_anlytic: 100.0
+                    }
                     credit_line = (0, 0, {
                         'name': line.name,
                         'partner_id': line._get_partner_id(credit_account=True),
@@ -107,7 +117,7 @@ class HrPayslip(models.Model):
                         'date': date,
                         'debit': amount < 0.0 and -amount or 0.0,
                         'credit': amount > 0.0 and amount or 0.0,
-                        'analytic_account_id': line.salary_rule_id.analytic_account_id.id,
+                        'analytic_distribution': analytic,
                         'tax_line_id': line.salary_rule_id.account_tax_id.id,
                     })
                     line_ids.append(credit_line)

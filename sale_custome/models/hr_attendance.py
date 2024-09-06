@@ -65,3 +65,4 @@ class HrContarct(models.Model):
     _inherit = 'hr.contract'
 
     position_allowance = fields.Monetary()
+    backpay_salary = fields.Monetary()

@@ -826,14 +826,14 @@ class InquirySales(models.Model):
                                                                                         line_kit4.product_id.id ==
                                                                                         item[2]['product_id']
                                                                                         for item in list_product):
-                                                                                    list_product.append({
+                                                                                    list_product.append((0,0,{
                                                                                         'product_id': line_kit4.product_id.id,
                                                                                         'name': str(description),
                                                                                         'product_uom_quantity': line_kit4.product_qty,
                                                                                         'cost_price': line_kit4.product_id.product_tmpl_id.standard_price,
                                                                                         'unit_weight': line_kit4.product_id.product_tmpl_id.weight,
                                                                                         'product_uom': line_kit4.product_uom_id.id
-                                                                                    })
+                                                                                    }))
                                                                                 else:
                                                                                     for list_data in list_product:
                                                                                         if list_data[2][
@@ -850,18 +850,17 @@ class InquirySales(models.Model):
                                                                             line_kit3.product_id.id == item[2][
                                                                                 'product_id']
                                                                             for item in list_product):
-                                                                        list_product.append({
+                                                                        list_product.append((0,0,{
                                                                             'product_id': line_kit3.product_id.id,
                                                                             'name': str(description),
                                                                             'product_uom_quantity': line_kit3.product_qty,
                                                                             'cost_price': line_kit3.product_id.product_tmpl_id.standard_price,
                                                                             'unit_weight': line_kit3.product_id.product_tmpl_id.weight,
                                                                             'product_uom': line_kit3.product_uom_id.id
-                                                                        })
+                                                                        }))
                                                                     else:
                                                                         for list_data in list_product:
-                                                                            if list_data[2][
-                                                                                'product_id'] == line_kit3.product_id.id:
+                                                                            if list_data[2]['product_id'] == line_kit3.product_id.id:
                                                                                 list_data[2][
                                                                                     'product_uom_quantity'] += line_kit3.product_qty
                                                     if not any(
@@ -873,18 +872,17 @@ class InquirySales(models.Model):
                                                         if not any(
                                                                 line_kit2.product_id.id == item[2]['product_id']
                                                                 for item in list_product):
-                                                            list_product.append({
+                                                            list_product.append((0,0,{
                                                                 'product_id': line_kit2.product_id.id,
                                                                 'name': str(description),
                                                                 'product_uom_quantity': line_kit2.product_qty,
                                                                 'cost_price': line_kit2.product_id.product_tmpl_id.standard_price,
                                                                 'unit_weight': line_kit2.product_id.product_tmpl_id.weight,
                                                                 'product_uom': line_kit2.product_uom_id.id
-                                                            })
+                                                            }))
                                                         else:
                                                             for list_data in list_product:
-                                                                if list_data[2][
-                                                                    'product_id'] == line_kit2.product_id.id:
+                                                                if list_data[2]['product_id'] == line_kit2.product_id.id:
                                                                     list_data[2][
                                                                         'product_uom_quantity'] += line_kit2.product_qty
                                         description = line_kit.product_id.product_tmpl_id.name
@@ -893,17 +891,15 @@ class InquirySales(models.Model):
                                         if not any(
                                                 line_kit.product_id.product_tmpl_id.id == items.product_tmpl_id.id for
                                                 items in bom_global):
-                                            if not any(
-                                                    line_kit.product_id.id == item[2]['product_id']
-                                                    for item in list_product):
-                                                list_product.append({
+                                            if not any(line_kit.product_id.id == item[2]['product_id'] for item in list_product):
+                                                list_product.append((0,0,{
                                                     'product_id': line_kit.product_id.id,
                                                     'name': str(description),
                                                     'product_uom_quantity': line_kit.product_qty,
                                                     'cost_price': line_kit.product_id.product_tmpl_id.standard_price,
                                                     'unit_weight': line_kit.product_id.product_tmpl_id.weight,
                                                     'product_uom': line_kit.product_uom_id.id
-                                                })
+                                                }))
                                             else:
                                                 for list_data in list_product:
                                                     if list_data[2]['product_id'] == line_kit.product_id.id:

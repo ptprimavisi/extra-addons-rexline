@@ -1,5 +1,6 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
+from datetime import datetime
 
 
 class AcoountMove(models.Model):
@@ -170,7 +171,7 @@ class MaterialRequestForm(models.Model):
             mrf_line = self.env['mrf.line'].search([('mrf_id', '=', int(line.id))])
             if mrf_line:
                 mrf_line.unlink()
-            po = self.env['purchase.order'].search([('mrf_id','=', int(line.id))])
+            po = self.env['purchase.order'].search([('mrf_id', '=', int(line.id))])
             if po:
                 po.unlink()
 
@@ -196,7 +197,7 @@ class MaterialRequestForm(models.Model):
         for line in self:
             cost = 0
             for lines in line.mrf_line_ids:
-                cost += lines.budget
+                cost += lines.budget * lines.quantity
             line.total_budget = cost
 
     def _compute_acc_user(self):
@@ -349,6 +350,7 @@ class MrfLine(models.Model):
         # ondelete="restrict",
     )
     budget = fields.Float()
+    best_price = fields.Float(compute="_compute_bestprice")
     mrf_id = fields.Many2one('mrf.mrf')
     vendor_id = fields.Many2one('res.partner', string='Vendor', domain="[('supplier_rank', '!=', 0)]")
     attachment = fields.Binary(string='Attachment', attachment=True)
@@ -358,16 +360,42 @@ class MrfLine(models.Model):
     wh_id = fields.Many2one('stock.warehouse', domain=lambda self: [
         ('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)])
     count_quotation = fields.Integer(compute="_compute_quotation")
+    year = fields.Float()
+
+    def _compute_bestprice(self):
+        for line in self:
+            line.best_price = 0
+            order_lines = self.env['purchase.order.line'].search(
+                [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
+                 ('qty_received', '!=', 0)])
+            if line.year:
+                # raise UserError(datetime(2024, 1, 1))
+                order_lines_y = self.env['purchase.order.line'].search(
+                    [('product_id', '=', line.product_id.id),
+                     ('order_id.state', '=', 'purchase'),
+                     ('qty_received', '!=', 0),
+                     ('date_planned', '>=', datetime(int(line.year), 1, 1)),
+                     ('date_planned', '<=', datetime(int(line.year), 12, 31))
+                     ]
+                )
+                if order_lines_y:
+                    order_lines = order_lines_y
+            if order_lines:
+                min_price_unit = min(order_lines.mapped('price_unit'))
+                line.best_price = min_price_unit
 
     def _compute_ordered(self):
         for line in self:
-            purchase = self.env['purchase.order.line'].search([('order_id.mrf_id','=', int(line.mrf_id.id)), ('state','=','purchase'), ('product_id', '=', line.product_id.id)])
+            purchase = self.env['purchase.order.line'].search(
+                [('order_id.mrf_id', '=', int(line.mrf_id.id)), ('state', '=', 'purchase'),
+                 ('product_id', '=', line.product_id.id)])
             line.qty_ordered = sum(purchase.mapped('product_qty'))
 
     def _compute_received(self):
         for line in self:
             purchase = self.env['purchase.order.line'].search(
-                [('order_id.mrf_id', '=', int(line.mrf_id.id)), ('order_id.state', '=', 'purchase'), ('product_id', '=', line.product_id.id)])
+                [('order_id.mrf_id', '=', int(line.mrf_id.id)), ('order_id.state', '=', 'purchase'),
+                 ('product_id', '=', line.product_id.id)])
             print(purchase)
             line.qty_received = sum(purchase.mapped('qty_received'))
 
@@ -492,11 +520,18 @@ class MrfLine(models.Model):
     # ], default='draft')
 
 
+AVAILABLE_PRIORITIES = [
+    ('0', 'Low'),
+    ('1', 'Medium')
+]
+
+
 class PaymentRequest(models.Model):
     _name = 'payment.request'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
+    priority = fields.Selection(AVAILABLE_PRIORITIES, select=True)
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     date = fields.Date()
     due_date = fields.Date()
@@ -515,6 +550,8 @@ class PaymentRequest(models.Model):
             if line.type == 'dp':
                 if not line.payment_request_dp_ids:
                     raise UserError('Please add Down Paymnet line first')
+                if len(line.payment_request_dp_ids) > 1:
+                    raise UserError('Document PO Cannot be More Than 1')
                 for lines in line.payment_request_dp_ids:
                     po = self.env['purchase.order'].browse(lines.order_id.id)
                     amount_po = po.amount_total - po.down_payment
@@ -524,8 +561,132 @@ class PaymentRequest(models.Model):
             if line.type == 'bill':
                 if not line.payment_request_bill_ids:
                     raise UserError('Please add bill line first')
+                if len(line.payment_request_bill_ids) > 1:
+                    raise UserError('Document Bill Cannot be More Than 1')
             self.message_post(body=f"This document has been confirm")
             line.state = 'confirmed'
+
+    def action_print(self):
+        for line in self:
+            if line.type == 'dp':
+                po_ids = []
+                list = []
+                type = 'Down Payment'
+                if line.payment_request_dp_ids:
+                    for lines in line.payment_request_dp_ids:
+                        if lines.order_id:
+                            po_ids.append(lines.order_id.id)
+                            po = lines.order_id.name
+                            vendor = lines.order_id.partner_id.name or 'Unknown'
+                            mrf_data = self.env['mrf.mrf'].search([('id', '=', lines.order_id.mrf_id.id)])
+                            if mrf_data:
+                                mrf = lines.order_id.mrf_id.name or 'Unknown'
+                                so_data = self.env['sale.order'].search(
+                                    [('opportunity_id', '=', lines.order_id.mrf_id.inquiry_id.opportunity_id.id),
+                                     ('state', '=', 'sale')], limit=1)
+                                if so_data:
+                                    so = so_data.name or 'Unknown'
+                                else:
+                                    so = 'No SO Data'
+                            else:
+                                so = 'No MRF Data'
+                                mrf = 'No MRF'
+                        else:
+                            vendor = 'Unknown'
+                            mrf = 'Unknown'
+                            so = 'Unknown'
+                            po = 'Unknown'
+                else:
+                    vendor = 'No DP Line Data'
+                    mrf = 'No DP Line Data'
+                    so = 'No DP Line Data'
+                    po = 'No DP Line Data'
+                purchase_data = self.env['purchase.order'].browse(po_ids)
+                currency = purchase_data.currency_id.name or 'Unknown'
+                symbol = purchase_data.currency_id.symbol
+                for po_lines in purchase_data.order_line:
+                    list.append({
+                        'product': po_lines.product_id.name,
+                        'price_total': po_lines.price_total
+                    })
+            if line.type == 'bill':
+                po_ids = []
+                list = []
+                type = 'Full Payment'
+                if line.payment_request_bill_ids:
+                    for lines in line.payment_request_bill_ids:
+                        if lines.bill_id:
+                            invoice = self.env['account.move'].search([('id','=',lines.bill_id.id)])
+                            vendor = lines.bill_id.partner_id.name or 'Unknown'
+                            purchase_ids = invoice.mapped('line_ids.purchase_line_id.order_id')
+                            # id_purchase = int(purchase_ids)
+                            purchase = self.env['purchase.order'].search([('id','=', int(purchase_ids))])
+
+                            if purchase:
+                                po_ids.append(purchase.id)
+                                po = purchase.name
+                                # mrf_ids = []
+                                # for purchase_line in purchase:
+                                #     if purchase_line.mrf_id:
+                                #         mrf_ids.append(purchase_line.mrf_id.id)
+                                # mrf_data = self.env['mrf.mrf'].search([('id','in', mrf_ids)])
+                                if purchase.mrf_id:
+                                    mrf = purchase.mrf_id.name or 'Unknown'
+                                    so_data = self.env['sale.order'].search([('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id), ('state','=','sale')], limit=1)
+                                    if so_data:
+                                        so = so_data.name or 'Unknown'
+                                else:
+                                    mrf = 'No MRF'
+                                    so = 'No MRF Data'
+                            else:
+                                mrf = 'No Purchase Data'
+                                so = 'No Purchase Data'
+                                po = 'Unknown'
+                        else:
+                            vendor = 'Unknown'
+                            mrf = 'Unknown'
+                            po = 'No Bill Document'
+                else:
+                    vendor = 'No BIll line Data'
+                    mrf = 'No Bill Line Data'
+                    so = 'No Bill line data'
+                    po = 'No Bill line data'
+                purchase_data = self.env['purchase.order'].browse(po_ids)
+                currency = purchase_data.currency_id.name or 'Unknown'
+                symbol = currency_id = purchase_data.currency_id.symbol
+                for po_lines in purchase_data.order_line:
+                    list.append({
+                        'product': po_lines.product_id.name,
+                        'price_total': po_lines.price_total
+                    })
+            # for lines in line.request_line_ids:
+            #     list.append({
+            #         # 'product': lines.product_id.product_tmpl_id.name,
+            #         # 'brand': lines.brand,
+            #         # 'weight': lines.weight,
+            #         # 'supplier': lines.vendor_id.name,
+            #         # 'uom': lines.product_uom.name,
+            #         # 'qty': lines.quantity,
+            #         # 'cost': lines.cost_price,
+            #         # 'subtotal': lines.subtotal,
+            #     })
+            data = {
+                'number': line.name,
+                'vendor': vendor,
+                'date': str(line.date),
+                'due_date': str(line.due_date),
+                'mrf': mrf,
+                'so' : so,
+                'po': po,
+                'type': type,
+                'currency': currency,
+                'symbol': symbol,
+                # 'customer': line.partner_id.name,
+                'item_detail': list
+            }
+
+            return self.env.ref('purchase_custome.action_report_payment_request').with_context(
+                paperformat=4, landscape=False).report_action(self, data=data)
 
     def action_validate(self):
         for line in self:
