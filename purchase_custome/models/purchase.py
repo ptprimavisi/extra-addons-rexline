@@ -571,10 +571,23 @@ class PaymentRequest(models.Model):
             if line.type == 'dp':
                 po_ids = []
                 list = []
+                bank_list = []
                 type = 'Down Payment'
                 if line.payment_request_dp_ids:
+                    price_dp = 0
                     for lines in line.payment_request_dp_ids:
                         if lines.order_id:
+                            for bank_line in lines.order_id.partner_id.bank_ids:
+                                bank_list.append({
+                                    'bank_name': bank_line.bank_id.name,
+                                    'bank_number': bank_line.acc_number,
+                                    'bank_partner': bank_line.partner_id.name
+                                })
+                            price_dp += lines.amount
+                            percent = ''
+                            if lines.percentage:
+                                percent = f'{int(lines.percentage)}%'
+                            desc = f'Down Payment {percent} of PO {lines.order_id.name}'
                             po_ids.append(lines.order_id.id)
                             po = lines.order_id.name
                             vendor = lines.order_id.partner_id.name or 'Unknown'
@@ -592,11 +605,14 @@ class PaymentRequest(models.Model):
                                 so = 'No MRF Data'
                                 mrf = 'No MRF'
                         else:
+                            desc = 'Unknown'
                             vendor = 'Unknown'
                             mrf = 'Unknown'
                             so = 'Unknown'
                             po = 'Unknown'
                 else:
+                    price_dp = 0
+                    desc = 'No DP Line Data'
                     vendor = 'No DP Line Data'
                     mrf = 'No DP Line Data'
                     so = 'No DP Line Data'
@@ -610,12 +626,20 @@ class PaymentRequest(models.Model):
                         'price_total': po_lines.price_total
                     })
             if line.type == 'bill':
+                price_dp = 0
                 po_ids = []
                 list = []
                 type = 'Full Payment'
+                desc = ''
                 if line.payment_request_bill_ids:
                     for lines in line.payment_request_bill_ids:
                         if lines.bill_id:
+                            for bank_line in lines.bill_id.partner_id.bank_ids:
+                                bank_list.append({
+                                    'bank_name': bank_line.bank_id.name,
+                                    'bank_number': bank_line.acc_number,
+                                    'bank_partner': bank_line.partner_id.name
+                                })
                             invoice = self.env['account.move'].search([('id','=',lines.bill_id.id)])
                             vendor = lines.bill_id.partner_id.name or 'Unknown'
                             purchase_ids = invoice.mapped('line_ids.purchase_line_id.order_id')
@@ -670,6 +694,7 @@ class PaymentRequest(models.Model):
             #         # 'cost': lines.cost_price,
             #         # 'subtotal': lines.subtotal,
             #     })
+            print('account bank',bank_list)
             data = {
                 'number': line.name,
                 'vendor': vendor,
@@ -681,6 +706,9 @@ class PaymentRequest(models.Model):
                 'type': type,
                 'currency': currency,
                 'symbol': symbol,
+                'price_dp': price_dp,
+                'desc': desc,
+                'bank': bank_list,
                 # 'customer': line.partner_id.name,
                 'item_detail': list
             }
