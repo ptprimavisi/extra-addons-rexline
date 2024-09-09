@@ -63,29 +63,70 @@
                             <tbody>
                               <tr>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">NO.</th>
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">PRODUCT</th>
+                                <th style="border: 1px solid black; padding: 8px; text-align: center;">DESCRIPTION</th>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">AMOUNT</th>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">REMARK</th>
                               </tr>
-                              <t t-set="c" t-value="0"/>
+                              <t t-if="type == 'Full Payment'">
+                                <t t-set="c" t-value="0"/>
+                                <t t-set="total" t-value="0"/>
                                 <t t-foreach="item_detail" t-as="data">
                                     <t t-set="c" t-value="c + 1"/>
+                                    <t t-set="total" t-value="total + data['price_total']"/>
                                     <tr>
                                         <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="c"/></td>
                                         <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['product']"/></td>
                                         <td style="text-align: left; border: 1px solid black; padding: 8px;">
                                             <t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(data['price_total']))"/>
                                         </td>
-                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
                                         <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['uom']"/></td>-->
                                         <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['qty']"/></td>-->
                                         <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['cost']"/></td>-->
                                         <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['subtotal']"/></td>-->
                                     </tr>
                                 </t>
+                                 <tr>
+                                    <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"></td>-->
+                                    <td colspan="2" style="text-align: right; border: 1px solid black; padding: 8px;"><strong>TOTAL PAYMENT</strong></td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(total))"/></td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+
+                                </tr>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;">1.</td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="desc"/></td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;">
+                                        <t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(price_dp))"/>
+                                    </td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+
+                                </tr>
+                                <tr>
+                                    <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"></td>-->
+                                    <td colspan="2" style="text-align: right; border: 1px solid black; padding: 8px;"><strong>TOTAL PAYMENT</strong></td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(price_dp))"/></td>
+                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+
+                                </tr>
+                            </t>
 
                             </tbody>
                         </table>
+                        <div class="row">
+                            <div class="col-lg-2">
+                                Please Transfer To :
+                            </div>
+                            <div class="col-lg">
+                                <t t-foreach="bank" t-as="banks">
+                                    <p><t t-esc="banks['bank_name'] "/></p>
+                                    <p><t t-esc="banks['bank_number'] "/></p>
+                                    <p><t t-esc="banks['bank_partner'] "/></p>
+                                </t>
+                            </div>
+                        </div>
                 </div>
             </t>
         </template>
