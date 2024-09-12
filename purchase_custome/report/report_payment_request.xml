@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <template id="report_payment_request">
+    <template t-name="purchase_custome.report_payment_request">
             <t t-call="web.html_container">
-                <div class="header" style="font-family: Calibri, sans-serif;">
+
+                <div class="header" style="font-family: Calibri, sans-serif; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div class="left" style="text-align: left; width: 50%;">
+                        <p t-esc="'{}\n{}\n{}'.format(res_company.name, res_company.street, res_company.phone)" style="font-size: 12px; margin-top: 5px; white-space: pre-line;"/>
+                    </div>
+
+                    <div class="right" style="text-align: right;position: absolute; top: 0;right: 0;">
+                        <div style="display: inline-block; text-align: center;">
+                            <img t-attf-src="data:image/png;base64,#{res_company.logo}"
+                                 alt="Company Logo"
+                                 style="width: 100px; height: auto; margin-bottom: 5px;"/>
+                            <p t-esc="res_company.website"
+                               style="font-size: 12px; margin-top: 5px; white-space: nowrap;"/>
+                        </div>
+                    </div>
+                </div>
+
                     <h4 style="text-align: center; padding-top: 10px !important;">
                         PAYMENT REQUEST
                     </h4>
+
                    <p style="text-align: center;">
                         <t t-esc="number or 'Unknow'"/>
                     </p>
-                </div>
+
                 <div class="page" style="font-family: Calibri, sans-serif;">
                     <table class="table" style="width: 40%; font-size: 14px;" border="0">
                         <tr style="border: none;">
@@ -23,7 +40,7 @@
                             <td style="border: none;"/>
                         </tr>
                         <tr border="0">
-                            <td style="width: 23%; border: none;">VENDOR NAME</td>
+                            <td style="width: 23%; border: none;white-space: nowrap;">VENDOR NAME</td>
                             <td style="border: none; width: 2%;">:</td>
                             <td style="border: none;"><t t-esc="vendor or 'Unknow'"/></td>
                         </tr>
@@ -61,7 +78,7 @@
 
                     <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
                             <tbody>
-                              <tr>
+                              <tr style="background-color: #2b61bd;">
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">NO.</th>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">DESCRIPTION</th>
                                 <th style="border: 1px solid black; padding: 8px; text-align: center;">AMOUNT</th>
@@ -115,18 +132,97 @@
 
                             </tbody>
                         </table>
-                        <div class="row">
-                            <div class="col-lg-2">
-                                Please Transfer To :
-                            </div>
-                            <div class="col-lg">
-                                <t t-foreach="bank" t-as="banks">
-                                    <p><t t-esc="banks['bank_name'] "/></p>
-                                    <p><t t-esc="banks['bank_number'] "/></p>
-                                    <p><t t-esc="banks['bank_partner'] "/></p>
-                                </t>
+<div style="display: flex; justify-content: space-between;widht: 100%;">
+    <div class="row" style="background-color: #2b61bd; display: inline-block;width: 100%;margin-top: 15px;padding-top: 10px;padding-bottom: 20px;">
+        <div style="margin-left: 20px;">
+                            <table style="border-collapse: collapse;">
+                                <tr>
+                                    <td>Please Transfer To</td>
+                                    <td>: </td>
+                                    <td>
+                                        <t t-foreach="bank" t-as="banks">
+                                            <div style="white-space: nowrap;"><t t-esc="banks['bank_name']"/></div>
+                                        </t>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td>
+                                        <t t-foreach="bank" t-as="banks">
+                                            <div style="display: inline;"><t t-esc="banks['bank_number']"/></div>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td>
+                                        <t t-foreach="bank" t-as="banks">
+                                            <div style="display: inline;"><t t-esc="banks['bank_partner']"/></div>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
                             </div>
                         </div>
+                        <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;padding-right: 15px;">
+                                <tr>
+                                    <th colspan="3" style="font-weight: bold; border: 1px solid black;padding: 10px;">REQUESTER</th>
+                                    <th rowspan="2" style="border: 1px solid black; text-align: center;padding: 10px;">Director</th>
+                                </tr>
+                                <tr>
+                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Admin</th>
+                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Purchasing</th>
+                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Manager</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">M.K Anam</td>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Awang</td>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Yaser A.</td>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Rizvi S.</td>
+                                </tr>
+                            </table>
+
+                             <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;margin-left: 40px;">
+                                <tr>
+                                    <th colspan="2" style="border: 1px solid black; text-align: center;padding: 10px;">ACCOUNT</th>
+                                </tr>
+                                <tr>
+                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-left: 90px;"/>
+                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Senior/Manager</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>
+                                </tr>
+                            </table>
+
+                            <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;margin-left: 40px;">
+                                <tr>
+                                    <th colspan="2" style="border: 1px solid black; text-align: center;padding: 21px;">MANAGEMENT</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>
+                                </tr>
+                            </table>
+                    </div>
                 </div>
             </t>
         </template>

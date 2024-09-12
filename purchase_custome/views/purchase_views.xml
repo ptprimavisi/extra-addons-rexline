@@ -205,8 +205,10 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+
         <menuitem id="menu_mrf" name="Material Request" parent="purchase.menu_procurement_management" action="action_mrf_mrf" sequence="100"/>
         <menuitem id="menu_mrf_inventory" name="Material Request" parent="stock.menu_stock_warehouse_mgmt" action="action_mrf_mrf_inventory" sequence="100"/>
         <menuitem id="menu_mrf_account" name="Material Request" parent="account.menu_finance" action="action_mrf_mrf_account" sequence="6"/>
+
     </data>
 </odoo>

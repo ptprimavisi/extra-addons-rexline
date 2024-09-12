@@ -185,15 +185,52 @@ class MrpProduction(models.Model):
     #     return defaults
 
 
+import json
+
+
 class SaleOrderInherith(models.Model):
     _inherit = 'sale.order'
 
     validity = fields.Date()
     ref_quotation = fields.Char()
     count_estimate = fields.Integer(compute="_compute_count_estimate")
+    tax_list = fields.Char(compute="_compute_tax_list")
+
+    @api.depends('order_line')
+    def _compute_tax_list(self):
+        # raise UserError('test')
+        for line in self:
+            list = []
+            if line.order_line:
+                tax_ids = []
+                for lines in line.order_line:
+                    if lines.tax_id:
+                        for line_tax in lines.tax_id:
+                            tax_ids.append(line_tax.id)
+                tax_data = self.env['account.tax'].search([('id','in',tuple(tax_ids))])
+                for datas in tax_data:
+                    amount = self.amount_by_tax(int(line.id), [datas.id])
+                    list.append({
+                        'name': f"Taxes ({datas.name})",
+                        'amount': amount
+                    })
+            for item in list:
+                item['formatted_amount'] = str(line.currency_id.symbol) + '{:,.2f}'.format(item['amount'])
+            line.tax_list = json.dumps(list)
+
+                # line.tax_list = str(tax_data)
+    def amount_by_tax(self,order_id, tax_id):
+        data = self.env['sale.order.line'].search([('order_id','=',order_id), ('tax_id','in', tax_id)])
+        tax = self.env['account.tax'].search([('id','in', tax_id)])
+        amount = 0
+        for line in data:
+            total = (line.price_unit * line.product_uom_qty) * tax.amount / 100
+            amount += total
+        return amount
 
     def action_print_report(self):
         for line in self:
+            # raise UserError(line.tax_list)
             return self.env.ref('sale_custome.action_report_quotation').with_context(
                 paperformat=4, landscape=False).report_action(self)
 
@@ -826,7 +863,7 @@ class InquirySales(models.Model):
                                                                                         line_kit4.product_id.id ==
                                                                                         item[2]['product_id']
                                                                                         for item in list_product):
-                                                                                    list_product.append((0,0,{
+                                                                                    list_product.append((0, 0, {
                                                                                         'product_id': line_kit4.product_id.id,
                                                                                         'name': str(description),
                                                                                         'product_uom_quantity': line_kit4.product_qty,
@@ -850,7 +887,7 @@ class InquirySales(models.Model):
                                                                             line_kit3.product_id.id == item[2][
                                                                                 'product_id']
                                                                             for item in list_product):
-                                                                        list_product.append((0,0,{
+                                                                        list_product.append((0, 0, {
                                                                             'product_id': line_kit3.product_id.id,
                                                                             'name': str(description),
                                                                             'product_uom_quantity': line_kit3.product_qty,
@@ -860,7 +897,8 @@ class InquirySales(models.Model):
                                                                         }))
                                                                     else:
                                                                         for list_data in list_product:
-                                                                            if list_data[2]['product_id'] == line_kit3.product_id.id:
+                                                                            if list_data[2][
+                                                                                'product_id'] == line_kit3.product_id.id:
                                                                                 list_data[2][
                                                                                     'product_uom_quantity'] += line_kit3.product_qty
                                                     if not any(
@@ -872,7 +910,7 @@ class InquirySales(models.Model):
                                                         if not any(
                                                                 line_kit2.product_id.id == item[2]['product_id']
                                                                 for item in list_product):
-                                                            list_product.append((0,0,{
+                                                            list_product.append((0, 0, {
                                                                 'product_id': line_kit2.product_id.id,
                                                                 'name': str(description),
                                                                 'product_uom_quantity': line_kit2.product_qty,
@@ -882,7 +920,8 @@ class InquirySales(models.Model):
                                                             }))
                                                         else:
                                                             for list_data in list_product:
-                                                                if list_data[2]['product_id'] == line_kit2.product_id.id:
+                                                                if list_data[2][
+                                                                    'product_id'] == line_kit2.product_id.id:
                                                                     list_data[2][
                                                                         'product_uom_quantity'] += line_kit2.product_qty
                                         description = line_kit.product_id.product_tmpl_id.name
@@ -891,8 +930,9 @@ class InquirySales(models.Model):
                                         if not any(
                                                 line_kit.product_id.product_tmpl_id.id == items.product_tmpl_id.id for
                                                 items in bom_global):
-                                            if not any(line_kit.product_id.id == item[2]['product_id'] for item in list_product):
-                                                list_product.append((0,0,{
+                                            if not any(line_kit.product_id.id == item[2]['product_id'] for item in
+                                                       list_product):
+                                                list_product.append((0, 0, {
                                                     'product_id': line_kit.product_id.id,
                                                     'name': str(description),
                                                     'product_uom_quantity': line_kit.product_qty,

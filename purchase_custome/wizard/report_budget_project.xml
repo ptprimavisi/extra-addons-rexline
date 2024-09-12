@@ -1,0 +1,40 @@
+<odoo>
+    <data>
+        <record id="report_budget_project_view" model="ir.ui.view">
+            <field name="name">report.budget.project.view.form</field>
+            <field name="model">report.budget.project</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="inquiry_id" string="Project" required="1"/>
+<!--                            <field name="date" string="Request Date" readonly="1"/>-->
+                        </group>
+
+                    </sheet>
+                    <footer>
+                        <button name="action_print_report" string="Print" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_generate_report_budget" model="ir.actions.act_window">
+            <field name="name">Generate Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">report.budget.project</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_generate_report" name="Report Budget" parent="purchase.purchase_report_main" action="action_generate_report_budget" sequence="6"/>
+
+<!--        <record id="action_rfp" model="ir.actions.act_window">-->
+<!--            <field name="name">Price Request</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">request.price</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="menu_rfq_tree" name="Price Request" parent="purchase.menu_procurement_management" action="action_rfp" sequence="90"/>-->
+    </data>
+</odoo>

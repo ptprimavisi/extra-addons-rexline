@@ -640,11 +640,11 @@ class PaymentRequest(models.Model):
                                     'bank_number': bank_line.acc_number,
                                     'bank_partner': bank_line.partner_id.name
                                 })
-                            invoice = self.env['account.move'].search([('id','=',lines.bill_id.id)])
+                            invoice = self.env['account.move'].search([('id', '=', lines.bill_id.id)])
                             vendor = lines.bill_id.partner_id.name or 'Unknown'
                             purchase_ids = invoice.mapped('line_ids.purchase_line_id.order_id')
                             # id_purchase = int(purchase_ids)
-                            purchase = self.env['purchase.order'].search([('id','=', int(purchase_ids))])
+                            purchase = self.env['purchase.order'].search([('id', '=', int(purchase_ids))])
 
                             if purchase:
                                 po_ids.append(purchase.id)
@@ -656,7 +656,9 @@ class PaymentRequest(models.Model):
                                 # mrf_data = self.env['mrf.mrf'].search([('id','in', mrf_ids)])
                                 if purchase.mrf_id:
                                     mrf = purchase.mrf_id.name or 'Unknown'
-                                    so_data = self.env['sale.order'].search([('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id), ('state','=','sale')], limit=1)
+                                    so_data = self.env['sale.order'].search(
+                                        [('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id),
+                                         ('state', '=', 'sale')], limit=1)
                                     if so_data:
                                         so = so_data.name or 'Unknown'
                                 else:
@@ -694,14 +696,14 @@ class PaymentRequest(models.Model):
             #         # 'cost': lines.cost_price,
             #         # 'subtotal': lines.subtotal,
             #     })
-            print('account bank',bank_list)
+            print('account bank', bank_list)
             data = {
                 'number': line.name,
                 'vendor': vendor,
                 'date': str(line.date),
                 'due_date': str(line.due_date),
                 'mrf': mrf,
-                'so' : so,
+                'so': so,
                 'po': po,
                 'type': type,
                 'currency': currency,
@@ -756,6 +758,18 @@ class PaymentRequest(models.Model):
         moves['name'] = self.env['ir.sequence'].next_by_code('PR')
 
         return moves
+
+
+def action_view_report():
+    return {
+        "type": "ir.actions.act_window",
+        "res_model": "report.budget.project",
+        "name": "Generate Report",
+        'view_mode': 'form',
+        # "context": {"create": False},
+        'target': 'new',
+
+    }
 
 
 class PaymentRequestDp(models.Model):

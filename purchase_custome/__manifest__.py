@@ -12,6 +12,7 @@
         "wizard/purchase_order_wizard.xml",
         "report/report.xml",
         "report/report_payment_request.xml",
+        "wizard/report_budget_project.xml",
     ],
 
     'installable': True,
