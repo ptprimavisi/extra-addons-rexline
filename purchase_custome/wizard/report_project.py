@@ -77,11 +77,13 @@ class ReportBudgetProject(models.TransientModel):
         # Contoh isi dari Excel
         inquiry = self.env['inquiry.inquiry'].search([('id','=', self.inquiry_id.id)])
         so = self.env['sale.order'].search([('state','=', 'sale'),('opportunity_id','=', self.inquiry_id.opportunity_id.id)], limit=1)
-        so_name = str(so.name) or 'Unknown'
+        so_name = 'Unknown'
+        if so:
+            so_name = str(so.name)
         # worksheet.write(0, 0, 'N.')
         worksheet.write(1, 1, 'CUSTOMER NAME', header_format )
         worksheet.write(2, 1, 'PROJECT NO', header_format)
-        worksheet.write(3, 1, '', header_format)
+        worksheet.write(3, 1, 'PROJECT LOCATION', header_format)
         worksheet.write(4, 1, 'SO NO', header_format)
 
         worksheet.write(1, 2, str(inquiry.partner_id.name), header_format)
