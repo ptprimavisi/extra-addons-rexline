@@ -1,5 +1,7 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
+import xlsxwriter
+import xlwt
 
 
 class ReportStockProject(models.Model):

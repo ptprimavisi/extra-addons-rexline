@@ -66,7 +66,7 @@
         </template>
 
 
-    <template id="report_sale_quotation">
+    <template t-name="sale_custome.report_sale_quotation">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
         <!--<t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang-->
@@ -78,7 +78,7 @@
                         <thead>
                             <tr class="mb-4">
                                 <th class="text-start" style="width: 40%; color: white;"><strong class="ms-2">DATE </strong></th>
-                                <th class="text-start"><strong class="me-2" style="color: white;"  t-field="doc.date_order"/></th>
+                                <th class="text-start"><strong class="me-2" style="color: white;" t-field="doc.date_order"/></th>
                             </tr>
                         </thead>
                     </table>
@@ -96,11 +96,11 @@
                                 <th class="text-start" style="width: 40%; color: white;"><strong class="ms-2">QUOTE #</strong></th>
                                 <!--<th class="text-start"><strong class="me-2" style="color: white;"/>-->
                                     <t t-if="doc.state == 'sale' and doc.ref_quotation">
-                                        <th class="text-start"><strong class="me-2" style="color: white;"  t-field="doc.ref_quotation"/></th>
+                                        <th class="text-start"><strong class="me-2" style="color: white;" t-field="doc.ref_quotation"/></th>
                                         <!--<strong style="color: white;" class="me-2" t-field="doc.ref_quotation"/>-->
                                     </t>
                                     <t t-else="doc.state != 'sale'">
-                                        <th class="text-start"><strong class="me-2" style="color: white;"  t-field="doc.name"/></th>
+                                        <th class="text-start"><strong class="me-2" style="color: white;" t-field="doc.name"/></th>
                                     </t>
                                 <!--</th>-->
                             </tr>
@@ -312,7 +312,68 @@
                         <table class="table table-sm table-borderless">
                             <!-- Tax totals -->
                             <t t-set="tax_totals" t-value="doc.tax_totals"/>
-                            <t t-call="sale.document_tax_totals"/>
+                            <!--<t t-call="sale.document_tax_totals"/>-->
+                            <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+                                <tr class="border-black o_subtotal">
+                                    <td><strong t-out="subtotal['name']">Untaxed Amount</strong></td>
+
+                                    <td class="text-end">
+                                        <span
+                                            t-att-class="oe_subtotal_footer_separator"
+                                            t-out="subtotal['formatted_amount']"
+                                        >27.00</span>
+                                    </td>
+                                </tr>
+
+                                <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                <!--<span t-out="doc.tax_list">Tax 15%</span>-->
+                                <t t-foreach="json.loads(doc.tax_list)" t-as="line">
+                                    <tr>
+                                        <td><span class="text-nowrap" t-out="line['name']">Tax 15%</span></td>
+                                        <td class="text-end">
+                                        <span t-out="line['formatted_amount']">0</span>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-foreach="tax_totals['groups_by_subtotal'][subtotal_to_show]" t-as="amount_by_group">
+                                    <t t-set="display_tax_base" t-value="tax_totals['display_tax_base']"/>
+                                    <tr>
+                                        <t t-if="not display_tax_base">
+                                            <td><span class="text-nowrap" t-out="amount_by_group['tax_group_name']">Tax 15%</span></td>
+                                            <td class="text-end o_price_total">
+                                                <span class="text-nowrap" t-out="amount_by_group['formatted_tax_group_amount']">1.05</span>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td>
+                                                <span t-out="amount_by_group['tax_group_name']">Tax 15%</span>
+                                                 on
+                                                <span class="text-nowrap" t-out="amount_by_group['formatted_tax_group_base_amount']">27.00</span>
+                                            </td>
+                                            <td class="text-end o_price_total">
+                                                <span class="text-nowrap" t-out="amount_by_group['formatted_tax_group_amount']">4.05</span>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                                <!--<t t-call="account.tax_groups_totals"/>-->
+                            </t>
+
+                            <tr t-if="'formatted_rounding_amount' in tax_totals and tax_totals['rounding_amount'] != 0">
+                                <td>Rounding</td>
+                                <td class="text-end">
+                                    <span t-out="tax_totals['formatted_rounding_amount']">0</span>
+                                </td>
+                            </tr>
+
+                            <!--Total amount with all taxes-->
+                            <tr class="border-black o_total">
+                                <td><strong>Total</strong></td>
+                                <td  class="text-end">
+                                    <span t-out="tax_totals['formatted_amount_total']">31.05</span>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

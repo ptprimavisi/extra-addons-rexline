@@ -18,6 +18,27 @@ class ProductionReport(models.Model):
         ('draft', 'Draft'),
         ('done', 'Done')
     ], default="draft")
+    count_sk = fields.Integer(compute="_compute_count_sk")
+
+    def _compute_count_sk(self):
+        for line in self:
+            # count = 0
+            sk = self.env['surat.kerja'].search([('progres_id','=',int(line.id))])
+            # raise UserError(len(sk))
+            # if sk:
+            #     for lines in sk:
+            #         count += 1
+            line.count_sk = len(sk)
+
+    def action_count_sk(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "surat.kerja",
+            "domain": [('progres_id', '=', int(self.id))],
+            "context": {"create": False},
+            "name": "Surat Kerja",
+            'view_mode': 'tree,form',
+        }
 
     @api.depends('mo_id')
     def _compute_mrf_ids(self):
