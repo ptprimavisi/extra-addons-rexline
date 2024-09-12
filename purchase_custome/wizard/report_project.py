@@ -79,15 +79,15 @@ class ReportBudgetProject(models.TransientModel):
         so = self.env['sale.order'].search([('state','=', 'sale'),('opportunity_id','=', self.inquiry_id.opportunity_id.id)], limit=1)
         so_name = str(so.name) or 'Unknown'
         # worksheet.write(0, 0, 'N.')
-        worksheet.write(1, 1, 'CUSTOMER NAME', str(inquiry.partner_id.name))
-        worksheet.write(2, 1, 'PROJECT NO', str(inquiry.name))
+        worksheet.write(1, 1, 'CUSTOMER NAME', header_format )
+        worksheet.write(2, 1, 'PROJECT NO', header_format)
         worksheet.write(3, 1, '', header_format)
-        worksheet.write(4, 1, so_name, header_format)
+        worksheet.write(4, 1, 'SO NO', header_format)
 
-        worksheet.write(1, 2, 'PT SURYA PALOH', header_format)
-        worksheet.write(2, 2, 'INQ/REX/0001', header_format)
-        worksheet.write(3, 2, 'KALIMANTAN', header_format)
-        worksheet.write(4, 2, 'S00009', header_format)
+        worksheet.write(1, 2, str(inquiry.partner_id.name), header_format)
+        worksheet.write(2, 2, str(inquiry.name), header_format)
+        worksheet.write(3, 2, '', header_format)
+        worksheet.write(4, 2, so_name, header_format)
 
         style_header = workbook.add_format(
             {'bold': True, 'bg_color': '#f50a0a', 'font_color': 'white', 'align': 'center','border': 1   })
