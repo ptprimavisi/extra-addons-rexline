@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <template id="report_production_daily">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-set="doc" t-value="docs"/>
+                    <div class="header" style="font-family: Calibri, sans-serif;">
+                    <h4 style="text-align: center; padding-top: 10px !important;">
+<!--                        <t t-esc="company_name"/><br/>-->
+                        GENERAL DAILY REPORT
+                    </h4>
+                </div>
+
+                <div class="page" style="font-family: Calibri, sans-serif;">
+                    <table class="table" style="width: 40%; font-size: 14px;">
+                        <tr>
+                            <td>CUSTOMER / CLIENT   </td>
+                            <td>:</td>
+                            <td><t t-esc="doc.partner_id.name or 'Unknow'"/></td>
+                        </tr>
+                        <tr>
+                            <td>SO / PROJECT   </td>
+                            <td>:</td>
+                            <td><t t-esc="doc.sale_id.name or 'Unknow'"/></td>
+                        </tr>
+                        <tr>
+                            <td>LOCATION   </td>
+                            <td>:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>DATE</td>
+                            <td>:</td>
+                            <td><t t-esc="doc.date or 'Unknow'"/></td>
+                        </tr>
+                    </table>
+
+                        <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
+                            <tbody>
+                            </tbody>
+                        </table>
+                </div>
+                </t>
+
+            </t>
+        </template>
+</odoo>

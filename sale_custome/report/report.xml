@@ -15,4 +15,12 @@
         <field name="report_name">sale_custome.report_sale_quotation</field>
         <field name="report_file">sale_custome.report_sale_quotation</field>
     </record>
+
+    <record id="action_report_daily_report" model="ir.actions.report">
+        <field name="name">Daily Report</field>
+        <field name="model">general.daily.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_custome.report_production_daily</field>
+        <field name="report_file">sale_custome.report_production_daily</field>
+    </record>
 </odoo>

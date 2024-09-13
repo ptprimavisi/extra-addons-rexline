@@ -11,6 +11,8 @@
         "wizard/production_views.xml",
         "wizard/schedule_wizard_views.xml",
         "wizard/price_request_wizard.xml",
+        "wizard/daily_report_production.xml",
+        "report/daily_report_production.xml",
         "report/report_price_request.xml",
         'report/report.xml',
         # "views/rfq_views.xml",

@@ -20,14 +20,54 @@ class ProductionReport(models.Model):
     ], default="draft")
     count_sk = fields.Integer(compute="_compute_count_sk")
 
+    def action_report(self):
+        for line in self:
+            #
+            inquiry_ids = []
+            for lines in line.mrf_ids:
+                inquiry_ids.append(lines.inquiry_id.id)
+
+            inquiry = self.env['inquiry.inquiry'].search([('id', 'in', inquiry_ids)])
+
+            so = self.env['sale.order'].search(
+                [('opportunity_id', '=', inquiry.opportunity_id.id),
+                 ('state', '=', 'sale'),
+                 ('opportunity_id', '!=', False)])
+            # raise UserError(so)
+            list_employee = []
+            sk = self.env['surat.kerja'].search([('progres_id', '=', int(line.id))])
+            sk_line = self.env['surat.kerja.line'].search([('sk_id', 'in', sk.ids)])
+            # raise UserError(sk_line)
+            for line_employee in sk_line:
+                if not any(line_employee.employee_id.id == item[2]['employee_id'] for item in list_employee):
+                    list_employee.append((0,0,{
+                        'employee_id': line_employee.employee_id.id
+                    }))
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Generate Report',
+                'res_model': 'general.daily.report',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_partner_id': int(inquiry.partner_id.id) or False,
+                    'default_date': str(line.activity_date),
+                    'default_sale_id': int(so.id) or False,
+                    'default_man_power_ids': list_employee
+                }
+                # 'request_line_ids': list
+            }
+
+    # @api.depends('id')
     def _compute_count_sk(self):
         for line in self:
-            # count = 0
-            sk = self.env['surat.kerja'].search([('progres_id','=',int(line.id))])
+            count = 0
+            sk = self.env['surat.kerja'].search([('progres_id', '=', int(line.id))])
             # raise UserError(len(sk))
-            # if sk:
-            #     for lines in sk:
-            #         count += 1
+            if sk:
+                for lines in sk:
+                    count += 1
             line.count_sk = len(sk)
 
     def action_count_sk(self):
@@ -47,7 +87,7 @@ class ProductionReport(models.Model):
             # raise UserError(mo)
             if mo:
                 if mo.origin:
-                    sale = self.env['sale.order'].search([('name','=', str(mo.origin))])
+                    sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
                     if sale:
                         mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', sale.opportunity_id.id)])
                         if mrf:
@@ -91,9 +131,12 @@ class ProductionReport(models.Model):
                                             else:
                                                 mo = self.env['mrp.production'].search([('name', '=', str(mo.origin))])
                                                 if mo.origin:
-                                                    sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
+                                                    sale = self.env['sale.order'].search(
+                                                        [('name', '=', str(mo.origin))])
                                                     if sale:
-                                                        mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id','=', sale.opportunity_id.id)])
+                                                        mrf = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id',
+                                                                                           '=',
+                                                                                           sale.opportunity_id.id)])
                                                         if mrf:
                                                             record.mrf_ids = mrf.ids
                                                         else:

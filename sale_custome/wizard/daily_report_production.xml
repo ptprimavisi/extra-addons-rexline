@@ -1,0 +1,57 @@
+<odoo>
+    <data>
+        <record id="general_daily_report_wizard_view" model="ir.ui.view">
+            <field name="name">general.daily.report.view.form</field>
+            <field name="model">general.daily.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="partner_id" string="Customer" readonly="1"/>
+                            <field name="sale_id" string="SO / Project" readonly="1"/>
+                            <field name="location" string="Location"/>
+                            <field name="date" string="Date"/>
+                        </group>
+                        <notebook>
+                            <page string="Man Power">
+                                <field name="man_power_ids">
+                                    <tree editable="bottom">
+                                        <field name="employee_id" required="1"/>
+                                        <field name="description" string="Description"/>
+                                        <field name="p" string="P/mm" />
+                                        <field name="t" string="T/mm"/>
+                                        <field name="l" string="L/mm"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Problem">
+                                <field name="problem_ids">
+                                    <tree editable="bottom">
+                                        <field name="description" string="Description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Solving">
+                                <field name="solving_ids">
+                                    <tree editable="bottom">
+                                        <field name="description" string="Description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Target">
+                                <field name="target_ids">
+                                    <tree editable="bottom">
+                                        <field name="description" string="Description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_print" string="Print" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
