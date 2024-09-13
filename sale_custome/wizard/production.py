@@ -37,3 +37,54 @@ class ManufacturWizard(models.TransientModel):
             })
             if create_mo:
                 create_mo.action_confirm()
+
+
+class GeneralDailyReport(models.TransientModel):
+    _name = 'general.daily.report'
+
+    partner_id = fields.Many2one('res.partner')
+    sale_id = fields.Many2one('sale.order')
+    location = fields.Char()
+    date = fields.Date()
+    man_power_ids = fields.One2many('man.power.line', 'report_id')
+    problem_ids = fields.One2many('problem.line', 'report_id')
+    solving_ids = fields.One2many('solving.line', 'report_id')
+    target_ids = fields.One2many('target.line', 'report_id')
+
+    def action_print(self):
+        for line in self:
+            # raise UserError(line.tax_list)
+            return self.env.ref('sale_custome.action_report_daily_report').with_context(
+                paperformat=4, landscape=False).report_action(self)
+
+
+class ManPower(models.TransientModel):
+    _name = 'man.power.line'
+
+    employee_id = fields.Many2one('hr.employee')
+    description = fields.Text()
+    p = fields.Float()
+    t = fields.Float()
+    l = fields.Float()
+    report_id = fields.Many2one('general.daily.report')
+
+
+class ProblemLine(models.TransientModel):
+    _name = 'problem.line'
+
+    description = fields.Text()
+    report_id = fields.Many2one('general.daily.report')
+
+
+class SolvingLine(models.TransientModel):
+    _name = 'solving.line'
+
+    description = fields.Text()
+    report_id = fields.Many2one('general.daily.report')
+
+
+class TargetLine(models.TransientModel):
+    _name = 'target.line'
+
+    description = fields.Text()
+    report_id = fields.Many2one('general.daily.report')
