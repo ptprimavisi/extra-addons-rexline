@@ -142,6 +142,8 @@ class ProductionReport(models.Model):
                                                             record.mrf_ids = mrf.ids
                                                         else:
                                                             record.mrf_ids = False
+                else:
+                    record.mrf_ids = False
             else:
                 record.mrf_ids = False
             # mrf_records = self.env['mrf.mrf'].search([('inquiry_id.opportunity_id', '=', record.mo_id.opportunity_id.id)])
