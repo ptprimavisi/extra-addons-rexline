@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <template id="report_advance_request">
+    <template t-name="custom_account.report_advance_request">
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
                     <div class="header" style="font-family: Calibri, sans-serif;">
@@ -13,49 +13,113 @@
                 <div class="page" style="font-family: Calibri, sans-serif;">
                     <table class="table" style="width: 40%; font-size: 14px;">
                         <tr>
-                            <td>INQUIRY NO</td>
-                            <td>:</td>
-<!--                            <td><t t-esc="inquiry_name or 'Unknow'"/></td>-->
-                        </tr>
-                        <tr>
                             <td>DATE</td>
                             <td>:</td>
-<!--                            <td><t t-esc="date or 'Unknow'"/></td>-->
+                            <td><t t-esc="docs.date_request or 'Unknow'"/></td>
                         </tr>
                         <tr>
-                            <td>Customer</td>
+                            <td>REQUESTER</td>
                             <td>:</td>
-<!--                            <td><t t-esc="customer or 'Unknow'"/></td>-->
+                            <td><t t-esc="docs.employee_id.name or 'Unknow'"/></td>
+                        </tr>
+                        <tr>
+                            <td>DEPARTMENT</td>
+                            <td>:</td>
+                            <td><t t-esc="docs.department.name or 'Unknow'"/></td>
                         </tr>
                     </table>
+                    <br></br>
+                    <h6><strong>PURPOSE OF ADVANCE REQUEST</strong></h6>
+                     <table style="width: 100%; min-height: 100px; border-collapse: collapse;">
+                        <tr style="border: 1px solid black; vertical-align: middle;">
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br></br>
+                        <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif;">
+                            <tbody>
+                              <tr>
+                                <th style="text-align: center; border: 1px solid black; padding: 8px;">ITEM</th>
+                                <th style="text-align: center; border: 1px solid black; padding: 8px;">AMOUNT</th>
+                                <th style="text-align: center; border: 1px solid black; padding: 8px;">REMARK</th>
+                              </tr>
+                                <t t-foreach="docs.dana_line" t-as="data">
+                                    <tr>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['description']"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="'{:,.2f}'.format(data['amount'])"/></td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                        <td style="text-align: right; border: 1px solid black; padding: 8px;">TOTAL ADVANCE</td>
+                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="'{:,.2f}'.format(docs.total_amount)"/></td>
+                                </tr>
 
-<!--                        <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">-->
-<!--                            <tbody>-->
-<!--                              <tr>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Produk</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Brand</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Weight</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">Supplier</th>-->
-<!--                                <th style="border: 1px solid black; padding: 8px;">UoM</th>-->
-<!--                                  <th style="border: 1px solid black; padding: 8px;">Quantity</th>-->
-<!--                                  <th style="border: 1px solid black; padding: 8px;">Cost</th>-->
-<!--                                  <th style="border: 1px solid black; padding: 8px;">Subtotal</th>-->
-<!--                              </tr>-->
-<!--                                <t t-foreach="item_detail" t-as="data">-->
-<!--                                    <tr>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['product']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['brand']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['weight']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['supplier']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['uom']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['qty']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['cost']"/></td>-->
-<!--                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['subtotal']"/></td>-->
-<!--                                    </tr>-->
-<!--                                </t>-->
+                            </tbody>
+                        </table>
+                        <br></br>
+                        <p><strong>Please Transfer To : <t t-esc="docs.bank_note"/></strong></p>
+                        <br></br>
+                        <div class="row">
+                            <div class="col col-lg-4">
+                                <table class="table" style="width: 75%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                        <td style="text-align: center; height: 10px; border: 1px solid black;" colspan="2">REQUESTER</td>
+                                    </tr>
+                                    <tr >
+                                        <td style="text-align: center; width: 50%; height: 30px; border: 1px solid black;">PIC</td>
+                                        <td style="text-align: center; width: 50%; height: 30px; border: 1px solid black;">Manager</td>
+                                    </tr>
+                                     <tr >
+                                        <td style="text-align: center; height: 100px; border: 1px solid black;"></td>
+                                        <td style="text-align: center; height: 100px; border: 1px solid black;"></td>
+                                    </tr>
+                                     <tr>
+                                        <td style="text-align: center; height: 30px; border: 1px solid black;"></td>
+                                        <td style="text-align: center; height: 30px; border: 1px solid black;"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col col-lg-4">
+                                <table class="table" style="width: 75%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                        <td style="text-align: center; height: 30px; border: 1px solid black;" colspan="2">ACCOUNTS</td>
+                                    </tr>
+                                    <tr >
+                                        <td style="text-align: center; height: 30px; width: 50%; border: 1px solid black;">PIC</td>
+                                        <td style="text-align: center; height: 30px; width: 50%; border: 1px solid black;">Senior/Manager</td>
+                                    </tr>
+                                     <tr >
+                                        <td style="text-align: center; height: 100px; border: 1px solid black;"></td>
+                                        <td style="text-align: center; height: 100px; border: 1px solid black;"></td>
+                                    </tr>
+                                     <tr>
+                                        <td style="text-align: center; height: 30px; border: 1px solid black;"></td>
+                                        <td style="text-align: center; height: 30px; border: 1px solid black;"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col col-lg-4">
+                                <table class="table" style="width: 75%; border-collapse: collapse; ">
+                                    <tbody>
+                                        <tr style="height: 80px;">
+                                            <td style="text-align: center; border: 1px solid black; vertical-align: middle;">MANAGEMENT</td>
+                                        </tr>
+                                        <tr >
+                                            <td style="text-align: center; height: 100px; border: 1px solid black;"></td>
+                                        </tr>
+                                         <tr>
+                                            <td style="text-align: center; height: 30px; border: 1px solid black;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-<!--                            </tbody>-->
-<!--                        </table>-->
+                        </div>
 
 
                     <!-- <p style="font-size: 14px;">Total Uang Diterima : <t t-esc="total_diterima"/></p> -->
