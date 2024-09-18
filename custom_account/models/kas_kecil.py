@@ -48,6 +48,7 @@ class PermintaanDana(models.Model):
     ], default='draft')
     count_realisasi = fields.Float(compute='_compute_count_realisasi')
     count_refund = fields.Float(compute="_compute_count_refund")
+    bank_note = fields.Text()
 
     def _compute_count_refund(self):
         for line in self:
