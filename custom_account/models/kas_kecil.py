@@ -14,6 +14,12 @@ class PermintaanDana(models.Model):
     description = fields.Text()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
 
+    def action_print_report(self):
+        for line in self:
+            # raise UserError(line.tax_list)
+            return self.env.ref('custom_account.action_report_advance_request').with_context(
+                paperformat=4, landscape=False).report_action(self)
+
     def _default_employee(self):
         # for line in self:
         employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])

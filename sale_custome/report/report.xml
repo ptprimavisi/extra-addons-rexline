@@ -23,4 +23,5 @@
         <field name="report_name">sale_custome.report_production_daily</field>
         <field name="report_file">sale_custome.report_production_daily</field>
     </record>
+
 </odoo>

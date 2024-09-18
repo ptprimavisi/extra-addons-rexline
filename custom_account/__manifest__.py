@@ -6,8 +6,9 @@
     'data': [
         "views/permintaan_dana_views.xml",
         "views/realisai_dana_views.xml",
-        "views/inquiry_estimate_views.xml",
         "views/refund_views.xml",
+        "report/report.xml",
+        "report/report_advance_request.xml",
     ],
 
     'installable': True,

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_report_advance_request" model="ir.actions.report">
+        <field name="name">Advance Request</field>
+        <field name="model">permintaan.dana</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_account.report_advance_request</field>
+        <field name="report_file">custom_account.report_advance_request</field>
+    </record>
+</odoo>
