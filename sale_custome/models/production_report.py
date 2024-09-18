@@ -24,8 +24,9 @@ class ProductionReport(models.Model):
         for line in self:
             #
             inquiry_ids = []
-            for lines in line.mrf_ids:
-                inquiry_ids.append(lines.inquiry_id.id)
+            if line.mrf_ids:
+                for lines in line.mrf_ids:
+                    inquiry_ids.append(lines.inquiry_id.id)
 
             inquiry = self.env['inquiry.inquiry'].search([('id', 'in', inquiry_ids)])
 
