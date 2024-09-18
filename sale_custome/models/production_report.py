@@ -85,7 +85,7 @@ class ProductionReport(models.Model):
     def _compute_mrf_ids(self):
         for record in self:
             mo = self.env['mrp.production'].browse(record.mo_id.id)
-            raise UserError(mo)
+            # raise UserError(mo)
             if mo:
                 if mo.origin:
                     sale = self.env['sale.order'].search([('name', '=', str(mo.origin))])
