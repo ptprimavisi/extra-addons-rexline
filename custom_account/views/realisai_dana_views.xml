@@ -8,6 +8,7 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                         <button name="action_post" string="Posted" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_print_report" string="Print" type="object"  invisible="id == False"/>
                     </header>
                     <sheet>
                         <div class="o_lead_opportunity_form_inline_fields">
@@ -34,6 +35,8 @@
                             <page string="Lines">
                                 <field name="realisasi_line" readonly="state == 'posted'">
                                     <tree editable="bottom">
+                                        <field name="date" string="Expense Date" required="1"/>
+                                        <field name="type" string="Type Of Expense" required="1"/>
                                         <field name="description" required="1"/>
                                         <field name="account_id" groups="sale_custome.accounting_custom_group"/>
                                         <field name="amount" required="1"/>
@@ -48,7 +51,7 @@
                             <group colspan="4">
                                 <group class="oe_subtotal_footer oe_right" >
                                     <field name="total_amount" widget="monetary" string="Total Amount" readonly="1"/>
-
+                                    <field name="advance_amount" widget="monetary" string="Advance Amount" readonly="1"/>
                                 </group>
                             </group>
                         </group>
