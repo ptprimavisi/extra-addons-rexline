@@ -311,6 +311,19 @@ class RealisasiDana(models.Model):
         ('draft', 'Draft'),
         ('posted', 'Posted')
     ], default='draft')
+    advance_amount = fields.Float(compute="_compute_advance_amount")
+
+    @api.depends('permintaan_id')
+    def _compute_advance_amount(self):
+        for line in self:
+            line.advance_amount = line.permintaan_id.total_amount
+
+
+    def action_print_report(self):
+        for line in self:
+            # raise UserError(line.tax_list)
+            return self.env.ref('custom_account.action_report_ralisasi').with_context(
+                paperformat=4, landscape=False).report_action(self)
 
     def unlink(self):
         for line in self:
@@ -419,6 +432,8 @@ class RealisasiDana(models.Model):
 class RealisasiLine(models.Model):
     _name = 'realisasi.line'
 
+    date = fields.Date()
+    type = fields.Char()
     description = fields.Text()
     amount = fields.Float()
     account_id = fields.Many2one('account.account')
