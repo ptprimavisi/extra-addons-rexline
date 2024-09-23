@@ -49,6 +49,17 @@ class PermintaanDana(models.Model):
     count_realisasi = fields.Float(compute='_compute_count_realisasi')
     count_refund = fields.Float(compute="_compute_count_refund")
     bank_note = fields.Text()
+    realisasi_status = fields.Char(compute="_compute_state_realisasi")
+
+    def _compute_state_realisasi(self):
+        for line in self:
+            line.realisasi_status = 'To Realisasi'
+            realisasi_draft = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id)), ('state','=', 'draft')])
+            realisasi_post = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id)), ('state','=', 'posted')])
+            if realisasi_draft:
+                line.realisasi_status = 'Draft Realisasi'
+            if realisasi_post:
+                line.realisasi_status = 'Realisasi'
 
     def _compute_count_refund(self):
         for line in self:
@@ -312,6 +323,7 @@ class RealisasiDana(models.Model):
         ('posted', 'Posted')
     ], default='draft')
     advance_amount = fields.Float(compute="_compute_advance_amount")
+
 
     @api.depends('permintaan_id')
     def _compute_advance_amount(self):

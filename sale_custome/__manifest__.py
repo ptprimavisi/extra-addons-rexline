@@ -19,6 +19,7 @@
         "views/crm_views.xml",
         "views/bom_views.xml",
         "views/stock_report_views.xml",
+        "views/packing_list_views.xml",
         "views/cost_estimation_views.xml",
         "views/product_views.xml",
         "views/request_price_views.xml",

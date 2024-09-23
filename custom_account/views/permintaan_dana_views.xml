@@ -42,6 +42,7 @@
                                 <field name="employee_id" required="1" domain="[('department_id', '=', department)]" readonly="department == False or state == 'transfer'"/>
                                 <field name="description" required="1" readonly="state == 'transfer'"/>
                                 <field name="bank_note" required="1"/>
+                                <field name="realisasi_status" readonly="1"/>
                             </group>
                             <group>
                                 <field name="date_request" required="1" readonly="state == 'transfer'"/>
@@ -154,11 +155,12 @@
                             optional="show"/>
 <!--                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>-->
 <!--                    <field name="state_count_rfq" string="RFQ Status" widget="boolean_toggle"/>-->
-<!--                    <field name="state"-->
-<!--                            decoration-warning="state == 'draft'"-->
-<!--                            decoration-success="state == 'done'"-->
-<!--                            widget="badge"-->
-<!--                            optional="show"/>-->
+                    <field name="realisasi_status"
+                            decoration-danger="realisasi_status == 'To Realisasi'"
+                            decoration-warning="realisasi_status == 'Draft Realisasi'"
+                            decoration-success="realisasi_status == 'Realisasi'"
+                            widget="badge"
+                            optional="show"/>
                 </tree>
             </field>
         </record>
