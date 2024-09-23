@@ -1,0 +1,85 @@
+<odoo>
+    <data>
+        <record id="packing_list_form_view" model="ir.ui.view">
+            <field name="name">packing.list.view.form</field>
+            <field name="model">packing.list</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+<!--                        <div class="oe_title">-->
+<!--                            <h1>-->
+<!--                                <field name="name"/>-->
+<!--                            </h1>-->
+<!--                        </div>-->
+                        <group>
+                            <group>
+                                <field name="picking_id" readonly="1"/>
+                                <field name="partner_id" string="Delivery To" />
+                                <field name="street"/>
+                            </group>
+                            <group>
+                                <field name="order_date" />
+                                <field name="delivery_date"/>
+                                <field name="so_number"/>
+                                <field name="po_number"/>
+                                <field name="truck_no"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Item Lines">
+                                <field name="picking_line" required="1">
+                                    <tree editable="bottom">
+                                        <field name="item"/>
+                                        <field name="qty_out"/>
+                                        <field name="uom_out"/>
+                                        <field name="qty_kolli"/>
+                                        <field name="uom_kolli"/>
+                                        <field name="p" string="P(mm)"/>
+                                        <field name="l" string="L(mm)"/>
+                                        <field name="t" string="T(mm)"/>
+                                        <field name="net_wight"/>
+                                        <field name="gross_wight"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="packing_list_tree_view" model="ir.ui.view">
+            <field name="name">packing.list.tree.view</field>
+            <field name="model">packing.list</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="picking_id"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="order_date"/>
+                    <field name="delivery_date"/>
+                </tree>
+            </field>
+        </record>
+
+<!--        <record id="action_rfq" model="ir.actions.act_window">-->
+<!--            <field name="name">RFQ</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">rfq.rfq</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="menu_rfq_tree" name="Material Request" parent="purchase.menu_procurement_management" action="action_rfq" sequence="10"/>-->
+
+        <record id="stock_picking_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.stock.picking.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <button name="action_cancel" position="after">
+                    <button name="action_create_packing" string="Create Packing List" type="object" invisible="id == False and state == 'done'"/>
+                </button>
+            </field>
+
+        </record>
+    </data>
+</odoo>

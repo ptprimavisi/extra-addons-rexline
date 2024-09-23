@@ -1753,7 +1753,7 @@ class ProductInherith(models.Model):
         # if vals.get('name', '/') == '/':
         # raise UserError('test func')
         value = vals.get('name')
-        if not value.isupper():
+        if not all(c.isupper() for c in value if c.isalpha()):
             raise UserError('Nama Harus Menggunakan Huruf Kapital')
         # vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
         return super(ProductInherith, self).create(vals)
