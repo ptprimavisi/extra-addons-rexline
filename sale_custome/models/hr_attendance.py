@@ -66,3 +66,4 @@ class HrContarct(models.Model):
 
     position_allowance = fields.Monetary()
     backpay_salary = fields.Monetary()
+    transport_allowance = fields.Monetary()

@@ -52,6 +52,11 @@
                         <field name="backpay_salary" nolabel="1"/>
                         <span>/ month</span>
                     </div>
+                    <label for="transport_allowance"/>
+                    <div class="o_row">
+                        <field name="transport_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
                 </xpath>
             </field>
         </record>

@@ -78,6 +78,11 @@
                 <button name="action_cancel" position="after">
                     <button name="action_create_packing" string="Create Packing List" type="object" invisible="id == False and state == 'done'"/>
                 </button>
+                <button name="action_see_returns" position="before">
+                    <button name="action_view_packing" type="object" class="oe_stat_button" icon="fa-bars" invisible="count_packing_list == 0">
+                        <field string="Packing List" name="count_packing_list" widget="statinfo"/>
+                    </button>
+                </button>
             </field>
 
         </record>
