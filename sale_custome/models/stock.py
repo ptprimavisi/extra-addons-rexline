@@ -6,6 +6,24 @@ from datetime import date, datetime, time
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    count_packing_list = fields.Integer(compute="_compute_count_packing")
+
+    def _compute_count_packing(self):
+        for line in self:
+            picking = self.env['packing.list'].search([('picking_id','=',int(line.id))])
+            line.count_packing_list = len(picking)
+
+    def action_view_packing(self):
+        for line in self:
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "packing.list",
+                "domain": [('picking_id', '=', int(line.id))],
+                "context": {"create": False},
+                "name": "Packing List",
+                'view_mode': 'tree,form',
+            }
+
     def action_create_packing(self):
         for line in self:
             return {
@@ -44,7 +62,7 @@ class PackingList(models.Model):
 class PickingLine(models.Model):
     _name = 'picking.list.line'
 
-    picking_id = fields.Many2one('picking.list')
+    picking_id = fields.Many2one('packing.list')
     item = fields.Char()
     qty_out = fields.Float()
     uom_out = fields.Many2one('uom.uom')
