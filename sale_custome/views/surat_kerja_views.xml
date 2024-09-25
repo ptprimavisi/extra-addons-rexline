@@ -26,8 +26,8 @@
                         <group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <field name="progres_id" required="1"/>
-                            <field name="date_from" required="1"/>
-                            <field name="date_to" required="1"/>
+                            <field name="date_from" required="1" readonly="state == 'draft' and id != False"/>
+                            <field name="date_to" required="1" readonly="state == 'draft' and id != False"/>
                             <field name="work_hours" widget="time"/>
                             <field name="description" required="1"/>
                             <field name="type" required="1"/>

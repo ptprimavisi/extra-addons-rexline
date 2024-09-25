@@ -24,7 +24,7 @@ class SuratKerja(models.Model):
         ('draft', 'Draft'),
         ('confirmed', 'Confirm')
     ], default='draft')
-    is_night = fields.Boolean(compute="_compute_is_night")
+    is_night = fields.Boolean(compute="_compute_is_night", store=True)
 
     @api.depends('date_to')
     def _compute_is_night(self):
