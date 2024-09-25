@@ -494,7 +494,7 @@ class CrmLead(models.Model):
                     data['process_to'] = line.process_to
                 # inquiry = self.env['inquiry.inquiry'].search([])
                 inquiry = self.env['inquiry.inquiry'].create(data)
-                if line.category_project == 'supply' and line.process_to == 'purchase':
+                if line.category_project == 'supply' or line.category_project == 'project':
                     list_product = []
                     if not line.lead_product_ids:
                         raise UserError('Pl add product first')
