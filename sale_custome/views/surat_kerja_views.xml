@@ -31,6 +31,7 @@
                             <field name="work_hours" widget="time"/>
                             <field name="description" required="1"/>
                             <field name="type" required="1"/>
+                            <field name="is_night"/>
 <!--                            <field name="inquiry_id" readonly="1"/>-->
 <!--                            <field name="request_date"/>-->
 <!--                            <field name="due_date" required="1"/>-->

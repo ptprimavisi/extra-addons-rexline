@@ -1,7 +1,8 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from datetime import date, datetime, time
-
+import pytz
+import re
 
 class SuratKerja(models.Model):
     _name = 'surat.kerja'
@@ -23,6 +24,24 @@ class SuratKerja(models.Model):
         ('draft', 'Draft'),
         ('confirmed', 'Confirm')
     ], default='draft')
+    is_night = fields.Boolean(compute="_compute_is_night")
+
+    @api.depends('date_to')
+    def _compute_is_night(self):
+        for line in self:
+            line.is_night = False
+            if line.date_to:
+                utc_now = line.date_to
+                jakarta_tz = pytz.timezone('Asia/Jakarta')
+                jakarta_time = utc_now.astimezone(jakarta_tz)
+                jakarta_time = str(jakarta_time).split(' ')[1]
+
+                time_str = jakarta_time.split('+')[0]
+
+                print(time_str)
+                # print("Waktu saat ini di Asia/Jakarta:", jakarta_time.strftime('%Y-%m-%d %H:%M:%S'))
+                if time_str > '21:00:00':
+                    line.is_night = True
 
     def create(self, vals_list):
         vals_list['name'] = self.env['ir.sequence'].next_by_code('SK') or '/'
