@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pph_kategori_form" model="ir.ui.view">
+        <field name="name">pph.kategori.form</field>
+        <field name="model">pph.kategori</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="keterangan"/>
+                        <field name="kategori"/>
+                        <field name="tarif_pajak"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pph_kategori_tree" model="ir.ui.view">
+        <field name="name">pph.kategori.tree</field>
+        <field name="model">pph.kategori</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="keterangan"/>
+                <field name="kategori"/>
+                <field name="tarif_pajak"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="pph_kategori_action" model="ir.actions.act_window">
+        <field name="name">PPH Kategori</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pph.kategori</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="ptkp_ptkp_ptkp_form" model="ir.ui.view">
+        <field name="name">ptkp.ptkp.ptkp.form</field>
+        <field name="model">ptkp.ptkp.ptkp</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="nominal"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ptkp_ptkp_ptkp_tree" model="ir.ui.view">
+        <field name="name">ptkp.ptkp.ptkp.tree</field>
+        <field name="model">ptkp.ptkp.ptkp</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="nominal"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ptkp_ptkp_ptkp_action" model="ir.actions.act_window">
+        <field name="name">PTKP</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ptkp.ptkp.ptkp</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="pph_kategori_menu"
+              name="PPH 21 Kategori"
+              parent="hr.menu_human_resources_configuration"
+              action="pph_kategori_action"
+    />
+
+    <menuitem id="ptkp_ptkp_ptkp_menu"
+              name="PTKP"
+              parent="hr.menu_human_resources_configuration"
+              action="ptkp_ptkp_ptkp_action"
+    />
+
+    <record id="hr_contract_inherit_ptkp_kategori_form" model="ir.ui.view">
+        <field name="name">hr.contract.inherit.form</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+                <xpath expr="//field[@name='employee_id']" position="before">
+                    <!-- Adding a new field -->
+                    <field name="pph_kategori"/>
+                    <field name="ptkp_id"/>
+                </xpath>
+            </field>
+    </record>
+</odoo>
+

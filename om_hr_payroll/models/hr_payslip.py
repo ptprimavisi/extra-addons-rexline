@@ -181,6 +181,32 @@ class HrPayslip(models.Model):
                     # slip_line.amount = (1/173) * 1 * basic_salary.amount * 1.5
                     sk = self.env['surat.kerja.line'].search([('employee_id','=',payslip.employee_id.id), ('sk_id.type','=','overtime'),('state','=','approved'),('date_from','>=',payslip.date_from),('date_from','<=',payslip.date_to)])
                     slip_line.quantity = sum(sk.mapped('work_hour'))
+            pph = self.env['hr.payslip.line'].search(
+                [('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH21'])])
+            basic = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('category_id', '=', 1)])
+            alw = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('category_id', '=', 2)])
+            ded = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('category_id', '=', 4)])
+            gross = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('category_id', '=', 3)])
+            date_to = str(payslip.date_to).split("-")[1]
+            if date_to != '12':
+                basic_amount = 0.0
+                alw_amount = 0.0
+                for b in basic:
+                    basic_amount += b.amount
+
+                for a in alw:
+                    alw_amount += a.amount
+
+                if payslip.contract_id.pph_kategori:
+                    amount = (payslip.contract_id.pph_kategori.tarif_pajak / 100) * (gross.amount)
+
+                    pph.write({'amount': amount})
+                    # gaji_gross = self.env['hr.payslip.line'].search(
+                    #     [('slip_id', '=', int(payslip.id)), ('code', 'in', ['GROSS'])])
+                    # gaji_gross.write({'amount' : gaji_gross.amount - amount})
+                    gaji_net = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                    gaji_net.write({'amount': gaji_net.amount - amount})
         return True
 
     @api.model
