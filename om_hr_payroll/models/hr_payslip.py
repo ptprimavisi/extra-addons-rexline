@@ -160,6 +160,267 @@ class HrPayslip(models.Model):
         clause_final = [('employee_id', '=', employee.id), ('state', '=', 'open'), '|', '|'] + clause_1 + clause_2 + clause_3
         return self.env['hr.contract'].search(clause_final).ids
 
+
+    def get_percentage(self, gaji_bruto , kategory):
+        if kategory == 'a':
+            pph = 0
+            if gaji_bruto <= 5400000:
+                pph = 0
+            elif 5400000 < gaji_bruto <= 5650000:
+                pph = 0.0025
+            elif 5650000 < gaji_bruto <= 5950000:
+                pph = 0.005
+            elif 5950000 < gaji_bruto <= 6300000:
+                pph = 0.0075
+            elif 6300000 < gaji_bruto <= 6750000:
+                pph = 0.01
+            elif 6750000 < gaji_bruto <= 7500000:
+                pph = 0.0125
+            elif 7500000 < gaji_bruto <= 8550000:
+                pph = 0.015
+            elif 8550000 < gaji_bruto <= 9650000:
+                pph = 0.0175
+            elif 9650000 < gaji_bruto <= 10050000:
+                pph = 0.02
+            elif 10050000 < gaji_bruto <= 10350000:
+                pph = 0.0225
+            elif 10350000 < gaji_bruto <= 10700000:
+                pph = 0.025
+            elif 10700000 < gaji_bruto <= 11050000:
+                pph = 0.03
+            elif 11050000 < gaji_bruto <= 11600000:
+                pph = 0.035
+            elif 11600000 < gaji_bruto <= 12500000:
+                pph = 0.04
+            elif 12500000 < gaji_bruto <= 13750000:
+                pph = 0.05
+            elif 13750000 < gaji_bruto <= 15100000:
+                pph = 0.06
+            elif 15100000 < gaji_bruto <= 16950000:
+                pph = 0.07
+            elif 16950000 < gaji_bruto <= 19750000:
+                pph = 0.08
+            elif 19750000 < gaji_bruto <= 24150000:
+                pph = 0.09
+            elif 24150000 < gaji_bruto <= 26450000:
+                pph = 0.1
+            elif 26450000 < gaji_bruto <= 28000000:
+                pph = 0.11
+            elif 28000000 < gaji_bruto <= 30050000:
+                pph = 0.12
+            elif 30050000 < gaji_bruto <= 32400000:
+                pph = 0.13
+            elif 32400000 < gaji_bruto <= 35400000:
+                pph = 0.14
+            elif 35400000 < gaji_bruto <= 39100000:
+                pph = 0.15
+            elif 39100000 < gaji_bruto <= 43850000:
+                pph = 0.16
+            elif 43850000 < gaji_bruto <= 47800000:
+                pph = 0.17
+            elif 47800000 < gaji_bruto <= 51400000:
+                pph = 0.18
+            elif 51400000 < gaji_bruto <= 56300000:
+                pph = 0.19
+            elif 56300000 < gaji_bruto <= 62200000:
+                pph = 0.2
+            elif 62200000 < gaji_bruto <= 68600000:
+                pph = 0.21
+            elif 68600000 < gaji_bruto <= 77500000:
+                pph = 0.22
+            elif 77500000 < gaji_bruto <= 89000000:
+                pph = 0.23
+            elif 89000000 < gaji_bruto <= 103000000:
+                pph = 0.24
+            elif 103000000 < gaji_bruto <= 125000000:
+                pph = 0.25
+            elif 125000000 < gaji_bruto <= 157000000:
+                pph = 0.26
+            elif 157000000 < gaji_bruto <= 206000000:
+                pph = 0.27
+            elif 206000000 < gaji_bruto <= 337000000:
+                pph = 0.28
+            elif 337000000 < gaji_bruto <= 454000000:
+                pph = 0.29
+            elif 454000000 < gaji_bruto <= 550000000:
+                pph = 0.3
+            elif 550000000 < gaji_bruto <= 695000000:
+                pph = 0.31
+            elif 695000000 < gaji_bruto <= 910000000:
+                pph = 0.32
+            elif 910000000 < gaji_bruto <= 1400000000:
+                pph = 0.33
+            elif gaji_bruto > 1400000000:
+                pph = 0.34
+        elif kategory == 'b':
+            if gaji_bruto <= 6200000:
+                pph = 0
+            elif 6200000 < gaji_bruto <= 6500000:
+                pph = 0.0025
+            elif 6500000 < gaji_bruto <= 6850000:
+                pph = 0.005
+            elif 6850000 < gaji_bruto <= 7300000:
+                pph = 0.0075
+            elif 7300000 < gaji_bruto <= 9200000:
+                pph = 0.01
+            elif 9200000 < gaji_bruto <= 10750000:
+                pph = 0.015
+            elif 10750000 < gaji_bruto <= 11250000:
+                pph = 0.02
+            elif 11250000 < gaji_bruto <= 11600000:
+                pph = 0.025
+            elif 11600000 < gaji_bruto <= 12600000:
+                pph = 0.03
+            elif 12600000 < gaji_bruto <= 13600000:
+                pph = 0.04
+            elif 13600000 < gaji_bruto <= 14950000:
+                pph = 0.05
+            elif 14950000 < gaji_bruto <= 16400000:
+                pph = 0.06
+            elif 16400000 < gaji_bruto <= 18450000:
+                pph = 0.07
+            elif 18450000 < gaji_bruto <= 21850000:
+                pph = 0.08
+            elif 21850000 < gaji_bruto <= 26000000:
+                pph = 0.09
+            elif 26000000 < gaji_bruto <= 27700000:
+                pph = 0.1
+            elif 27700000 < gaji_bruto <= 29350000:
+                pph = 0.11
+            elif 29350000 < gaji_bruto <= 31450000:
+                pph = 0.12
+            elif 31450000 < gaji_bruto <= 33950000:
+                pph = 0.13
+            elif 33950000 < gaji_bruto <= 37100000:
+                pph = 0.14
+            elif 37100000 < gaji_bruto <= 41100000:
+                pph = 0.15
+            elif 41100000 < gaji_bruto <= 45800000:
+                pph = 0.16
+            elif 45800000 < gaji_bruto <= 49500000:
+                pph = 0.17
+            elif 49500000 < gaji_bruto <= 53800000:
+                pph = 0.18
+            elif 53800000 < gaji_bruto <= 58500000:
+                pph = 0.19
+            elif 58500000 < gaji_bruto <= 64000000:
+                pph = 0.2
+            elif 64000000 < gaji_bruto <= 71000000:
+                pph = 0.21
+            elif 71000000 < gaji_bruto <= 80000000:
+                pph = 0.22
+            elif 80000000 < gaji_bruto <= 93000000:
+                pph = 0.23
+            elif 93000000 < gaji_bruto <= 109000000:
+                pph = 0.24
+            elif 109000000 < gaji_bruto <= 129000000:
+                pph = 0.25
+            elif 129000000 < gaji_bruto <= 163000000:
+                pph = 0.26
+            elif 163000000 < gaji_bruto <= 211000000:
+                pph = 0.27
+            elif 211000000 < gaji_bruto <= 374000000:
+                pph = 0.28
+            elif 374000000 < gaji_bruto <= 459000000:
+                pph = 0.29
+            elif 459000000 < gaji_bruto <= 555000000:
+                pph = 0.3
+            elif 555000000 < gaji_bruto <= 704000000:
+                pph = 0.31
+            elif 704000000 < gaji_bruto <= 957000000:
+                pph = 0.32
+            elif 957000000 < gaji_bruto <= 1405000000:
+                pph = 0.33
+            elif gaji_bruto > 1405000000:
+                pph = 0.34
+
+        elif kategory == 'c':
+            if gaji_bruto <= 6600000:
+                pph = 0
+            elif 6600000 < gaji_bruto <= 6950000:
+                pph = 0.0025
+            elif 6950000 < gaji_bruto <= 7350000:
+                pph = 0.005
+            elif 7350000 < gaji_bruto <= 7800000:
+                pph = 0.0075
+            elif 7800000 < gaji_bruto <= 8850000:
+                pph = 0.01
+            elif 8850000 < gaji_bruto <= 9800000:
+                pph = 0.0125
+            elif 9800000 < gaji_bruto <= 10950000:
+                pph = 0.015
+            elif 10950000 < gaji_bruto <= 11200000:
+                pph = 0.0175
+            elif 11200000 < gaji_bruto <= 12050000:
+                pph = 0.02
+            elif 12050000 < gaji_bruto <= 12950000:
+                pph = 0.03
+            elif 12950000 < gaji_bruto <= 14150000:
+                pph = 0.04
+            elif 14150000 < gaji_bruto <= 15550000:
+                pph = 0.05
+            elif 15550000 < gaji_bruto <= 17050000:
+                pph = 0.06
+            elif 17050000 < gaji_bruto <= 19500000:
+                pph = 0.07
+            elif 19500000 < gaji_bruto <= 22700000:
+                pph = 0.08
+            elif 22700000 < gaji_bruto <= 26600000:
+                pph = 0.09
+            elif 26600000 < gaji_bruto <= 28100000:
+                pph = 0.1
+            elif 28100000 < gaji_bruto <= 30100000:
+                pph = 0.11
+            elif 30100000 < gaji_bruto <= 32600000:
+                pph = 0.12
+            elif 32600000 < gaji_bruto <= 35400000:
+                pph = 0.13
+            elif 35400000 < gaji_bruto <= 38900000:
+                pph = 0.14
+            elif 38900000 < gaji_bruto <= 43000000:
+                pph = 0.15
+            elif 43000000 < gaji_bruto <= 47400000:
+                pph = 0.16
+            elif 47400000 < gaji_bruto <= 51200000:
+                pph = 0.17
+            elif 51200000 < gaji_bruto <= 55800000:
+                pph = 0.18
+            elif 55800000 < gaji_bruto <= 60400000:
+                pph = 0.19
+            elif 60400000 < gaji_bruto <= 66700000:
+                pph = 0.2
+            elif 66700000 < gaji_bruto <= 74500000:
+                pph = 0.21
+            elif 74500000 < gaji_bruto <= 83200000:
+                pph = 0.22
+            elif 83200000 < gaji_bruto <= 95000000:
+                pph = 0.23
+            elif 95000000 < gaji_bruto <= 110000000:
+                pph = 0.24
+            elif 110000000 < gaji_bruto <= 134000000:
+                pph = 0.25
+            elif 134000000 < gaji_bruto <= 169000000:
+                pph = 0.26
+            elif 169000000 < gaji_bruto <= 221000000:
+                pph = 0.27
+            elif 221000000 < gaji_bruto <= 390000000:
+                pph = 0.28
+            elif 390000000 < gaji_bruto <= 463000000:
+                pph = 0.29
+            elif 463000000 < gaji_bruto <= 561000000:
+                pph = 0.3
+            elif 561000000 < gaji_bruto <= 709000000:
+                pph = 0.31
+            elif 709000000 < gaji_bruto <= 965000000:
+                pph = 0.32
+            elif 965000000 < gaji_bruto <= 1419000000:
+                pph = 0.33
+            elif gaji_bruto > 1419000000:
+                pph = 0.34
+
+        return pph
+
+
     def compute_sheet(self):
         for payslip in self:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
@@ -177,8 +438,6 @@ class HrPayslip(models.Model):
             payslip.write({'line_ids': lines, 'number': number})
             for slip_line in payslip.line_ids:
                 if slip_line.salary_rule_id.code == 'OVT':
-                    # basic_salary = self.env['hr.payslip.line'].search([('slip_id','=', payslip.id), ('salary_rule_id.code','=', 'BASIC')])
-                    # slip_line.amount = (1/173) * 1 * basic_salary.amount * 1.5
                     sk = self.env['surat.kerja.line'].search([('employee_id','=',payslip.employee_id.id), ('sk_id.type','=','overtime'),('state','=','approved'),('date_from','>=',payslip.date_from),('date_from','<=',payslip.date_to)])
                     slip_line.quantity = sum(sk.mapped('work_hour'))
             pph = self.env['hr.payslip.line'].search(
@@ -191,14 +450,23 @@ class HrPayslip(models.Model):
             if date_to != '12':
                 basic_amount = 0.0
                 alw_amount = 0.0
+                gaji_bruto = 0
                 for b in basic:
                     basic_amount += b.amount
+                    gaji_bruto += b.amount
 
                 for a in alw:
                     alw_amount += a.amount
+                    gaji_bruto += a.amount
 
-                if payslip.contract_id.pph_kategori:
-                    amount = (payslip.contract_id.pph_kategori.tarif_pajak / 100) * (gross.amount)
+                if payslip.contract_id.ptkp_id:
+                    if payslip.contract_id.ptkp_id.kategori_pph == 'a':
+                        persentase = self.get_percentage(gaji_bruto, 'a')
+                    elif payslip.contract_id.pph_kategori.kategori == 'b':
+                        persentase = self.get_percentage(gaji_bruto, 'b')
+                    elif payslip.contract_id.pph_kategori.kategori == 'b':
+                        persentase = self.get_percentage(gaji_bruto, 'c')
+                    amount = (persentase) * (gaji_bruto)
 
                     pph.write({'amount': amount})
                     # gaji_gross = self.env['hr.payslip.line'].search(
@@ -207,6 +475,90 @@ class HrPayslip(models.Model):
                     gaji_net = self.env['hr.payslip.line'].search(
                         [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                     gaji_net.write({'amount': gaji_net.amount - amount})
+            else:
+                basic_amount = 0.0
+                alw_amount = 0.0
+                deb_amount = 0.0
+                pph_amount = 0.0
+                tanggal = datetime.strptime(payslip.date_from, '%Y-%m-%d')
+
+                # Mendapatkan tanggal awal dan akhir tahun
+                tanggal_awal_tahun = tanggal.replace(month=1, day=1)
+                tanggal_akhir_tahun = tanggal.replace(month=12, day=31)
+                self._cr.execute(
+                    "SELECT * FROM hr_payslip WHERE date_from >= '"+ str(tanggal_awal_tahun) +"' and date_to <= '"+ str(tanggal_akhir_tahun) +"' and employee_id = " + str(
+                        payslip.employee_id.id))
+                for line in self._cr.dictfetchall():
+                    pphs = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(line['id'])), ('code', 'in', ['PPH21'])])
+                    basic = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(line['id'])), ('category_id', '=', 1)])
+                    alw = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(line['id'])), ('category_id', '=', 2)])
+                    deb = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(line['id'])), ('category_id', '=', 4), ('code', '!=', 'PPH21')])
+
+                    for b in basic:
+                        basic_amount += b.amount
+
+                    for a in alw:
+                        alw_amount += a.amount
+
+                    for c in deb:
+                        deb_amount += c.amount
+
+                    for d in pphs:
+                        pph_amount += d.amount
+                basic_amount += self.env['hr.payslip.line'].search(
+                    [('slip_id', '=', int(payslip.id)), ('category_id', '=', 1)]).amount or 0.0
+                for alw_des in self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('category_id', '=', 2)]):
+                    alw_amount += alw_des.amount
+                for deb_des in self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('category_id', '=', 4), ('code', '!=', 'PPH21')]):
+                    deb_amount += deb_des.amount
+
+                if payslip.contract_id.ptkp_id:
+                    gapok = basic_amount + alw_amount
+                    gajiPokok = gapok
+                    netto = gajiPokok - ((deb_amount))
+                    penghasilanKenaPajak = netto - payslip.contract_id.ptkp_id.nominal
+
+                    # pph = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH_21_BARU'])])
+                    # pph.write({'amount': penghasilanKenaPajak})
+                    if penghasilanKenaPajak < 60000000:
+                        amount = (5 / 100) * penghasilanKenaPajak
+                        penghasilanKenaPajak -= penghasilanKenaPajak
+                    elif penghasilanKenaPajak >= 60000000:
+                        amount = (5 / 100) * 60000000
+                        penghasilanKenaPajak -= 60000000
+                    if penghasilanKenaPajak < 250000000:
+                        amount += (15 / 100) * penghasilanKenaPajak
+                        penghasilanKenaPajak -= penghasilanKenaPajak
+                    elif penghasilanKenaPajak >= 250000000:
+                        amount += (15 / 100) * 250000000
+                        penghasilanKenaPajak -= 250000000
+                    if penghasilanKenaPajak < 500000000:
+                        amount += (25 / 100) * penghasilanKenaPajak
+                        penghasilanKenaPajak -= penghasilanKenaPajak
+                    elif penghasilanKenaPajak >= 500000000:
+                        amount += (25 / 100) * 500000000
+                    if penghasilanKenaPajak != 0.0:
+                        while True:
+                            if penghasilanKenaPajak < 500000000:
+                                amount += (30 / 100) * penghasilanKenaPajak
+                                penghasilanKenaPajak -= penghasilanKenaPajak
+                            else:
+                                amount += (30 / 100) * 500000000
+                                penghasilanKenaPajak -= 500000000
+
+                            if penghasilanKenaPajak <= 0.0:
+                                break
+
+                    result = amount - (pph_amount)
+                    pph = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH21'])])
+                    pph.write({'amount': result})
         return True
 
     @api.model

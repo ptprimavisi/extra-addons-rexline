@@ -1,40 +1,48 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
 
-class PPHKategori(models.Model):
-    _name = 'pph.kategori'
-
-    name = fields.Char(compute="compute_name")
-    keterangan = fields.Char()
-    kategori = fields.Selection([
-        ('a', 'A'),
-        ('b', 'B'),
-        ('c', 'C'),
-        ('d', 'D'),
-        ('e', 'E'),
-        ('f', 'F'),
-        ('g', 'G'),
-        ('h', 'H'),
-    ])
-    tarif_pajak = fields.Float(string="Tarif Pajak (%)")
-
-    def compute_name(self):
-        for line in self:
-            selection_dict = dict(self._fields['kategori'].selection)
-
-            # Print the label corresponding to the stored value in self.selection
-            # print(selection_dict.get(self.selection))
-            line.name = str("KATEGORI ") + str(selection_dict.get(line.kategori)) + " - " + str(line.keterangan)
-
 
 class PTKP_terbaru(models.Model):
     _name = 'ptkp.ptkp.ptkp'
 
     name = fields.Char()
-    nominal = fields.Float()
+    nominal = fields.Float(compute="compute_nominal")
+    kategori_pph = fields.Selection([
+        ('a', 'TER A'),
+        ('b', 'TER B'),
+        ('c', 'TER C')
+    ], compute='_compute_golongan')
+
+    @api.depends('name')
+    def _compute_golongan(self):
+        for line in self:
+            line.kategori_pph = 'a'
+            if line.name:
+                if line.name == 'TK/0' or line.name == 'TK/1' or line.name == 'K/0':
+                    line.kategori_pph = 'a'
+                elif line.name == 'TK/2' or line.name == 'K/1' or line.name == 'TK/3' or line.name == 'K/2':
+                    line.kategori_pph = 'b'
+                elif line.name == 'K/3':
+                    line.kategori_pph = 'c'
+
+    @api.depends('name')
+    def compute_nominal(self):
+        for line in self:
+            line.nominal = 0
+            if line.name:
+                if line.name == 'TK/0':
+                    line.nominal = 54000000
+                elif line.name == 'TK/1' or line.name == 'K/0':
+                    line.nominal = 58500000
+                elif line.name == 'TK/2' or line.name == 'K/1':
+                    line.nominal = 63000000
+                elif line.name == 'TK/3' or line.name == 'K/2':
+                    line.nominal = 67500000
+                elif line.name == 'K/3':
+                    line.nominal = 70000000
+
 
 class hrcontract(models.Model):
     _inherit = 'hr.contract'
 
-    pph_kategori = fields.Many2one('pph.kategori')
     ptkp_id = fields.Many2one('ptkp.ptkp.ptkp')
