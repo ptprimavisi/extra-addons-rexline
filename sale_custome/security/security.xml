@@ -5,6 +5,10 @@
             <field name="name">Custom Sales Access</field>
         </record>
 
+        <record model="res.groups" id="group_sales_technical">
+            <field name="name">Custom Sales Technical</field>
+        </record>
+
         <record model="res.groups" id="purchasing_custom_group">
             <field name="name">Purchasing Custom</field>
         </record>
