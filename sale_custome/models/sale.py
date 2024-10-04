@@ -207,7 +207,7 @@ class SaleOrderInherith(models.Model):
                     if lines.tax_id:
                         for line_tax in lines.tax_id:
                             tax_ids.append(line_tax.id)
-                tax_data = self.env['account.tax'].search([('id','in',tuple(tax_ids))])
+                tax_data = self.env['account.tax'].search([('id', 'in', tuple(tax_ids))])
                 for datas in tax_data:
                     amount = self.amount_by_tax(int(line.id), [datas.id])
                     list.append({
@@ -218,10 +218,11 @@ class SaleOrderInherith(models.Model):
                 item['formatted_amount'] = str(line.currency_id.symbol) + '{:,.2f}'.format(item['amount'])
             line.tax_list = json.dumps(list)
 
-                # line.tax_list = str(tax_data)
-    def amount_by_tax(self,order_id, tax_id):
-        data = self.env['sale.order.line'].search([('order_id','=',order_id), ('tax_id','in', tax_id)])
-        tax = self.env['account.tax'].search([('id','in', tax_id)])
+            # line.tax_list = str(tax_data)
+
+    def amount_by_tax(self, order_id, tax_id):
+        data = self.env['sale.order.line'].search([('order_id', '=', order_id), ('tax_id', 'in', tax_id)])
+        tax = self.env['account.tax'].search([('id', 'in', tax_id)])
         amount = 0
         for line in data:
             total = (line.price_unit * line.product_uom_qty) * tax.amount / 100
@@ -320,6 +321,30 @@ class CrmLead(models.Model):
         ('purchase', 'Purchase'),
         ('engineering', 'Engineering')
     ])
+    warning_time = fields.Selection([
+        ('red', 'Red'),
+        ('yellow', 'Yellow'),
+        ('green', 'Green')
+    ], compute="_compute_warning")
+
+    @api.depends('date_deadline')
+    def _compute_warning(self):
+        for line in self:
+            line.warning_time = False
+            if line.date_deadline:
+                due_date = datetime.strptime(str(line.date_deadline), '%Y-%m-%d')
+                two_days_before_due = due_date - timedelta(days=2)
+                five_days_before_due = due_date - timedelta(days=5)
+                # after_days_before_due = due_date - datetime.timedelta(days=2)
+                today = datetime.today()
+                if today >= two_days_before_due:
+                    line.warning_time = 'red'
+                if five_days_before_due <= today < two_days_before_due:
+                    line.warning_time = 'yellow'
+                if today < five_days_before_due:
+                    line.warning_time = 'green'
+
+
 
     @api.onchange('process_to')
     def rmove_pic(self):
@@ -1742,6 +1767,37 @@ class InquiryLineDetail(models.Model):
             line.subtotal = subtotal
 
 
+class ResCustomer(models.Model):
+    _inherit = 'res.partner'
+
+    @api.model
+    def create(self, vals):
+
+        # Membuat record baru dan menyimpannya
+        new_record = super(ResCustomer, self).create(vals)
+
+        # Mendapatkan ID dari record yang baru dibuat
+        rank = new_record.customer_rank
+        value = new_record.name
+
+        if rank > 0:
+            if not all(c.isupper() for c in value if c.isalpha()):
+                raise UserError('Nama Harus Menggunakan Huruf Kapital')
+
+        return new_record  # Kembalikan record baru jika diperlukan
+        # value = vals.get('name')
+        # rank = vals.get('id')
+        #
+        # super(ResCustomer, self).create(vals)
+        # raise UserError(rank)
+        # exit()
+        # if rank > 0:
+        #     if not all(c.isupper() for c in value if c.isalpha()):
+        #         raise UserError('Nama Harus Menggunakan Huruf Kapital')
+        #
+        # return True
+
+
 class ProductInherith(models.Model):
     _inherit = 'product.template'
 
@@ -1753,9 +1809,8 @@ class ProductInherith(models.Model):
         # if vals.get('name', '/') == '/':
         # raise UserError('test func')
         value = vals.get('name')
-        # if not all(c.isupper() for c in value if c.isalpha()):
-        #     raise UserError('Nama Harus Menggunakan Huruf Kapital')
-        # vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
+        if not all(c.isupper() for c in value if c.isalpha()):
+            raise UserError('Nama Harus Menggunakan Huruf Kapital')
         return super(ProductInherith, self).create(vals)
 
     def _compute_edit_cost(self):
