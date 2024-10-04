@@ -39,7 +39,7 @@ class PTKP_terbaru(models.Model):
                 elif line.name == 'TK/3' or line.name == 'K/2':
                     line.nominal = 67500000
                 elif line.name == 'K/3':
-                    line.nominal = 70000000
+                    line.nominal = 72000000
 
 
 class hrcontract(models.Model):

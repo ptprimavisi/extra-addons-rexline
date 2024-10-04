@@ -447,8 +447,6 @@ class HrPayslip(models.Model):
             ded = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('category_id', '=', 4)])
             gross = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('category_id', '=', 3)])
             date_to = str(payslip.date_to).split("-")[1]
-
-
             if date_to != '12':
                 basic_amount = 0.0
                 alw_amount = 0.0
