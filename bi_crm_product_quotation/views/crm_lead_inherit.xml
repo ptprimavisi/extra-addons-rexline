@@ -36,7 +36,7 @@
                             <field name="margin" required="1" readonly="is_approve == False"/>
                             <field name="is_approve" invisible="1" nolabel="1"/>
                             <field name="is_under" invisible="margin == 0 or margin > 50" readonly="is_approve == False"/>
-                            <field name="price_unit" readonly="is_approve == False"/>
+                            <field name="price_unit" readonly="is_approve == False" groups="sale_custome.group_sales_custom"/>
                             <field name="tax_id" widget="many2many_tags"/>
                             <field name="product_uom_category_id" invisible="1"/>
                         </tree>
