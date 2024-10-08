@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="inherit_packinglist_view">
+            <field name="name">packing.list.inherit</field>
+            <field name="model">packing.list</field>
+            <field name="inherit_id" ref="sale_custome.packing_list_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <button name="do_print_packing" type="object" class="btn-primary" string="Print Packing List"/>
+                </xpath>
+            </field>
+        </record> 
+    </data>
+</odoo>
