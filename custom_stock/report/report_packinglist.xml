@@ -1,0 +1,106 @@
+<odoo>
+    <data>
+        <record id="action_report_packinglist" model="ir.actions.report">
+            <field name="name">Report Packing List</field>
+            <field name="model">packing.list</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_stock.report_action_packinglist</field>
+            <field name="report_file">custom_stock.report_action_packinglist</field>
+            <field name="print_report_name">"Packing List - " + object.partner_id.name + " - " + object.picking_id.name</field>
+        </record>
+        
+        <template id="report_action_packinglist">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-set="doc" t-value="docs"/>
+                    <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+                    
+                    <div class="row mb-1 p-1" style="font-family: Calibri, sans-serif;">
+                        <div class="col-2">
+                            <img src='/custom_stock/static/src/img/company_logo.png' style="width: 120px; height: auto;"/>
+                        </div>
+
+                        <div class="col-10" style="font-family: Calibri, sans-serif; text-align: center;">
+                            <h3><strong>PACKING LIST</strong></h3>
+                            <p><t t-esc="doc.picking_id.name"/></p>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Details -->
+                    <div class="row mb-1 p-1" style="font-family: Calibri, sans-serif;">
+                        <div class="col-8">
+                            <strong><t t-esc="request.env.user.company_id.name"/></strong><br/>
+                            <t t-esc="request.env.user.company_id.partner_id.street"/><br/>
+                            <t t-esc="request.env.user.company_id.partner_id.street2"/><br/>
+                            <t t-esc="request.env.user.company_id.partner_id.city"/>, <t t-esc="request.env.user.company_id.partner_id.zip"/><br/>
+                            <t t-esc="request.env.user.company_id.partner_id.website"/>
+                        </div>
+                            
+                        <div class="col-4">
+                            <div><strong>Order Date:</strong> <t t-esc="doc.order_date"/></div>
+                            <div><strong>Delivery Date:</strong> <t t-esc="doc.delivery_date"/></div>
+                            <div><strong>Sales Order:</strong> <t t-esc="doc.so_number"/></div>
+                            <div><strong>PO Number:</strong> <t t-esc="doc.po_number"/></div>
+                            <div><strong>No Truck:</strong> <t t-esc="doc.truck_no"/></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong>Delivery To:</strong><br/>
+                        <t t-esc="doc.partner_id.name"/><br/>
+                        <t t-esc="doc.partner_id.street"/><br/>
+                        <t t-esc="doc.partner_id.street2"/>, <t t-esc="doc.partner_id.city"/>, <t t-esc="doc.partner_id.zip"/><br/>
+                        <strong>PIC:</strong> <t t-esc="doc.picking_id.user_id.partner_id.name"/> (<t t-esc="doc.picking_id.user_id.partner_id.phone"/>)
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-family: Calibri, sans-serif;" border="1">
+                        <thead style="background-color: #87ceeb;">
+                            <tr>
+                                <th style="padding: 5px;" rowspan="2">ITEM #</th>
+                                <th style="padding: 5px;" rowspan="2">ITEM &amp; DESCRIPTION</th>
+                                <th style="padding: 5px;" colspan="2">OUT</th>
+                                <th style="padding: 5px;" colspan="2">KOLLI</th>
+                                <th style="padding: 5px;" colspan="3">Dimension Package (mm)</th>
+                                <th style="padding: 5px;">Nett Weight</th>
+                                <th style="padding: 5px;">Gross Weight</th>
+                            </tr>
+                            <tr>
+                                <th style="padding: 5px;">QTY</th>
+                                <th style="padding: 5px;">UOM</th>
+                                <th style="padding: 5px;">QTY</th>
+                                <th style="padding: 5px;">UOM</th>
+                                <th style="padding: 5px;">P</th>
+                                <th style="padding: 5px;">L</th>
+                                <th style="padding: 5px;">T</th>
+                                <th style="padding: 5px;">(Kg)</th>
+                                <th style="padding: 5px;">(Kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="counter" t-value="1"/>  <!-- Initialize counter -->
+                            <t t-foreach="doc.picking_line" t-as="line">
+                                <tr>
+                                    <td style="padding: 5px; text-align: center;">
+                                        <t t-esc="counter"/>  <!-- Display counter -->
+                                        <t t-set="counter" t-value="counter + 1"/>  <!-- Increment counter -->
+                                    </td>
+                                    <td style="padding: 5px;"><t t-esc="line.item"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.qty_out"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.uom_out.name"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.qty_kolli"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.uom_kolli.name"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.p"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.l"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.t"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.net_wight"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.gross_wight"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                        
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

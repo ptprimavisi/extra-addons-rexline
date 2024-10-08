@@ -1,0 +1,108 @@
+<odoo>
+    <data>
+        <record id="action_report_waybill" model="ir.actions.report">
+            <field name="name">Report Waybill</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_stock.report_action_waybill</field>
+            <field name="report_file">custom_stock.report_action_waybill</field>
+            <field name="print_report_name">"Waybill - " + object.partner_id.name + " - " + (object.origin if object.origin else object.name)</field>
+        </record>
+        
+        <template id="report_action_waybill">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-set="doc" t-value="docs"/>
+                    <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+                    
+                    <!-- Gambar Header -->
+                    <div style="text-align: center;">
+                       <img src='/custom_stock/static/src/img/header_waybill.png'/>
+                    </div>
+
+                    <div style="font-family: Calibri, sans-serif; text-align: center;">
+                        <h3><strong>WAYBILL</strong></h3>
+                        <p><t t-esc="doc.origin"/></p>
+                    </div>
+
+                    <!-- Two-column section using Bootstrap classes -->
+                    <div class="row mb-1 p-1" style="font-family: Calibri, sans-serif;">
+                        <!-- Left Column (Delivery Details) -->
+                        <div class="col-6">
+                            <strong>Delivery To:</strong><br/>
+                            <t t-esc="doc.partner_id.name"/><br/>
+                            <t t-esc="doc.partner_id.street"/><br/>
+                            <t t-esc="doc.partner_id.street2"/>, <t t-esc="doc.partner_id.city"/>, <t t-esc="doc.partner_id.zip"/><br/>
+                            <strong>PIC:</strong> <t t-esc="doc.user_id.partner_id.name"/><br/>
+                            <strong>No. Telp:</strong> <t t-esc="doc.partner_id.phone"/><br/>
+                        </div>
+                        
+                        <!-- Right Column (Transport Details) -->
+                        <div class="col-6">
+                            <div><strong>Date:</strong> <t t-esc="doc.scheduled_date"/></div>
+                            <div><strong>Type Vehicle:</strong></div>
+                            <div><strong>Plate No:</strong></div>
+                            <div><strong>Driver:</strong></div>
+                            <div><strong>Phone No:</strong></div>
+                        </div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-family: Calibri, sans-serif;" border="1">
+                        <thead style="background-color: #1e2e49;">
+                            <tr>
+                                <th style="padding: 5px; color: white;">NO</th>
+                                <th style="padding: 5px; color: white;">MRF NO</th>
+                                <th style="padding: 5px; color: white;">SO NO</th>
+                                <th style="padding: 5px; color: white;">PROJECT</th>
+                                <th style="padding: 5px; color: white;">PO NO</th>
+                                <th style="padding: 5px; color: white;">DESCRIPTION</th>
+                                <th style="padding: 5px; color: white;">QTY</th>
+                                <th style="padding: 5px; color: white;">UOM</th>
+                                <th style="padding: 5px; color: white;">REMARK</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="counter" t-value="1"/>  <!-- Initialize counter -->
+                            <t t-foreach="doc.move_ids" t-as="line">
+                                <tr>
+                                    <td style="padding: 5px; text-align: center;">
+                                        <t t-esc="counter"/>  <!-- Display counter -->
+                                        <t t-set="counter" t-value="counter + 1"/>  <!-- Increment counter -->
+                                    </td>
+                                    <td style="padding: 5px;">-</td>
+                                    <td style="padding: 5px;">-</td>
+                                    <td style="padding: 5px;">-</td>
+                                    <td style="padding: 5px;">-</td>
+                                    <td style="padding: 5px;"><t t-esc="line.description_picking"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.quantity"/></td>
+                                    <td style="padding: 5px; text-align: center;"><t t-esc="line.product_uom.name"/></td>
+                                    <td style="padding: 5px;">Logistic Material Packing</td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 20px; font-family: Calibri, sans-serif;">
+                        <p><strong>Note:</strong> Kembali Ke Lamongan Jika sudah selesai</p>
+                        <div class="row mb-1 p-1 text-center">
+                            <div class="col-4">Sender</div>
+                            <div class="col-4">Carrier</div>
+                            <div class="col-4">Receiver</div>
+                        </div>
+                        <div class="row mb-1 p-1 text-center" style="margin-top: 50px;">
+                            <div class="col-4">( .................................. )</div>
+                            <div class="col-4">( .................................. )</div>
+                            <div class="col-4">( .................................. )</div>
+                        </div>
+                    </div>
+
+                    <!-- Gambar Footer -->
+                    <!-- <div style="text-align: center;">
+                       <img src='/custom_stock/static/src/img/footer_waybill.jpg'/>
+                    </div> -->
+                    
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
