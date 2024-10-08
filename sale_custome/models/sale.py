@@ -196,6 +196,16 @@ class SaleOrderInherith(models.Model):
     count_estimate = fields.Integer(compute="_compute_count_estimate")
     tax_list = fields.Char(compute="_compute_tax_list")
 
+    def report_ar(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Report Account Receiptable',
+            'res_model': 'report.ar',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
     @api.depends('order_line')
     def _compute_tax_list(self):
         # raise UserError('test')
@@ -343,8 +353,6 @@ class CrmLead(models.Model):
                     line.warning_time = 'yellow'
                 if today < five_days_before_due:
                     line.warning_time = 'green'
-
-
 
     @api.onchange('process_to')
     def rmove_pic(self):
