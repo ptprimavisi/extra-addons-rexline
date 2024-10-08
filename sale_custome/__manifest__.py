@@ -12,6 +12,7 @@
         "wizard/schedule_wizard_views.xml",
         "wizard/price_request_wizard.xml",
         "wizard/daily_report_production.xml",
+        "wizard/report_ar_views.xml",
         "report/daily_report_production.xml",
         "report/report_price_request.xml",
         'report/report.xml',
