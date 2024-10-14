@@ -8,6 +8,7 @@ Add column in table res_users
   -  is_sales
   -  is_production
   -  is_hr
+  -  is_operation
 
 insert data ir.sequence
 - inquiry (INQ)

@@ -17,6 +17,7 @@
                             <field name="is_inventory" string="Is Inventory"/>
                             <field name="is_production" string="Is Production"/>
                             <field name="is_hr" string="Is HR"/>
+                            <field name="is_operation" string="Is Operation"/>
                         </group>
                     </xpath>
                 </data>
