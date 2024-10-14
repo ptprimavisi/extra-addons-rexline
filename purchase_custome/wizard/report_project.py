@@ -92,7 +92,7 @@ class ReportBudgetProject(models.TransientModel):
         worksheet.write(4, 2, so_name, header_format)
 
         style_header = workbook.add_format(
-            {'bold': True, 'bg_color': '#f50a0a', 'font_color': 'white', 'align': 'center','border': 1   })
+            {'bold': True, 'bg_color': '#f50a0a', 'font_color': 'white', 'align': 'center','border': 1})
         sub_header = workbook.add_format(
             {'bg_color': '#235391', 'font_color': 'white', 'align': 'center','border': 1   })
         # merge_range(first_row, first_col, last_row, last_col, data, cell_format)
