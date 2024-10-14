@@ -14,3 +14,4 @@ class InquirySales(models.Model):
     is_inventory = fields.Boolean()
     is_planner = fields.Boolean()
     is_sales = fields.Boolean()
+    is_production = fields.Boolean()
