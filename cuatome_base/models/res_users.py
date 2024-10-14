@@ -15,3 +15,4 @@ class InquirySales(models.Model):
     is_planner = fields.Boolean()
     is_sales = fields.Boolean()
     is_production = fields.Boolean()
+    is_hr = fields.Boolean()
