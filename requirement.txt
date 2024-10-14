@@ -6,6 +6,7 @@ Add column in table res_users
   -  is_inventory
   -  is_planner
   -  is_sales
+  -  is_production
 
 insert data ir.sequence
 - inquiry (INQ)
