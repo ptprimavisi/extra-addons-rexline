@@ -36,6 +36,10 @@
             <field name="name">HR/GA Custom</field>
         </record>
 
+        <record model="res.groups" id="operation_custom_group">
+            <field name="name">Operation Custom Group</field>
+        </record>
+
         <record model="res.groups" id="inventory_adjustments_group">
             <field name="name">Inventory / Adjustments Access Menu</field>
         </record>
