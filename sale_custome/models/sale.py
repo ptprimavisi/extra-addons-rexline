@@ -410,11 +410,16 @@ class CrmLead(models.Model):
             new_category_value = record.category_project
             new_note = record.description
 
+
+
             # Cek apakah nilai 'category' berubah
             if old_category_value != new_category_value:
                 message = f'Category value changed from {old_category_value} to {new_category_value}'
                 record.message_post(body=message)
             inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(record.id))])
+            if record.note_header:
+                inquiry = self.env['inquiry.inquiry'].search([('opportunity_id', '=', int(record.id))])
+                inquiry.write({'header_note': record.note_header})
             # raise UserError('test')
             if inquiry:
                 inquiry.write({'due_date': record.date_deadline})
@@ -517,6 +522,7 @@ class CrmLead(models.Model):
                 data = {
                     "partner_id": line.partner_id.id,
                     'project_category': line.category_project,
+                    'header_note': line.note_header,
                     "due_date": line.date_deadline,
                     "date": datetime.now(),
                     "opportunity_id": int(line.id),
@@ -651,6 +657,7 @@ class InquirySales(models.Model):
         ('purchase', 'Purchase'),
         ('engineering', 'Engineering')
     ])
+    header_note = fields.Char()
     approve_mng_engineer = fields.Boolean()
 
     def _compute_count_log(self):
