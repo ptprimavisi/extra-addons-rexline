@@ -657,7 +657,7 @@ class InquirySales(models.Model):
         ('purchase', 'Purchase'),
         ('engineering', 'Engineering')
     ])
-    header_note = fields.Char()
+    header_note = fields.Text()
     approve_mng_engineer = fields.Boolean()
 
     def _compute_count_log(self):
