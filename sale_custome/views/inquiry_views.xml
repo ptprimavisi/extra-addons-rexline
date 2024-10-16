@@ -86,6 +86,7 @@
                         <group>
                             <group>
                                 <field name="partner_id" string="Customer" required="1"/>
+                                <field name="header_note" string="Header Notes"/>
                                 <field name="project_category" required="1"/>
                                 <field name="process_to" readonly="1" required="project_category == 'project'" invisible="project_category != 'supply'"/>
                                 <field name="count_inquiry_log" invisible="1"/>

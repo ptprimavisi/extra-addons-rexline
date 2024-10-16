@@ -441,11 +441,50 @@ class HrPayslip(models.Model):
             payslip.write({'line_ids': lines, 'number': number})
             for slip_line in payslip.line_ids:
                 if slip_line.salary_rule_id.code == 'OVT':
+                    sk_amount = 0
                     sk = self.env['surat.kerja.line'].search(
                         [('employee_id', '=', payslip.employee_id.id), ('sk_id.type', '=', 'overtime'),
                          ('state', '=', 'approved'), ('date_from', '>=', payslip.date_from),
                          ('date_from', '<=', payslip.date_to)])
-                    slip_line.quantity = sum(sk.mapped('work_hour'))
+                    for sk_lines in sk:
+                        date_string = str(sk_lines.date_from).split(' ')[0]
+                        self._cr.execute(
+                            "SELECT * FROM hr_attendance WHERE employee_id = '" + str(
+                                payslip.employee_id.id) + "' and date(check_in) = '" + str(
+                                date_string) + "'")
+                        for atts in self._cr.dictfetchall():
+                            if atts:
+                                tanggal_obj = datetime.strptime(str(date_string), '%Y-%m-%d')
+                                # raise UserError(tanggal_obj.strftime('%A'))
+                                basic_salary = self.env['hr.payslip.line'].search(
+                                    [('slip_id', '=', int(payslip.id)), ('category_id', '=', 1)])
+                                # raise UserError(date_string)
+                                if tanggal_obj.weekday() == 6:
+                                    work_hour = sk_lines.work_hour_approve
+                                    if sk_lines.work_hour_approve <= 8:
+                                        amount_ovt = 1.5 * basic_salary.amount / 173
+                                        sk_amount += amount_ovt * work_hour
+                                    else:
+                                        sisa_waktu = work_hour - 8
+                                        amount_before = 1.5 * basic_salary.amount / 173 * 8
+                                        amount_after = basic_salary.amount / 173 * sisa_waktu
+                                        sk_amount += amount_before + amount_after
+
+                                else:
+                                    amount_ovt = basic_salary.amount / 173
+                                    work_hour = sk_lines.work_hour_approve
+                                    if sk_lines.work_hour_approve > 4:
+                                        work_hour = 4
+                                    sk_amount += amount_ovt * work_hour
+
+                    gross = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('category_id', '=', 3)])
+                    gross.write({'amount': gross.amount + sk_amount})
+                    gaji_net = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                    gaji_net.write({'amount': gaji_net.amount + sk_amount})
+                    slip_line.amount = sk_amount
+
             pph = self.env['hr.payslip.line'].search(
                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH21'])])
             pph_alw = self.env['hr.payslip.line'].search(
@@ -482,14 +521,13 @@ class HrPayslip(models.Model):
                         final_amount = new_amount - 1000000
                         # raise UserError(final_amount)
                         pph.write({'amount': final_amount})
+                        gaji_net = self.env['hr.payslip.line'].search(
+                            [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                        gaji_net.write({'amount': gaji_net.amount - final_amount})
                     if pph_alw:
                         pph_alw.write({'amount': amount})
-                    # gaji_gross = self.env['hr.payslip.line'].search(
-                    #     [('slip_id', '=', int(payslip.id)), ('code', 'in', ['GROSS'])])
-                    # gaji_gross.write({'amount' : gaji_gross.amount - amount})
-                    gaji_net = self.env['hr.payslip.line'].search(
-                        [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
-                    gaji_net.write({'amount': gaji_net.amount - amount})
+
+
             else:
                 basic_amount = 0.0
                 alw_amount = 0.0
@@ -583,6 +621,9 @@ class HrPayslip(models.Model):
                         new_res = amount - (pph_amount)
                         final_result = new_res - 1000000
                         pph.write({'amount': final_result})
+                        gaji_net = self.env['hr.payslip.line'].search(
+                            [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                        gaji_net.write({'amount': gaji_net.amount - final_result})
                     if pphs_alw:
                         pphs_alw.write({'amount': result})
 
@@ -839,7 +880,7 @@ class HrPayslip(models.Model):
         locale = self.env.context.get('lang') or 'en_US'
         res['value'].update({
             'name': _('Salary Slip of %s for %s') % (
-            employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale))),
+                employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale))),
             'company_id': employee.company_id.id,
         })
 
@@ -889,7 +930,7 @@ class HrPayslip(models.Model):
         ttyme = datetime.combine(fields.Date.from_string(date_from), time.min)
         locale = self.env.context.get('lang') or 'en_US'
         self.name = _('Salary Slip of %s for %s') % (
-        employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale)))
+            employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale)))
         self.company_id = employee.company_id
 
         if not self.env.context.get('contract') or not self.contract_id:
