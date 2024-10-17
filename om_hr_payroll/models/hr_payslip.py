@@ -427,7 +427,10 @@ class HrPayslip(models.Model):
         for payslip in self:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
             # delete old payslip lines
-            payslip.line_ids.unlink()
+            payslip_line = self.env['hr.payslip.line'].search([('slip_id','=',payslip.id), ('salary_rule_id.is_manual','!=',True)])
+            payslip_line.unlink()
+
+            # payslip.line_ids.unlink()
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
             contract_ids = payslip.contract_id.ids or \
@@ -439,6 +442,23 @@ class HrPayslip(models.Model):
             # print(lines)
             # overtime = self.env['hr.salary.rule']
             payslip.write({'line_ids': lines, 'number': number})
+            if payslip.line_ids:
+                for liness in payslip.line_ids:
+                    if liness.salary_rule_id.is_manual and liness.salary_rule_id.amount_select == 'fix' and liness.salary_rule_id.amount_fix == 0:
+                        # raise UserError(lines.amount)
+                        if liness.category_id.id == 2: #allowance
+                            gross = self.env['hr.payslip.line'].search(
+                                [('slip_id', '=', int(payslip.id)), ('category_id', '=', 3)])
+                            gross.write({'amount': gross.amount + liness.amount})
+                                  # gross.write({'amount': gross.amount + liness.amount})
+                            gaji_net = self.env['hr.payslip.line'].search(
+                                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                            gaji_net.write({'amount': gaji_net.amount + liness.amount})
+
+                        elif liness.category_id.id == 4: #deduction
+                            gaji_net = self.env['hr.payslip.line'].search(
+                                [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                            gaji_net.write({'amount': gaji_net.amount - liness.amount})
             for slip_line in payslip.line_ids:
                 if slip_line.salary_rule_id.code == 'OVT':
                     sk_amount = 0
@@ -629,6 +649,36 @@ class HrPayslip(models.Model):
 
         return True
 
+    def action_existing(self):
+        for payslip in self:
+            if payslip.line_ids:
+                for lines in payslip.line_ids:
+
+                    if lines.salary_rule_id.is_manual and lines.salary_rule_id.amount_select == 'fix' and lines.salary_rule_id.amount_fix == 0:
+                        # raise UserError(lines.amount)
+                        if lines.category_id.id == 2: #allowance
+                            if lines.quantity != 0 and lines.amount != 0:
+                                lines.amount = lines.amount
+                                gross = self.env['hr.payslip.line'].search(
+                                    [('slip_id', '=', int(payslip.id)), ('category_id', '=', 3)])
+                                original_amount = gross.read(['amount'])[0]['amount']
+                                # raise UserError(original_amount)
+
+                                if gross.amount < gross.amount + lines.amount:
+                                    gross.write({'amount': gross.amount + lines.amount})
+                                elif gross.amount >= gross.amount + lines.amount:
+                                    gross.write({'amount': gross.amount - lines.amount})
+                                    # gross.write({'amount': gross.amount + lines.amount})
+                                gaji_net = self.env['hr.payslip.line'].search(
+                                    [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                                if gaji_net.amount < gaji_net.amount + lines.amount:
+                                    gaji_net.write({'amount': gaji_net.amount + lines.amount})
+                                elif gaji_net.amount >= gaji_net.amount + lines.amount:
+                                    gaji_net.write({'amount': gaji_net.amount - lines.amount})
+                                    # gaji_net.write({'amount': gaji_net.amount + lines.amount})
+                        elif lines.category_id.id == 4: #deduction
+                            pass
+
     @api.model
     def get_worked_day_lines(self, contracts, date_from, date_to):
         """
@@ -815,41 +865,42 @@ class HrPayslip(models.Model):
                 localdict['result_rate'] = 100
                 # check if the rule can be applied
                 if rule._satisfy_condition(localdict) and rule.id not in blacklist:
-                    # compute the amount of the rule
-                    amount, qty, rate = rule._compute_rule(localdict)
-                    # check if there is already a rule computed with that code
-                    previous_amount = rule.code in localdict and localdict[rule.code] or 0.0
-                    # set/overwrite the amount computed for this rule in the localdict
-                    tot_rule = contract.company_id.currency_id.round(amount * qty * rate / 100.0)
-                    localdict[rule.code] = tot_rule
-                    rules_dict[rule.code] = rule
-                    # sum the amount for its salary category
-                    localdict = _sum_salary_rule_category(localdict, rule.category_id, tot_rule - previous_amount)
-                    # create/overwrite the rule in the temporary results
-                    result_dict[key] = {
-                        'salary_rule_id': rule.id,
-                        'contract_id': contract.id,
-                        'name': rule.name,
-                        'code': rule.code,
-                        'category_id': rule.category_id.id,
-                        'sequence': rule.sequence,
-                        'appears_on_payslip': rule.appears_on_payslip,
-                        'condition_select': rule.condition_select,
-                        'condition_python': rule.condition_python,
-                        'condition_range': rule.condition_range,
-                        'condition_range_min': rule.condition_range_min,
-                        'condition_range_max': rule.condition_range_max,
-                        'amount_select': rule.amount_select,
-                        'amount_fix': rule.amount_fix,
-                        'amount_python_compute': rule.amount_python_compute,
-                        'amount_percentage': rule.amount_percentage,
-                        'amount_percentage_base': rule.amount_percentage_base,
-                        'register_id': rule.register_id.id,
-                        'amount': amount,
-                        'employee_id': contract.employee_id.id,
-                        'quantity': qty,
-                        'rate': rate,
-                    }
+                    if not any(rule.id == items.salary_rule_id.id for items in payslip.line_ids):
+                        # compute the amount of the rule
+                        amount, qty, rate = rule._compute_rule(localdict)
+                        # check if there is already a rule computed with that code
+                        previous_amount = rule.code in localdict and localdict[rule.code] or 0.0
+                        # set/overwrite the amount computed for this rule in the localdict
+                        tot_rule = contract.company_id.currency_id.round(amount * qty * rate / 100.0)
+                        localdict[rule.code] = tot_rule
+                        rules_dict[rule.code] = rule
+                        # sum the amount for its salary category
+                        localdict = _sum_salary_rule_category(localdict, rule.category_id, tot_rule - previous_amount)
+                        # create/overwrite the rule in the temporary results
+                        result_dict[key] = {
+                            'salary_rule_id': rule.id,
+                            'contract_id': contract.id,
+                            'name': rule.name,
+                            'code': rule.code,
+                            'category_id': rule.category_id.id,
+                            'sequence': rule.sequence,
+                            'appears_on_payslip': rule.appears_on_payslip,
+                            'condition_select': rule.condition_select,
+                            'condition_python': rule.condition_python,
+                            'condition_range': rule.condition_range,
+                            'condition_range_min': rule.condition_range_min,
+                            'condition_range_max': rule.condition_range_max,
+                            'amount_select': rule.amount_select,
+                            'amount_fix': rule.amount_fix,
+                            'amount_python_compute': rule.amount_python_compute,
+                            'amount_percentage': rule.amount_percentage,
+                            'amount_percentage_base': rule.amount_percentage_base,
+                            'register_id': rule.register_id.id,
+                            'amount': amount,
+                            'employee_id': contract.employee_id.id,
+                            'quantity': qty,
+                            'rate': rate,
+                        }
                 else:
                     # blacklist this rule and its children
                     blacklist += [id for id, seq in rule._recursive_search_of_rules()]
