@@ -146,7 +146,7 @@
                                 invisible="state != 'cancel'"/>
                         <button string="Compute Sheet" name="compute_sheet" type="object" invisible="state != 'draft'"
                                 class="oe_highlight"/>
-                        <button name="action_existing" type="object" string="Action Compute Manual" invisible="state != 'draft'"/>
+<!--                        <button name="action_existing" type="object" string="Action Compute Manual" invisible="state != 'draft'"/>-->
                         <button string="Cancel Payslip" name="action_payslip_cancel" type="object"
                                 invisible="state not in ('draft', 'verify','done')"/>
                         <button string="Send E-Mail" name="action_send_email" type="object"
