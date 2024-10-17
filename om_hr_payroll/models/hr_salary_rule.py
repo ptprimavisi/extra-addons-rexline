@@ -116,6 +116,7 @@ class HrSalaryRule(models.Model):
         help='This will be used to compute the % fields values; in general it is on basic, '
              'but you can also use categories code fields in lowercase as a variable names '
              '(hra, ma, lta, etc.) and the variable basic.')
+    is_manual = fields.Boolean()
     condition_python = fields.Text(string='Python Condition', required=True,
         default='''
                     # Available variables:
