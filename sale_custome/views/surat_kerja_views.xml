@@ -42,7 +42,7 @@
                         <notebook>
 <!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
                             <page string="Detail Employee">
-                                <field name="surat_kerja_line_ids" required="1">
+                                <field name="surat_kerja_line_ids" required="1" context="{'default_date_from': date_from, 'default_date_to': date_to}">
                                     <tree editable="bottom">
                                         <field name="employee_id" required="1"/>
                                         <field name="date_from" required="1"/>
