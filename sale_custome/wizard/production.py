@@ -41,7 +41,13 @@ class ManufacturWizard(models.TransientModel):
 
 class GeneralDailyReport(models.TransientModel):
     _name = 'general.daily.report'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        domain=[('res_model', '=', 'general.daily.report')],
+        string='Attachments'
+    )
     partner_id = fields.Many2one('res.partner')
     sale_id = fields.Many2one('sale.order')
     location = fields.Char()

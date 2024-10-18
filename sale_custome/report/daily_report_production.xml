@@ -34,6 +34,8 @@
                             <td colspan="3" style="border: none;"></td>
                         </tr>
                     </table>
+
+                    <hr></hr>
                      <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
                         A. PEKERJAAN
                     </h4>
@@ -125,6 +127,15 @@
                                 </tr>
                             </t>
                    </table>
+                    <hr></hr>
+                    <h4>F. LAMPIRAN</h4>
+                    <t t-foreach="doc.attachment_ids" t-as="attachment">
+                        <div>
+                            <p><strong>Attachment:</strong> <t t-esc="attachment.name"/></p>
+                            <hr></hr>
+                            <img t-if="attachment.mimetype.startswith('image')" t-attf-src="data:image/*;base64,#{attachment.datas.decode('utf-8')}" style="max-width: 50%; height: auto;"/>
+                        </div>
+                    </t>
                 </div>
             </t>
         </t>
