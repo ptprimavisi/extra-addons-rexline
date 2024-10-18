@@ -4,6 +4,7 @@ from datetime import date, datetime, time
 import pytz
 import re
 
+
 class SuratKerja(models.Model):
     _name = 'surat.kerja'
 
@@ -62,7 +63,6 @@ class SuratKerja(models.Model):
             line_sk = self.env['surat.kerja.line'].search([('sk_id', '=', int(line.id))])
             for lines in line_sk:
                 lines.state = 'approved'
-
 
     @api.onchange('date_from', 'date_to')
     def onchange_date(self):
