@@ -48,6 +48,7 @@ class GeneralDailyReport(models.TransientModel):
         domain=[('res_model', '=', 'general.daily.report')],
         string='Attachments'
     )
+    schedule_id = fields.Many2one('production.report')
     partner_id = fields.Many2one('res.partner')
     sale_id = fields.Many2one('sale.order')
     location = fields.Char()

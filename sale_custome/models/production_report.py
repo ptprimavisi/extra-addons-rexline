@@ -19,6 +19,25 @@ class ProductionReport(models.Model):
         ('done', 'Done')
     ], default="draft")
     count_sk = fields.Integer(compute="_compute_count_sk")
+    count_report = fields.Integer(compute="_compute_count_report")
+
+    def _compute_count_report(self):
+        count = 0
+        report = self.env['general.daily.report'].search([('schedule_id', '=', int(self.id))])
+        if report:
+            for lines in report:
+                count += 1
+        self.count_report = count
+
+    def action_count_report(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "general.daily.report",
+            "domain": [('schedule_id', '=', int(self.id))],
+            "context": {"create": False},
+            "name": "Report",
+            'view_mode': 'tree,form',
+        }
 
     def action_report(self):
         for line in self:
@@ -26,7 +45,8 @@ class ProductionReport(models.Model):
             inquiry_ids = []
             if line.mrf_ids:
                 for lines in line.mrf_ids:
-                    inquiry_ids.append(lines.inquiry_id.id)
+                    if lines.inquiry_id:
+                        inquiry_ids.append(lines.inquiry_id.id)
 
             inquiry = self.env['inquiry.inquiry'].search([('id', 'in', inquiry_ids)])
 
@@ -41,7 +61,7 @@ class ProductionReport(models.Model):
             # raise UserError(sk_line)
             for line_employee in sk_line:
                 if not any(line_employee.employee_id.id == item[2]['employee_id'] for item in list_employee):
-                    list_employee.append((0,0,{
+                    list_employee.append((0, 0, {
                         'employee_id': line_employee.employee_id.id
                     }))
             return {
@@ -53,6 +73,7 @@ class ProductionReport(models.Model):
                 'target': 'new',
                 'context': {
                     'default_partner_id': int(inquiry.partner_id.id) or False,
+                    'default_schedule_id': int(line.id),
                     'default_date': str(line.activity_date),
                     'default_sale_id': int(so.id) or False,
                     'default_man_power_ids': list_employee
