@@ -40,6 +40,12 @@
                                     icon="fa-pencil">
                                     <field name="count_sk" widget="statinfo" string="Surat Kerja"/>
                             </button>
+                            <button name="action_count_report"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-pencil">
+                                    <field name="count_report" widget="statinfo" string="Daily Report"/>
+                            </button>
                         </div>
                         <group>
                             <field name="name" required="1"/>

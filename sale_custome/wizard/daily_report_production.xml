@@ -5,9 +5,13 @@
             <field name="model">general.daily.report</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_print" string="Print" type="object" class="oe_highlight" invisible="id == False"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="partner_id" string="Customer" readonly="1"/>
+                            <field name="schedule_id" string="Schedule Ref" readonly="1"/>
                             <field name="sale_id" string="SO / Project" readonly="1"/>
                             <field name="location" string="Location"/>
                             <field name="date" string="Date"/>
@@ -54,10 +58,23 @@
                         <field name="activity_ids"/>
                         <field name="message_ids"/>
                     </div>
-                    <footer>
-                        <button name="action_print" string="Print" type="object" class="oe_highlight" />
-                    </footer>
+<!--                    <footer>-->
+<!--                        <button name="action_print" string="Print" type="object" class="oe_highlight" />-->
+<!--                    </footer>-->
                 </form>
+            </field>
+        </record>
+        <record id="general_daily_report_tree_view" model="ir.ui.view">
+            <field name="name">general.daily.report.tree.view</field>
+            <field name="model">general.daily.report</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id" string="Customer" readonly="1"/>
+                    <field name="schedule_id" string="Schedule Ref" readonly="1"/>
+                    <field name="sale_id" string="SO / Project" readonly="1"/>
+                    <field name="location" string="Location"/>
+                    <field name="date" string="Date"/>
+                </tree>
             </field>
         </record>
     </data>
