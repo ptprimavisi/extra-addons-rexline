@@ -47,6 +47,7 @@
                                         <field name="employee_id" required="1"/>
                                         <field name="date_from" required="1"/>
                                         <field name="date_to" required="1"/>
+                                        <field name="rest" required="1"/>
                                         <field name="work_hour" widget="time"/>
                                         <field name="work_hour_approve" widget="time" required="1"/>
                                         <field name="state"/>
