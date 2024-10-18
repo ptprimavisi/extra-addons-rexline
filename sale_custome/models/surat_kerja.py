@@ -113,8 +113,9 @@ class SuratKerjaLine(models.Model):
         ('draft', 'Draft'),
         ('approved', 'Approved')
     ], default='draft')
+    rest = fields.Float()
 
-    @api.onchange('date_from', 'date_to')
+    @api.onchange('date_from', 'date_to', 'rest')
     def onchange_date(self):
         for line in self:
             if line.date_from and line.date_to:
@@ -123,5 +124,6 @@ class SuratKerjaLine(models.Model):
                 time_difference_seconds = (line.date_to - line.date_from).total_seconds()
                 # Menghitung selisih jam
                 hours_difference = time_difference_seconds / 3600
-                line.work_hour = hours_difference
-                line.work_hour_approve = hours_difference
+                final_hour = hours_difference - line.rest
+                line.work_hour = final_hour
+                line.work_hour_approve = final_hour
