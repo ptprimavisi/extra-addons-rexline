@@ -11,6 +11,7 @@
                             <field name="sale_id" string="SO / Project" readonly="1"/>
                             <field name="location" string="Location"/>
                             <field name="date" string="Date"/>
+                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                         </group>
                         <notebook>
                             <page string="Man Power">
@@ -47,6 +48,11 @@
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                     <footer>
                         <button name="action_print" string="Print" type="object" class="oe_highlight" />
                     </footer>

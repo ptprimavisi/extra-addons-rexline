@@ -22,10 +22,21 @@ class MailActivity(models.TransientModel):
     _inherit = 'mail.activity.schedule'
 
 
-class MrpProduction(models.Model):
+class MrpProductionInherith(models.Model):
     _inherit = 'mrp.production'
 
     count_report = fields.Integer(compute="_compute_count_report")
+
+    def button_mark_done(self):
+        for liine in self:
+            report = self.env['production.report'].search([('mo_id', '=', int(liine.id))])
+            if report:
+                for liiness in report:
+                    if liiness.state == 'draft':
+                        raise UserError('Selesaikan Schedule Activity Terlrbih Dahulu!')
+                        exit()
+        res = super(MrpProductionInherith, self).button_mark_done()
+        return res
 
     def action_compute_consume(self):
         for line in self:
@@ -409,8 +420,6 @@ class CrmLead(models.Model):
         for record in self:
             new_category_value = record.category_project
             new_note = record.description
-
-
 
             # Cek apakah nilai 'category' berubah
             if old_category_value != new_category_value:
@@ -1000,6 +1009,7 @@ class InquirySales(models.Model):
                 list.append((0, 0, {
                     'product_id': lines.product_id.id,
                     'description': lines.name,
+                    'weight': lines.product_id.product_tmpl_id.weight,
                     'quantity': lines.product_uom_quantity,
                     'product_uom': lines.product_uom.id,
                     'cost_price': lines.cost_price

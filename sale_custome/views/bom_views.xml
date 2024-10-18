@@ -56,7 +56,7 @@
                     <button string="Compute Material Consume" name="action_compute_consume" type="object" invisible="id == False or count_report == 0"/>
                 </xpath>
                 <xpath expr="//header/button[@name='action_open_label_type']" position="after">
-                    <button string="Create Schedule" name="action_create_schedule" type="object" invisible="id == False or state != 'confirmed'"/>
+                    <button string="Create Schedule" name="action_create_schedule" type="object" invisible="id == False or state not in ['confirmed','progress','to_close']"/>
                 </xpath>
                 <xpath expr="//button[@name='action_view_reception_report']" position="before">
                     <button name="action_count_report"
