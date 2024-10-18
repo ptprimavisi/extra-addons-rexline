@@ -72,6 +72,7 @@ class ManPower(models.TransientModel):
     p = fields.Float()
     t = fields.Float()
     l = fields.Float()
+    quantity = fields.Float()
     report_id = fields.Many2one('general.daily.report')
 
 
