@@ -10,9 +10,9 @@
                     </header>
                     <sheet>
                         <group>
-                            <field name="partner_id" string="Customer" readonly="1"/>
+                            <field name="partner_id" string="Customer" />
                             <field name="schedule_id" string="Schedule Ref" readonly="1"/>
-                            <field name="sale_id" string="SO / Project" readonly="1"/>
+                            <field name="sale_id" string="SO / Project" />
                             <field name="location" string="Location"/>
                             <field name="date" string="Date"/>
                             <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
