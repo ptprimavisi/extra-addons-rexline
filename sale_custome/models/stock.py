@@ -7,6 +7,22 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     count_packing_list = fields.Integer(compute="_compute_count_packing")
+    no_kendaraan = fields.Char()
+    jenis_kendaraan = fields.Char()
+    contact_person = fields.Text()
+    street = fields.Text()
+
+    @api.onchange('partner_id')
+    def oc_partenr(self):
+        for line in self:
+            line.street = False
+            if line.partner_id:
+                street = '' if line.partner_id.street is False else line.partner_id.street
+                city = f'{line.partner_id.city},' if line.partner_id.city is not False else ''
+                state = f'{line.partner_id.state_id.name},' if line.partner_id.state_id.name is not False else ''
+                country = f'{line.partner_id.country_id.name}' if line.partner_id.country_id.name is not False else ''
+                string = f'{street} {city} {state} {country}'
+                line.street = string
 
     def _compute_count_packing(self):
         for line in self:

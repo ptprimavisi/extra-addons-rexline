@@ -37,8 +37,8 @@
                                         <field name="p" string="P(mm)"/>
                                         <field name="l" string="L(mm)"/>
                                         <field name="t" string="T(mm)"/>
-                                        <field name="net_wight"/>
-                                        <field name="gross_wight"/>
+                                        <field name="net_wight" string="Net Weight(kg)"/>
+                                        <field name="gross_wight" string="Gross Weight(kg)"/>
                                     </tree>
                                 </field>
                             </page>
@@ -83,6 +83,14 @@
                         <field string="Packing List" name="count_packing_list" widget="statinfo"/>
                     </button>
                 </button>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="no_kendaraan"/>
+                    <field name="jenis_kendaraan"/>
+                    <field name="contact_person"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="street"/>
+                </xpath>
             </field>
 
         </record>
