@@ -41,7 +41,7 @@ class SuratKerja(models.Model):
 
                 print(time_str)
                 # print("Waktu saat ini di Asia/Jakarta:", jakarta_time.strftime('%Y-%m-%d %H:%M:%S'))
-                if time_str > '21:00:00':
+                if time_str > '18:00:00':
                     line.is_night = True
 
     def create(self, vals_list):
