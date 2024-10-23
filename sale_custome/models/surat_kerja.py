@@ -17,9 +17,9 @@ class SuratKerja(models.Model):
     work_hours = fields.Float()
     description = fields.Text()
     type = fields.Selection([
-        ('partime', 'Partime'),
         ('overtime', 'Overtime')
     ])
+    department_id = fields.Many2one('hr.department')
     surat_kerja_line_ids = fields.One2many('surat.kerja.line', 'sk_id')
     state = fields.Selection([
         ('draft', 'Draft'),
