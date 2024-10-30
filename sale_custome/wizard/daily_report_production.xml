@@ -22,7 +22,9 @@
                                 <field name="man_power_ids">
                                     <tree editable="bottom">
                                         <field name="employee_id" required="1"/>
-                                        <field name="description" string="Description"/>
+                                        <field name="position" required="1"/>
+                                        <field name="description" string="Activity"/>
+                                        <field name="work_hours" required="1"/>
                                         <field name="p" string="P/mm" />
                                         <field name="t" string="T/mm"/>
                                         <field name="l" string="L/mm"/>
