@@ -70,6 +70,8 @@ class ManPower(models.TransientModel):
 
     employee_id = fields.Many2one('hr.employee')
     description = fields.Text()
+    position = fields.Char()
+    work_hours = fields.Float()
     p = fields.Float()
     t = fields.Float()
     l = fields.Float()
