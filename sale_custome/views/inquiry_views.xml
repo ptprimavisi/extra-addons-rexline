@@ -116,7 +116,7 @@
                         <button name="action_compute_material" string="Compute Item Detail" confirm="This process will cause the price to become 0.0 again" class="oe_highlight" type="object" invisible="id == False or state == 'draft' or project_category == 'supply' and process_to == 'purchase'"/>
                         <button name="action_compute_task" string="Compute Task" type="object" invisible="id == False or mrp_production_count == 0 or project_category == 'supply' and process_to == 'purchase'" />
                         <notebook>
-                            <page string="Bom Lines" invisible="project_category == 'supply' and process_to == 'purchase'">
+                            <page string="Bom Lines" invisible="project_category == 'supply'">
                                 <field name="inquiry_line_ids" readonly="pic_akses == False" >
                                     <tree editable="bottom">
                                         <field name="bom_id" required="1"/>
@@ -149,7 +149,7 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Task Line" invisible="project_category == 'supply' and process_to == 'purchase'">
+                            <page string="Task Line" invisible="project_category == 'supply'">
                                 <field name="inquiry_line_task" readonly="pic_akses == False">
                                     <tree editable="bottom" create="0">
                                         <field name="mo_id"/>

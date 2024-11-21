@@ -11,6 +11,11 @@ class RequestPrice(models.Model):
         ('posted', 'Confirm')
     ], default="draft")
     date = fields.Date()
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        domain=[('res_model', '=', 'request.price')],
+        string='Attachments'
+    )
     request_line_ids = fields.One2many('request.price.line', 'request_id')
     request_other_line_ids = fields.One2many('request.price.other.line', 'request_id')
     partner_id = fields.Many2one('res.partner')
@@ -105,16 +110,16 @@ class RequestPrice(models.Model):
         for line in self:
             inquiry = self.env['inquiry.inquiry'].search(
                 [('id', '=', line.inquiry_id.id)])
-            if inquiry:
-                if inquiry.process_to == 'purchase':
-                    pass
-                else:
-                    for inq in inquiry:
-                        if hasattr(inq, 'x_review_result') and hasattr(inq, 'x_has_request_approval'):
-                            inq.write({'approve_mng_engineer': False,
-                                       'x_review_result': None,
-                                       'x_has_request_approval': None
-                                       })
+            # if inquiry:
+            #     if inquiry.process_to == 'purchase':
+            #         pass
+            #     else:
+            #         for inq in inquiry:
+            #             if hasattr(inq, 'x_review_result') and hasattr(inq, 'x_has_request_approval'):
+            #                 inq.write({'approve_mng_engineer': False,
+            #                            'x_review_result': None,
+            #                            'x_has_request_approval': None
+            #                            })
 
             for lines in line.request_line_ids:
                 if lines.product_id:
@@ -142,6 +147,7 @@ class RequestPrice(models.Model):
                         raise UserError('Product is empty')
                 else:
                     raise UserError('Product is empty')
+            inquiry.action_update_cost()
 
 
 class RequestPriceLine(models.Model):
