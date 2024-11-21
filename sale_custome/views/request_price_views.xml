@@ -17,6 +17,7 @@
                             <field name="date" string="Request Date" readonly="1"/>
                             <field name="project_category" readonly="1"/>
                             <field name="partner_id" string="Customer" required="1" readonly="state == 'posted'"/>
+                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                         </group>
                         <notebook>
                             <page string="Product Lines">

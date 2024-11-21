@@ -465,9 +465,18 @@ class CrmLead(models.Model):
     def _compute_estimation_cost(self):
         for line in self:
             cost = 0
-            for lines in line.lead_product_detail:
-                cost += lines.subtotal
-            line.cost_estimation = cost
+            if line.category_project:
+                if line.category_project == 'project' or line.category_project == 'service':
+                    for lines in line.lead_product_detail:
+                        cost += lines.subtotal
+                    line.cost_estimation = cost
+                if line.category_project == 'supply':
+                    cost_master = 0
+                    for liness in line.lead_product_ids:
+                        cost_master += liness.cost_price * liness.product_uom_quantity
+                    line.cost_estimation = cost_master
+            else:
+                line.cost_estimation = cost
 
     def _compute_count_inquiry(self):
         for line in self:
@@ -538,8 +547,8 @@ class CrmLead(models.Model):
                     "priority": line.priority,
                     "note": line.description
                 }
-                if line.category_project == 'supply':
-                    data['process_to'] = line.process_to
+                # if line.category_project == 'supply':
+                #     data['process_to'] = line.process_to
                 # inquiry = self.env['inquiry.inquiry'].search([])
                 inquiry = self.env['inquiry.inquiry'].create(data)
                 if line.category_project == 'supply' or line.category_project == 'project':
@@ -556,24 +565,24 @@ class CrmLead(models.Model):
                             'cost_price': lines.product_id.product_tmpl_id.standard_price
                         }))
                     inquiry.write({'inquiry_line_detail': list_product})
-                    if line.process_to == 'purchase':
-                        if line.pic_supply:
-                            inquiry.write({'pic_user': line.pic_supply})
+                    # if line.process_to == 'purchase':
+                    #     if line.pic_supply:
+                    #         inquiry.write({'pic_user': line.pic_supply})
                             # line.pic_user = line.pic_supply
-                if line.category_project == 'supply' and line.process_to == 'engineering':
-                    list_product = []
-                    if not line.lead_product_ids:
-                        raise UserError('Pl add product first')
-                    for lines in line.lead_product_ids:
-                        list_product.append((0, 0, {
-                            'product_id': lines.product_id.id,
-                            'name': lines.name or '',
-                            'product_uom_quantity': lines.product_uom_quantity,
-                            'product_uom': lines.product_uom.id,
-                            'unit_weight': lines.product_id.product_tmpl_id.weight,
-                            'cost_price': lines.product_id.product_tmpl_id.standard_price
-                        }))
-                    inquiry.write({'inquiry_line_detail': list_product})
+                # if line.category_project == 'supply' and line.process_to == 'engineering':
+                #     list_product = []
+                #     if not line.lead_product_ids:
+                #         raise UserError('Pl add product first')
+                #     for lines in line.lead_product_ids:
+                #         list_product.append((0, 0, {
+                #             'product_id': lines.product_id.id,
+                #             'name': lines.name or '',
+                #             'product_uom_quantity': lines.product_uom_quantity,
+                #             'product_uom': lines.product_uom.id,
+                #             'unit_weight': lines.product_id.product_tmpl_id.weight,
+                #             'cost_price': lines.product_id.product_tmpl_id.standard_price
+                #         }))
+                #     inquiry.write({'inquiry_line_detail': list_product})
                 # raise UserError(inquiry)
                 attch = self.process_attachments()
                 if attch:
@@ -1417,7 +1426,7 @@ class InquirySales(models.Model):
             for cek in line.inquiry_line_detail:
                 if cek.cost_price == 0:
                     raise UserError('There is a material product price of 0 !!')
-            if line.project_category == 'project' or line.project_category == 'supply' or line.process_to == 'engineering':
+            if line.project_category == 'project' or line.project_category == 'service':
                 lead_line_detail.unlink()
                 for line_detail in line.inquiry_line_detail:
                     self.env['lead.line.detail'].create({
@@ -1474,7 +1483,7 @@ class InquirySales(models.Model):
 
             if lead_line:
                 lead_line.unlink()
-                if line.project_category == 'project' or line.project_category == 'supply' and line.process_to == 'engineering':
+                if line.project_category == 'project' or line.project_category == 'service':
                     for bom_lead in line.inquiry_line_ids:
                         if bom_lead.bom_id.product_tmpl_id.is_master:
                             # list_product_crm.append()
@@ -1497,8 +1506,7 @@ class InquirySales(models.Model):
                             crm.write({
                                 'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
                             })
-                elif line.project_category == 'supply' and line.process_to == 'purchase':
-
+                elif line.project_category == 'supply':
                     for product_supply in line.inquiry_line_detail:
                         if product_supply.product_id.product_tmpl_id.is_master:
                             # list_product_crm.append()
@@ -1517,13 +1525,15 @@ class InquirySales(models.Model):
                                 'tax_id': product_bom.taxes_id or False,
                                 'cost_price': product_supply.cost_price
                             })
-                            # crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
-                            # crm.write({
-                            #     'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
-                            # })
+                    crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+                    subtotal = sum(line.inquiry_line_detail.mapped('subtotal'))
+                    raise UserError(crm.cost_estimation)
+                    crm.write({
+                        'cost_estimation': float(subtotal)
+                    })
             else:
                 # raise UserError('product_bom')
-                if line.project_category == 'project' or line.project_category == 'supply' and line.process_to == 'engineering':
+                if line.project_category == 'project' or line.project_category == 'service':
                     for bom_lead in line.inquiry_line_ids:
                         if bom_lead.bom_id.product_tmpl_id.is_master:
                             # list_product_crm.append()
@@ -1546,7 +1556,7 @@ class InquirySales(models.Model):
                             crm.write({
                                 'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
                             })
-                elif line.project_category == 'supply' and line.process_to == 'purchase':
+                elif line.project_category == 'supply':
                     # raise UserError(line.inquiry_line_detail)
                     for product_supply in line.inquiry_line_detail:
                         if product_supply.product_id.product_tmpl_id.is_master:
@@ -1566,10 +1576,11 @@ class InquirySales(models.Model):
                                 'tax_id': product_bom.taxes_id or False,
                                 'cost_price': product_supply.cost_price
                             })
-                            # crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
-                            # crm.write({
-                            #     'cost_estimation': bom_lead.bom_cost * bom_lead.bom_id.product_qty
-                            # })
+                    crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+                    subtotal = sum(line.inquiry_line_detail.mapped('subtotal'))
+                    crm.write({
+                        'cost_estimation': float(subtotal)
+                    })
 
             inq = self.env['inquiry.inquiry'].browse(int(line.id))
             inq.write({'state': 'cost'})
