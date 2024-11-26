@@ -232,3 +232,9 @@ class ProductionReportLine(models.Model):
                 schedule_done = self.env['production.report.line'].search(
                     [('raw_id', '=', materials.id), ('production_id.state', '=', 'done')])
                 line.qty_to_consume = materials.product_uom_qty - sum(schedule_done.mapped('qty_consume'))
+
+
+class ProductionTag(models.Model):
+    _name = 'production.tag'
+
+    name = fields.Char()

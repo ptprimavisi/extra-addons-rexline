@@ -568,7 +568,7 @@ class CrmLead(models.Model):
                     # if line.process_to == 'purchase':
                     #     if line.pic_supply:
                     #         inquiry.write({'pic_user': line.pic_supply})
-                            # line.pic_user = line.pic_supply
+                    # line.pic_user = line.pic_supply
                 # if line.category_project == 'supply' and line.process_to == 'engineering':
                 #     list_product = []
                 #     if not line.lead_product_ids:
@@ -677,6 +677,15 @@ class InquirySales(models.Model):
     ])
     header_note = fields.Text()
     approve_mng_engineer = fields.Boolean()
+    sale_id = fields.Many2one('sale.order', compute="compute_saleorder")
+
+    def compute_saleorder(self):
+        for line in self:
+            line.sale_id = False
+            so = self.env['sale.order'].search([('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')],
+                                               limit=1)
+            if so:
+                line.sale_id = int(so.id)
 
     def _compute_count_log(self):
         for line in self:
@@ -1808,17 +1817,20 @@ class ResCustomer(models.Model):
 
     @api.model
     def create(self, vals):
-
         # Membuat record baru dan menyimpannya
         new_record = super(ResCustomer, self).create(vals)
 
         # Mendapatkan ID dari record yang baru dibuat
-        rank = new_record.customer_rank
-        value = new_record.name
+        # rank = new_record.customer_rank
+        # value = new_record.name
+        # newname = value.isupper()
+        new_record.name = new_record.name.upper()
+        #
+        # raise UserError(newname)
 
-        if rank > 0:
-            if not all(c.isupper() for c in value if c.isalpha()):
-                raise UserError('Nama Harus Menggunakan Huruf Kapital')
+        # if rank > 0:
+        #     if not all(c.isupper() for c in value if c.isalpha()):
+        #         raise UserError('Nama Harus Menggunakan Huruf Kapital')
 
         return new_record  # Kembalikan record baru jika diperlukan
         # value = vals.get('name')
@@ -1845,8 +1857,9 @@ class ProductInherith(models.Model):
         # if vals.get('name', '/') == '/':
         # raise UserError('test func')
         value = vals.get('name')
-        if not all(c.isupper() for c in value if c.isalpha()):
-            raise UserError('Nama Harus Menggunakan Huruf Kapital')
+        vals['name'] = vals['name'].upper()
+        # if not all(c.isupper() for c in value if c.isalpha()):
+        #     raise UserError('Nama Harus Menggunakan Huruf Kapital')
         return super(ProductInherith, self).create(vals)
 
     def _compute_edit_cost(self):

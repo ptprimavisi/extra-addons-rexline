@@ -20,6 +20,20 @@ class PurchaseOrder(models.Model):
             defaults['order_line'] = order_line
         return defaults
 
+    @api.model
+    def create(self, vals):
+        new_record = super(PurchaseOrder, self).create(vals)
+        requisition_id = new_record.requisition_id
+        # raise UserError(requisition_id)
+        if requisition_id:
+            # Cari record 'purchase.requisition' berdasarkan ID
+            requisition = self.env['purchase.requisition'].browse(int(requisition_id))
+            if requisition.exists():
+                # Ubah status menjadi 'po'
+                requisition.state = 'po'
+        # vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
+        return new_record
+
 
 class PurchaseRequisition(models.Model):
     _name = 'purchase.requisition'
@@ -36,13 +50,17 @@ class PurchaseRequisition(models.Model):
         ('draft', 'Draft'),
         ('confirm', 'To Confirm'),
         ('ready', 'Confirm'),
-        ('po', 'Purchase Order Created'),
         ('to_purchase', 'Process to Purchase'),
+        ('po', 'Purchase Order Created'),
         ('cancel', 'Cancel'),
     ], default="confirm")
     requisition_line = fields.One2many('requisition.line', 'requisition_id')
     count_po = fields.Integer(compute='_compute_count_po')
     count_quotation = fields.Integer(compute='_compute_count_quotation')
+    category = fields.Selection([
+        ('ga', 'GA'),
+        ('ut', 'IT'),
+    ], default="ga")
 
     @api.model
     def create(self, vals_list):
@@ -67,10 +85,28 @@ class PurchaseRequisition(models.Model):
                 line.count_quotation = len(purchase)
 
     def action_count_po(self):
-        pass
+        purchase = self.env['purchase.order'].search(
+            [('requisition_id', '=', int(self.id)), ('state', '=', 'purchase')])
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "purchase.order",
+            "domain": [('id', '=', int(purchase.id))],
+            "context": {"create": False},
+            "name": "Purchase Order",
+            'view_mode': 'tree,form',
+        }
 
     def action_count_quotation(self):
-        pass
+        purchase = self.env['purchase.order'].search(
+            [('requisition_id', '=', int(self.id)), ('state', '=', 'draft')])
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "purchase.order",
+            "domain": [('id', '=', int(purchase.id))],
+            "context": {"create": False},
+            "name": "Purchase Order",
+            'view_mode': 'tree,form',
+        }
 
     def action_confirm(self):
         for line in self:
@@ -105,12 +141,13 @@ class PurchaseRequisition(models.Model):
         for line in self:
             list_prod = []
             for lines in line.requisition_line:
-                list_prod.append((0, 0, {
-                    'product_id': lines.product_id.id,
-                    'product_qty': lines.quantity,
-                    'price_unit': lines.price_unit,
-                    'product_uom': lines.product_uom.id
-                }))
+                if lines.select:
+                    list_prod.append((0, 0, {
+                        'product_id': lines.product_id.id,
+                        'product_qty': lines.quantity,
+                        'price_unit': lines.price_unit,
+                        'product_uom': lines.product_uom.id
+                    }))
 
             if list_prod:
                 return {

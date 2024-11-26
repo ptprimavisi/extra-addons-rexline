@@ -153,12 +153,12 @@ class AccountAssetAsset(models.Model):
 
     entry_count = fields.Integer(compute='_entry_count',
                                  string='# Asset Entries')
-    name = fields.Char(string='Asset Name', required=True, readonly=True)
+    name = fields.Char(string='Asset Name', required=True)
     code = fields.Char(string='Reference', size=32, readonly=True)
-    value = fields.Float(string='Gross Value', required=True, readonly=True,
+    value = fields.Float(string='Gross Value', required=True,
                          digits=0)
     currency_id = fields.Many2one('res.currency', string='Currency',
-                                  required=True, readonly=True,
+                                  required=True,
                                   default=lambda
                                       self: self.env.company.currency_id.id)
     company_id = fields.Many2one('res.company', string='Company',
@@ -168,8 +168,8 @@ class AccountAssetAsset(models.Model):
     category_id = fields.Many2one('account.asset.category',
                                   string='Category',
                                   required=True, change_default=True,
-                                  readonly=True, )
-    date = fields.Date(string='Date', required=True, readonly=True,
+                                   )
+    date = fields.Date(string='Date', required=True,
                        default=fields.Date.context_today)
     state = fields.Selection(
         [('draft', 'Draft'), ('open', 'Running'), ('close', 'Close')],
@@ -181,8 +181,7 @@ class AccountAssetAsset(models.Model):
              "If the last line of depreciation is posted, the asset "
              "automatically goes in that status.")
     active = fields.Boolean(default=True)
-    partner_id = fields.Many2one('res.partner', string='Partner',
-                                 readonly=True)
+    partner_id = fields.Many2one('res.partner', string='Partner' )
     method = fields.Selection(
         [('linear', 'Linear'), ('degressive', 'Degressive')],
         string='Computation Method', required=True, readonly=True,
@@ -205,7 +204,7 @@ class AccountAssetAsset(models.Model):
     method_progress_factor = fields.Float(string='Degressive Factor',
                                           readonly=True, default=0.3, )
     value_residual = fields.Float(compute='_amount_residual',
-                                  digits=0, string='Residual Value')
+                                  digits=0, string='Residual Value', readonl)
     method_time = fields.Selection(
         [('number', 'Number of Entries'), ('end', 'Ending Date')],
         string='Time Method', required=True, readonly=True, default='number',
@@ -226,7 +225,6 @@ class AccountAssetAsset(models.Model):
         string='Depreciation Lines',
         readonly=True, )
     salvage_value = fields.Float(string='Salvage Value', digits=0,
-                                 readonly=True,
                                  help="It is the amount you plan to have that "
                                       "you cannot depreciate.")
     invoice_id = fields.Many2one('account.move', string='Invoice',

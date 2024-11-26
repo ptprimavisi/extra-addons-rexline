@@ -113,13 +113,13 @@
         </record>
 
         <record id="action_surat_kerja" model="ir.actions.act_window">
-            <field name="name">SPKL</field>
+            <field name="name">Surat Perintah Kerja Lembur</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">surat.kerja</field>
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="surat_kerja_menuitem"
-        name="SPKL"
+        name="Surat Perintah Kerja Lembur"
         sequence="1"
         parent="surat_kerja_root"
         action="action_surat_kerja"

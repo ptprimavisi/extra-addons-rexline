@@ -44,6 +44,10 @@
             <field name="name">Inventory / Adjustments Access Menu</field>
         </record>
 
+        <record model="res.groups" id="it_custom_group">
+            <field name="name">IT Custom Access</field>
+        </record>
+
       
     </data>
 </odoo>

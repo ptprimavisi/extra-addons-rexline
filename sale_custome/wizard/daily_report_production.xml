@@ -23,7 +23,7 @@
                                     <tree editable="bottom">
                                         <field name="employee_id" required="1"/>
                                         <field name="position" required="1"/>
-                                        <field name="description" string="Activity"/>
+                                        <field name="description" widget="many2many_tags" string="Activity"/>
                                         <field name="work_hours" required="1"/>
                                         <field name="p" string="P/mm" />
                                         <field name="t" string="T/mm"/>
