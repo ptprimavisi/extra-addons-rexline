@@ -178,6 +178,8 @@
                         <!-- Define your filters here -->
                         <filter string="Check by Inventory" name="inventory_check" domain="[('state', '=', 'to_inventory')]"/>
                         <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>
+                        <field name="name"/>
+                        <field name="partner_id"/>
 
                     </search>
             </field>
