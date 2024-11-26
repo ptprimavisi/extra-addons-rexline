@@ -204,7 +204,7 @@ class AccountAssetAsset(models.Model):
     method_progress_factor = fields.Float(string='Degressive Factor',
                                           readonly=True, default=0.3, )
     value_residual = fields.Float(compute='_amount_residual',
-                                  digits=0, string='Residual Value', readonl)
+                                  digits=0, string='Residual Value')
     method_time = fields.Selection(
         [('number', 'Number of Entries'), ('end', 'Ending Date')],
         string='Time Method', required=True, readonly=True, default='number',
