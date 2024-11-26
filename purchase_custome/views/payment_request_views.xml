@@ -51,7 +51,7 @@
                                         <field name="bill_status" string="Status Pembayaran"/>
                                         <field name="state" invisible="1" nolabel="1"/>
 
-                                        <button name="action_register_payment" string="Reguster Payment" type="object" class="oe_highlight" groups="sale_custome.accounting_custom_group" invisible="id == False or bill_status == True or state != 'confirmed'" />
+                                        <button name="action_register_payment" string="Register Payment" type="object" class="oe_highlight" groups="sale_custome.accounting_custom_group" invisible="id == False or bill_status == True or state != 'confirmed'" />
                                         <field name="amount" string="Amount" required="1"/>
 <!--                                        <field name="quantity"/>-->
 <!--                                        <field name="product_uom"/>-->
@@ -86,17 +86,48 @@
             </field>
         </record>
 
+        <record id="payment_request_filtered_view" model="ir.ui.view">
+            <field name="name">payment.request.filtered.view</field>
+            <field name="model">payment.request</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Payment" name="finance_check" domain="[('state', '=', 'confirmed')]"/>
+<!--                        <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>-->
+                        <field name="name"/>
+
+                    </search>
+            </field>
+        </record>
+
         <record id="action_payment_request" model="ir.actions.act_window">
             <field name="name">Payment Request</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">payment.request</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <record id="action_payment_request_account" model="ir.actions.act_window">
+            <field name="name">Payment Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="context">{"search_default_finance_check":1}</field>
+            <field name="res_model">payment.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
         <menuitem id="payment_request_menuitem"
         name="Payment Request"
         sequence="10"
         parent="purchase.menu_procurement_management"
         action="action_payment_request"
+        />
+
+        <menuitem id="payment_request_menuitem_finance"
+        name="Payment Request"
+        sequence="10"
+        parent="account.menu_finance"
+        action="action_payment_request_account"
         />
     </data>
 </odoo>

@@ -154,7 +154,7 @@ class AccountAssetAsset(models.Model):
     entry_count = fields.Integer(compute='_entry_count',
                                  string='# Asset Entries')
     name = fields.Char(string='Asset Name', required=True)
-    code = fields.Char(string='Reference', size=32, readonly=True)
+    code = fields.Char(string='Reference', size=32)
     value = fields.Float(string='Gross Value', required=True,
                          digits=0)
     currency_id = fields.Many2one('res.currency', string='Currency',

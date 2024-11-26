@@ -231,6 +231,8 @@
                         <!-- Define your filters here -->
                         <filter string="Inquiry Supply" name="inquiry_supply" domain="[('project_category', '=', 'supply')]"/>
 <!--                        <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>-->
+                        <field name="name"/>
+                        <field name="partner_id" string="Customer"/>
 
                     </search>
             </field>
