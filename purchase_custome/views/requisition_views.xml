@@ -6,6 +6,12 @@
             <field name="model">purchase.requisition</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ready,to_purchase,po,cancel"/>
+                        <button string="Confirm" name="action_confirm" type="object" class="oe_highlight"  invisible="id == False or state != 'confirm'"/>
+                        <button string="Proceed to Purchasing" name="action_to_purchase" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state != 'ready'"/>
+                        <button string="Create Quotation" name="action_create_quotation" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state not in ['ready', 'to_purchase','po']"/>
+                    </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_count_po"
@@ -36,6 +42,7 @@
                             <field name="is_ga" invisible="1"/>
                             <field name="is_purchase" invisible="1"/>
                             <field name="requisition_date" required="1"/>
+                            <field name="category" string="Category Product" required="1"/>
 <!--                            <field name="inquiry_id" readonly="1"/>-->
 <!--                            <field name="request_date"/>-->
 <!--                            <field name="due_date" required="1"/>-->
