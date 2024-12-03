@@ -16,7 +16,7 @@ class SaleOrderController(http.Controller):
     @http.route('/sale/get_inquiry', type='json', auth='public', website=True)
     def call_method(self, **kwargs):
         # Call the method of the Odoo model
-        result = request.env['request.price'].search([('state','=', 'draft')])
+        result = request.env['request.price'].search([('state', '=', 'draft')])
         a = []
         uid = request.env.uid
         users = request.env['res.users'].browse(uid)
@@ -36,9 +36,9 @@ class SaleOrderController(http.Controller):
 
     @http.route('/api/testCOnnection', type='json', auth="none")
     def TestCOnnection(self):
-        # db = 'rexline'
-        uid = request.session.authenticate(request.db, 'admin', 'admin123')
-        request.session.db = request.db
+        db = 'rexline'
+        uid = request.session.authenticate('rexline', 'admin', 'admin123')
+        request.session.db = 'rexline'
         request.session.uid = odoo.SUPERUSER_ID
         users = request.env['res.users'].search([])
         return {
@@ -46,7 +46,6 @@ class SaleOrderController(http.Controller):
             "data": users,
             "database": request.db
         }
-
 
     @http.route('/web/attendance', type='json', auth="none")
     def apiAttandance(self):
@@ -127,12 +126,10 @@ class SaleOrderController(http.Controller):
                 'date_from': rec['date_from'],
                 'date_to': rec['date_to'],
                 'number_of_days': 1,
-                'holiday_status_id':  1
+                'holiday_status_id': 1
             })
             args = {'success': True, 'message': 'Success', "ID": data_req.id}
 
         # except:
         # args = {'failed': True, 'message': 'Error', "Code": 400}
         return args
-
-
