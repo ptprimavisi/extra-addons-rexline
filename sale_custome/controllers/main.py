@@ -50,8 +50,8 @@ class SaleOrderController(http.Controller):
     @http.route('/web/attendance', type='json', auth="none")
     def apiAttandance(self):
         db = 'rexline'
-        uid = request.session.authenticate(request.db, 'admin', 'admin123')
-        request.session.db = request.db
+        uid = request.session.authenticate('rexline', 'admin', 'admin123')
+        request.session.db = 'rexline'
         request.session.uid = odoo.SUPERUSER_ID
         data = request.params
         employee = request.env['hr.employee'].search(
@@ -106,8 +106,8 @@ class SaleOrderController(http.Controller):
         rec = request.params
         # request.session.authenticate(db, login, password)
         db = 'rexline'
-        uid = request.session.authenticate(request.db, 'admin', 'admin123')
-        request.session.db = request.db
+        uid = request.session.authenticate('rexline', 'admin', 'admin123')
+        request.session.db = 'rexline'
         request.session.uid = odoo.SUPERUSER_ID
         employe_id = request.env['hr.employee'].search([('id', '=', rec['ref_id'])])
 
