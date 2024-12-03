@@ -12,6 +12,10 @@
                         <label for="is_master" string="Is Master ?" />
                     </span>
                     <span class="d-inline-block">
+                        <field name="is_it_assets" />
+                        <label for="is_it_assets" string="Is Assets IT ?" />
+                    </span>
+                    <span class="d-inline-block">
                         <field name="edit_cost" readonly="1"/>
                         <label for="edit_cost" string="Edit Cost ?" />
                     </span>
@@ -19,5 +23,33 @@
             </field>
 
         </record>
+
+
+        <record id="product_template_filtered_view" model="ir.ui.view">
+            <field name="name">product.template.filtered.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='categ_id']" position="after">
+                    <filter name="product_asset" string="Assets IT" domain="[('is_it_assets', '=', True)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_product_it" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="context">{'search_default_product_asset': 1}</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem id="product_report_menuitem"
+        name="Products"
+        sequence="2"
+        parent="maintenance_report_menu"
+        action="action_product_it"
+        />
     </data>
 </odoo>

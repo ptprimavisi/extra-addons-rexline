@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import babel
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
 from pytz import timezone
 from odoo import api, fields, models, tools, _
@@ -427,7 +427,8 @@ class HrPayslip(models.Model):
         for payslip in self:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
             # delete old payslip lines
-            payslip_line = self.env['hr.payslip.line'].search([('slip_id','=',payslip.id), ('salary_rule_id.is_manual','!=',True)])
+            payslip_line = self.env['hr.payslip.line'].search(
+                [('slip_id', '=', payslip.id), ('salary_rule_id.is_manual', '!=', True)])
             payslip_line.unlink()
 
             # payslip.line_ids.unlink()
@@ -446,20 +447,50 @@ class HrPayslip(models.Model):
                 for liness in payslip.line_ids:
                     if liness.salary_rule_id.is_manual and liness.salary_rule_id.amount_select == 'fix' and liness.salary_rule_id.amount_fix == 0:
                         # raise UserError(lines.amount)
-                        if liness.category_id.id == 2: #allowance
+                        if liness.category_id.id == 2:  # allowance
                             gross = self.env['hr.payslip.line'].search(
                                 [('slip_id', '=', int(payslip.id)), ('category_id', '=', 3)])
                             gross.write({'amount': gross.amount + liness.amount})
-                                  # gross.write({'amount': gross.amount + liness.amount})
+                            # gross.write({'amount': gross.amount + liness.amount})
                             gaji_net = self.env['hr.payslip.line'].search(
-                                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                                [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                             gaji_net.write({'amount': gaji_net.amount + liness.amount})
 
-                        elif liness.category_id.id == 4: #deduction
+                        elif liness.category_id.id == 4:  # deduction
                             gaji_net = self.env['hr.payslip.line'].search(
                                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                             gaji_net.write({'amount': gaji_net.amount - liness.amount})
             for slip_line in payslip.line_ids:
+                if slip_line.salary_rule_id.code == 'PARTIME':
+                    pt_amount = 0
+                    pt_quantity = 0
+                    date_from = payslip.date_from  # Format: YYYY-MM-DD
+                    date_to = payslip.date_to
+
+                    # Mengubah string menjadi objek datetime
+                    date_from_obj = datetime.strptime(str(date_from), "%Y-%m-%d")
+                    date_to_obj = datetime.strptime(str(date_to), "%Y-%m-%d")
+
+                    # Iterasi per tanggal
+                    current_date = date_from_obj
+                    while current_date <= date_to_obj:
+                        today = current_date.strftime("%Y-%m-%d")  # Format tanggal ke string (opsional)
+                        daily_report = self.env['man.power.line'].search(
+                            [('employee_id', '=', payslip.employee_id.id), ('report_id.date', '=', str(today))],
+                            limit=1)
+                        # raise UserError(today)
+                        print(today)
+                        if daily_report:
+                            pt_quantity += 1
+                        current_date += timedelta(days=1)  # Menambah 1 hari
+                    # raise UserError(pt_quantity)
+                    slip_line.quantity = pt_quantity
+                    gaji_net = self.env['hr.payslip.line'].search(
+                        [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                    pengurang = gaji_net.amount - slip_line.amount
+                    gaji_net.amount = pengurang
+                    gaji_net.amount = gaji_net.amount + slip_line.total
+
                 if slip_line.salary_rule_id.code == 'OVT':
                     sk_amount = 0
                     sk = self.env['surat.kerja.line'].search(
@@ -656,7 +687,7 @@ class HrPayslip(models.Model):
 
                     if lines.salary_rule_id.is_manual and lines.salary_rule_id.amount_select == 'fix' and lines.salary_rule_id.amount_fix == 0:
                         # raise UserError(lines.amount)
-                        if lines.category_id.id == 2: #allowance
+                        if lines.category_id.id == 2:  # allowance
                             if lines.quantity != 0 and lines.amount != 0:
                                 lines.amount = lines.amount
                                 gross = self.env['hr.payslip.line'].search(
@@ -676,7 +707,7 @@ class HrPayslip(models.Model):
                                 elif gaji_net.amount >= gaji_net.amount + lines.amount:
                                     gaji_net.write({'amount': gaji_net.amount - lines.amount})
                                     # gaji_net.write({'amount': gaji_net.amount + lines.amount})
-                        elif lines.category_id.id == 4: #deduction
+                        elif lines.category_id.id == 4:  # deduction
                             pass
 
     @api.model
