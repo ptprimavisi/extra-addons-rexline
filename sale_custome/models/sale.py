@@ -1850,7 +1850,22 @@ class ProductInherith(models.Model):
     _inherit = 'product.template'
 
     is_master = fields.Boolean()
+    is_it_assets = fields.Boolean()
     edit_cost = fields.Boolean(cmpute="_compute_edit_cost", default=False)
+    # users_branch = fields.Char(compute="branch", search="branch_search")
+    #
+    # def branch(self):
+    #     id = self.env.uid
+    #     self.users_branch = self.env['res.users'].search([('id', '=', id)])
+    #
+    # def branch_search(self, operator, value):
+    #     # for i in self:
+    #     if self.env.uid == 16 or self.env.uid == 26 or self.env.uid == 14:
+    #         contract = self.env['hr.contract'].search([('akses', '!=', True)])
+    #         employee = self.env['hr.employee'].search([('id', 'in', contract.employee_id.ids)])
+    #         # print('lihat employee', contract.id)
+    #         domain = [('id', 'in', employee.ids)]
+    #         return domain
 
     @api.model
     def create(self, vals):
