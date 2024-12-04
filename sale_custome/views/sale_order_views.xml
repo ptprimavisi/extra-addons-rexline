@@ -23,6 +23,7 @@
 
         </record>
 
+
         <record id="account_move_form_inherit" model="ir.ui.view">
             <field name="name">inherit.account.move.form.view</field>
             <field name="model">account.move</field>
