@@ -79,6 +79,7 @@ class inheritAccountMove(models.Model):
 
         return super(inheritAccountMove, self).write(vals)
 
+
     def action_reverse(self):
         for rec in self:
             used_invoice_ids = self.env['account.move'].search([
@@ -92,10 +93,12 @@ class inheritAccountMove(models.Model):
             else:
                 return super(inheritAccountMove, rec).action_reverse()
 
+
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
         for rec in self:
             rec.source_invoice=False
+
 
     @api.onchange('source_invoice')
     def _onchange_source_invoice(self):
