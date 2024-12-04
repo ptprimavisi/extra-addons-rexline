@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+ <t t-name="systray_icon_inquiry" owl="3">
+     <div id="card_menu" class="o-dropdown dropdown o-mail-DiscussSystray-class o-dropdown--no-caret">
+         <a id="button_clip" type="button" class="dropdown-toggle new_icon" role="button" data-bs-toggle="" aria-expanded="false">
+            <i class="fa-solid fa-money-bill-wave" role="img" aria-label="Activities"></i>
+         </a>
+     </div>
+ </t>
+</templates>

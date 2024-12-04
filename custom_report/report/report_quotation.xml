@@ -1,0 +1,146 @@
+<odoo>
+    <data>
+        <record id="action_report_quotation" model="ir.actions.report">
+            <field name="name">Print Out Quotation</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_report.report_quotation</field>
+            <field name="report_file">custom_report.report_quotation</field>
+            <field name="print_report_name">"Print Out Quotation"</field>
+        </record>
+        
+        <template id="report_quotation">
+            <t t-call="web.html_container">
+                <div class="container" style="font-family: Calibri, sans-serif;">
+                    
+                    <table class="table" style="width: 100%; font-size: 11px;">
+                        <tr>
+                            <td><img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /></td>
+                            <td>
+                                <h6><b><t t-esc="company_name"/></b></h6><br/>
+                                <t t-esc="company_street1"/>, <t t-esc="company_street2"/><br/>
+                                <t t-esc="company_street3"/><br/>
+                                <t t-esc="company_phone"/><br/>
+                                <t t-esc="company_web"/><br/>
+                                <t t-esc="company_npwp"/><br/>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <table class="table" style="width: 100%; font-size: 11px;">
+                        <tr>
+                            <td style="width: 400px;"><b>BILL TO</b></td>
+                            <td style="background-color: #778899; color: white;">QUOTE # :</td>
+                            <td style="background-color: #778899; color: white;"><t t-esc="so_name"/></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 400px;"><t t-esc="partner_name"/></td>
+                            <td style="background-color: #778899; color: white;">DATE :</td>
+                            <td style="background-color: #778899; color: white;"><t t-esc="so_date"/></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 400px;">
+                                <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/>
+                                <t t-esc="partner_street3"/><br/>
+                            </td>
+                            <td>EXPIRED DATE :</td>
+                            <td><t t-esc="so_date_due"/></td>
+                        </tr>
+                    </table>
+                    
+                    <table class="table" style="width: 100%; font-size: 14px;">
+                        <thead>
+                            <tr style="background-color: #778899; color: white;">
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Discount</th>
+                                <th>Unit Price (Rp.)</th>
+                                <th>Amount (Rp.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="quotation_lines" t-as="lines">
+                                <tr>
+                                    <t t-foreach="lines" t-as="line">
+                                        <td><t t-esc="line"/></td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <table class="table" style="width: 100%; font-size: 11px;">
+                        <tr>
+                            <td style="color: #A9A9A9;">
+                                <i>
+                                    Note :<br/>
+                                    - Heavy equipment and fuel for instalation by owner<br/>
+                                    - Power sources, Freshwater + Infras for Construction by<br/>
+                                    client<br/>
+                                    - Lighting by owner<br/>
+                                    - Man power for instalation by owner<br/>
+                                    Terms &amp; Conditions:<br/>
+                                    1. All prices quoted above are FOT Kawasan Marunda<br/>
+                                    Center, Kab Bekasi<br/>
+                                    2. Lead time : 4-5 months fabrication, starting date after<br/>
+                                    receiving Advance, and design approval<br/>
+                                    3. The quotation above is quoted in IDR and including<br/>
+                                    Taxes (PPh &amp; PPn).<br/>
+                                    4. Payment Term:<br/>
+                                    - 30% Advance.<br/>
+                                    - 35% Before dispatch.<br/>
+                                    - 35% After BAST<br/>
+                                    (Payment term is nett 30 days after receiving invoice)<br/>
+                                    5. This quotation is subject to Rexline General Conditions of<br/>
+                                    Sale and pricing is strictly confidential and not to be shared<br/>
+                                    without REXLINE authorities' approval<br/>
+                                    6. This quotation is based on total order placement and<br/>
+                                    factory load at time of order, if scope/quantity changes,<br/>
+                                    REXLINE reserves the right to review pricing<br/>
+                                    7. Orders cannot be canceled once production has<br/>
+                                    commenced and all goods are non-returnable<br/>
+                                    8. If the freight price increases then the customer will be<br/>
+                                    liable to additional costs based on actual freight cost once<br/>
+                                    the PO is received by Rexline<br/>
+                                    9. Standby time caused due to Force Majeure or Heavy<br/>
+                                    Rainfall of more than 7 days, then the client is chargable by<br/>
+                                    Rexline.<br/>
+                                    10. Special packing requirements do not form part of this<br/>
+                                    quotation<br/>
+                                    11. The unloading at the site will be the scope of the client<br/>
+                                    12. Please thoroughly check quotes against your request as<br/>
+                                    all errors and omissions are excluded.<br/>
+                                    13. Please direct your Purchase Orders to:<br/>
+                                    salesteam@rexlineengineering.com<br/>
+                                </i>
+                            </td>
+                            <td>
+                                Subtotal<br/><br/>
+                                <t t-foreach="taxes" t-as="tax">
+                                    <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>
+                                </t>
+                                <b><br/>Total</b><br/>
+                                <br/><p style="background-color: #778899; color: white;">Balance Due</p>
+                            </td>
+                            <td style="text-align: right;">
+                                <t t-esc="subtotal"/><br/><br/>
+                                <t t-foreach="taxes" t-as="tax">
+                                    <t t-esc="tax['amount']"/><br/>
+                                </t>
+                                <b><br/><t t-esc="balance_due"/></b><br/>
+                                <br/><p style="background-color: #778899; color: white;"><t t-esc="balance_due"/></p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <p style="text-align: right;">
+                        <br/><br/><br/><br/><br/>Akhil Raj<br/>
+                        National Sales Leader<br/>
+                        REXLINE ENGINEERING INDONESIA
+                    </p>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

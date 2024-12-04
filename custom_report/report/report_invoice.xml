@@ -1,0 +1,124 @@
+<odoo>
+    <data>
+        <record id="action_report_invoice" model="ir.actions.report">
+            <field name="name">Print Out Finance</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_report.report_invoice</field>
+            <field name="report_file">custom_report.report_invoice</field>
+            <field name="print_report_name">"Print Out Finance"</field>
+        </record>
+        
+        <template id="report_invoice">
+            <t t-call="web.html_container">
+                <div class="header" style="font-family: Calibri, sans-serif;">
+                    <div style="text-align: center;">
+                        <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
+                    </div>
+                    
+                    <table class="table" style="width: 100%; font-size: 11px;">
+                        <tr>
+                            <td><h6><b><t t-esc="company_name"/></b></h6></td>
+                            <td></td>
+                            <td>
+                                <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
+                                <t t-esc="company_street3"/><br/>
+                                <t t-esc="company_phone"/><br/>
+                                <t t-esc="company_web"/><br/>
+                                <t t-esc="company_npwp"/><br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Customer<br/>
+                                <t t-esc="partner_name"/>
+                            </td>
+                            <td>Invoice#<br/>
+                                <t t-esc="invoice_name"/>
+                            </td>
+                            <td>Customer Reference</td>
+                        </tr>
+                        <tr>
+                            <td>Address<br/>
+                                <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
+                                <t t-esc="company_street3"/><br/>
+                                <t t-esc="company_phone"/><br/>
+                                <t t-esc="company_web"/><br/>
+                                <t t-esc="company_npwp"/><br/>
+                            </td>
+                            <td>Date<br/>
+                                <t t-esc="invoice_date"/><br/><br/>
+                                Due Date<br/>
+                                <t t-esc="invoice_date_due"/>
+                            </td>
+                            <td>Tags<br/>
+                                <t t-esc="tags_info"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="table" style="width: 100%; font-size: 14px;">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Unit Price (Rp.)</th>
+                                <th>Discount</th>
+                                <th>Taxed</th>
+                                <th>Amount (Rp.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="counter" t-value="0"/>
+                            <t t-foreach="product_line" t-as="lines">
+                                <tr>
+                                    <td><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
+                                    <t t-foreach="lines" t-as="line">
+                                        <td><t t-esc="line"/></td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <table class="table" style="width: 100%; font-size: 14px;">
+                        <tr>
+                            <td>
+                                <b>Message</b><br/><br/>
+                                Please send your payment in FULL AMOUNT by transfer to :<br/>
+                                Bank : MAYBANK<br/>
+                                A/C : 2790000188<br/>
+                                A/N : PT Rexline Engineering Indonesia<br/>
+                                Account : 1270017111111<br/>
+                                BANK : BANK MANDIRI<br/>
+                                Acc. Holder : PT. REXLINE ENGINEERING INDONESIA<br/>
+                            </td>
+                            <td>
+                                Subtotal<br/><br/>
+                                <t t-foreach="taxes" t-as="tax">
+                                    <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>
+                                </t>
+                                <b><br/>Total</b><br/>
+                                <br/>Balance Due
+                            </td>
+                            <td style="text-align: right;">
+                                <t t-esc="subtotal"/><br/><br/>
+                                <t t-foreach="taxes" t-as="tax">
+                                    <t t-esc="tax['amount']"/><br/>
+                                </t>
+                                <b><br/><t t-esc="balance_due"/></b><br/>
+                                <br/><t t-esc="balance_due"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <p style="text-align: right;">
+                        RAHUL THOTTIYIL<br/><br/><br/><br/><br/>
+                        DIREKTUR<br/>
+                        REXLINE ENGINEERING INDONESIA
+                    </p>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

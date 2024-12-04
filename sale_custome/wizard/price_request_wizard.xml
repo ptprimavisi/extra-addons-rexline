@@ -9,6 +9,7 @@
                         <group>
                             <field name="inquiry_id" string="Inquiry Ref" readonly="1"/>
                             <field name="date" string="Request Date" readonly="1"/>
+                            <field name="due_date" string="Deadline" readonly="1"/>
                             <field name="project_category" readonly="1"/>
                             <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                         </group>
