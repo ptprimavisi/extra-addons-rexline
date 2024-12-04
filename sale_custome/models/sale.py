@@ -113,8 +113,6 @@ class inheritAccountMove(models.Model):
                 if used_invoice_ids:
                     raise UserError(f'Invoice {rec.source_invoice.name} has already been used in credit notes: {", ".join(credit_note_names)}')
 
-=======
->>>>>>> 8e08baf46fe289eb213193fd003b6558d72ab903
 
 class MailActivity(models.TransientModel):
     _inherit = 'mail.activity.schedule'
@@ -1140,10 +1138,7 @@ class InquirySales(models.Model):
                 'context': {
                     'inquiry_id': int(line.id),
                     'date': str(datetime.now()),
-<<<<<<< HEAD
                     'due_date':line.due_date,
-=======
->>>>>>> 8e08baf46fe289eb213193fd003b6558d72ab903
                     'default_project_category': line.project_category,
                     'request_line_ids': list
                 }
