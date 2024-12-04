@@ -431,6 +431,7 @@ class HrPayslip(models.Model):
                 [('slip_id', '=', payslip.id), ('salary_rule_id.is_manual', '!=', True)])
             payslip_line.unlink()
 
+
             # payslip.line_ids.unlink()
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
@@ -443,6 +444,52 @@ class HrPayslip(models.Model):
             # print(lines)
             # overtime = self.env['hr.salary.rule']
             payslip.write({'line_ids': lines, 'number': number})
+            contract_sebelum = self.env['hr.contract'].search([('id','!=',payslip.contract_id.id),('employee_id','=',payslip.employee_id.id),('date_end', '>=',payslip.date_from), ('date_end', '<',payslip.date_to),('state','!=','cancel')])
+            total_hari_sebelum = 0
+            total_hari_sesudah = 0
+            if contract_sebelum and payslip.contract_id:
+                date_start = datetime.strptime(str(payslip.date_from), '%Y-%m-%d')
+                date_end = datetime.strptime(str(contract_sebelum.date_end), '%Y-%m-%d')
+                current_date = date_start
+                while current_date <= date_end:
+                    # print(f"Current Date: {current_date.strftime('%Y-%m-%d')}")
+                    # Tambahkan logika lain di sini, misalnya cek data atau melakukan operasi lain
+                    total_hari_sebelum += 1
+                    current_date += timedelta(days=1)  # Tambah 1 hari
+                gj_pkwt = contract_sebelum.wage
+                total_gaji_sebelum = total_hari_sebelum / 30 * gj_pkwt
+                hari_sesudah = 30 - total_hari_sebelum
+                total_hari_sesudah += hari_sesudah
+                gaji_pkwt_sesudah = payslip.contract_id.wage
+                total_gaji_sesudah = total_hari_sesudah / 30 * gaji_pkwt_sesudah
+                final_gaji = total_gaji_sebelum + total_gaji_sesudah
+                basic = self.env['hr.payslip.line'].search([('slip_id','=',int(payslip.id)), ('code','=','BASIC')])
+                gross = self.env['hr.payslip.line'].search([('slip_id','=',int(payslip.id)), ('code','=','GROSS')])
+                net = self.env['hr.payslip.line'].search([('slip_id','=',int(payslip.id)), ('code','=','NET')])
+                gross.write({'amount': gross.amount - basic.amount})
+                gross.write({'amount': gross.amount + final_gaji})
+                net.write({'amount': net.amount - basic.amount})
+                net.write({'amount': net.amount + final_gaji})
+                basic.write({'amount': final_gaji})
+
+                # for forlines in payslip.line_ids:
+                #     if forlines.code == 'BASIC':
+                #         forlines.amount = final_gaji
+
+                        # slipline = self.env['hr.payslip.line'].browse(int(forlines.category_id.id))
+                        # if slipline:
+                        #     raise UserError(slipline.amount)
+                        #     slipline.write({'amount': final_gaji})
+                # raise UserError(total_gaji_sebelum)
+                # date_start_cont = datetime.strptime(str(contract_sebelum.date_end), '%Y-%m-%d')
+                # date_start_sesudah = date_start_cont + timedelta(days=1)
+                # date_end_sesudah = datetime.strptime(str(payslip.date_to), '%Y-%m-%d')
+
+                # while date_start_sesudah <= date_end_sesudah:
+                #     total_hari_sesudah += 1
+                #     date_start_sesudah += timedelta(days=1)
+
+            # raise UserError(total_hari_sesudah)
             if payslip.line_ids:
                 for liness in payslip.line_ids:
                     if liness.salary_rule_id.is_manual and liness.salary_rule_id.amount_select == 'fix' and liness.salary_rule_id.amount_fix == 0:
