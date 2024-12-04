@@ -17,6 +17,99 @@ AVAILABLE_PRIORITIES = [
 
 #     weight = fields.Float()
 
+class inheritAccountMove(models.Model):
+    _inherit='account.move'
+
+    source_invoice = fields.Many2one(
+        'account.move',
+        string="Source Invoice"
+    )
+
+    is_credit_note = fields.Boolean()
+
+    def action_post(self):
+        for rec in self:
+            if rec.move_type=='out_refund' and not rec.source_invoice:
+                raise UserError('Source Invoice must be filled.')
+            else:
+                return super(inheritAccountMove, rec).action_post()
+
+    @api.model
+    def create(self, vals):
+        if vals.get('move_type') and vals['move_type']=='our_refund':
+            if vals.get('source_invoice'):
+                source_invoice_id = vals['source_invoice']
+                
+                credit_notes = self.env['account.move'].search([
+                    ('move_type', '=', 'out_refund'),
+                    ('state', '!=', 'cancel'),
+                    ('source_invoice', '!=', False)
+                ])
+                credit_note_names = credit_notes.mapped('name')
+                
+                used_invoice_ids = credit_notes.mapped('source_invoice.id')
+                source_invoice = self.env['account.move'].browse(source_invoice_id)
+
+                if source_invoice.id not in used_invoice_ids:
+                    source_invoice.write({'is_credit_note': True})
+                else:
+                    raise UserError(f'Invoice {source_invoice.name} has already been used in credit notes: {", ".join(credit_note_names)}')
+
+        return super(inheritAccountMove, self).create(vals)
+
+    @api.model
+    def write(self, vals):
+        if vals.get('source_invoice'):
+            source_invoice_id = vals['source_invoice']
+                
+            credit_notes = self.env['account.move'].search([
+                ('move_type', '=', 'out_refund'),
+                ('state', '!=', 'cancel'),
+                ('source_invoice', '!=', False)
+            ])
+            credit_note_names = credit_notes.mapped('name')
+                
+            used_invoice_ids = credit_notes.mapped('source_invoice.id')
+            source_invoice = self.env['account.move'].browse(source_invoice_id)
+
+            if source_invoice.id not in used_invoice_ids:
+                source_invoice.write({'is_credit_note': True})
+            else:
+                raise UserError(f'Invoice {source_invoice.name} has already been used in credit notes: {", ".join(credit_note_names)}')
+
+        return super(inheritAccountMove, self).write(vals)
+
+    def action_reverse(self):
+        for rec in self:
+            used_invoice_ids = self.env['account.move'].search([
+                    ('move_type', '=', 'out_refund'),
+                    ('state', '=', 'posted'),
+                    ('source_invoice', '=', rec.id)
+            ])
+            credit_note_names = used_invoice_ids.mapped('name')
+            if used_invoice_ids:
+                raise UserError(f'Invoice {rec.name} has already been used in credit notes: {", ".join(credit_note_names)}')
+            else:
+                return super(inheritAccountMove, rec).action_reverse()
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        for rec in self:
+            rec.source_invoice=False
+
+    @api.onchange('source_invoice')
+    def _onchange_source_invoice(self):
+        for rec in self:
+            if rec.source_invoice:
+                used_invoice_ids = self.env['account.move'].search([
+                    ('move_type', '=', 'out_refund'),
+                    ('state', '=', 'posted'),
+                    ('source_invoice', '=', rec.source_invoice.id)
+                ])
+                credit_note_names = used_invoice_ids.mapped('name')
+                if used_invoice_ids:
+                    raise UserError(f'Invoice {rec.source_invoice.name} has already been used in credit notes: {", ".join(credit_note_names)}')
+
 
 class MailActivity(models.TransientModel):
     _inherit = 'mail.activity.schedule'
@@ -1042,6 +1135,7 @@ class InquirySales(models.Model):
                 'context': {
                     'inquiry_id': int(line.id),
                     'date': str(datetime.now()),
+                    'due_date':line.due_date,
                     'default_project_category': line.project_category,
                     'request_line_ids': list
                 }

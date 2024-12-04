@@ -11,6 +11,7 @@ class RequestPrice(models.Model):
         ('posted', 'Confirm')
     ], default="draft")
     date = fields.Date()
+    due_date = fields.Datetime(string='Deadline')
     attachment_ids = fields.One2many(
         'ir.attachment', 'res_id',
         domain=[('res_model', '=', 'request.price')],

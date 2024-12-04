@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record id="view_sale_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.sale.order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="action_confirm" position="after">
+                    <button name="action_print_custom_so" string="Print Out SO" type="object" invisible="id == False or state !='sale'"/>
+                    <button name="action_print_custom_quotation" string="Print Out Quotation" type="object" invisible="id == False or state !='draft'"/>
+                </button>
+            </field>
+        </record>
+    </data>
+</odoo>

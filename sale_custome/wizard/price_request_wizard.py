@@ -14,6 +14,7 @@ class RequestPriceWizard(models.TransientModel):
         ('posted', 'Confirm')
     ], default="draft")
     date = fields.Date()
+    due_date = fields.Datetime(string='Deadline')
     project_category = fields.Selection([
         ('project', 'Project'),
         ('service', 'Service'),
@@ -31,11 +32,13 @@ class RequestPriceWizard(models.TransientModel):
 
         inquiry_id = self.env.context.get('inquiry_id', False)
         date = self.env.context.get('date', False)
+        due_date = self.env.context.get('due_date', False)
         request_line_ids = self.env.context.get('request_line_ids', False)
         # raise UserError(partner_id)
         if inquiry_id:
             defaults['inquiry_id'] = inquiry_id
             defaults['date'] = date
+            defaults['due_date'] = due_date
             defaults['request_line_ids'] = request_line_ids
 
         return defaults
@@ -68,6 +71,7 @@ class RequestPriceWizard(models.TransientModel):
                 data = {
                     'inquiry_id': line.inquiry_id.id,
                     'date': line.date,
+                    'due_date': line.due_date,
                     'project_category': line.project_category,
                     'partner_id': line.inquiry_id.opportunity_id.partner_id.id,
                     'request_line_ids': list_product,

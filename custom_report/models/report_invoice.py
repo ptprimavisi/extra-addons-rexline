@@ -1,0 +1,109 @@
+from odoo import models, fields, api, _
+from odoo.fields import Date
+from odoo.exceptions import UserError
+import base64
+from datetime import datetime, timedelta,date
+import re
+
+class InheritInvoice(models.Model):
+    _inherit = 'account.move'
+
+    def action_print_custom(self):
+        for rec in self:
+            company = self.env.user.company_id
+
+            company_name = company.partner_id.name or ''
+            company_street1 = company.partner_id.street or ''
+            company_street2 = company.partner_id.street2 or ''
+            company_street3 = (
+                str(company.partner_id.city or '') + ', ' +
+                str(company.partner_id.state_id.name or '') + ', ' +
+                str(company.partner_id.country_id.name or '') + ', ' +
+                str(company.partner_id.zip or '')
+            )
+            company_npwp = company.partner_id.vat or ''
+            company_phone = company.partner_id.phone or ''
+            company_web = company.partner_id.website or ''
+
+            partner_name = rec.partner_id.name,
+            partner_street1 = rec.partner_id.street or ''
+            partner_street2 = rec.partner_id.street2 or ''
+            partner_street3 = (
+                str(rec.partner_id.city or '') + ', ' +
+                str(rec.partner_id.state_id.name or '') + ', ' +
+                str(rec.partner_id.country_id.name or '') + ', ' +
+                str(rec.partner_id.zip or '')
+            )
+            
+            invoice_name = rec.name
+            invoice_date = rec.invoice_date.strftime('%d-%m-%Y')
+            invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y')
+
+            balance_due = f"{int(rec.amount_total):,}"
+
+            so_ids = rec.line_ids.sale_line_ids.order_id
+            so_name = so_ids.ref_quotation if so_ids.name == '/' else so_ids.name
+            crm_ids = so_ids.opportunity_id
+            tags = ", ".join(tag.name for tag in crm_ids.tag_ids)
+            tags_info =tags+', '+so_name
+
+            taxes=[]
+
+            query="""
+                SELECT 
+                    aml.name AS tax, 
+                    tax.amount as percentage,
+                    COALESCE(abs(SUM(aml.balance)), 0) AS tax_amount
+                FROM account_move_line aml
+                join account_tax tax on aml.tax_line_id=tax.id
+                WHERE 
+                    aml.move_id = """+str(rec.id)+"""
+                    AND aml.display_type = 'tax'
+                GROUP BY 
+                    aml.name,tax.amount;
+            """
+            self.env.cr.execute(query)
+            query_vals = self.env.cr.dictfetchall()
+            if query_vals:
+                for line in query_vals:
+                    taxes.append({
+                        'name':line['tax'],
+                        'percentage':line['percentage'],
+                        'amount':f"{int(line['tax_amount']):,}"})
+
+            product_line=[]
+            move_lines = self.env['account.move.line'].search([('move_id','=',rec.id),('product_id','!=',False)])
+            subtotal=0
+            if move_lines:
+                for lines in move_lines:
+                    if lines.tax_ids:
+                        tax_name = ", ".join(tax.name for tax in lines.tax_ids)
+                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}"])
+                    subtotal+=lines.price_subtotal
+            subtotal = f"{int(subtotal):,}"
+            
+            report_data = {
+                    'doc_ids': self.ids,
+                    'doc_model': 'account.move',
+                    'company_name': company_name,
+                    'company_street1':company_street1,
+                    'company_street2':company_street2,
+                    'company_street3':company_street3,
+                    'company_phone':company_phone,
+                    'company_npwp':company_npwp,
+                    'company_web':company_web,
+                    'partner_name':partner_name,
+                    'partner_street1':partner_street1,
+                    'partner_street2':partner_street2,
+                    'partner_street3':partner_street3,
+                    'invoice_name':invoice_name,
+                    'invoice_date':invoice_date,
+                    'invoice_date_due':invoice_date_due,
+                    'balance_due':balance_due,
+                    'subtotal':subtotal,
+                    'tags_info':tags_info,
+                    'taxes':taxes,
+                    'product_line':product_line
+                }
+            return self.env.ref('custom_report.action_report_invoice').with_context(
+                paperformat=4, landscape=False).report_action(self, data=report_data)
