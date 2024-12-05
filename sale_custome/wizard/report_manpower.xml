@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+        <record id="report_manpower_form_view" model="ir.ui.view">
+            <field name="name">report.manpower.form.view</field>
+            <field name="model">report.manpower</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="sale_id" string="SO No" required="1" domain="[('state','=','sale')]"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_generate" class="oe_highlight" type="object" string="Generate"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+<!--        <record id="action_generate_ar" model="ir.actions.act_window">-->
+<!--            <field name="name">Report Account Receiptable</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">report.ar</field>-->
+<!--            <field name="view_mode">form</field>-->
+<!--            <field name="target">new</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="menu_generate_ar" name="Report Account Receiptable" parent="sale.menu_sale_report" action="action_generate_ar" sequence="6"/>-->
+
+    </data>
+</odoo>

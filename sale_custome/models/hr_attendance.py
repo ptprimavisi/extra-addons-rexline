@@ -60,6 +60,16 @@ class HrEmployee(models.Model):
             print('User Data Not Found')
         # for line in self:
 
+    def action_report_manpower(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "report.manpower",
+            "context": {"create": True},
+            "name": "Report Manpower",
+            "target": "new",
+            'view_mode': 'form',
+        }
+
 
 class HrContarct(models.Model):
     _inherit = 'hr.contract'

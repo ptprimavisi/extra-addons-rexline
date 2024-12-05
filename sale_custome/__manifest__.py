@@ -16,6 +16,7 @@
         "report/daily_report_production.xml",
         "report/report_price_request.xml",
         'report/report.xml',
+        'wizard/report_manpower.xml',
         # "views/rfq_views.xml",
         "views/crm_views.xml",
         "views/bom_views.xml",
