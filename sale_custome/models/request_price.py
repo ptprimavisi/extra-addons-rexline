@@ -113,7 +113,15 @@ class RequestPrice(models.Model):
         for line in self:
             inquiry = self.env['inquiry.inquiry'].search(
                 [('id', '=', line.inquiry_id.id)])
-            # if inquiry:
+            # if inquiry.opportunity_id:
+            #     crm = self.env['crm.lead'].search([('id','=',inquiry.opportunity_id.id)])
+            #     for crms in crm:
+            #         if hasattr(crms, 'x_review_result') and hasattr(crms, 'x_has_request_approval'):
+            #             crms.write({
+            #                        'x_review_result': None,
+            #                        'x_has_request_approval': None
+            #                        })
+
             #     if inquiry.process_to == 'purchase':
             #         pass
             #     else:

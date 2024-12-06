@@ -434,7 +434,8 @@ class CrmLead(models.Model):
     cost_estimation = fields.Float(compute="_compute_estimation_cost")
     is_planner = fields.Boolean(compute="_compute_is_planner")
     state_inquiry = fields.Char(compute="_compute_state_inq")
-    is_approve = fields.Boolean(default=False)
+    is_approve = fields.Boolean(compute="_compute_isApprove")
+    status_estimate = fields.Boolean(default=False)
     process_to = fields.Selection([
         ('purchase', 'Purchase'),
         ('engineering', 'Engineering')
@@ -444,6 +445,13 @@ class CrmLead(models.Model):
         ('yellow', 'Yellow'),
         ('green', 'Green')
     ], compute="_compute_warning")
+
+    def _compute_isApprove(self):
+        for line in self:
+            line.is_approve = False
+            if hasattr(line, 'x_review_result') and hasattr(line, 'x_has_request_approval'):
+                if line.x_review_result and line.x_has_request_approval:
+                    line.is_approve = True
 
     @api.depends('date_deadline')
     def _compute_warning(self):
@@ -1516,6 +1524,17 @@ class InquirySales(models.Model):
 
     def action_update_cost(self):
         for line in self:
+            crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
+            crm.write({
+                'status_estimate': True,
+            })
+            # raise UserError(crm)
+            for crms in crm:
+                if hasattr(crms, 'x_review_result') and hasattr(crms, 'x_has_request_approval'):
+                    crms.write({
+                        'x_review_result': None,
+                        'x_has_request_approval': None
+                    })
             bom = self.env['mrp.bom'].search([('id', 'in', line.inquiry_line_ids.bom_id.ids)])
             bom_global = self.env['mrp.bom'].search([])
             product = self.env['product.product'].search([('product_tmpl_id', 'in', bom.product_tmpl_id.ids)])
