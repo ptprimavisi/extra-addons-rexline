@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="hr_surat_tugas" model="ir.sequence">
+            <field name="name">Surat Tugas</field>
+            <field name="code">ST</field>
+            <field name="prefix">ST/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="hr_surat_tugas_form_view" model="ir.ui.view">
+            <field name="name">hr.surat.tugas.form.inherit</field>
+            <field name="model">hr.surat.tugas</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet>
+                    <div class="o_lead_opportunity_form_inline_fields">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" invisible="id == False"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sale_id" string="SO Number" required="1" domain="[('state','=','sale')]"/>
+                            <field name="date_from" string="Date From" required="1"/>
+                            <field name="date_to" string="Date To" required="1"/>
+                        </group>
+
+                        <group>
+                            <label for="meal_allowance"/>
+                            <div class="o_row">
+                                <field name="meal_allowance" nolabel="1"/>
+                            <span>/ Day</span>
+                            </div>
+                            <label for="site_allowance"/>
+                            <div class="o_row">
+                                <field name="site_allowance" nolabel="1"/>
+                                <span>/ Day</span>
+                            </div>
+                        </group>
+
+                    </group>
+                    <notebook>
+                        <page string="Man Power">
+                            <field name="sura_tugas_line">
+                                <tree editable="bottom">
+                                    <field name="employee_id" string="Employee" required="1"/>
+                                    <field name="position" string="Position" required="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_surat_tugas_tree_view" model="ir.ui.view">
+            <field name="name">hr.surat.tugas.tree.view</field>
+            <field name="model">hr.surat.tugas</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="sale_id" string="SO Number"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="meal_allowance"/>
+                    <field name="site_allowance"/>
+                    <field name="state"
+                            decoration-warning="state == 'draft'"
+                            decoration-success="state == 'done'"
+                            widget="badge"
+                            optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="surat_tugas_action" model="ir.actions.act_window">
+            <field name="name">Surat Tugas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.surat.tugas</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="surat_tugas" name="Surat Tugas" sequence="10"/>
+        <menuitem id="menu_surat_tugas"
+                name="Surat Tugas"
+                action="sale_custome.surat_tugas_action"
+                parent="sale_custome.surat_tugas"
+                sequence="1"/>
+    </data>
+</odoo>

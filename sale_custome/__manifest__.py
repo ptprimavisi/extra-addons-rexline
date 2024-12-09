@@ -30,7 +30,8 @@
         "views/inquiry_log_views.xml",
         "views/hr_employee_views.xml",
         "views/sale_order_views.xml",
-        "views/maintenance_report_views.xml"
+        "views/maintenance_report_views.xml",
+        "views/hr_surat_tugas_views.xml"
     ],
     'assets': {
         'web.assets_backend': [
