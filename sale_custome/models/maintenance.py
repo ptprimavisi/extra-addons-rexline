@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class MaintenanceReport(models.Model):
     _name = 'maintenance.report'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     _description = 'Maintenance Report'
 

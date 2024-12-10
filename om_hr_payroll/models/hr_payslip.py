@@ -508,6 +508,9 @@ class HrPayslip(models.Model):
                                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                             gaji_net.write({'amount': gaji_net.amount - liness.amount})
             for slip_line in payslip.line_ids:
+                # if slip_line.salary_rule_id.code == 'MALLSITE':
+                #
+                # if slip_line.salary_rule_id.code == 'STALLSITE':
                 if slip_line.salary_rule_id.code == 'PARTIME':
                     pt_amount = 0
                     pt_quantity = 0
