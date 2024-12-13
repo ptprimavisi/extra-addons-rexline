@@ -50,8 +50,8 @@
                                 <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/>
                                 <t t-esc="partner_street3"/><br/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">EXPIRED DATE :</td>
-                            <td style="border: 1px solid #ffffff;"><t t-esc="so_date_due"/></td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;">EXPIRED DATE :</td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;"><t t-esc="so_date_due"/></td>
                         </tr>
                     </table>
                     
