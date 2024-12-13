@@ -15,6 +15,7 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="state == False or state != 'draft'"/>
                     </header>
                     <sheet>
                     <div class="o_lead_opportunity_form_inline_fields">

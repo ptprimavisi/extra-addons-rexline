@@ -17,7 +17,7 @@
                     </button>
                 </button>
                 <button name="action_cancel" position="after">
-                    <button name="action_print_report" string="Print Quotation" type="object" invisible="id == False"/>
+<!--                    <button name="action_print_report" string="Print Quotation" type="object" invisible="1"/>-->
                 </button>
             </field>
 

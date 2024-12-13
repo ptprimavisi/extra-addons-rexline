@@ -126,4 +126,8 @@ class InheritSaleOrder(models.Model):
             return self.env.ref('custom_report.action_report_quotation').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data)
 
+    # def action_print_so(self):
+    #     for line in self:
+    #         pass
+
 

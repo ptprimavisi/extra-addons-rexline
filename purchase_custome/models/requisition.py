@@ -90,7 +90,7 @@ class PurchaseRequisition(models.Model):
         return {
             "type": "ir.actions.act_window",
             "res_model": "purchase.order",
-            "domain": [('id', '=', int(purchase.id))],
+            "domain": [('id', 'in', purchase.ids)],
             "context": {"create": False},
             "name": "Purchase Order",
             'view_mode': 'tree,form',
@@ -102,7 +102,7 @@ class PurchaseRequisition(models.Model):
         return {
             "type": "ir.actions.act_window",
             "res_model": "purchase.order",
-            "domain": [('id', '=', int(purchase.id))],
+            "domain": [('id', 'in', purchase.ids)],
             "context": {"create": False},
             "name": "Purchase Order",
             'view_mode': 'tree,form',

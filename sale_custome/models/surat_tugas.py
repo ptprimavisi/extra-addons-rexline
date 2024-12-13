@@ -31,6 +31,10 @@ class HrSuratTugas(models.Model):
         vals['name'] = self.env['ir.sequence'].next_by_code('ST') or '/'
         return super(HrSuratTugas, self).create(vals)
 
+    def action_confirm(self):
+        for line in self:
+            line.state = 'done'
+
 
 class HrSuratTugasLine(models.Model):
     _name = 'hr.surat.tugas.line'
