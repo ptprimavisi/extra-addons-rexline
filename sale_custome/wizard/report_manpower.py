@@ -79,35 +79,51 @@ class ReportManpower(models.TransientModel):
 
     def action_generate(self):
         for line in self:
-            # for line in self:
             so = line.sale_id
-            # line.mrp_production_count = 0
-            ids = []
+            ids=[]
             if so:
-                mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
-                for mos in mo:
-                    ids.append(mos.id)
-                    sub_mo_ids = mos._get_children().ids
-                    order1 = self.env['mrp.production'].search([('id', 'in', sub_mo_ids)])
-                    if order1:
-                        for moss in order1:
-                            ids.append(moss.id)
-                            order2 = self.env['mrp.production'].search([('id', 'in', moss._get_children().ids)])
-                            if order2:
-                                for mosss in order2:
-                                    ids.append(mosss.id)
-                                    order3 = self.env['mrp.production'].search(
-                                        [('id', 'in', mosss._get_children().ids)])
-                                    if order3:
-                                        for mossss in order3:
-                                            ids.append(mossss.id)
-                                            order4 = self.env['mrp.production'].search(
-                                                [('id', 'in', mossss._get_children().ids)])
-                                            if order4:
-                                                for mosssss in order4:
-                                                    ids.append(mosssss.id)
+                # Cari root Manufacturing Orders berdasarkan SO
+                mo = self.env['mrp.production'].search([('origin', '=', so.name)])
+                if mo:
+                    all_ids = set(mo.ids)
+
+                    order = mo
+                    while order:
+                        children = self.env['mrp.production'].search([('id', 'in', order._get_children().ids)])
+                        all_ids.update(children.ids)
+                        order = children
+
+                    raise UserError(f'{all_ids}')
+
+                    ids = list(all_ids)
+
+        # for line in self:
+        #     so = line.sale_id
+        #     ids = []
+        #     if so:
+        #         mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
+        #         for mos in mo:
+        #             ids.append(mos.id)
+        #             sub_mo_ids = mos._get_children().ids
+        #             order1 = self.env['mrp.production'].search([('id', 'in', sub_mo_ids)])
+        #             if order1:
+        #                 for moss in order1:
+        #                     ids.append(moss.id)
+        #                     order2 = self.env['mrp.production'].search([('id', 'in', moss._get_children().ids)])
+        #                     if order2:
+        #                         for mosss in order2:
+        #                             ids.append(mosss.id)
+        #                             order3 = self.env['mrp.production'].search(
+        #                                 [('id', 'in', mosss._get_children().ids)])
+        #                             if order3:
+        #                                 for mossss in order3:
+        #                                     ids.append(mossss.id)
+        #                                     order4 = self.env['mrp.production'].search(
+        #                                         [('id', 'in', mossss._get_children().ids)])
+        #                                     if order4:
+        #                                         for mosssss in order4:
+        #                                             ids.append(mosssss.id)
             prod_report = self.env['production.report'].search([('mo_id','in',ids),('state','=','done')])
-            manpower_ids = []
             
             # Get Manpower
             list_manpower = []

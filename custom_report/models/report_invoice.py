@@ -76,6 +76,7 @@ class InheritInvoice(models.Model):
             subtotal=0
             if move_lines:
                 for lines in move_lines:
+                    tax_name=''
                     if lines.tax_ids:
                         tax_name = ", ".join(tax.name for tax in lines.tax_ids)
                     product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}"])

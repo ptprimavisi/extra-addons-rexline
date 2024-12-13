@@ -17,10 +17,10 @@
                     </div>
                     
                     <table class="table" style="width: 100%; font-size: 11px;">
-                        <tr>
-                            <td><h6><b><t t-esc="company_name"/></b></h6></td>
-                            <td></td>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;"><h6><b><t t-esc="company_name"/></b></h6></td>
+                            <td style="border: 1px solid #ffffff;"></td>
+                            <td style="border: 1px solid #ffffff;">
                                 <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
                                 <t t-esc="company_street3"/><br/>
                                 <t t-esc="company_phone"/><br/>
@@ -28,37 +28,37 @@
                                 <t t-esc="company_npwp"/><br/>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Customer<br/>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">Customer<br/>
                                 <t t-esc="partner_name"/>
                             </td>
-                            <td>Invoice#<br/>
+                            <td style="border: 1px solid #ffffff;">Invoice#<br/>
                                 <t t-esc="invoice_name"/>
                             </td>
-                            <td>Customer Reference</td>
+                            <td style="border: 1px solid #ffffff;">Customer Reference</td>
                         </tr>
-                        <tr>
-                            <td>Address<br/>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">Address<br/>
                                 <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
                                 <t t-esc="company_street3"/><br/>
                                 <t t-esc="company_phone"/><br/>
                                 <t t-esc="company_web"/><br/>
                                 <t t-esc="company_npwp"/><br/>
                             </td>
-                            <td>Date<br/>
+                            <td style="border: 1px solid #ffffff;">Date<br/>
                                 <t t-esc="invoice_date"/><br/><br/>
                                 Due Date<br/>
                                 <t t-esc="invoice_date_due"/>
                             </td>
-                            <td>Tags<br/>
+                            <td style="border: 1px solid #ffffff;">Tags<br/>
                                 <t t-esc="tags_info"/>
                             </td>
                         </tr>
                     </table>
 
-                    <table class="table" style="width: 100%; font-size: 14px;">
+                    <table class="table" style="width: 100%; font-size: 14px;"> 
                         <thead>
-                            <tr>
+                            <tr style="background-color: #cccccc">
                                 <th>No.</th>
                                 <th>Description</th>
                                 <th>Quantity</th>
@@ -82,8 +82,8 @@
                     </table>
 
                     <table class="table" style="width: 100%; font-size: 14px;">
-                        <tr>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
                                 <b>Message</b><br/><br/>
                                 Please send your payment in FULL AMOUNT by transfer to :<br/>
                                 Bank : MAYBANK<br/>
@@ -93,7 +93,7 @@
                                 BANK : BANK MANDIRI<br/>
                                 Acc. Holder : PT. REXLINE ENGINEERING INDONESIA<br/>
                             </td>
-                            <td>
+                            <td style="border: 1px solid #ffffff;">
                                 Subtotal<br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>

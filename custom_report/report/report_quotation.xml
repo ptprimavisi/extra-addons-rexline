@@ -11,12 +11,19 @@
         
         <template id="report_quotation">
             <t t-call="web.html_container">
-                <div class="container" style="font-family: Calibri, sans-serif;">
-                    
+                <div class="header" style="font-family: Calibri, sans-serif;">
+                    <!-- <div style="text-align: center;">
+                        <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
+                    </div> -->
                     <table class="table" style="width: 100%; font-size: 11px;">
-                        <tr>
-                            <td><img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /></td>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
+                                <div style="text-align: center;">
+                                    <!-- <img t-att-src="'/custom_report/static/src/img/invoice_rexline.png'" style="width: 120px; height: auto;" /> -->
+                                    <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
+                                </div>
+                            </td>
+                            <td style="border: 1px solid #ffffff;">
                                 <h6><b><t t-esc="company_name"/></b></h6><br/>
                                 <t t-esc="company_street1"/>, <t t-esc="company_street2"/><br/>
                                 <t t-esc="company_street3"/><br/>
@@ -28,23 +35,23 @@
                     </table>
                     
                     <table class="table" style="width: 100%; font-size: 11px;">
-                        <tr>
-                            <td style="width: 400px;"><b>BILL TO</b></td>
-                            <td style="background-color: #778899; color: white;">QUOTE # :</td>
-                            <td style="background-color: #778899; color: white;"><t t-esc="so_name"/></td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff; width: 400px;"><b>BILL TO</b></td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;">QUOTE # :</td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;"><t t-esc="so_name"/></td>
                         </tr>
-                        <tr>
-                            <td style="width: 400px;"><t t-esc="partner_name"/></td>
-                            <td style="background-color: #778899; color: white;">DATE :</td>
-                            <td style="background-color: #778899; color: white;"><t t-esc="so_date"/></td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff; width: 400px;"><t t-esc="partner_name"/></td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;">DATE :</td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;"><t t-esc="so_date"/></td>
                         </tr>
-                        <tr>
-                            <td style="width: 400px;">
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff; width: 400px;">
                                 <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/>
                                 <t t-esc="partner_street3"/><br/>
                             </td>
-                            <td>EXPIRED DATE :</td>
-                            <td><t t-esc="so_date_due"/></td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;">EXPIRED DATE :</td>
+                            <td style="border: 1px solid #ffffff; background-color: #778899; color: white;"><t t-esc="so_date_due"/></td>
                         </tr>
                     </table>
                     
@@ -70,8 +77,8 @@
                     </table>
 
                     <table class="table" style="width: 100%; font-size: 11px;">
-                        <tr>
-                            <td style="color: #A9A9A9;">
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="color: #A9A9A9; border: 1px solid #ffffff;">
                                 <i>
                                     Note :<br/>
                                     - Heavy equipment and fuel for instalation by owner<br/>
@@ -114,7 +121,7 @@
                                     salesteam@rexlineengineering.com<br/>
                                 </i>
                             </td>
-                            <td>
+                            <td style="border: 1px solid #ffffff;">
                                 Subtotal<br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>
@@ -122,7 +129,7 @@
                                 <b><br/>Total</b><br/>
                                 <br/><p style="background-color: #778899; color: white;">Balance Due</p>
                             </td>
-                            <td style="text-align: right;">
+                            <td style="border: 1px solid #ffffff;text-align: right;">
                                 <t t-esc="subtotal"/><br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['amount']"/><br/>
