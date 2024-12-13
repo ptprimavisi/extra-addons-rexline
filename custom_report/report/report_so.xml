@@ -17,41 +17,41 @@
                     </div>
                     
                     <table class="table" style="width: 100%; font-size: 11px;">
-                        <tr>
-                            <td><h6><b><t t-esc="company_name"/></b></h6></td>
-                            <td><b>Date:</b></td>
-                            <td><t t-esc="so_date"/></td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;"><h6><b><t t-esc="company_name"/></b></h6></td>
+                            <td style="border: 1px solid #ffffff;"><b>Date:</b></td>
+                            <td style="border: 1px solid #ffffff;"><t t-esc="so_date"/></td>
                         </tr>
-                        <tr>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
                                 <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
                                 <t t-esc="company_street3"/><br/>
                                 <t t-esc="company_phone"/><br/>
                                 <t t-esc="company_web"/><br/>
                                 <t t-esc="company_npwp"/><br/>
                             </td>
-                            <td><b>Invoice #:</b></td>
-                            <td><t t-esc="so_name"/></td>
+                            <td style="border: 1px solid #ffffff;"><b>Invoice #:</b></td>
+                            <td style="border: 1px solid #ffffff;"><t t-esc="so_name"/></td>
                         </tr>
-                        <tr>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
                                 <t t-esc="company_web"/><br/>
                                 <t t-esc="company_npwp"/>
                             </td>
-                            <td>Customer's Reference :</td>
-                            <td></td>
+                            <td style="border: 1px solid #ffffff;">Customer's Reference :</td>
+                            <td style="border: 1px solid #ffffff;"></td>
                         </tr>
                     </table>
 
                     <table class="table" style="width: 50%; font-size: 14px;">
-                        <tr style="background-color: #03045E; color: white;">
-                            <td><b>CUSTOMER</b></td>
+                        <tr style="border: 1px solid #ffffff; background-color: #03045E; color: white;">
+                            <td style="border: 1px solid #ffffff;"><b>CUSTOMER</b></td>
                         </tr>
-                        <tr>
-                            <td><t t-esc="partner_name"/></td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;"><t t-esc="partner_name"/></td>
                         </tr>
-                        <tr>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
                                 <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/>
                                 <t t-esc="partner_street3"/><br/>
                             </td>
@@ -59,15 +59,15 @@
                     </table>
 
                     <table class="table" style="width: 100%; font-size: 11px;text-align: left;">
-                        <tr style="background-color: #03045E; color: white;">
+                        <tr style="border: 1px solid #ffffff; background-color: #03045E; color: white;">
                             <th>Tags</th>
                             <th>Term</th>
                             <th>Due Date</th>
                         </tr>
-                        <tr>
-                            <td><t t-esc="tags_info"/></td>
-                            <td></td>
-                            <td><t t-esc="so_date_due"/></td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;"><t t-esc="tags_info"/></td>
+                            <td style="border: 1px solid #ffffff;"></td>
+                            <td style="border: 1px solid #ffffff;"><t t-esc="so_date_due"/></td>
                         </tr>
                     </table>
 
@@ -98,8 +98,8 @@
                     </table>
 
                     <table class="table" style="width: 100%; font-size: 14px;">
-                        <tr>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
                                 <b>AMOUNT IN WORD</b><br/><br/>
                                 ................................................................................................................................. (RUPIAH)<br/><br/>
                                 <b>Payment Detail</b><br/><br/>
@@ -108,7 +108,7 @@
                                 Bank Account Number : 2790000188<br/>
                                 Bank Account Name : PT Rexline Engineering Indonesia<br/>
                             </td>
-                            <td>
+                            <td style="border: 1px solid #ffffff;">
                                 Subtotal<br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>
@@ -116,7 +116,7 @@
                                 <b><br/>Total</b><br/>
                                 <br/><p style="background-color: #03045E; color: white;">Balance Due</p>
                             </td>
-                            <td style="text-align: right;">
+                            <td style="border: 1px solid #ffffff;text-align: right;">
                                 <t t-esc="subtotal"/><br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['amount']"/><br/>
@@ -128,11 +128,11 @@
                     </table>
 
                     <table class="table" style="width: 50%; font-size: 11px;text-align: left;">
-                        <tr style="background-color: #03045E; color: white;">
+                        <tr style="border: 1px solid #ffffff;background-color: #03045E; color: white;">
                             <th>Special Notes and Instructions</th>
                         </tr>
-                        <tr>
-                            <td>
+                        <tr style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;">
                                 <b>Message</b><br/><br/>
                                 Terms &amp; Conditions:<br/>
                                 1. All prices quoted above are Franco Morowali Sulteng<br/>
