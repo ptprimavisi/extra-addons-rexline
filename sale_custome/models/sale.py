@@ -1654,7 +1654,7 @@ class InquirySales(models.Model):
                             })
                     crm = self.env['crm.lead'].browse(int(line.opportunity_id.id))
                     subtotal = sum(line.inquiry_line_detail.mapped('subtotal'))
-                    raise UserError(crm.cost_estimation)
+                    # raise UserError(crm.cost_estimation)
                     crm.write({
                         'cost_estimation': float(subtotal)
                     })
