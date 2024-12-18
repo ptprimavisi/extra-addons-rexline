@@ -8,6 +8,13 @@
             <field name="company_id" eval="False"/>
         </record>
 
+        <record id="hr_roster" model="ir.sequence">
+            <field name="name">Roster</field>
+            <field name="code">ROST</field>
+            <field name="prefix">ROST/%(y)s/0</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
         <record id="hr_surat_tugas_form_view" model="ir.ui.view">
             <field name="name">hr.surat.tugas.form.inherit</field>
             <field name="model">hr.surat.tugas</field>
@@ -15,7 +22,7 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
-                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="state == False or state != 'draft'"/>
+                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="id == False or state != 'draft'"/>
                     </header>
                     <sheet>
                     <div class="o_lead_opportunity_form_inline_fields">
@@ -86,16 +93,85 @@
             </field>
         </record>
 
+        <record id="hr_roster_form_view" model="ir.ui.view">
+            <field name="name">hr.roster.form.inherit</field>
+            <field name="model">hr.roster</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="id == False or state != 'draft'"/>
+                    </header>
+                    <sheet>
+                    <div class="o_lead_opportunity_form_inline_fields">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" invisible="id == False"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" string="Employee" required="1"/>
+                            <field name="sale_id" string="SO Number" domain="[('state','=','sale')]"/>
+                            <field name="date_from" string="Date From" required="1"/>
+                            <field name="date_to" string="Date To" required="1"/>
+                        </group>
+
+
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_roster_tree_view" model="ir.ui.view">
+            <field name="name">hr.roster.tree.view</field>
+            <field name="model">hr.roster</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="sale_id" string="SO Number"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="state"
+                            decoration-warning="state == 'draft'"
+                            decoration-success="state == 'confirm'"
+                            widget="badge"
+                            optional="show"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="surat_tugas_action" model="ir.actions.act_window">
             <field name="name">Surat Tugas</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.surat.tugas</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <record id="roster_action" model="ir.actions.act_window">
+            <field name="name">Roster</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.roster</field>
+            <field name="view_mode">tree,form</field>
+        </record>
         <menuitem id="surat_tugas" name="Surat Tugas" sequence="10"/>
         <menuitem id="menu_surat_tugas"
                 name="Surat Tugas"
                 action="sale_custome.surat_tugas_action"
+                parent="sale_custome.surat_tugas"
+                sequence="1"/>
+        <menuitem id="menu_roster"
+                name="Roster"
+                action="sale_custome.roster_action"
                 parent="sale_custome.surat_tugas"
                 sequence="1"/>
     </data>

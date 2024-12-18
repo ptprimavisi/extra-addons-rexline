@@ -110,7 +110,6 @@ class ReportStockProjectWizard(models.Model):
                     SELECT
                         COALESCE(SUM(prl.qty_consume), 0) AS stock_consume
                     FROM
-                        
                         mrp_production mp
                     JOIN
                         inquiry_line_task ilt on mp.id = ilt.mo_id
@@ -120,7 +119,6 @@ class ReportStockProjectWizard(models.Model):
                         production_report pr on pr.mo_id = mp.id
                     JOIN 
                         production_report_line prl on prl.production_id = pr.id
-                    
                     WHERE
                         pr.state = 'done' AND
                         mp.location_src_id = """ + str(line.location_id.id) + """ AND

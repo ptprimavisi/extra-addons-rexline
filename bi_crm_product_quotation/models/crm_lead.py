@@ -89,8 +89,8 @@ class crm_lead(models.Model):
         order_line = []
         lines_data = []
         lines_detail = []
-        if not self.is_approve:
-            raise UserError('Dokumen belum di approve oleh sales technical')
+        # if not self.is_approve:
+        #     raise UserError('Dokumen belum di approve oleh sales technical')
         for record in self.lead_product_ids:
             order_line.append((0, 0, {
                 'product_id': record.product_id.id,

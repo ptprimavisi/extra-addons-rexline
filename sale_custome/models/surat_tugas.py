@@ -38,8 +38,35 @@ class HrSuratTugas(models.Model):
 
 class HrSuratTugasLine(models.Model):
     _name = 'hr.surat.tugas.line'
+
     _description = 'Surat Tugas Line'
 
     surat_id = fields.Many2one('hr.surat.tugas')
     employee_id = fields.Many2one('hr.employee')
     position = fields.Char()
+
+
+class HrRoster(models.Model):
+    _name = 'hr.roster'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Hr Roster'
+
+    name = fields.Char()
+    sale_id = fields.Many2one('sale.order')
+    employee_id = fields.Many2one('hr.employee')
+    date_from = fields.Date()
+    date_to = fields.Date()
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'Confirm')
+    ], default='draft')
+
+    def action_confirm(self):
+        for line in self:
+            line.state = 'confirm'
+
+    @api.model
+    def create(self, vals):
+        # if vals.get('name', '/') == '/':
+        vals['name'] = self.env['ir.sequence'].next_by_code('ROST') or '/'
+        return super(HrRoster, self).create(vals)

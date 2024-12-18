@@ -9,6 +9,7 @@ class ManufacturWizard(models.TransientModel):
     product_id = fields.Many2one('product.product')
     schedule_date = fields.Datetime()
     product_qty = fields.Float()
+    warehouse_id = fields.Many2one('stock.warehouse')
     origin = fields.Char()
 
     def default_get(self, fields_list):
@@ -29,10 +30,12 @@ class ManufacturWizard(models.TransientModel):
     def action_save(self):
         for line in self:
             mo = self.env['mrp.production'].search([])
+            picking_type = self.env['stock.picking.type'].search([('warehouse_id','=',line.warehouse_id.id),('code','=','mrp_operation')])
             create_mo = mo.create({
                 'product_id': int(line.product_id.id),
                 'product_qty': line.product_qty,
                 'origin': str(line.origin),
+                'picking_type_id': picking_type.id,
                 'state': 'draft'
             })
             if create_mo:

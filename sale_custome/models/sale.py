@@ -946,16 +946,16 @@ class InquirySales(models.Model):
             }
             return result
 
-    def action_create_mo(self):
-        for line in self:
-            for lines in line.inquiry_line_ids:
-                if lines.bom_id:
-                    product_id = self.env['product.product'].search(
-                        [('product_tmpl_id', '=', int(lines.bom_id.product_tmpl_id.id))])
-                    self.env['mrp.production'].create({
-                        'product_id': product_id.id,
-                        'bom_id': int(lines.bom_id.id)
-                    })
+    # def action_create_mo(self):
+    #     for line in self:
+    #         for lines in line.inquiry_line_ids:
+    #             if lines.bom_id:
+    #                 product_id = self.env['product.product'].search(
+    #                     [('product_tmpl_id', '=', int(lines.bom_id.product_tmpl_id.id))])
+    #                 self.env['mrp.production'].create({
+    #                     'product_id': product_id.id,
+    #                     'bom_id': int(lines.bom_id.id)
+    #                 })
 
     # attachment_ids = fields.One2many('ir.attachment', 'res_id', domain=[('res_model', '=', 'inquiry.inquiry')],
     #                                  string='Attachments')
@@ -1863,6 +1863,7 @@ class InquiryLineTask(models.Model):
     def _compute_state_task(self):
         for line in self:
             mo = self.env['mrp.production'].search([('id', '=', int(line.mo_id.id))])
+            print(f"{mo.id} - {mo.state}")
             if mo:
                 if mo.state == 'confirmed':
                     line.task_state = 'confirm'
@@ -1870,6 +1871,8 @@ class InquiryLineTask(models.Model):
                     line.task_state = 'done'
                 elif mo.state == 'cancel':
                     line.task_state = 'cancel'
+                # elif mo.state == 'draft':
+                #     line.task_state = 'confirm'
 
 
 class InquiryLineDetail(models.Model):
