@@ -771,7 +771,7 @@ class InquirySales(models.Model):
     inquiry_line_detail = fields.One2many('inquiry.line.detail', 'inquiry_id')
     inquiry_line_ids = fields.One2many('inquiry.line', 'inquiry_id')
     inquiry_line_task = fields.One2many('inquiry.line.task', 'inquiry_id')
-    pic_user = fields.Many2one('res.users', domain=[('is_engineering', '=', True)])
+    pic_user = fields.Many2one('res.users')
     pic_akses = fields.Boolean(compute="_compute_akses_pic")
     is_planner = fields.Boolean(compute="_compute_user_planner")
     total_amount = fields.Float(compute="_compute_total_cost")
