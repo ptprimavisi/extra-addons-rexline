@@ -16,7 +16,8 @@
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">
                                 <div style="text-align: left;">
-                                    <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
+                                    <img t-if="logo" t-att-src="logo" style="width: 120px; height: auto;" alt="Logo" />
+                                    <!-- <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /> -->
                                 </div>
                             </td>
                             <td style="border: 1px solid #ffffff;">

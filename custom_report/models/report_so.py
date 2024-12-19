@@ -7,6 +7,22 @@ from datetime import datetime, timedelta,date
 import re
 
 
+class InheritResCompany(models.Model):
+    _inherit='res.company'
+
+    sale_logo = fields.Image('Sale Logo', store=True)
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(InheritResCompany, self).default_get(fields_list)
+        company = self.env.user.company_id
+        if company:
+            res.update({
+                'sale_logo': company.sale_logo,
+            })
+        return res
+
+
 class SaleManagerSignature(models.Model):
     _name = 'sale.manager.signature'
     _description = 'Sale Manager Signature'
@@ -123,6 +139,11 @@ class InheritSaleOrder(models.Model):
             balance_due = f"{int(rec.amount_total):,}"
 
             company_logo=self.env.company.logo
+            logo = (
+                f"data:image/png;base64,{self.env.company.sale_logo.decode('utf-8')}"
+                if self.env.company.sale_logo
+                else None
+            )
 
             # Get T&C
             so_tnc = rec.note or ''
@@ -147,7 +168,7 @@ class InheritSaleOrder(models.Model):
                     'company_phone':company_phone,
                     'company_npwp':company_npwp,
                     'company_web':company_web,
-                    'partner_name':partner_name,
+                    'partner_name':partner_name[0],
                     'partner_street1':partner_street1,
                     'partner_street2':partner_street2,
                     'partner_street3':partner_street3,
@@ -163,7 +184,8 @@ class InheritSaleOrder(models.Model):
                     'quotation_lines':quotation_lines,
                     'company_logo':company_logo,
                     'signature_name':signature_name,
-                    'signature_image':signature_image
+                    'signature_image':signature_image,
+                    'logo':logo
                 }
             return report_data
 

@@ -125,6 +125,13 @@ class InheritInvoice(models.Model):
                 if signature and signature.image
                 else None
             )
+
+            logo = self.env.company.sale_logo
+            logo = (
+                f"data:image/png;base64,{self.env.company.sale_logo.decode('utf-8')}"
+                if self.env.company.sale_logo
+                else None
+            )
             
             report_data = {
                     'doc_ids': self.ids,
@@ -136,7 +143,7 @@ class InheritInvoice(models.Model):
                     'company_phone':company_phone,
                     'company_npwp':company_npwp,
                     'company_web':company_web,
-                    'partner_name':partner_name,
+                    'partner_name':partner_name[0],
                     'partner_street1':partner_street1,
                     'partner_street2':partner_street2,
                     'partner_street3':partner_street3,
@@ -149,7 +156,8 @@ class InheritInvoice(models.Model):
                     'taxes':taxes,
                     'product_line':product_line,
                     'signature_name':signature_name,
-                    'signature_image':signature_image
+                    'signature_image':signature_image,
+                    'logo':logo
                 }
             return self.env.ref('custom_report.action_report_invoice').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data)
