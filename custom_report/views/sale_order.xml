@@ -12,68 +12,68 @@
             </field>
         </record>
 
-<!--        <record id="sale_manager_signature_wizard_form_view" model="ir.ui.view">-->
-<!--            <field name="name">sale.manager.signature.wizard.form</field>-->
-<!--            <field name="model">sale.manager.signature</field>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <form string="Sale Manager Signature" create='0'>-->
-<!--                    <group>-->
-<!--                        <field name="employee_id"/>-->
-<!--                        <field name="image" widget="image" class="oe_avatar"/>-->
-<!--                    </group>-->
-<!--                    <footer>-->
-<!--                        <button name="update_signature" string="Update Signature" type="object" class="btn-primary oe_highlight"/>-->
-<!--                        <button string="Cancel" class="btn-secondary" special="cancel"/>-->
-<!--                    </footer>-->
-<!--                </form>-->
-<!--            </field>-->
-<!--        </record>-->
+        <record id="sale_manager_signature_wizard_form_view" model="ir.ui.view">
+            <field name="name">sale.manager.signature.wizard.form</field>
+            <field name="model">sale.manager.signature</field>
+            <field name="arch" type="xml">
+                <form string="Sale Manager Signature" create='0'>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="image" widget="image" class="oe_avatar"/>
+                    </group>
+                    <footer>
+                        <button name="update_signature" string="Update Signature" type="object" class="btn-primary oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
-<!--        <record id="action_sale_manager_signature" model="ir.actions.act_window">-->
-<!--            <field name="name">Sale Manager Signature</field>-->
-<!--            <field name="res_model">sale.manager.signature</field>-->
-<!--            <field name="binding_view_types">form</field>-->
-<!--            <field name="view_mode">form</field>-->
-<!--            <field name="target">new</field>-->
-<!--        </record>-->
+        <record id="action_sale_manager_signature" model="ir.actions.act_window">
+            <field name="name">Sale Manager Signature</field>
+            <field name="res_model">sale.manager.signature</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
 
-<!--        <menuitem id="menu_sale_manager_signature" -->
-<!--                name="Manager Signature" -->
-<!--                parent="custom_report.menuitem_signature" -->
-<!--                action="action_sale_manager_signature" -->
-<!--                sequence="20"/>-->
+        <menuitem id="menu_sale_manager_signature"
+                name="Manager Signature"
+                parent="custom_report.menuitem_signature"
+                action="action_sale_manager_signature"
+                sequence="20"/>
 
 
-<!--        <record id="sale_direktur_signature_wizard_form_view" model="ir.ui.view">-->
-<!--            <field name="name">sale.direktur.signature.wizard.form</field>-->
-<!--            <field name="model">sale.direktur.signature</field>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <form string="Sale Direktur Signature" create='0'>-->
-<!--                    <group>-->
-<!--                        <field name="employee_id"/>-->
-<!--                        <field name="image" widget="image" class="oe_avatar"/>-->
-<!--                    </group>-->
-<!--                    <footer>-->
-<!--                        <button name="update_signature" string="Update Signature" type="object" class="btn-primary oe_highlight"/>-->
-<!--                        <button string="Cancel" class="btn-secondary" special="cancel"/>-->
-<!--                    </footer>-->
-<!--                </form>-->
-<!--            </field>-->
-<!--        </record>-->
+        <record id="sale_direktur_signature_wizard_form_view" model="ir.ui.view">
+            <field name="name">sale.direktur.signature.wizard.form</field>
+            <field name="model">sale.direktur.signature</field>
+            <field name="arch" type="xml">
+                <form string="Sale Direktur Signature" create='0'>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="image" widget="image" class="oe_avatar"/>
+                    </group>
+                    <footer>
+                        <button name="update_signature" string="Update Signature" type="object" class="btn-primary oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
-<!--        <record id="action_sale_direktur_signature" model="ir.actions.act_window">-->
-<!--            <field name="name">Sale Direktur Signature</field>-->
-<!--            <field name="res_model">sale.direktur.signature</field>-->
-<!--            <field name="binding_view_types">form</field>-->
-<!--            <field name="view_mode">form</field>-->
-<!--            <field name="target">new</field>-->
-<!--        </record>-->
+        <record id="action_sale_direktur_signature" model="ir.actions.act_window">
+            <field name="name">Sale Direktur Signature</field>
+            <field name="res_model">sale.direktur.signature</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
 
-<!--        <menuitem id="menu_sale_direktur_signature" -->
-<!--                name="Direktur Signature" -->
-<!--                parent="custom_report.menuitem_signature" -->
-<!--                action="action_sale_direktur_signature" -->
-<!--                sequence="20"/>-->
+        <menuitem id="menu_sale_direktur_signature"
+                name="Direktur Signature"
+                parent="custom_report.menuitem_signature"
+                action="action_sale_direktur_signature"
+                sequence="20"/>
 
         <menuitem id="menuitem_signature" 
                 name="Signature" 
