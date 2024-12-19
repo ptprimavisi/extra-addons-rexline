@@ -27,7 +27,7 @@
                     <field name="state_inquiry" string="Status Inquiry"/>
                     <field name="group_ids" invisible="1"/>
                     <field name="is_approve" invisible="1"/>
-                    <field name="warning_time"/>
+                    <field name="warning_time" invisible="1"/>
                     <field name="status_estimate" invisible="1"/>
                 </xpath>
                 <button name="action_schedule_meeting" position="before">

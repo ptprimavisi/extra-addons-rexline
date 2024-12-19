@@ -101,7 +101,12 @@
                                 <field name="crm_state"/>
                                 <field name="approve_mng_engineer" invisible="1"/>
                                 <field name="sale_id" string="SO NO"/>
-
+                                <field name="warning_time" invisible="1"/>
+                                <field name="due_date" string="Deadline"
+                                   decoration-warning="warning_time == 'yellow'"
+                                   decoration-success="warning_time == 'green'"
+                                   decoration-danger="warning_time == 'red'"
+                                   optional="show" widget="remaining_days" readonly="1"/>
 <!--                                ddd-->
                             </group>
 
@@ -201,6 +206,12 @@
                     <field name="partner_id" string="Customer"/>
                     <field name="date"/>
                     <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+                    <field name="warning_time" invisible="1"/>
+                    <field name="due_date" string="Deadline"
+                           decoration-warning="warning_time == 'yellow'"
+                           decoration-success="warning_time == 'green'"
+                           decoration-danger="warning_time == 'red'"
+                           optional="show" widget="remaining_days" readonly="1"/>
 <!--                    <field name="state_count_rfq" string="RFQ Status" widget="boolean_toggle"/>-->
                     <field name="state"
                             decoration-warning="state == 'draft'"

@@ -767,7 +767,7 @@ class InquirySales(models.Model):
     count_so = fields.Integer(compute="_compute_count_so")
     mrp_production_count = fields.Integer(compute="_compute_mo_count")
     count_rfp = fields.Integer(compute="_compute_count_rfp")
-    due_date = fields.Datetime(default=lambda self: fields.Datetime.today() + timedelta(days=1))
+    due_date = fields.Date(default=lambda self: fields.Datetime.today() + timedelta(days=1))
     operation_type = fields.Selection([
         ('project', 'Project'),
         ('wo', 'Work Order')
@@ -788,6 +788,28 @@ class InquirySales(models.Model):
     header_note = fields.Text()
     approve_mng_engineer = fields.Boolean()
     sale_id = fields.Many2one('sale.order', compute="compute_saleorder")
+    warning_time = fields.Selection([
+        ('red', 'Red'),
+        ('yellow', 'Yellow'),
+        ('green', 'Green')
+    ], compute="_compute_warning")
+
+    @api.depends('due_date')
+    def _compute_warning(self):
+        for line in self:
+            line.warning_time = False
+            if line.due_date:
+                due_date = datetime.strptime(str(line.due_date), '%Y-%m-%d')
+                two_days_before_due = due_date - timedelta(days=2)
+                five_days_before_due = due_date - timedelta(days=5)
+                # after_days_before_due = due_date - datetime.timedelta(days=2)
+                today = datetime.today()
+                if today >= two_days_before_due:
+                    line.warning_time = 'red'
+                if five_days_before_due <= today < two_days_before_due:
+                    line.warning_time = 'yellow'
+                if today < five_days_before_due:
+                    line.warning_time = 'green'
 
     def compute_saleorder(self):
         for line in self:
