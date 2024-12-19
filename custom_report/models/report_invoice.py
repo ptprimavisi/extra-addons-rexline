@@ -5,6 +5,40 @@ import base64
 from datetime import datetime, timedelta,date
 import re
 
+class SaleDirekturSignature(models.Model):
+    _name = 'sale.direktur.signature'
+    _description = 'Sale Direktur Signature'
+
+    employee_id = fields.Many2one('hr.employee', string='Direktur')
+    image = fields.Image('Image Signature', store=True)
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(SaleDirekturSignature, self).default_get(fields_list)
+        # Cari record signature yang sudah ada
+        signature = self.search([], limit=1)
+        if signature:
+            res.update({
+                'employee_id': signature.employee_id.id,
+                'image': signature.image,
+            })
+        return res
+
+    def update_signature(self):
+        for rec in self:
+            # Buat signature baru
+            new_signature = self.env['sale.direktur.signature'].create({
+                'employee_id': rec.employee_id.id,
+                'image': rec.image
+                
+            })
+            # Cari semua signature lain
+            existing_signatures = self.env['sale.direktur.signature'].search([('id', '!=', new_signature.id)])
+            # Hapus semua signature kecuali signature yang baru saja dibuat
+            if existing_signatures:
+                for signature in existing_signatures:
+                    signature.unlink()
+
 class InheritInvoice(models.Model):
     _inherit = 'account.move'
 
@@ -15,12 +49,12 @@ class InheritInvoice(models.Model):
             company_name = company.partner_id.name or ''
             company_street1 = company.partner_id.street or ''
             company_street2 = company.partner_id.street2 or ''
-            company_street3 = (
-                str(company.partner_id.city or '') + ', ' +
-                str(company.partner_id.state_id.name or '') + ', ' +
-                str(company.partner_id.country_id.name or '') + ', ' +
-                str(company.partner_id.zip or '')
-            )
+            company_street3 = ', '.join(filter(None, [
+                rec.company_id.city or '',
+                rec.company_id.state_id.name or '',
+                rec.company_id.country_id.name or '',
+                rec.company_id.zip or ''
+            ]))
             company_npwp = company.partner_id.vat or ''
             company_phone = company.partner_id.phone or ''
             company_web = company.partner_id.website or ''
@@ -28,12 +62,12 @@ class InheritInvoice(models.Model):
             partner_name = rec.partner_id.name,
             partner_street1 = rec.partner_id.street or ''
             partner_street2 = rec.partner_id.street2 or ''
-            partner_street3 = (
-                str(rec.partner_id.city or '') + ', ' +
-                str(rec.partner_id.state_id.name or '') + ', ' +
-                str(rec.partner_id.country_id.name or '') + ', ' +
-                str(rec.partner_id.zip or '')
-            )
+            partner_street3 = ', '.join(filter(None, [
+                rec.partner_id.city or '',
+                rec.partner_id.state_id.name or '',
+                rec.partner_id.country_id.name or '',
+                rec.partner_id.zip or ''
+            ]))
             
             invoice_name = rec.name
             invoice_date = rec.invoice_date.strftime('%d-%m-%Y')
@@ -82,6 +116,15 @@ class InheritInvoice(models.Model):
                     product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}"])
                     subtotal+=lines.price_subtotal
             subtotal = f"{int(subtotal):,}"
+
+            # Get Direktur Signature
+            signature = self.env['sale.manager.signature'].search([],limit=1)
+            signature_name = signature.employee_id.name
+            signature_image = (
+                f"data:image/png;base64,{signature.image.decode('utf-8')}"
+                if signature and signature.image
+                else None
+            )
             
             report_data = {
                     'doc_ids': self.ids,
@@ -104,7 +147,9 @@ class InheritInvoice(models.Model):
                     'subtotal':subtotal,
                     'tags_info':tags_info,
                     'taxes':taxes,
-                    'product_line':product_line
+                    'product_line':product_line,
+                    'signature_name':signature_name,
+                    'signature_image':signature_image
                 }
             return self.env.ref('custom_report.action_report_invoice').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data)

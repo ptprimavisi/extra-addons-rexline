@@ -11,12 +11,12 @@
         
         <template id="report_invoice">
             <t t-call="web.html_container">
-                <div class="header" style="font-family: Calibri, sans-serif;">
+                <div class="container" style="font-family: Calibri, sans-serif;">
                     <div style="text-align: center;">
                         <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
                     </div>
                     
-                    <table class="table" style="width: 100%; font-size: 11px;">
+                    <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;"><h6><b><t t-esc="company_name"/></b></h6></td>
                             <td style="border: 1px solid #ffffff;"></td>
@@ -111,9 +111,11 @@
                             </td>
                         </tr>
                     </table>
-                    <p style="text-align: right;">
-                        RAHUL THOTTIYIL<br/><br/><br/><br/><br/>
-                        DIREKTUR<br/>
+                    <p style="text-align: right; font-size: 14px;"> 
+                        <br/><img t-if="signature_image" t-att-src="signature_image" 
+                            style="width: 100px; height: auto;" alt="Signature" />
+                        <br/><t t-esc="signature_name"/><br/>
+                        National Sales Leader<br/>
                         REXLINE ENGINEERING INDONESIA
                     </p>
                 </div>

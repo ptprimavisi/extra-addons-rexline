@@ -11,21 +11,22 @@
         
         <template id="report_quotation">
             <t t-call="web.html_container">
-                <div class="header" style="font-family: Calibri, sans-serif;">
-                    <!-- <div style="text-align: center;">
-                        <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
-                    </div> -->
-                    <table class="table" style="width: 100%; font-size: 11px;">
+                <div class="container" style="font-family: Calibri, sans-serif;">
+                    <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">
-                                <div style="text-align: center;">
-                                    <!-- <img t-att-src="'/custom_report/static/src/img/invoice_rexline.png'" style="width: 120px; height: auto;" /> -->
+                                <div style="text-align: left;">
                                     <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
                                 </div>
                             </td>
                             <td style="border: 1px solid #ffffff;">
-                                <h6><b><t t-esc="company_name"/></b></h6><br/>
-                                <t t-esc="company_street1"/>, <t t-esc="company_street2"/><br/>
+                                <b><t t-esc="company_name"/></b><br/>
+                                <t t-if="company_street1 and company_street2">
+                                    <t t-esc="company_street1"/>, <t t-esc="company_street2"/><br/>
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="company_street1"/> <t t-esc="company_street2"/><br/>
+                                </t>
                                 <t t-esc="company_street3"/><br/>
                                 <t t-esc="company_phone"/><br/>
                                 <t t-esc="company_web"/><br/>
@@ -34,7 +35,7 @@
                         </tr>
                     </table>
                     
-                    <table class="table" style="width: 100%; font-size: 11px;">
+                    <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff; width: 400px;"><b>BILL TO</b></td>
                             <td style="border: 1px solid #ffffff; background-color: #778899; color: white;">QUOTE # :</td>
@@ -47,7 +48,12 @@
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff; width: 400px;">
-                                <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/>
+                                <t t-if="partner_street1 and partner_street2">
+                                    <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/><br/>
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="partner_street1"/> <t t-esc="partner_street2"/><br/>
+                                </t>
                                 <t t-esc="partner_street3"/><br/>
                             </td>
                             <td style="border: 1px solid #ffffff; background-color: #778899; color: white;">EXPIRED DATE :</td>
@@ -76,49 +82,12 @@
                         </tbody>
                     </table>
 
-                    <table class="table" style="width: 100%; font-size: 11px;">
+                    <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="color: #A9A9A9; border: 1px solid #ffffff;">
                                 <i>
                                     Note :<br/>
-                                    - Heavy equipment and fuel for instalation by owner<br/>
-                                    - Power sources, Freshwater + Infras for Construction by<br/>
-                                    client<br/>
-                                    - Lighting by owner<br/>
-                                    - Man power for instalation by owner<br/>
-                                    Terms &amp; Conditions:<br/>
-                                    1. All prices quoted above are FOT Kawasan Marunda<br/>
-                                    Center, Kab Bekasi<br/>
-                                    2. Lead time : 4-5 months fabrication, starting date after<br/>
-                                    receiving Advance, and design approval<br/>
-                                    3. The quotation above is quoted in IDR and including<br/>
-                                    Taxes (PPh &amp; PPn).<br/>
-                                    4. Payment Term:<br/>
-                                    - 30% Advance.<br/>
-                                    - 35% Before dispatch.<br/>
-                                    - 35% After BAST<br/>
-                                    (Payment term is nett 30 days after receiving invoice)<br/>
-                                    5. This quotation is subject to Rexline General Conditions of<br/>
-                                    Sale and pricing is strictly confidential and not to be shared<br/>
-                                    without REXLINE authorities' approval<br/>
-                                    6. This quotation is based on total order placement and<br/>
-                                    factory load at time of order, if scope/quantity changes,<br/>
-                                    REXLINE reserves the right to review pricing<br/>
-                                    7. Orders cannot be canceled once production has<br/>
-                                    commenced and all goods are non-returnable<br/>
-                                    8. If the freight price increases then the customer will be<br/>
-                                    liable to additional costs based on actual freight cost once<br/>
-                                    the PO is received by Rexline<br/>
-                                    9. Standby time caused due to Force Majeure or Heavy<br/>
-                                    Rainfall of more than 7 days, then the client is chargable by<br/>
-                                    Rexline.<br/>
-                                    10. Special packing requirements do not form part of this<br/>
-                                    quotation<br/>
-                                    11. The unloading at the site will be the scope of the client<br/>
-                                    12. Please thoroughly check quotes against your request as<br/>
-                                    all errors and omissions are excluded.<br/>
-                                    13. Please direct your Purchase Orders to:<br/>
-                                    salesteam@rexlineengineering.com<br/>
+                                    <t t-raw="so_tnc"/>
                                 </i>
                             </td>
                             <td style="border: 1px solid #ffffff;">
@@ -140,8 +109,10 @@
                         </tr>
                     </table>
 
-                    <p style="text-align: right;">
-                        <br/><br/><br/><br/><br/>Akhil Raj<br/>
+                    <p style="text-align: right; font-size: 14px;"> 
+                        <br/><img t-if="signature_image" t-att-src="signature_image" 
+                            style="width: 100px; height: auto;" alt="Signature" />
+                        <br/><t t-esc="signature_name"/><br/>
                         National Sales Leader<br/>
                         REXLINE ENGINEERING INDONESIA
                     </p>

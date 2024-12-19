@@ -6,6 +6,43 @@ from collections import defaultdict
 from datetime import datetime, timedelta,date
 import re
 
+
+class SaleManagerSignature(models.Model):
+    _name = 'sale.manager.signature'
+    _description = 'Sale Manager Signature'
+
+    employee_id = fields.Many2one('hr.employee', string='Manager')
+    image = fields.Image('Image Signature', store=True)
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(SaleManagerSignature, self).default_get(fields_list)
+        # Cari record signature yang sudah ada
+        signature = self.search([], limit=1)
+        if signature:
+            res.update({
+                'employee_id': signature.employee_id.id,
+                'image': signature.image,
+            })
+        return res
+
+    def update_signature(self):
+        for rec in self:
+            # Buat signature baru
+            new_signature = self.env['sale.manager.signature'].create({
+                'employee_id': rec.employee_id.id,
+                'image': rec.image
+                
+            })
+            # Cari semua signature lain
+            existing_signatures = self.env['sale.manager.signature'].search([('id', '!=', new_signature.id)])
+            # Hapus semua signature kecuali signature yang baru saja dibuat
+            if existing_signatures:
+                for signature in existing_signatures:
+                    signature.unlink()
+
+
+
 class InheritSaleOrder(models.Model):
     _inherit = 'sale.order'
 
@@ -18,12 +55,12 @@ class InheritSaleOrder(models.Model):
             company_name = company.partner_id.name or ''
             company_street1 = company.partner_id.street or ''
             company_street2 = company.partner_id.street2 or ''
-            company_street3 = (
-                str(company.partner_id.city or '') + ', ' +
-                str(company.partner_id.state_id.name or '') + ', ' +
-                str(company.partner_id.country_id.name or '') + ', ' +
-                str(company.partner_id.zip or '')
-            )
+            company_street3 = ', '.join(filter(None, [
+                rec.company_id.city or '',
+                rec.company_id.state_id.name or '',
+                rec.company_id.country_id.name or '',
+                rec.company_id.zip or ''
+            ]))
             company_npwp = company.partner_id.vat or ''
             company_phone = company.partner_id.phone or ''
             company_web = company.partner_id.website or ''
@@ -31,12 +68,12 @@ class InheritSaleOrder(models.Model):
             partner_name = rec.partner_id.name,
             partner_street1 = rec.partner_id.street or ''
             partner_street2 = rec.partner_id.street2 or ''
-            partner_street3 = (
-                str(rec.partner_id.city or '') + ', ' +
-                str(rec.partner_id.state_id.name or '') + ', ' +
-                str(rec.partner_id.country_id.name or '') + ', ' +
-                str(rec.partner_id.zip or '')
-            )
+            partner_street3 = ', '.join(filter(None, [
+                rec.partner_id.city or '',
+                rec.partner_id.state_id.name or '',
+                rec.partner_id.country_id.name or '',
+                rec.partner_id.zip or ''
+            ]))
 
             so_date = rec.date_order.strftime('%d-%m-%Y')
             so_date_due = rec.validity_date.strftime('%d-%m-%Y')
@@ -87,6 +124,19 @@ class InheritSaleOrder(models.Model):
 
             company_logo=self.env.company.logo
 
+            # Get T&C
+            so_tnc = rec.note or ''
+
+            # Get Manager Signature
+            signature = self.env['sale.manager.signature'].search([],limit=1)
+            signature_name = signature.employee_id.name
+            signature_image = (
+                f"data:image/png;base64,{signature.image.decode('utf-8')}"
+                if signature and signature.image
+                else None
+            )
+            # raise UserError(f'{signature_image}')
+
             report_data = {
                     'doc_ids': self.ids,
                     'doc_model': 'sale.order',
@@ -104,13 +154,16 @@ class InheritSaleOrder(models.Model):
                     'so_name':so_name,
                     'so_date':so_date,
                     'so_date_due':so_date_due,
+                    'so_tnc':so_tnc,
                     'balance_due':balance_due,
                     'subtotal':subtotal,
                     'tags_info':tags_info,
                     'taxes':taxes,
                     'order_lines':order_lines,
                     'quotation_lines':quotation_lines,
-                    'company_logo':company_logo
+                    'company_logo':company_logo,
+                    'signature_name':signature_name,
+                    'signature_image':signature_image
                 }
             return report_data
 
