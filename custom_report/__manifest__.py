@@ -4,7 +4,7 @@
         Custom Report
     """,
     'category': 'Custom',
-    'depends' : ['hr','sale_management','stock','account', 'base', 'hr','sale_custome', 'sale'],
+    'depends' : ['hr','sale_management','stock','account', 'base', 'hr','sale_custome','sale'],
     'data': [
         'views/report_invoice.xml',
         'report/report_invoice.xml',

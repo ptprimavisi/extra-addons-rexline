@@ -1,5 +1,9 @@
 <odoo>
     <data>
+        <menuitem id="menuitem_signature"
+                name="Signature"
+                parent="sale.menu_sale_config"
+                sequence="20"/>
         <record id="view_sale_form_inherit" model="ir.ui.view">
             <field name="name">inherit.sale.order</field>
             <field name="model">sale.order</field>
@@ -37,11 +41,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem id="menu_sale_manager_signature"
-                name="Manager Signature"
-                parent="custom_report.menuitem_signature"
-                action="action_sale_manager_signature"
-                sequence="20"/>
+
 
 
         <record id="sale_direktur_signature_wizard_form_view" model="ir.ui.view">
@@ -69,15 +69,18 @@
             <field name="target">new</field>
         </record>
 
+
+
+
         <menuitem id="menu_sale_direktur_signature"
                 name="Direktur Signature"
                 parent="custom_report.menuitem_signature"
                 action="action_sale_direktur_signature"
                 sequence="20"/>
-
-        <menuitem id="menuitem_signature" 
-                name="Signature" 
-                parent="sale.menu_sale_config" 
+        <menuitem id="menu_sale_manager_signature"
+                name="Manager Signature"
+                parent="custom_report.menuitem_signature"
+                action="action_sale_manager_signature"
                 sequence="20"/>
     </data>
 </odoo>
