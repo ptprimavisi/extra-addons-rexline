@@ -205,7 +205,7 @@
                     <field name="sale_id" string="SO NO"/>
                     <field name="partner_id" string="Customer"/>
                     <field name="date"/>
-                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
+<!--                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>-->
                     <field name="warning_time" invisible="1"/>
                     <field name="due_date" string="Deadline"
                            decoration-warning="warning_time == 'yellow'"
