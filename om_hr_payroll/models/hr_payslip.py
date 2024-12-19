@@ -578,7 +578,7 @@ class HrPayslip(models.Model):
                                                                            # Awal hari
                                                                            ('check_in', '<=', current_date.strftime(
                                                                                '%Y-%m-%d 23:59:59'))])
-                            if not attendance:
+                            if not attendance and not slip_line.salary_rule_id.is_manual:
                                 timeoff = self.env['hr.leave'].search([('employee_id', '=', payslip.employee_id.id),
                                                                        ('request_date_from', '>=',
                                                                         current_date.strftime('%Y-%m-%d 00:00:00')),# Awal hari

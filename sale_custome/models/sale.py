@@ -303,6 +303,11 @@ class SaleOrderInherith(models.Model):
     ref_quotation = fields.Char()
     count_estimate = fields.Integer(compute="_compute_count_estimate")
     tax_list = fields.Char(compute="_compute_tax_list")
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        domain=[('res_model', '=', 'sale.order')],
+        string='Attachments'
+    )
 
     def report_ar(self):
         return {

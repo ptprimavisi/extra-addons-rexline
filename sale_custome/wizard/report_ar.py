@@ -27,7 +27,11 @@ class ReportAr(models.TransientModel):
 
             invoice_afters = self.env['account.move'].search(
                 [('state', '=', 'posted'), ('move_type', '=', 'out_invoice'),
-                 ('payment_state', 'in', ['partial', 'not_paid']), ('invoice_date', '>=', line.date_from),
+                 ('payment_state', 'in', ['partial', 'paid']), ('invoice_date', '>=', line.date_from),
+                 ('invoice_date', '<=', line.date_to)])
+            invoice_afters_not_paid = self.env['account.move'].search(
+                [('state', '=', 'posted'), ('move_type', '=', 'out_invoice'),
+                 ('payment_state', 'in', ['not_paid']), ('invoice_date', '>=', line.date_from),
                  ('invoice_date', '<=', line.date_to)])
             invoice_after = sum(invoice_afters.mapped('amount_total'))
             pembayaran = self.env['account.move'].search(
@@ -47,17 +51,33 @@ class ReportAr(models.TransientModel):
                 'piutang_baru': invoice_after,
                 'pembayaran': total_bayar,
                 'saldo_akhir': (invoice_before + invoice_after) - total_bayar,
-                'line': []
+                'line': [],
+                'line_belum': []
             }
             for inv_line in invoice_afters:
+                if inv_line.amount_residual_signed != 0:
+                    dibayar = inv_line.amount_total - inv_line.amount_residual_signed
+                else:
+                    dibayar = inv_line.amount_total
                 list['line'].append(
                     {
                         'name': inv_line.name,
                         'partner': inv_line.partner_id.name,
                         'amount': inv_line.amount_total,
                         'amount_due': inv_line.amount_residual_signed,
-                        'origin': inv_line.invoice_origin,
+                        'origin': inv_line.invoice_origin or 'Unknown',
+                        'paid': dibayar,
                         'date': inv_line.invoice_date
+                    }
+                )
+            for not_paid in invoice_afters_not_paid:
+                list['line_belum'].append(
+                    {
+                        'name': not_paid.name,
+                        'partner': not_paid.partner_id.name,
+                        'amount': not_paid.amount_total,
+                        'origin': not_paid.invoice_origin or 'Unknown',
+                        'date': not_paid.invoice_date
                     }
                 )
             # print(list)
@@ -73,7 +93,7 @@ class ReportAr(models.TransientModel):
             worksheet = workbook.add_worksheet()
             style_header = workbook.add_format(
                 {'bold': True, 'bg_color': '#f50a0a', 'font_color': 'white', 'align': 'center', 'border': 1})
-            worksheet.merge_range(0,3,0,5, 'REPORT ACCOUNT RECEPTABLE', style_header)
+            worksheet.merge_range(0, 3, 0, 5, 'REPORT ACCOUNT RECEPTABLE', style_header)
             header_format = workbook.add_format({'bold': True, 'border': 1})
             worksheet.set_column(1, 0, 5)
             worksheet.set_column(1, 1, 30)
@@ -82,6 +102,7 @@ class ReportAr(models.TransientModel):
             worksheet.set_column(6, 4, 30)
             worksheet.set_column(6, 5, 30)
             worksheet.set_column(6, 6, 30)
+            worksheet.set_column(7, 6, 30)
 
             worksheet.write(1, 1, 'SALDO AWAL', header_format)
             worksheet.write(2, 1, 'PIUTANG BARU', header_format)
@@ -98,18 +119,20 @@ class ReportAr(models.TransientModel):
             sub_header = workbook.add_format(
                 {'bg_color': '#235391', 'font_color': 'white', 'align': 'center', 'border': 1})
 
-            worksheet.write(6, 0, 'No', sub_header)
-            worksheet.write(6, 1, 'Number', sub_header)
-            worksheet.write(6, 2, 'Customer ', sub_header)
-            worksheet.write(6, 3, 'Date', sub_header)
-            worksheet.write(6, 4, 'Reference', sub_header)
-            worksheet.write(6, 5, 'Amount Total', sub_header)
-            worksheet.write(6, 6, 'Amount Due', sub_header)
+            worksheet.write(7, 0, 'No', sub_header)
+            worksheet.write(7, 1, 'Number', sub_header)
+            worksheet.write(7, 2, 'Customer ', sub_header)
+            worksheet.write(7, 3, 'Date', sub_header)
+            worksheet.write(7, 4, 'Reference', sub_header)
+            worksheet.write(7, 5, 'Amount Total', sub_header)
+            worksheet.write(7, 6, 'Paid', sub_header)
+            worksheet.write(7, 7, 'Amount Due', sub_header)
 
             body_format = workbook.add_format({'border': 1})
             date_format = workbook.add_format({'border': 1, 'num_format': 'yyyy/mm/dd'})
-            row = 7
+            row = 8
             no = 1
+            worksheet.merge_range(6, 3, 6, 5, 'Paid Invoice', style_header)
             for inv_line in data['line']:
                 worksheet.write(row, 0, no, body_format)
                 worksheet.write(row, 1, inv_line['name'], body_format)
@@ -117,10 +140,33 @@ class ReportAr(models.TransientModel):
                 worksheet.write(row, 3, inv_line['date'], date_format)
                 worksheet.write(row, 4, inv_line['origin'], body_format)
                 worksheet.write(row, 5, '{:,.2f}'.format(inv_line['amount']), body_format)
-                worksheet.write(row, 6, '{:,.2f}'.format(inv_line['amount_due']), body_format)
+                worksheet.write(row, 6, '{:,.2f}'.format(inv_line['paid']), body_format)
+                worksheet.write(row, 7, '{:,.2f}'.format(inv_line['amount_due']), body_format)
                 row += 1
                 no += 1
 
+            row_header_not_paid = row + 1
+            row_subheader_not_paid = row_header_not_paid + 1
+            row_belum = row_subheader_not_paid + 1
+            no_belum = 1
+
+            worksheet.write(row_subheader_not_paid, 0, 'No', sub_header)
+            worksheet.write(row_subheader_not_paid, 1, 'Number', sub_header)
+            worksheet.write(row_subheader_not_paid, 2, 'Customer ', sub_header)
+            worksheet.write(row_subheader_not_paid, 3, 'Date', sub_header)
+            worksheet.write(row_subheader_not_paid, 4, 'Reference', sub_header)
+            worksheet.write(row_subheader_not_paid, 5, 'Amount Total', sub_header)
+
+            worksheet.merge_range(row_header_not_paid, 3, row_header_not_paid, 5, 'Not Paid Invoice', style_header)
+            for inv_lines in data['line_belum']:
+                worksheet.write(row_belum, 0, no_belum, body_format)
+                worksheet.write(row_belum, 1, inv_lines['name'], body_format)
+                worksheet.write(row_belum, 2, inv_lines['partner'], body_format)
+                worksheet.write(row_belum, 3, inv_lines['date'], date_format)
+                worksheet.write(row_belum, 4, inv_lines['origin'], body_format)
+                worksheet.write(row_belum, 5, '{:,.2f}'.format(inv_lines['amount']), body_format)
+                row_belum += 1
+                no_belum += 1
 
             workbook.close()
 

@@ -10,6 +10,15 @@
                     <field name="validity" invisible="state == 'sale'"/>
                     <field name="ref_quotation" string="Quotation Ref" readonly="1"/>
                 </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page groups="sale_custome.group_sales_custom" string="Attachment">
+                        <group>
+                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                        </group>
+                    </page>
+                </xpath>
+
+
                 <button name="action_view_delivery" position="before">
                     <button class="oe_stat_button" type="object"
                         name="action_view_estimate" icon="fa-pencil-square-o" invisible="count_estimate == 0">
@@ -39,6 +48,7 @@
                             readonly="state != 'draft'"
                             required="move_type == 'out_refund'"/>
                 </xpath>
+
             </field>
         </record>
     </data>
