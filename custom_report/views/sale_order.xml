@@ -41,9 +41,6 @@
             <field name="target">new</field>
         </record>
 
-
-
-
         <record id="sale_direktur_signature_wizard_form_view" model="ir.ui.view">
             <field name="name">sale.direktur.signature.wizard.form</field>
             <field name="model">sale.direktur.signature</field>
@@ -68,9 +65,6 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
-
-
-
 
         <menuitem id="menu_sale_direktur_signature"
                 name="Direktur Signature"
