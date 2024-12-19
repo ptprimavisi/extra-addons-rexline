@@ -16,6 +16,17 @@
             </field>
         </record>
 
+        <record id="view_company_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.res.company</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='color']" position="after">
+                    <field name="sale_logo" widget="image" class="oe_avatar"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="sale_manager_signature_wizard_form_view" model="ir.ui.view">
             <field name="name">sale.manager.signature.wizard.form</field>
             <field name="model">sale.manager.signature</field>
@@ -69,9 +80,6 @@
             <field name="target">new</field>
         </record>
 
-
-
-
         <menuitem id="menu_sale_direktur_signature"
                 name="Direktur Signature"
                 parent="custom_report.menuitem_signature"
@@ -80,7 +88,6 @@
         <menuitem id="menu_sale_manager_signature"
                 name="Manager Signature"
                 parent="custom_report.menuitem_signature"
-                action="action_sale_manager_signature"
-                sequence="20"/>
+                action="action_sale_manager_signature"/>
     </data>
 </odoo>

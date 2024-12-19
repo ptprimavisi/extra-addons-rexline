@@ -13,15 +13,19 @@
             <t t-call="web.html_container">
                 <div class="container" style="font-family: Calibri, sans-serif;">
                     <div style="text-align: center;">
-                        <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" />
+                        <img t-if="logo" t-att-src="logo" 
+                            style="width: 120px; height: auto;" alt="Logo" /><br/><br/>
                     </div>
                     
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;"><h6><b><t t-esc="company_name"/></b></h6></td>
+                            <td style="border: 1px solid #ffffff;"><b><t t-esc="company_name"/></b></td>
                             <td style="border: 1px solid #ffffff;"></td>
                             <td style="border: 1px solid #ffffff;">
-                                <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
+                                <t t-if="company_street1 and company_street2">
+                                    <t t-esc="company_street1"/>, <t t-esc="company_street2"/><br/>
+                                </t>
+                                <t t-esc="company_street1"/> <t t-esc="company_street2"/><br/>
                                 <t t-esc="company_street3"/><br/>
                                 <t t-esc="company_phone"/><br/>
                                 <t t-esc="company_web"/><br/>
@@ -39,11 +43,12 @@
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">Address<br/>
-                                <t t-esc="company_street1"/>, <t t-esc="company_street2"/>
-                                <t t-esc="company_street3"/><br/>
-                                <t t-esc="company_phone"/><br/>
-                                <t t-esc="company_web"/><br/>
-                                <t t-esc="company_npwp"/><br/>
+                                <t t-if="partner_street1 and partner_street2">
+                                    <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/><br/>
+                                </t>
+                                <t t-esc="partner_street1"/> <t t-esc="partner_street2"/><br/>
+                                <t t-esc="partner_street3"/><br/>
+                                <t t-esc="partner_phone"/><br/>
                             </td>
                             <td style="border: 1px solid #ffffff;">Date<br/>
                                 <t t-esc="invoice_date"/><br/><br/>
