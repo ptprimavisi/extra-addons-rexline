@@ -12,11 +12,11 @@
                     <button string="Send Inquiry" name="action_send_inquiry" class="oe_highlight" type="object" confirm="Are you sure you want to continue with the process?" invisible="id == False or count_inquiry >= 1"/>
 <!--                    <button string="Approve Cost Estimation" confirm="Apakah anda ingin menyetujui dokumen ini?" name="action_approve_cost_estimation" type="object" invisible="id == False or is_approve == True " groups="sale_custome.group_sales_technical" />-->
                 </xpath>
-                <xpath expr="//field[@name='lost_reason_id']" readonly="1" position="after">
+                <xpath expr="//field[@name='lost_reason_id']" position="after">
 <!--                    <div class="o_lead_opportunity_form_inline_fields">-->
 <!--                                <div class="oe_title">-->
 <!--                                    <h1>-->
-                    <field name="inquiry_name" invisible="id == False"/>
+                    <field name="inquiry_name" invisible="id == False" readonly="1"/>
 <!--                                    </h1>-->
 <!--                                </div>-->
 <!--                        </div>-->
