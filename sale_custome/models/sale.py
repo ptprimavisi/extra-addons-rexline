@@ -435,6 +435,7 @@ class SaleOrderInherith(models.Model):
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
+    inquiry_name = fields.Char()
     count_inquiry = fields.Integer(compute="_compute_count_inquiry")
     cost_estimation = fields.Float(compute="_compute_estimation_cost")
     is_planner = fields.Boolean(compute="_compute_is_planner")
@@ -450,6 +451,12 @@ class CrmLead(models.Model):
         ('yellow', 'Yellow'),
         ('green', 'Green')
     ], compute="_compute_warning")
+
+    @api.model
+    def create(self, vals):
+        # if vals.get('name', '/') == '/':
+        vals['inquiry_name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
+        return super(CrmLead, self).create(vals)
 
     def _compute_isApprove(self):
         for line in self:
@@ -648,6 +655,7 @@ class CrmLead(models.Model):
                 raise UserError('ID CRM tidak ditemukan')
             else:
                 data = {
+                    "name": line.inquiry_name or '/',
                     "partner_id": line.partner_id.id,
                     'project_category': line.category_project,
                     'header_note': line.note_header,
@@ -1781,11 +1789,7 @@ class InquirySales(models.Model):
             'context': ctx,
         }
 
-    @api.model
-    def create(self, vals):
-        # if vals.get('name', '/') == '/':
-        vals['name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
-        return super(InquirySales, self).create(vals)
+
 
 
 class InquiryLine(models.Model):
