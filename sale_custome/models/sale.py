@@ -698,6 +698,11 @@ class CrmLead(models.Model):
                             'unit_weight': lines.product_id.product_tmpl_id.weight,
                             'cost_price': lines.product_id.product_tmpl_id.standard_price
                         }))
+                    if line.category_project == 'supply':
+                        users = self.env['res.users'].search([('login','=','admin.secretary@rexlineengineering.com')])
+                        if users:
+                            inquiry.write({'pic_user': int(users.id)})
+
                     inquiry.write({'inquiry_line_detail': list_product})
                     # if line.process_to == 'purchase':
                     #     if line.pic_supply:
