@@ -27,8 +27,8 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,to_inventory,request,confirm,cancel"/>
                         <button name="action_inventory" string="To Inventory" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button name="request_budget" string="Request Budget" type="object" class="oe_highlight" invisible="state != 'to_inventory'"/>
-                        <button name="action_confirm" string="Confirm" class="oe_highlight" type="object" invisible="state == 'confirm' or id == False or state != 'request' or state == 'cancel'"/>
+                        <button name="request_budget" string="Request Budget" type="object" groups="sale_custome.inventory_custom_group" class="oe_highlight" invisible="state != 'to_inventory'"/>
+                        <button name="action_confirm" string="Confirm" class="oe_highlight" groups="sale_custome.accounting_custom_group" type="object" invisible="state == 'confirm' or id == False or state != 'request' or state == 'cancel'"/>
                         <button name="action_cancel" confirm="Do you want to cancel this proccess?" string="Cancel" type="object" invisible="state == 'draft' or id == False or state == 'cancel'"/>
                     </header>
                     <sheet>

@@ -296,6 +296,12 @@ class MrpProduction(models.Model):
 import json
 
 
+class SaleOrderLineInherit(models.Model):
+    _inherit = 'sale.order.line'
+
+    is_sales = fields.Boolean(related="order_id.is_sales")
+
+
 class SaleOrderInherith(models.Model):
     _inherit = 'sale.order'
 
@@ -308,6 +314,16 @@ class SaleOrderInherith(models.Model):
         domain=[('res_model', '=', 'sale.order')],
         string='Attachments'
     )
+    is_sales = fields.Boolean(compute="_compute_is_sales")
+
+    def _compute_is_sales(self):
+        for line in self:
+            line.is_sales = False
+            users = self.env['res.users'].search([('id', '=', self.env.uid)])
+            if users:
+                if users.is_sales:
+                    line.is_sales = True
+            # raise UserError(line.is_sales)
 
     def report_ar(self):
         return {
@@ -1788,8 +1804,6 @@ class InquirySales(models.Model):
             'target': 'new',
             'context': ctx,
         }
-
-
 
 
 class InquiryLine(models.Model):

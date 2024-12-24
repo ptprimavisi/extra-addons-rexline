@@ -47,6 +47,24 @@
                 </button>
             </field>
     </record>
+    <record id="inherit_crm_case_kanban_view_leads" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.inquiry_name</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <!-- Tambahkan field inquiry_name di bawah activity_ids -->
+            <xpath expr="//field[@name='activity_ids']" position="after">
+                <field name="inquiry_name"/>
+            </xpath>
+            <xpath expr="//div[@class='o_kanban_record_subtitle']" position="after">
+                <div>
+                    <span class="o_kanban_record_subtitle">
+                        <field name="inquiry_name" decoration-primary="1" optional="show"/>
+                    </span>
+                </div>
+            </xpath>
+        </field>
+    </record>
 
 
 
