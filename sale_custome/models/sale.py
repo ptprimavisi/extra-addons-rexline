@@ -1482,7 +1482,7 @@ class InquirySales(models.Model):
     def _compute_mo_count(self):
         for line in self:
             so = self.env['sale.order'].search(
-                [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
+                [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')], limit=1)
             line.mrp_production_count = 0
             if so:
                 mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
