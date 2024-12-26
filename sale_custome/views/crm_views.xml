@@ -16,7 +16,7 @@
 <!--                    <div class="o_lead_opportunity_form_inline_fields">-->
 <!--                                <div class="oe_title">-->
 <!--                                    <h1>-->
-                    <field name="inquiry_name" invisible="id == False" readonly="1"/>
+                    <field name="inquiry_name" string="CRF Number" invisible="id == False" readonly="1"/>
 <!--                                    </h1>-->
 <!--                                </div>-->
 <!--                        </div>-->
@@ -38,6 +38,45 @@
                     <field name="is_approve" invisible="1"/>
                     <field name="warning_time" invisible="1"/>
                     <field name="status_estimate" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='description']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//page[@name='internal_notes']" position="inside">
+                    <group>
+                        <field name="inquiry_name" string="CRF Number" readonly="1"/>
+                        <field name="date_deadline" string="Due Date"/>
+                    </group>
+                    <group string="DATA CLIENT" name="data_client" priority="1">
+                        <field name="company_name"/>
+                        <field name="location"/>
+                    </group>
+                    <group string="INQUIRY" name="inquiry" priority="1">
+                        <field name="category_project" string="Type of Inquiry"/>
+                        <field name="inquiry_desc" string="Name of Inquiry"/>
+                        <field name="doc_support" string="Doc support/Data info"/>
+                        <field name="quantity" string="Quantity"/>
+                        <field name="specification" string="Specification/Client Request"/>
+                        <field name="data_requirement" string="Data Requirements"/>
+                        <field name="due_date_eng" string="Due Date Engineering"/>
+                    </group>
+                     <group string="DELIVERABLE DOCUMENTS" name="deliverable" priority="1">
+                        <field name="received_cust" string="Received Inquiry from Customer"/>
+                        <field name="received_sales" string="Received Inquiry from Sales"/>
+                    </group>
+                    <group string="ADDITIONAL INFO" name="additional" priority="1">
+                        <field name="site_survey" string="Site Survey"/>
+                        <field name="date_additional" string="Date"/>
+                        <field name="location_additional" string="Location"/>
+                        <field name="members" string="Members"/>
+                    </group>
+                    <group string="NOTES" name="notes" priority="1">
+                        <group>
+                          <field name="description"/>
+                        </group>
+
+                    </group>
                 </xpath>
                 <button name="action_schedule_meeting" position="before">
                     <button class="oe_stat_button" type="object"
@@ -63,6 +102,7 @@
                     </span>
                 </div>
             </xpath>
+
         </field>
     </record>
 

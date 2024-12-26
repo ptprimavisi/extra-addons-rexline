@@ -614,7 +614,7 @@ class HrPayslip(models.Model):
                     gaji_gross.amount = gaji_gross.amount + site_allowance
                     absence_deduction = self.env['hr.payslip.line'].search(
                         [('slip_id', '=', int(payslip.id)), ('code', 'in', ['ABSDED'])])
-                    if absence_deduction:
+                    if absence_deduction and not absence_deduction.is_manual:
                         absence_deduction.amount = abs_ded
                     gaji_net.amount = gaji_net.amount - abs_ded
 

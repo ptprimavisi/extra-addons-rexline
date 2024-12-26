@@ -467,6 +467,20 @@ class CrmLead(models.Model):
         ('yellow', 'Yellow'),
         ('green', 'Green')
     ], compute="_compute_warning")
+    company_name = fields.Char()
+    location = fields.Char()
+    inquiry_desc = fields.Char()
+    doc_support = fields.Text()
+    quantity = fields.Char()
+    specification = fields.Html()
+    data_requirement = fields.Html()
+    due_date_eng = fields.Date()
+    received_cust = fields.Text()
+    received_sales = fields.Text()
+    site_survey = fields.Text()
+    date_additional = fields.Date()
+    location_additional = fields.Text()
+    members = fields.Text()
 
     @api.model
     def create(self, vals):
@@ -679,7 +693,21 @@ class CrmLead(models.Model):
                     "date": datetime.now(),
                     "opportunity_id": int(line.id),
                     "priority": line.priority,
-                    "note": line.description
+                    "note": line.description,
+                    'company_name': line.company_name,
+                    'location': line.location,
+                    'inquiry_desc': line.inquiry_desc,
+                    'doc_support': line.doc_support,
+                    'quantity': line.quantity,
+                    'specification': line.specification,
+                    'data_requirement': line.data_requirement,
+                    'due_date_eng': line.due_date_eng,
+                    'received_cust': line.received_cust,
+                    'received_sales': line.received_sales,
+                    'site_survey': line.site_survey,
+                    'date_additional': line.date_additional,
+                    'location_additional': line.location_additional,
+                    'members': line.members,
                 }
                 # if line.category_project == 'supply':
                 #     data['process_to'] = line.process_to
@@ -822,6 +850,21 @@ class InquirySales(models.Model):
         ('yellow', 'Yellow'),
         ('green', 'Green')
     ], compute="_compute_warning")
+
+    company_name = fields.Char()
+    location = fields.Char()
+    inquiry_desc = fields.Char()
+    doc_support = fields.Text()
+    quantity = fields.Char()
+    specification = fields.Html()
+    data_requirement = fields.Html()
+    due_date_eng = fields.Date()
+    received_cust = fields.Text()
+    received_sales = fields.Text()
+    site_survey = fields.Text()
+    date_additional = fields.Date()
+    location_additional = fields.Text()
+    members = fields.Text()
 
     @api.depends('due_date')
     def _compute_warning(self):

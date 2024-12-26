@@ -73,13 +73,21 @@ class ManPower(models.TransientModel):
 
     employee_id = fields.Many2one('hr.employee')
     description = fields.Many2many('production.tag')
-    position = fields.Char()
+    position = fields.Many2one('hr.job')
     work_hours = fields.Float()
     p = fields.Float()
     t = fields.Float()
     l = fields.Float()
     quantity = fields.Float()
     report_id = fields.Many2one('general.daily.report')
+
+    @api.onchange('employee_id')
+    def onchange_employee(self):
+        for line in self:
+            line.position = False
+            if line.employee_id:
+                if line.employee_id.job_id:
+                    line.position = line.employee_id.job_id.id
 
 
 class ProblemLine(models.TransientModel):
