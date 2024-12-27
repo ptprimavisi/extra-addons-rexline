@@ -18,9 +18,9 @@
                             confirm="Are you sure to add products to the Asset Management master?"
                             invisible="is_generate_asset == False"/>
                 </xpath>
-                <xpath expr="//field[@name='effective_date']" position="after">
+                <!-- <xpath expr="//field[@name='effective_date']" position="after">
                     <field name="is_generate_asset"/>
-                </xpath>
+                </xpath> -->
             </field>
         </record> 
         <record id="manajemen_assets_form_view" model="ir.ui.view">
