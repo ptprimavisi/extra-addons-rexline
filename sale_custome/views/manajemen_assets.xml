@@ -1,0 +1,109 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="purchase_order_inherited_form_view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_generate" 
+                            string="Generate Asset" 
+                            type="object" 
+                            class="btn-primary"
+                            confirm="Are you sure to add products to the Asset Management master?"
+                            invisible="is_generate_asset == False"/>
+                </xpath>
+                <xpath expr="//field[@name='effective_date']" position="after">
+                    <field name="is_generate_asset"/>
+                </xpath>
+            </field>
+        </record> 
+        <record id="manajemen_assets_form_view" model="ir.ui.view">
+            <field name="name">manajemen.assets.form</field>
+            <field name="model">manajemen.assets</field>
+            <field name="arch" type="xml">
+                <form string="Manajemen Assets">
+                    <sheet>
+                        <group>
+                            <field name="product_name"/>
+                        </group>
+                        <notebook>
+                            <page string="Product Information">
+                                <group>
+                                    <field name="name"/>
+                                    <field name="brand"/>
+                                    <field name="tipe"/>
+                                    <field name="qty"/>
+                                    <field name="uom_id"/>
+                                    <field name="value"/>
+                                    <field name="serial_number"/>
+                                    <field name="mac_address"/>
+                                    <field name="spesification"/>
+                                </group>
+                                <group>
+                                    <field name="location"/>
+                                    <field name="purchase_id"/>
+                                    <field name="purchase_date"/>
+                                    <field name="delivered_date"/>
+                                    <field name="returned_date"/>
+                                </group>
+                            </page>
+                            <page string="Asset Information">
+                                <group>
+                                    <field name="prepetual"/>
+                                    <field name="validity_days"/>
+                                    <field name="current_date"/>
+                                </group>
+                                <group>
+                                    <field name="usage_number"/>
+                                    <field name="depreciation"/>
+                                    <field name="current_value"/>
+                                </group>
+                            </page>
+                            <page string="Other Information">
+                                <group>
+                                    <field name="pic"/>
+                                    <field name="department"/>
+                                    <field name="head_department"/>
+                                    <field name="designation"/>
+                                </group>
+                            </page>
+                            <page string="Remarks">
+                                <group>
+                                    <field name="remarks"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="manajemen_assets_tree_view" model="ir.ui.view">
+            <field name="name">manajemen.assets.tree</field>
+            <field name="model">manajemen.assets</field>
+            <field name="arch" type="xml">
+                <tree string="Manajemen Assets">
+                    <field name="product_name"/>
+                    <field name="purchase_id"/>
+                    <field name="value"/>
+                    <field name="pic"/>
+                    <field name="department"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_manajemen_assets" model="ir.actions.act_window">
+            <field name="name">Manajemen Assets</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">manajemen.assets</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menuitem_manajemen_assets"
+                name="Manajemen Assets"
+                parent="sale_custome.maintenance_report_menu"
+                action="action_manajemen_assets"
+                sequence="20"/>
+    </data>
+</odoo>
