@@ -173,10 +173,14 @@ class ProductionReport(models.Model):
     def action_confirm(self):
         for line in self:
             line.state = 'done'
+            if line.mo_id:
+                line.mo_id.action_compute_consume()
 
     def action_rest_draft(self):
         for line in self:
             line.state = 'draft'
+            if line.mo_id:
+                line.mo_id.action_compute_consume()
 
     def action_create_sk(self):
         for line in self:

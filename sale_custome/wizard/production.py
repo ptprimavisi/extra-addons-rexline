@@ -40,6 +40,11 @@ class ManufacturWizard(models.TransientModel):
             })
             if create_mo:
                 create_mo.action_confirm()
+            if create_mo:
+                inquiry_id = self.env.context.get('inquiry_id', False)
+                inquiry = self.env['inquiry.inquiry'].search([('id','=',int(inquiry_id))])
+                if inquiry:
+                    inquiry.action_compute_task()
 
 
 class GeneralDailyReport(models.TransientModel):

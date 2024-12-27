@@ -135,6 +135,13 @@ class MrpProductionInherith(models.Model):
         res = super(MrpProductionInherith, self).button_mark_done()
         return res
 
+    def unlink(self):
+        for line in self:
+            line_task = self.env['inquiry.line.task'].search([('mo_id','=',int(line.id))])
+            if line_task:
+                line_task.unlink()
+            return super().unlink()
+
     def action_compute_consume(self):
         for line in self:
             for lines in line.move_raw_ids:
@@ -1911,6 +1918,7 @@ class InquiryLine(models.Model):
                 'view_mode': 'form',
                 'target': 'new',
                 'context': {
+                    'inquiry_id': int(line.inquiry_id.id),
                     'product_id': int(product.id),
                     'schedule_date': datetime.now(),
                     'product_qty': 1,

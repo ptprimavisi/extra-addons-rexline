@@ -26,7 +26,7 @@
                 <form>
                     <header>
                         <button name="action_confirm" string="Mark as Done" confirm="Do you want to confirm?" class="oe_highlight" type="object" invisible="id == False or state != 'draft'"/>
-                        <button name="action_create_sk" string="Surat Kerja" type="object" invisible=" id == False or state != 'draft'"/>
+                        <button name="action_create_sk" string="Surat Kerja Lembur" type="object" invisible=" id == False or state != 'draft'"/>
                         <button name="action_rest_draft" string="Reset to Draft" type="object" invisible="state != 'done'"/>
                         <button name="action_report" string="Generate Report" type="object" invisible="id == False"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
