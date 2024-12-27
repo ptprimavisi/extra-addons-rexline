@@ -1,5 +1,10 @@
 <odoo>
     <data>
+        <menuitem id="menuitem_manajemen_assets"
+                name="Manajemen Assets"
+                parent="sale_custome.maintenance_report_menu"
+                action="action_manajemen_assets"
+                sequence="20"/>
         <record model="ir.ui.view" id="purchase_order_inherited_form_view">
             <field name="name">purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
@@ -99,11 +104,5 @@
             <field name="res_model">manajemen.assets</field>
             <field name="view_mode">tree,form</field>
         </record>
-
-        <menuitem id="menuitem_manajemen_assets"
-                name="Manajemen Assets"
-                parent="sale_custome.maintenance_report_menu"
-                action="action_manajemen_assets"
-                sequence="20"/>
     </data>
 </odoo>
