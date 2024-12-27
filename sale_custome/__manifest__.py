@@ -31,7 +31,8 @@
         "views/hr_employee_views.xml",
         "views/sale_order_views.xml",
         "views/maintenance_report_views.xml",
-        "views/hr_surat_tugas_views.xml"
+        "views/hr_surat_tugas_views.xml",
+        'views/manajemen_assets.xml'
     ],
     'assets': {
         'web.assets_backend': [
