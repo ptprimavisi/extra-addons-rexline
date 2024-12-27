@@ -17,6 +17,7 @@
                             class="btn-primary"
                             confirm="Are you sure to add products to the Asset Management master?"
                             invisible="is_generate_asset == False"/>
+                    <field name="is_generate_asset" invisible="1"/>
                 </xpath>
                 <!-- <xpath expr="//field[@name='effective_date']" position="after">
                     <field name="is_generate_asset"/>
