@@ -308,7 +308,7 @@ class SaleOrderLineInherit(models.Model):
 
     is_sales = fields.Boolean(related="order_id.is_sales")
 
-
+#...
 class SaleOrderInherith(models.Model):
     _inherit = 'sale.order'
 

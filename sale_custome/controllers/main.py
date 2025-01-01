@@ -33,7 +33,6 @@ class SaleOrderController(http.Controller):
         # result_json = json.dumps(result)
 
         return a
-    #rdrdr
 
     @http.route('/api/testCOnnection', type='json', auth="none")
     def TestCOnnection(self):
