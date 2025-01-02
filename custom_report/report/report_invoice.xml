@@ -12,9 +12,9 @@
         <template id="report_invoice">
             <t t-call="web.html_container">
                 <div class="container" style="font-family: Calibri, sans-serif;">
-                    <div style="text-align: center;">
+                    <div style="text-align: left;">
                         <img t-if="logo" t-att-src="logo" 
-                            style="width: 120px; height: auto;" alt="Logo" /><br/><br/>
+                            style="width: 90px; height: auto;" alt="Logo" />
                     </div>
                     
                     <table class="table" style="width: 100%; font-size: 14px;">
@@ -77,31 +77,42 @@
                             <t t-set="counter" t-value="0"/>
                             <t t-foreach="product_line" t-as="lines">
                                 <tr>
-                                    <td><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
-                                    <t t-foreach="lines" t-as="line">
-                                        <td><t t-esc="line"/></td>
-                                    </t>
+                                    <td style="text-align: center;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
+                                    <td t-if="lines[0]" style="text-align: left;">
+                                        <t t-esc="lines[0]"/>
+                                    </td>
+                                    <td t-if="lines[1]" style="text-align: center;">
+                                        <t t-esc="lines[1]"/>
+                                    </td>
+                                    <td t-if="lines[2]" style="text-align: center;">
+                                        <t t-esc="lines[2]"/>
+                                    </td>
+                                    <td t-if="lines[3]" style="text-align: center;">
+                                        <t t-esc="lines[3]"/>
+                                    </td>
+                                    <td t-if="lines[4]" style="text-align: center;">
+                                        <t t-esc="lines[4]"/>
+                                    </td>
+                                    <td t-if="lines[5]" style="text-align: right;">
+                                        <t t-esc="lines[5]"/>
+                                    </td>
                                 </tr>
                             </t>
                         </tbody>
                     </table>
 
+                    <br/><br/><br/>
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">
-                                <b>Message</b><br/><br/>
-                                Please send your payment in FULL AMOUNT by transfer to :<br/>
-                                Bank : MAYBANK<br/>
-                                A/C : 2790000188<br/>
-                                A/N : PT Rexline Engineering Indonesia<br/>
-                                Account : 1270017111111<br/>
-                                BANK : BANK MANDIRI<br/>
-                                Acc. Holder : PT. REXLINE ENGINEERING INDONESIA<br/>
+                                <b>Note</b><br/><br/>
+                                <t t-raw="invoice_tnc"/>
                             </td>
                             <td style="border: 1px solid #ffffff;">
                                 Subtotal<br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
-                                    <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>
+                                    <!-- <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> -->
+                                    <t t-esc="tax['name']"/><br/>
                                 </t>
                                 <b><br/>Total</b><br/>
                                 <br/>Balance Due
