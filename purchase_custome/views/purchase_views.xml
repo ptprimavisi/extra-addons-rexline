@@ -77,6 +77,7 @@
                                         <field name="brand" required="1"/>
                                         <field name="count_quotation"/>
                                         <field name="quantity"/>
+                                        <field name="qty_onhand" string="On Hand"/>
                                         <field name="avilable_qty"/>
                                         <field name="qty_purchase"/>
                                         <field name="qty_ordered"/>
@@ -90,6 +91,7 @@
                                         <field name="unit_cost"/>
                                         <field name="subtotal" readonly="1"/>
                                         <field name="product_uom_category_id" invisible="1" nolabel="1"/>
+                                        <field name="schedule_date"/>
                                         <field name="wh_id" string="Dest Location"/>
 <!--                                        <field name="vendor_id" string="Vendor" required="1"/>-->
                                         <field name="attachment" widget="binary" filename="attachment_name"/>

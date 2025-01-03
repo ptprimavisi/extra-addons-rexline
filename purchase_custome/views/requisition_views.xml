@@ -10,7 +10,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ready,to_purchase,po,cancel"/>
                         <button string="Confirm" name="action_confirm" type="object" class="oe_highlight"  invisible="id == False or state != 'confirm'"/>
                         <button string="Proceed to Purchasing" name="action_to_purchase" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state != 'ready'"/>
-                        <button string="Create Quotation" name="action_create_quotation" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state not in ['ready', 'to_purchase','po']"/>
+                        <button string="Create Quotation" name="action_create_quotation" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group,sale_custome.purchasing_custom_group" class="oe_highlight"  invisible="id == False or state not in ['ready', 'to_purchase','po']"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -36,13 +36,13 @@
                         </div>
                         <group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
-                            <field name="responsible"/>
-                            <field name="employee_id" required="1"/>
-                            <field name="department_id" required="1"/>
+                            <field name="responsible" readonly="state != 'ready'"/>
+                            <field name="employee_id" required="1" readonly="state != 'ready'"/>
+                            <field name="department_id" required="1" readonly="state != 'ready'"/>
                             <field name="is_ga" invisible="1"/>
                             <field name="is_purchase" invisible="1"/>
-                            <field name="requisition_date" required="1"/>
-                            <field name="category" string="Category Product" required="1"/>
+                            <field name="requisition_date" required="1" readonly="state != 'ready'"/>
+                            <field name="category" string="Category Product" required="1" readonly="state != 'ready'"/>
 <!--                            <field name="inquiry_id" readonly="1"/>-->
 <!--                            <field name="request_date"/>-->
 <!--                            <field name="due_date" required="1"/>-->
@@ -55,13 +55,17 @@
                             <page string="Requisition Lines">
                                 <field name="requisition_line" required="1">
                                     <tree editable="bottom">
-                                        <field name="select"/>
-                                        <field name="product_id" string="Product"/>
-                                        <field name="name" string="Description"/>
-                                        <field name="quantity"/>
-                                        <field name="product_uom"/>
-                                        <field name="price_unit"/>
-                                        <field name="subtotal" readonly="1"/>
+                                        <field name="select" invisible="is_it == False and approve == False"/>
+                                        <field name="is_it" invisible="1" nolabel="1"/>
+                                        <field name="approve" invisible="is_it == False"/>
+                                        <field name="product_id" string="Product" invisible="is_it == False and approve == False"/>
+                                        <field name="name" string="Description" invisible="is_it == False and approve == False"/>
+                                        <field name="quantity" invisible="is_it == False and approve == False"/>
+                                        <field name="qty_ordered" invisible="is_it == False and approve == False"/>
+                                        <field name="qty_received" invisible="is_it == False and approve == False"/>
+                                        <field name="product_uom" invisible="is_it == False and approve == False"/>
+                                        <field name="price_unit" invisible="is_it == False and approve == False"/>
+                                        <field name="subtotal" readonly="1" invisible="is_it == False and approve == False"/>
                                     </tree>
                                 </field>
                             </page>
@@ -99,6 +103,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" string="Number"/>
+                    <field name="category" string="Requisition Category"/>
                     <field name="responsible" string="Requisition Responsible"/>
                     <field name="requisition_date" string="Requisition Date"/>
                     <field name="state" string="Stage"/>
@@ -110,6 +115,7 @@
             <field name="name">Purchase Requisition</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.requisition</field>
+<!--            <field name="domain">[('users_branch','=',1)]</field>-->
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="purchase_requisition_menuitem"

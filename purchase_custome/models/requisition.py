@@ -61,6 +61,41 @@ class PurchaseRequisition(models.Model):
         ('ga', 'GA'),
         ('ut', 'IT'),
     ], default="ga")
+    # users_branch = fields.Char(compute="branch", search="branch_search")
+    #
+    # #
+    # def branch(self):
+    #     id = self.env.uid
+    #     self.users_branch = self.env['res.users'].search([('id', '=', id)])
+    #
+    # #
+    # def branch_search(self, operator, value):
+    #     # for i in self:
+    #     # if self.env.user.has_group('sale_custome.hr_ga_custom_group'):
+    #     #     pr = self.env['purchase.requisition'].search([('category', '=', 'ga')])
+    #     #
+    #     #     # print('lihat employee', contract.id)
+    #     #     domain = [('id', 'in', pr.ids)]
+    #     # if self.env.user.has_group('sale_custome.it_custom_group'):
+    #     #     pr = self.env['purchase.requisition'].search([('category', '=', 'ut')])
+    #     #
+    #     #     # print('lihat employee', contract.id)
+    #     #     domain = [('id', 'in', pr.ids)]
+    #     # if self.env.user.has_group('sale_custome.hr_ga_custom_group') and self.env.user.has_group('sale_custome.it_custom_group'):
+    #     #     pr = self.env['purchase.requisition'].search([('category', 'in', ['ut','ga'])])
+    #     #
+    #     #     # print('lihat employee', contract.id)
+    #     #     domain = [('id', 'in', pr.ids)]
+    #     # if self.env.user.has_group('sale_custome.purchasing_custom_group'):
+    #     #     pr = self.env['purchase.requisition'].search([('category', 'in', ['ut','ga'])])
+    #     #
+    #     #     # print('lihat employee', contract.id)
+    #     #     domain = [('id', '!=', False)]
+    #     # else:
+    #     # pr = self.env['purchase.requisition'].search([('responsible', '=', self.env.uid)])
+    #     domain = [('id', '!=',False)]
+    #
+    #     return domain
 
     @api.model
     def create(self, vals_list):
@@ -170,13 +205,43 @@ class RequisitionLine(models.Model):
     _name = 'requisition.line'
 
     select = fields.Boolean(default=True)
+    approve = fields.Boolean(default=True)
     product_id = fields.Many2one('product.product')
     name = fields.Char()
     quantity = fields.Float(default=1)
+    qty_ordered = fields.Float(compute="_compute_qty_ordered")
+    qty_received = fields.Float(compute="_compute_qty_received")
     product_uom = fields.Many2one('uom.uom', compute="_default_product_uom", readonly=False, precompute=True)
     price_unit = fields.Float(compute="_default_price_unit", readonly=False, precompute=True)
     subtotal = fields.Float(compute='_compute_subtotal')
     requisition_id = fields.Many2one('purchase.requisition')
+    is_it = fields.Boolean(compute="_compute_is_it")
+
+    def _compute_qty_ordered(self):
+        for line in self:
+            purchase = self.env['purchase.order.line'].search(
+                [('order_id.requisition_id', '=', int(line.requisition_id.id)), ('state', '=', 'purchase'),
+                 ('product_id', '=', line.product_id.id)])
+            line.qty_ordered = sum(purchase.mapped('product_qty'))
+
+    def _compute_qty_received(self):
+        for line in self:
+            purchase = self.env['purchase.order.line'].search(
+                [('order_id.requisition_id', '=', int(line.requisition_id.id)), ('order_id.state', '=', 'purchase'),
+                 ('product_id', '=', line.product_id.id)])
+            # print(purchase)
+            line.qty_received = sum(purchase.mapped('qty_received'))
+
+    def _compute_is_it(self):
+        for line in self:
+            line.is_it = False
+            if self.env.user.has_group('sale_custome.it_custom_group'):
+                line.is_it = True
+
+    @api.onchange('approve')
+    def onchange_approve(self):
+        for line in self:
+            line.select = line.approve
 
     @api.depends('product_id')
     def _default_product_uom(self):

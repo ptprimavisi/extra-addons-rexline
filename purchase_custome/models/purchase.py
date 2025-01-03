@@ -335,6 +335,7 @@ class MrfLine(models.Model):
     total_weight = fields.Float(compute="_compute_weight")
     brand = fields.Char()
     quantity = fields.Float(default=1)
+    qty_onhand = fields.Float(compute="_compute_qty_onhand")
     avilable_qty = fields.Float(compute="_compute_available_qty")
     qty_purchase = fields.Float(compute='_compute_qty_purchase', readonly=False)
     qty_ordered = fields.Float(compute='_compute_ordered')
@@ -357,6 +358,7 @@ class MrfLine(models.Model):
     attachment_name = fields.Char(string='Attachment Name')
     is_accounting = fields.Boolean(compute="_compute_acc_user")
     is_inventory = fields.Boolean(compute="_compute_inv_user")
+    schedule_date = fields.Date()
     wh_id = fields.Many2one('stock.warehouse', domain=lambda self: [
         ('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)])
     count_quotation = fields.Integer(compute="_compute_quotation")
@@ -445,6 +447,19 @@ class MrfLine(models.Model):
             if line.product_id:
                 line.unit_cost = line.product_id.product_tmpl_id.standard_price
                 line.unit_weight = line.product_id.product_tmpl_id.weight
+
+    @api.depends('product_id')
+    def _compute_qty_onhand(self):
+        for line in self:
+            line.qty_onhand = 0
+            if line.product_id:
+                stock_quant = self.env['stock.quant'].with_context(inventory_mode=True).search(
+                    [('product_id', '=', line.product_id.id), ('location_id', '=', 8)])
+                total_quantity = sum(stock_quant.mapped('quantity'))
+                # raise UserError(float(stock_quant.available_quantity))
+                # line.avilable_qty = total_quantity
+                if stock_quant:
+                    line.qty_onhand = float(stock_quant.quantity)
 
     @api.depends('product_id')
     def _compute_available_qty(self):

@@ -139,6 +139,9 @@
                             <img t-if="attachment.mimetype.startswith('image')"
          t-attf-src="data:image/*;base64,#{attachment.datas.decode('utf-8')}"
          style="display: block; margin: 0 auto; max-width: 50%; height: auto;"/>
+                            <p style="text-align: center; margin-top: 10px;">
+                                <t t-esc="attachment.name" /> <!-- Menampilkan nama file -->
+                            </p>
                         </div>
                     </t>
                 </div>

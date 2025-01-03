@@ -113,6 +113,17 @@ class RequestPrice(models.Model):
         for line in self:
             inquiry = self.env['inquiry.inquiry'].search(
                 [('id', '=', line.inquiry_id.id)])
+            for attachments in line.attachment_ids:
+                if attachments:
+                    attachment = {
+                        'name': attachments.name,
+                        'datas': attachments.datas,  # Binary data attachment
+                        # 'datas_fname': attch_line.datas_fname, # File name of attachment
+                        'res_model': 'crm.lead',  # Model name of sale.order
+                        'res_id': int(line.inquiry_id.opportunity_id.id),
+                        'type': 'binary',
+                    }
+                    self.env['ir.attachment'].create(attachment)
             # if inquiry.opportunity_id:
             #     crm = self.env['crm.lead'].search([('id','=',inquiry.opportunity_id.id)])
             #     for crms in crm:

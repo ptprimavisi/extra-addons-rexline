@@ -39,6 +39,7 @@
                                         <field name="total_weight"/>
                                         <field name="budget"/>
                                         <field name="unit_cost"/>
+                                        <field name="schedule_date"/>
                                         <field name="wh_id" string="Dest Location"/>
                                         <field name="subtotal" readonly="1"/>
                                         <field name="attachment" widget="binary" filename="attachment_name"/>

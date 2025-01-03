@@ -137,7 +137,7 @@ class MrpProductionInherith(models.Model):
 
     def unlink(self):
         for line in self:
-            line_task = self.env['inquiry.line.task'].search([('mo_id','=',int(line.id))])
+            line_task = self.env['inquiry.line.task'].search([('mo_id', '=', int(line.id))])
             if line_task:
                 line_task.unlink()
             return super().unlink()
@@ -308,7 +308,7 @@ class SaleOrderLineInherit(models.Model):
 
     is_sales = fields.Boolean(related="order_id.is_sales")
 
-#...
+
 class SaleOrderInherith(models.Model):
     _inherit = 'sale.order'
 
@@ -488,6 +488,11 @@ class CrmLead(models.Model):
     date_additional = fields.Date()
     location_additional = fields.Text()
     members = fields.Text()
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        domain=[('res_model', '=', 'crm.lead')],
+        string='Attachments'
+    )
 
     @api.model
     def create(self, vals):
@@ -734,7 +739,7 @@ class CrmLead(models.Model):
                             'cost_price': lines.product_id.product_tmpl_id.standard_price
                         }))
                     if line.category_project == 'supply':
-                        users = self.env['res.users'].search([('login','=','admin.secretary@rexlineengineering.com')])
+                        users = self.env['res.users'].search([('login', '=', 'admin.secretary@rexlineengineering.com')])
                         if users:
                             inquiry.write({'pic_user': int(users.id)})
 

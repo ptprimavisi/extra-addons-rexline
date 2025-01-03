@@ -21,6 +21,13 @@
 <!--                                </div>-->
 <!--                        </div>-->
                 </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="BOQ">
+                        <group>
+                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                        </group>
+                    </page>
+                </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="cost_estimation" class="o_input_13ch" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="1"/>
                     <field name="is_planner" invisible="1"/>

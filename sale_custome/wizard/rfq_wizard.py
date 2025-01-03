@@ -40,6 +40,7 @@ class RfqWizard(models.TransientModel):
                     "budget": float(int(lines.budget)),
                     "unit_cost": float(lines.unit_cost),
                     "wh_id": int(lines.wh_id.id),
+                    "schedule_date": lines.schedule_date,
                     "sale_id": int(line.sale_id.id),
                     "avilable_qty": lines.available_qty,
                     'attachment': lines.attachment
@@ -109,6 +110,7 @@ class RfqLine(models.TransientModel):
     rfq_id = fields.Many2one('rfq.wizard')
     attachment = fields.Binary(string='Attachment', attachment=True)
     attachment_name = fields.Char(string='Attachment Name')
+    schedule_date = fields.Date(default= lambda self: self.rfq_id.due_date)
     wh_id = fields.Many2one('stock.warehouse', domain=lambda self: [('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)],
                             default=lambda self: self.env['stock.warehouse'].search(
                                 [('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)],
