@@ -77,9 +77,11 @@ class InheritInvoice(models.Model):
 
             so_ids = rec.line_ids.sale_line_ids.order_id
             so_name = so_ids.ref_quotation if so_ids.name == '/' else so_ids.name
+            so_name = so_name or ''
             crm_ids = so_ids.opportunity_id
-            tags = ", ".join(tag.name for tag in crm_ids.tag_ids)
-            tags_info =tags+', '+so_name
+            tags = ", ".join(tag.name or '' for tag in crm_ids.tag_ids)
+            tags_info = tags+', '+so_name
+            # raise UserError(tags_info)
 
             taxes=[]
 
