@@ -75,11 +75,23 @@
                         <tbody>
                             <t t-foreach="quotation_lines" t-as="lines">
                                 <tr>
-                                    <t t-foreach="lines" t-as="line">
-                                        <td><t t-esc="line"/></td>
-                                    </t>
+                                    <td t-if="lines[0]" style="text-align: left;">
+                                        <t t-esc="lines[0]"/>
+                                    </td>
+                                    <td t-if="lines[1]" style="text-align: center;">
+                                        <t t-esc="lines[1]"/>
+                                    </td>
+                                    <td t-if="lines[2]" style="text-align: center;">
+                                        <t t-esc="lines[2]"/>
+                                    </td>
+                                    <td t-if="lines[3]" style="text-align: right;">
+                                        <t t-esc="lines[3]"/>
+                                    </td>
+                                    <td t-if="lines[4]" style="text-align: right;">
+                                        <t t-esc="lines[4]"/>
+                                    </td>
                                 </tr>
-                            </t>
+                            </t> 
                         </tbody>
                     </table>
 

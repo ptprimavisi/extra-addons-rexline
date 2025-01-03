@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.fields import Date
 from odoo.exceptions import UserError
+from num2words import num2words
 import base64
 from collections import defaultdict
 from datetime import datetime, timedelta,date
@@ -125,9 +126,13 @@ class InheritSaleOrder(models.Model):
                         tax_data[key]['tax_amount'] += tax_detail['amount']
 
                 
-                tax_name = ", ".join(tax.name for tax in order_line.tax_id)
-                order_lines.append([str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),order_line.product_id.product_tmpl_id.name,order_line.name,f"{int(order_line.price_unit):,}",0,tax_name,f"{int(order_line.price_subtotal):,}"])
-                quotation_lines.append([order_line.name,str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),0,f"{int(order_line.price_unit):,}",f"{int(order_line.price_subtotal):,}"])
+                tax_name=""
+                if order_line.tax_id:
+                    tax_name = ", ".join(tax.name for tax in order_line.tax_id)
+                else:
+                    tax_name='-'
+                order_lines.append([str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),order_line.product_id.product_tmpl_id.name,order_line.name,f"{int(order_line.price_unit):,}","0",tax_name,f"{int(order_line.price_subtotal):,}"])
+                quotation_lines.append([order_line.name,str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),'0',f"{int(order_line.price_unit):,}",f"{int(order_line.price_subtotal):,}"])
                 subtotal+=order_line.price_subtotal
 
             # Format hasil
@@ -137,6 +142,7 @@ class InheritSaleOrder(models.Model):
             
             subtotal = f"{int(subtotal):,}"
             balance_due = f"{int(rec.amount_total):,}"
+            balance_due_in_word =num2words(rec.amount_total, lang='en').upper()
 
             company_logo=self.env.company.logo
             logo = (
@@ -185,7 +191,8 @@ class InheritSaleOrder(models.Model):
                     'company_logo':company_logo,
                     'signature_name':signature_name,
                     'signature_image':signature_image,
-                    'logo':logo
+                    'logo':logo,
+                    'balance_due_in_word':balance_due_in_word
                 }
             return report_data
 

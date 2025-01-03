@@ -6,7 +6,8 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_print" string="Print" type="object" class="oe_highlight" invisible="id == False"/>
+                        <button name="action_print" string="Print PDF" type="object" class="oe_highlight" invisible="id == False"/>
+                        <button name="action_print_excel" string="Print Excel" type="object" class="oe_highlight" invisible="id == False"/>
                     </header>
                     <sheet>
                         <group>

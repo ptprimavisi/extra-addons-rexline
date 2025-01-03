@@ -86,6 +86,7 @@ class InheritInvoice(models.Model):
             query="""
                 SELECT 
                     aml.name AS tax, 
+                    tax.invoice_label as tax_label,
                     tax.amount as percentage,
                     COALESCE(abs(SUM(aml.balance)), 0) AS tax_amount
                 FROM account_move_line aml
@@ -94,7 +95,7 @@ class InheritInvoice(models.Model):
                     aml.move_id = """+str(rec.id)+"""
                     AND aml.display_type = 'tax'
                 GROUP BY 
-                    aml.name,tax.amount;
+                    aml.name,tax.invoice_label,tax.amount;
             """
             self.env.cr.execute(query)
             query_vals = self.env.cr.dictfetchall()
@@ -112,7 +113,9 @@ class InheritInvoice(models.Model):
                 for lines in move_lines:
                     tax_name=''
                     if lines.tax_ids:
-                        tax_name = ", ".join(tax.name for tax in lines.tax_ids)
+                        tax_name = ", ".join(tax.invoice_label for tax in lines.tax_ids)
+                    else:
+                        tax_name='-'
                     product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}"])
                     subtotal+=lines.price_subtotal
             subtotal = f"{int(subtotal):,}"
@@ -132,6 +135,8 @@ class InheritInvoice(models.Model):
                 if self.env.company.sale_logo
                 else None
             )
+
+            invoice_tnc = rec.narration or ''
             
             report_data = {
                     'doc_ids': self.ids,
@@ -157,7 +162,8 @@ class InheritInvoice(models.Model):
                     'product_line':product_line,
                     'signature_name':signature_name,
                     'signature_image':signature_image,
-                    'logo':logo
+                    'logo':logo,
+                    'invoice_tnc':invoice_tnc
                 }
             return self.env.ref('custom_report.action_report_invoice').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data)

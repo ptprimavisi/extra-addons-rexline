@@ -90,19 +90,39 @@
                             <t t-foreach="order_lines" t-as="lines">
                                 <tr>
                                     <td><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
-                                    <t t-foreach="lines" t-as="line">
-                                        <td><t t-esc="line"/></td>
-                                    </t>
+                                    <td t-if="lines[0]" style="text-align: left;">
+                                        <t t-esc="lines[0]"/>
+                                    </td>
+                                    <td t-if="lines[1]" style="text-align: left;">
+                                        <t t-esc="lines[1]"/>
+                                    </td>
+                                    <td t-if="lines[2]" style="text-align: left;">
+                                        <t t-esc="lines[2]"/>
+                                    </td>
+                                    <td t-if="lines[3]" style="text-align: right;">
+                                        <t t-esc="lines[3]"/>
+                                    </td>
+                                    <td t-if="lines[4]" style="text-align: right;">
+                                        <t t-esc="lines[4]"/>
+                                    </td>
+                                    <td t-if="lines[5]" style="text-align: right;">
+                                        <t t-esc="lines[5]"/>
+                                    </td>
+                                    <td t-if="lines[6]" style="text-align: right;">
+                                        <t t-esc="lines[6]"/>
+                                    </td>
                                 </tr>
                             </t>
                         </tbody>
                     </table>
 
+                    <br/><br/><br/>
+
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">
                                 <b>AMOUNT IN WORD</b><br/><br/>
-                                ................................................................................................................................. (RUPIAH)<br/><br/>
+                                <t t-esc="balance_due_in_word"/> (RUPIAH)<br/><br/>
                                 <b>Payment Detail</b><br/><br/>
                                 Bank Name : MAYBANK<br/>
                                 Bank Branch : SURABAYA<br/>
