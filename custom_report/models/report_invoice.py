@@ -123,7 +123,7 @@ class InheritInvoice(models.Model):
             subtotal = f"{int(subtotal):,}"
 
             # Get Direktur Signature
-            signature = self.env['sale.manager.signature'].search([],limit=1)
+            signature = self.env['sale.direktur.signature'].search([],limit=1)
             signature_name = signature.employee_id.name
             signature_image = (
                 f"data:image/png;base64,{signature.image.decode('utf-8')}"
