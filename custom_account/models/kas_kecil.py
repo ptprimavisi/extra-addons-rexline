@@ -323,6 +323,11 @@ class RealisasiDana(models.Model):
         ('posted', 'Posted')
     ], default='draft')
     advance_amount = fields.Float(compute="_compute_advance_amount")
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        domain=[('res_model', '=', 'realisasi.dana')],
+        string='Attachments'
+    )
 
 
     @api.depends('permintaan_id')
