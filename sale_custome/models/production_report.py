@@ -43,6 +43,7 @@ class ProductionReport(models.Model):
         for line in self:
             #
             inquiry_ids = []
+            # raise UserError(line.mrf_ids)
             if line.mrf_ids:
                 for lines in line.mrf_ids:
                     if lines.inquiry_id:
@@ -163,6 +164,8 @@ class ProductionReport(models.Model):
                                                             record.mrf_ids = mrf.ids
                                                         else:
                                                             record.mrf_ids = False
+                        else:
+                            record.mrf_ids = False
                 else:
                     record.mrf_ids = False
             else:

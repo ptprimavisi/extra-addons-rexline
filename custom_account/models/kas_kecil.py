@@ -38,7 +38,7 @@ class PermintaanDana(models.Model):
     saldo = fields.Float()
     journal_id = fields.Many2one('account.account')
     dana_line = fields.One2many('permintaan.dana.line', 'dana_id')
-    source_account = fields.Many2one('account.journal', domain="[('type','in', ['bank','cash'])]")
+    source_account = fields.Many2one('account.journal', domain="[('type','in', ['bank','cash','general'])]")
     department = fields.Many2one('hr.department', compute='_compute_department', store=True)
     total_amount = fields.Float(compute="_compute_total_cost")
     state = fields.Selection([
