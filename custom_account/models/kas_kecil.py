@@ -461,7 +461,7 @@ class RealisasiDana(models.Model):
         moves['name'] = self.env['ir.sequence'].next_by_code('REALISASI')
         a = moves['name']
         index = 2
-        department = self.env['hr.department'].search([('id', '=', int(moves['department']))])
+        department = self.env['hr.department'].search([('id', '=', int(moves['department_id']))])
         if department and department.code:
             code = '-' + str(department.code) or ''
             a = a[:index] + code + a[index:]
