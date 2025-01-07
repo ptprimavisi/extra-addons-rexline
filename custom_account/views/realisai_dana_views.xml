@@ -20,6 +20,7 @@
                         </div>
                         <group>
                             <group>
+                                <field name="project"/>
                                 <field name="user_id" string="Responsible" domain="[('id','=', uid)]" required="1" readonly="state == 'posted'"/>
                                 <field name="employee_id" string="Employee" required="1" readonly="1"/>
                             </group>

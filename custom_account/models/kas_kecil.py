@@ -11,6 +11,7 @@ class PermintaanDana(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
+    project = fields.Char()
     description = fields.Text()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
 
@@ -310,6 +311,7 @@ class RealisasiDana(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
+    project = fields.Char()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     employee_id = fields.Many2one('hr.employee')
     permintaan_id = fields.Many2one('permintaan.dana')

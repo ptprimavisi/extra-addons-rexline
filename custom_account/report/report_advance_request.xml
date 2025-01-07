@@ -26,6 +26,11 @@
                             <td style="border: none;">:</td>
                             <td style="border: none;"><t t-esc="docs.department.name or 'Unknow'"/></td>
                         </tr>
+                        <tr>
+                            <td style="border: none;">PROJECT</td>
+                            <td style="border: none;">:</td>
+                            <td style="border: none;"><t t-esc="docs.project or 'Unknow'"/></td>
+                        </tr>
                     </table>
                     <br/>
                     <h6><strong>PURPOSE OF ADVANCE REQUEST</strong></h6>
@@ -156,6 +161,11 @@
                             <td style="border: none;">DEPARTMENT</td>
                             <td style="border: none;">:</td>
                             <td style="border: none;"><t t-esc="docs.employee_id.department_id.name or ''"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border: none;">PROJECT</td>
+                            <td style="border: none;">:</td>
+                            <td style="border: none;"><t t-esc="docs.project or 'Unknow'"/></td>
                         </tr>
                     </table>
                     <br/>

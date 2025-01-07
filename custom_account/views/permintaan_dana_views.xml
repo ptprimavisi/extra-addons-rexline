@@ -37,8 +37,9 @@
                         </div>
                         <group>
                             <group>
+                                <field name="project"/>
                                 <field name="user_id" string="Responsible" domain="[('id', '=', uid)]" required="1" readonly="state == 'transfer'"/>
-                                <field name="department" readonly="state == 'transfer'"/>
+                                <field name="department" readonly="state == 'transfer'" required="1"/>
                                 <field name="employee_id" required="1" domain="[('department_id', '=', department)]" readonly="department == False or state == 'transfer'"/>
                                 <field name="description" required="1" readonly="state == 'transfer'"/>
                                 <field name="bank_note" required="1"/>
