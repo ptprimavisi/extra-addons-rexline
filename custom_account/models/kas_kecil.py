@@ -295,6 +295,13 @@ class PermintaanDana(models.Model):
     def create(self, vals_list):
         moves = super().create(vals_list)
         moves['name'] = self.env['ir.sequence'].next_by_code('DANA')
+        a = moves['name']
+        index = 2
+        department = self.env['hr.department'].search([('id', '=', int(moves['department']))])
+        if department and department.code:
+            code = '-'+str(department.code) or ''
+            a = a[:index] + code + a[index:]
+        moves['name'] = a
         return moves
 
 
@@ -320,6 +327,7 @@ class RealisasiDana(models.Model):
     saldo = fields.Float()
     realisasi_line = fields.One2many('realisasi.line', 'realisasi_id')
     total_amount = fields.Float(compute="_compute_total_cost", readonly=False)
+    department_id = fields.Many2one('hr.department', compute="_compute_department")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('posted', 'Posted')
@@ -330,6 +338,13 @@ class RealisasiDana(models.Model):
         domain=[('res_model', '=', 'realisasi.dana')],
         string='Attachments'
     )
+
+    @api.depends('employee_id')
+    def _compute_department(self):
+        for line in self:
+            line.department_id = False
+            if line.employee_id.department_id:
+                line.department_id = line.employee_id.department_id.id
 
 
     @api.depends('permintaan_id')
@@ -444,6 +459,14 @@ class RealisasiDana(models.Model):
         #             raise UserError('Amount tidak boleh 0.0')
         moves = super().create(vals_list)
         moves['name'] = self.env['ir.sequence'].next_by_code('REALISASI')
+        a = moves['name']
+        index = 2
+        department = self.env['hr.department'].search([('id', '=', int(moves['department']))])
+        if department and department.code:
+            code = '-' + str(department.code) or ''
+            a = a[:index] + code + a[index:]
+        moves['name'] = a
+
 
         return moves
 
@@ -557,3 +580,9 @@ class SaldoKas(models.Model):
 
     employee_id = fields.Many2one('hr.employee')
     saldo = fields.Float()
+
+
+class HrDepartmentINh(models.Model):
+    _inherit = 'hr.department'
+
+    code = fields.Char()

@@ -23,6 +23,7 @@
                                 <field name="project"/>
                                 <field name="user_id" string="Responsible" domain="[('id','=', uid)]" required="1" readonly="state == 'posted'"/>
                                 <field name="employee_id" string="Employee" required="1" readonly="1"/>
+                                <field name="department_id"/>
                             </group>
                             <group>
                                 <field name="permintaan_id" string="No Permintaan" readonly="1" required="1"/>

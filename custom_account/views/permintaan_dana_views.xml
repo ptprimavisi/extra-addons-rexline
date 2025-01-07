@@ -121,14 +121,14 @@
         <record id="seq_permintaan_dana" model="ir.sequence">
             <field name="name">Permintaan dana</field>
             <field name="code">DANA</field>
-            <field name="prefix">DANA/%(y)s/000</field>
+            <field name="prefix">AR-%(year)s%(month)s%(day)s00</field>
             <field name="company_id" eval="False"/>
         </record>
 
         <record id="seq_realisasi_dana" model="ir.sequence">
             <field name="name">Realisasi Dana</field>
             <field name="code">REALISASI</field>
-            <field name="prefix">REALISASI/%(y)s/000</field>
+            <field name="prefix">ER-%(year)s%(month)s%(day)s00</field>
             <field name="company_id" eval="False"/>
         </record>
 
@@ -163,6 +163,17 @@
                             widget="badge"
                             optional="show"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="hr_department_inherith_view" model="ir.ui.view">
+            <field name="name">hr.department.inherit.view</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="code" required="1"/>
+                </xpath>
             </field>
         </record>
 

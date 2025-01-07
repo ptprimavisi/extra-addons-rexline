@@ -7,6 +7,9 @@
                     <h4 style="font-size: 16px; text-align: center; padding-top: 10px !important;">
                        <strong>ADVANCE REQUEST</strong>
                     </h4>
+                    <h4 style="font-size: 16px; text-align: center; padding-top: 10px !important;">
+                       <t t-esc="docs.name or 'Unknow'"/>
+                    </h4>
                 </div>
 
                 <div class="page" style="font-family: Calibri, sans-serif; ">
@@ -142,6 +145,9 @@
                 <div style="font-family: Calibri, sans-serif;">
                     <h4 style="font-size: 16px; text-align: center; padding-top: 10px !important;">
                        <strong>EXPENSE REPORT</strong>
+                    </h4>
+                    <h4 style="font-size: 16px; text-align: center; padding-top: 10px !important;">
+                       <t t-esc="docs.name or 'Unknow'"/>
                     </h4>
                 </div>
 
