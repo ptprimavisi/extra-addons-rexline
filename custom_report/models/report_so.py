@@ -96,8 +96,14 @@ class InheritSaleOrder(models.Model):
             so_date_due = rec.validity_date.strftime('%d-%m-%Y')
             so_name = rec.ref_quotation if rec.name == '/' else rec.name
             crm_ids = rec.opportunity_id
-            tags = ", ".join(tag.name for tag in crm_ids.tag_ids)
-            tags_info =tags+', '+so_name
+            if crm_ids.tag_ids:
+                if len(crm_ids.tag_ids)>1:
+                    tags = ", ".join(tag.name or '' for tag in crm_ids.tag_ids)
+                else:
+                    tags = join(tag.name or '' for tag in crm_ids.tag_ids)
+                tags_info = tags+', '+so_name
+            else:
+                tags_info = so_name
 
             tax_data = defaultdict(lambda: {'percentage': 0, 'tax_amount': 0})
 
@@ -131,14 +137,15 @@ class InheritSaleOrder(models.Model):
                     tax_name = ", ".join(tax.name for tax in order_line.tax_id)
                 else:
                     tax_name='-'
-                order_lines.append([str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),order_line.product_id.product_tmpl_id.name,order_line.name,f"{int(order_line.price_unit):,}","0",tax_name,f"{int(order_line.price_subtotal):,}"])
-                quotation_lines.append([order_line.name,str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),'0',f"{int(order_line.price_unit):,}",f"{int(order_line.price_subtotal):,}"])
+                order_lines.append([str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),order_line.product_id.product_tmpl_id.name,order_line.name,f"{int(order_line.price_unit):,}","0",tax_name,f"{int(order_line.price_subtotal):,}",f"{int(order_line.tax_base):,}"])
+                quotation_lines.append([order_line.name,str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),'0',f"{int(order_line.price_unit):,}",f"{int(order_line.price_subtotal):,}",f"{int(order_line.tax_base):,}"])
                 subtotal+=order_line.price_subtotal
 
             # Format hasil
             taxes = [{'name': key[0], 'percentage': key[1], 'amount': values['tax_amount']}
                     for key, values in tax_data.items()]
 
+            total_tax_base = f"{int(rec.amount_tax_base):,}"
             
             subtotal = f"{int(subtotal):,}"
             balance_due = f"{int(rec.amount_total):,}"
@@ -192,7 +199,8 @@ class InheritSaleOrder(models.Model):
                     'signature_name':signature_name,
                     'signature_image':signature_image,
                     'logo':logo,
-                    'balance_due_in_word':balance_due_in_word
+                    'balance_due_in_word':balance_due_in_word,
+                    'total_tax_base':total_tax_base
                 }
             return report_data
 

@@ -33,6 +33,13 @@
                     <attribute name="invisible">is_sales == False</attribute>
                 </xpath>
 
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="tax_base" optional="hide"/>
+                </xpath>
+
+                <xpath expr="//field[@name='tax_totals']" position="before">
+                    <field name="amount_tax_base"/>
+                </xpath>
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_total']" position="attributes">
                     <attribute name="invisible">is_sales == False</attribute>
                 </xpath>
@@ -102,6 +109,12 @@
                             invisible="move_type != 'out_refund'" 
                             readonly="state != 'draft'"
                             required="move_type == 'out_refund'"/>
+                </xpath>
+                <xpath expr="//field[@name='price_subtotal']" position="after">
+                    <field name="tax_base" optional="hide"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_totals']" position="before">
+                    <field name="amount_tax_base"/>
                 </xpath>
 
             </field>

@@ -307,6 +307,57 @@ class SaleOrderLineInherit(models.Model):
     _inherit = 'sale.order.line'
 
     is_sales = fields.Boolean(related="order_id.is_sales")
+    tax_base = fields.Monetary(
+        string='Tax Base',
+        currency_field='currency_id',
+        compute="_compute_tax_base",
+        store=True,
+        help="Calculated tax base as 11/12 of the subtotal."
+    )
+
+    @api.depends('product_uom_qty','price_unit')
+    def _compute_tax_base(self):
+        for rec in self:
+            rec.tax_base = (11 / 12) * (rec.product_uom_qty*rec.price_unit) if rec.product_uom_qty and rec.price_unit else 0.0
+
+
+class AccountMoveLineInherit(models.Model):
+    _inherit = 'account.move.line'
+
+    tax_base = fields.Monetary(
+        string='Tax Base',
+        currency_field='currency_id',
+        compute="_compute_tax_base",
+        store=True,
+        help="Calculated tax base as 11/12 of the subtotal."
+    )
+
+    @api.depends('quantity','price_unit','discount')
+    def _compute_tax_base(self):
+        for rec in self:
+            rec.tax_base = (11 / 12) * ((rec.quantity*rec.price_unit)-rec.discount) if rec.quantity and rec.price_unit else 0.0
+
+
+class AccountMoveInherit(models.Model):
+    _inherit = 'account.move'
+
+    amount_tax_base = fields.Monetary(
+        string='Total Tax Base',
+        currency_field='currency_id',
+        compute="_compute_amount_tax_base",
+        store=True,
+        help="Total Amount of Tax Base"
+    )
+
+    @api.depends('invoice_line_ids')
+    def _compute_amount_tax_base(self):
+        for rec in self:
+            amount=0
+            if rec.invoice_line_ids:
+                for line in rec.invoice_line_ids:
+                    if line.tax_base:
+                        amount+= line.tax_base
+            rec.amount_tax_base=json.dumps(amount)
 
 
 class SaleOrderInherith(models.Model):
@@ -322,6 +373,24 @@ class SaleOrderInherith(models.Model):
         string='Attachments'
     )
     is_sales = fields.Boolean(compute="_compute_is_sales")
+
+    amount_tax_base = fields.Monetary(
+        string='Total Tax Base',
+        currency_field='currency_id',
+        compute="_compute_amount_tax_base",
+        store=True,
+        help="Total Amount of Tax Base"
+    )
+
+    @api.depends('order_line')
+    def _compute_amount_tax_base(self):
+        for rec in self:
+            amount=0
+            if rec.order_line:
+                for line in rec.order_line:
+                    if line.tax_base:
+                        amount+= line.tax_base
+            rec.amount_tax_base=json.dumps(amount)
 
     def _compute_is_sales(self):
         for line in self:
@@ -362,7 +431,7 @@ class SaleOrderInherith(models.Model):
                     })
             for item in list:
                 item['formatted_amount'] = str(line.currency_id.symbol) + '{:,.2f}'.format(item['amount'])
-            line.tax_list = json.dumps(list)
+            line.tax_list = json.dumps(list) 
 
             # line.tax_list = str(tax_data)
 

@@ -70,8 +70,8 @@ class InheritInvoice(models.Model):
             ]))
             
             invoice_name = rec.name
-            invoice_date = rec.invoice_date.strftime('%d-%m-%Y')
-            invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y')
+            invoice_date = rec.invoice_date.strftime('%d-%m-%Y') if rec.invoice_date else ''
+            invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y') if rec.invoice_date_due else ''
 
             balance_due = f"{int(rec.amount_total):,}"
 
@@ -79,8 +79,14 @@ class InheritInvoice(models.Model):
             so_name = so_ids.ref_quotation if so_ids.name == '/' else so_ids.name
             so_name = so_name or ''
             crm_ids = so_ids.opportunity_id
-            tags = ", ".join(tag.name or '' for tag in crm_ids.tag_ids)
-            tags_info = tags+', '+so_name
+            if crm_ids.tag_ids:
+                if len(crm_ids.tag_ids)>1:
+                    tags = ", ".join(tag.name or '' for tag in crm_ids.tag_ids)
+                else:
+                    tags = join(tag.name or '' for tag in crm_ids.tag_ids)
+                tags_info = tags+', '+so_name
+            else:
+                tags_info = so_name
             # raise UserError(tags_info)
 
             taxes=[]
@@ -115,12 +121,14 @@ class InheritInvoice(models.Model):
                 for lines in move_lines:
                     tax_name=''
                     if lines.tax_ids:
-                        tax_name = ", ".join(tax.invoice_label for tax in lines.tax_ids)
+                        tax_name = ", ".join(tax.name for tax in lines.tax_ids)
                     else:
                         tax_name='-'
-                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}"])
+                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}",f"{int(lines.tax_base):,}"])
                     subtotal+=lines.price_subtotal
             subtotal = f"{int(subtotal):,}"
+
+            total_tax_base = f"{int(rec.amount_tax_base):,}"
 
             # Get Direktur Signature
             signature = self.env['sale.direktur.signature'].search([],limit=1)
@@ -165,7 +173,8 @@ class InheritInvoice(models.Model):
                     'signature_name':signature_name,
                     'signature_image':signature_image,
                     'logo':logo,
-                    'invoice_tnc':invoice_tnc
+                    'invoice_tnc':invoice_tnc,
+                    'total_tax_base':total_tax_base
                 }
             return self.env.ref('custom_report.action_report_invoice').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data)

@@ -106,7 +106,8 @@
                             <td style="border: 1px solid #ffffff;">
                                 Subtotal<br/><br/>
                                 <t t-foreach="taxes" t-as="tax">
-                                    <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/>
+                                    <!-- <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> -->
+                                    <t t-esc="tax['name']"/><br/>
                                 </t>
                                 <b><br/>Total</b><br/>
                                 <br/><p style="background-color: #778899; color: white;">Balance Due</p>
