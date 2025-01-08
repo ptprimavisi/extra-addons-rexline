@@ -11,8 +11,8 @@
                             string="Generate Asset" 
                             type="object" 
                             class="btn-primary"
-                            confirm="Are you sure to add products to the Asset Management master?"
-                            invisible="is_generate_asset == False"/>
+                            confirm="Are you sure to add products to the Asset Management master? Make sure all products have been received"
+                            invisible="is_generate_asset == True"/>
                     <field name="is_generate_asset" invisible="1"/>
                 </xpath>
                 <!-- <xpath expr="//field[@name='effective_date']" position="after">
@@ -25,58 +25,60 @@
             <field name="model">manajemen.assets</field>
             <field name="arch" type="xml">
                 <form string="Manajemen Assets">
+                    <header>
+                        <button name="action_update_today" 
+                                string="Update Today" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="asset_type != 'storable'"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="product_name"/>
                         </group>
-                        <notebook>
-                            <page string="Product Information">
-                                <group>
-                                    <field name="name"/>
-                                    <field name="brand"/>
-                                    <field name="tipe"/>
-                                    <field name="qty"/>
-                                    <field name="uom_id"/>
-                                    <field name="value"/>
-                                    <field name="serial_number"/>
-                                    <field name="mac_address"/>
-                                    <field name="spesification"/>
-                                </group>
-                                <group>
-                                    <field name="location"/>
-                                    <field name="purchase_id"/>
-                                    <field name="purchase_date"/>
-                                    <field name="delivered_date"/>
-                                    <field name="returned_date"/>
-                                </group>
-                            </page>
-                            <page string="Asset Information">
-                                <group>
-                                    <field name="prepetual"/>
-                                    <field name="validity_days"/>
-                                    <field name="current_date"/>
-                                </group>
-                                <group>
-                                    <field name="usage_number"/>
-                                    <field name="depreciation"/>
-                                    <field name="current_value"/>
-                                </group>
-                            </page>
-                            <page string="Other Information">
-                                <group>
-                                    <field name="pic"/>
-                                    <field name="department"/>
-                                    <field name="head_department"/>
-                                    <field name="designation"/>
-                                </group>
-                            </page>
-                            <page string="Remarks">
-                                <group>
-                                    <field name="remarks"/>
-                                </group>
-                            </page>
-                        </notebook>
+                        <group>
+                            <field name="asset_type"/>
+                            <field name="name"/>
+                            <field name="purchase_date" invisible="asset_type != 'storable'"/>
+                            <field name="value" invisible="asset_type != 'storable'"/>
+                            <field name="purchase_id" invisible="asset_type != 'storable'"/>
+                            <field name="spesification" invisible="asset_type != 'storable'"/>
+                            <field name="mac_address" invisible="asset_type != 'storable'"/>
+                            <field name="serial_number" invisible="asset_type != 'storable'"/>
+                            <field name="brand" invisible="asset_type != 'storable'"/>
+                            <field name="qty" invisible="asset_type != 'storable'"/>
+                            <field name="pic" invisible="asset_type != 'storable'"/>
+                            <field name="location" invisible="asset_type != 'storable'"/>
+                            <field name="designation" invisible="asset_type != 'storable'"/>
+                            <field name="department"/>
+                            <field name="head_department" invisible="asset_type != 'storable'"/>
+                            
+                            <field name="tipe" invisible="asset_type != 'consumable'"/>
+                            <field name="license_number" invisible="asset_type != 'consumable'"/>
+                            <field name="expired_date" invisible="asset_type != 'consumable'"/>
+                            <field name="admin_login" invisible="asset_type != 'consumable'"/>
+                            <field name="portal_admin" widget="url" invisible="asset_type != 'consumable'"/>
+                            <field name="contact_person" invisible="asset_type != 'consumable'"/>
+                        </group>
+                        <group>
+                            <field name="delivered_date" invisible="asset_type != 'storable'"/>
+                            <field name="returned_date" invisible="asset_type != 'storable'"/>
+                            <field name="transfer_date" invisible="asset_type != 'storable'"/>
+                            <field name="usage_month" invisible="asset_type != 'storable'"/>
+                            <field name="upgrade_ssd" invisible="asset_type != 'storable'"/>
+                            <field name="spec_type" invisible="asset_type != 'storable'"/>
+                            <field name="status" invisible="asset_type != 'storable'"/>
+                            <field name="validity_days" invisible="asset_type != 'storable'"/>
+                            <field name="current_date" invisible="asset_type != 'storable'"/>
+                            <field name="usage_day" invisible="asset_type != 'storable'"/>
+                            <field name="depreciation" invisible="asset_type != 'storable'"/>
+                            <field name="current_value" invisible="asset_type != 'storable'"/>
+                            <field name="remarks"/>
+                        </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -87,9 +89,6 @@
             <field name="arch" type="xml">
                 <tree string="Manajemen Assets">
                     <field name="product_name"/>
-                    <field name="purchase_id"/>
-                    <field name="value"/>
-                    <field name="pic"/>
                     <field name="department"/>
                 </tree>
             </field>
@@ -107,5 +106,29 @@
                 parent="sale_custome.maintenance_report_menu"
                 action="action_manajemen_assets"
                 sequence="20"/>
+    </data>
+
+    <data noupdate="1">
+        <record id="ir_cron_update_usage_day" model="ir.cron">
+            <field name="name">Update Usage Day</field>
+            <field name="model_id" ref="sale_custome.model_manajemen_assets"/>
+            <field name="state">code</field>
+            <field name="code">model.update_usage_day()</field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+        <record id="ir_cron_update_current_date" model="ir.cron">
+            <field name="name">Update Current Date</field>
+            <field name="model_id" ref="sale_custome.model_manajemen_assets"/>
+            <field name="state">code</field>
+            <field name="code">model.update_current_date()</field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
     </data>
 </odoo>
