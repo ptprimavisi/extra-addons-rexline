@@ -9,6 +9,13 @@ from datetime import date
 
 #     code = fields.Char()
 
+
+# class InheritResUsers(models.Model):
+#     _inherit='res.users'
+
+    # is_it = fields.Boolean()
+
+
 class InheritPurchaseOrderLine(models.Model):
     _inherit='purchase.order.line'
 
@@ -23,6 +30,17 @@ class InheritPurchaseOrder(models.Model):
     @api.depends('order_line')
     def compute_generate(self):
         for rec in self:
+            user=self.env.user
+            # if user.is_it:
+            #     # Check if any line has qty_received < 1 and if all lines have is_generate_asset == True
+            #     if any(line.qty_received < 1 for line in rec.order_line):
+            #         rec.is_generate_asset = True  # If any line has qty_received < 1, don't generate asset
+            #     elif all(line.is_generate_asset == True for line in rec.order_line):
+            #         rec.is_generate_asset = True  # If all lines are marked to generate asset, set True
+            #     else:
+            #         rec.is_generate_asset = False  # Default case, if neither condition is met
+            # else:
+            #     rec.is_generate_asset = True
             # Check if any line has qty_received < 1 and if all lines have is_generate_asset == True
             if any(line.qty_received < 1 for line in rec.order_line):
                 rec.is_generate_asset = True  # If any line has qty_received < 1, don't generate asset
@@ -103,11 +121,11 @@ class ManajemenAssets(models.Model):
     license_number=fields.Integer(string='Number of License')
     remarks=fields.Text(string='Remarks')
     validity_days=fields.Integer(string='Validity in Days')
-    current_date=fields.Date(default=fields.Date.context_today)
-    usage_month=fields.Float(string='Periode of Usage (Month)', compute="_compute_usage_month",store=True)
-    usage_day=fields.Integer(string='Number of Days in Usage', compute="_compute_usage_day",store=True)
-    depreciation=fields.Float(string='Depreciation', compute="_compute_depreciation",store=True)
-    current_value=fields.Float(string='Current Value', compute="_compute_current_value",store=True)
+    current_date=fields.Date(default=fields.Date.context_today, compute="_compute_current_date")
+    usage_month=fields.Float(string='Periode of Usage (Month)', compute="_compute_usage_month")
+    usage_day=fields.Integer(string='Number of Days in Usage', compute="_compute_usage_day")
+    depreciation=fields.Float(string='Depreciation', compute="_compute_depreciation")
+    current_value=fields.Float(string='Current Value', compute="_compute_current_value")
     upgrade_ssd = fields.Boolean(string='Upgrade SSD')
     spec_type = fields.Selection([
         ('std', 'STD'), 
@@ -172,10 +190,8 @@ class ManajemenAssets(models.Model):
     #         if rec.purchase_id:
     #             rec.purchase_date=rec.purchase_id.date_approve.date()
 
-    @api.model
-    def update_current_date(self):
-        records = self.search([])
-        for record in records:
+    def _compute_current_date(self):
+        for record in self:
             record.current_date = fields.Date.context_today(record)
 
     @api.model
@@ -193,7 +209,7 @@ class ManajemenAssets(models.Model):
                 today = date.today()
                 rec.usage_day = (today - purchase_date).days
 
-    @api.depends('value','usage_day','validity_days')
+    @api.depends('value','usage_day','validity_days','current_date')
     def _compute_depreciation(self):
         for rec in self:
             rec.depreciation=0

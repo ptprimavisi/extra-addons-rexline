@@ -2,7 +2,7 @@
     'name': 'Sales Custom',
     'category': 'Accounting',
     'description': 'odoo Sale Custom',
-    'depends': ['account', 'sale', 'crm', 'mrp','web','mail', 'bi_crm_product_quotation', 'hr', 'stock', 'product'],
+    'depends': ['base','account', 'sale', 'crm', 'mrp','web','mail', 'bi_crm_product_quotation', 'hr', 'stock', 'product'],
     'data': [
         "views/inquiry_views.xml",
         "security/security.xml",

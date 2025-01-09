@@ -1,6 +1,5 @@
 <odoo>
     <data>
-
         <record model="ir.ui.view" id="purchase_order_inherited_form_view">
             <field name="name">purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
@@ -12,7 +11,8 @@
                             type="object" 
                             class="btn-primary"
                             confirm="Are you sure to add products to the Asset Management master? Make sure all products have been received"
-                            invisible="is_generate_asset == True"/>
+                            invisible="is_generate_asset == True"
+                            groups="sale_custome.it_custom_group"/>
                     <field name="is_generate_asset" invisible="1"/>
                 </xpath>
                 <!-- <xpath expr="//field[@name='effective_date']" position="after">
@@ -25,13 +25,13 @@
             <field name="model">manajemen.assets</field>
             <field name="arch" type="xml">
                 <form string="Manajemen Assets">
-                    <header>
+                    <!-- <header>
                         <button name="action_update_today" 
                                 string="Update Today" 
                                 type="object" 
                                 class="btn-primary"
                                 invisible="asset_type != 'storable'"/>
-                    </header>
+                    </header> -->
                     <sheet>
                         <group>
                             <field name="product_name"/>
