@@ -138,7 +138,7 @@
                         <br/><img t-if="signature_image" t-att-src="signature_image" 
                             style="width: 100px; height: auto;" alt="Signature" />
                         <br/><t t-esc="signature_name"/><br/>
-                        National Sales Leader<br/>
+                        Chief Executive Officer<br/>
                         REXLINE ENGINEERING INDONESIA
                     </p>
                 </div>
