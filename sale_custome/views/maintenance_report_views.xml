@@ -1,5 +1,5 @@
 <odoo>
-    <menuitem id="maintenance_report_menu" name="IT Management" sequence="20"/>
+    <menuitem id="maintenance_report_menu" name="IT Management" sequence="20" groups="sale_custome.it_custom_group"/>
     <data>
         <record id="maintenance_report_form_view" model="ir.ui.view">
             <field name="name">maintenance.report.form.view</field>

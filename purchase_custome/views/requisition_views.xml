@@ -9,8 +9,8 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ready,to_purchase,po,cancel"/>
                         <button string="Confirm" name="action_confirm" type="object" class="oe_highlight"  invisible="id == False or state != 'confirm'"/>
-                        <button string="Proceed to Purchasing" name="action_to_purchase" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state != 'ready'"/>
-                        <button string="Create Quotation" name="action_create_quotation" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group,sale_custome.purchasing_custom_group" class="oe_highlight"  invisible="id == False or state not in ['ready', 'to_purchase','po']"/>
+                        <button string="Proceed to Purchasing" name="action_to_purchase" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state != 'ready' or akses_proccess == False"/>
+                        <button string="Create Quotation" name="action_create_quotation" confirm="Do you want to create quotation?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group,sale_custome.purchasing_custom_group" class="oe_highlight"  invisible="id == False or state not in ['ready', 'to_purchase','po'] or akses_quot == False"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -36,13 +36,15 @@
                         </div>
                         <group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
-                            <field name="responsible" readonly="state != 'ready'"/>
-                            <field name="employee_id" required="1" readonly="state != 'ready'"/>
-                            <field name="department_id" required="1" readonly="state != 'ready'"/>
+                            <field name="responsible" readonly="state not in ['confirm','ready']"/>
+                            <field name="employee_id" readonly="state not in ['confirm','ready']"/>
+                            <field name="department_id" required="1" readonly="state not in ['confirm','ready']"/>
                             <field name="is_ga" invisible="1"/>
+                            <field name="akses_quot" invisible="1"/>
+                            <field name="akses_proccess" invisible="1"/>
                             <field name="is_purchase" invisible="1"/>
-                            <field name="requisition_date" required="1" readonly="state != 'ready'"/>
-                            <field name="category" string="Category Product" required="1" readonly="state != 'ready'"/>
+                            <field name="requisition_date" required="1" readonly="state not in ['confirm','ready']"/>
+                            <field name="category" string="Category Product" required="1" readonly="state not in ['confirm','ready']"/>
 <!--                            <field name="inquiry_id" readonly="1"/>-->
 <!--                            <field name="request_date"/>-->
 <!--                            <field name="due_date" required="1"/>-->

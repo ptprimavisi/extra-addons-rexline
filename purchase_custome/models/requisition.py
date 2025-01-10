@@ -41,8 +41,10 @@ class PurchaseRequisition(models.Model):
 
     name = fields.Char()
     responsible = fields.Many2one('res.users', default=lambda self: self.env.user.id)
-    employee_id = fields.Many2one('hr.employee', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]).id)
-    department_id = fields.Many2one('hr.department', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]).department_id.id)
+    employee_id = fields.Many2one('hr.employee', default=lambda self: self.env['hr.employee'].search(
+        [('user_id', '=', self.env.user.id)]).id)
+    department_id = fields.Many2one('hr.department', default=lambda self: self.env['hr.employee'].search(
+        [('user_id', '=', self.env.user.id)]).department_id.id)
     requisition_date = fields.Date(default=lambda self: datetime.now())
     is_ga = fields.Boolean(compute='_compute_ga')
     is_purchase = fields.Boolean(compute='_compute_purchase')
@@ -61,6 +63,32 @@ class PurchaseRequisition(models.Model):
         ('ga', 'GA'),
         ('ut', 'IT'),
     ], default="ga")
+    akses_quot = fields.Boolean(compute="_akses_quot")
+    akses_proccess = fields.Boolean(compute="_akses_proccess")
+
+    def _akses_quot(self):
+        for line in self:
+            line.akses_quot = True
+            if line.state == 'to_purchase':
+                if not self.env.user.has_group('sale_custome.purchasing_custom_group'):
+                    line.akses_quot = False
+            if line.state == 'ready' and line.category == 'ga':
+                if not self.env.user.has_group('sale_custome.hr_ga_custom_group'):
+                    line.akses_quot = False
+            if line.state == 'ready' and line.category == 'ut':
+                if not self.env.user.has_group('sale_custome.it_custom_group'):
+                    line.akses_quot = False
+
+    def _akses_proccess(self):
+        for line in self:
+            line.akses_proccess = True
+            if line.state == 'ready' and line.category == 'ga':
+                if not self.env.user.has_group('sale_custome.hr_ga_custom_group'):
+                    line.akses_proccess = False
+            if line.state == 'ready' and line.category == 'ut':
+                if not self.env.user.has_group('sale_custome.it_custom_group'):
+                    line.akses_proccess = False
+
     # users_branch = fields.Char(compute="branch", search="branch_search")
     #
     # #
@@ -235,8 +263,12 @@ class RequisitionLine(models.Model):
     def _compute_is_it(self):
         for line in self:
             line.is_it = False
-            if self.env.user.has_group('sale_custome.it_custom_group'):
-                line.is_it = True
+            if line.requisition_id.category == 'ut':
+                if self.env.user.has_group('sale_custome.it_custom_group'):
+                    line.is_it = True
+            if line.requisition_id.category == 'ga':
+                if self.env.user.has_group('sale_custome.hr_ga_custom_group'):
+                    line.is_it = True
 
     @api.onchange('approve')
     def onchange_approve(self):
