@@ -107,6 +107,7 @@ class ManajemenAssets(models.Model):
     purchase_date=fields.Date()
     spesification=fields.Char()
     pic=fields.Many2one('hr.employee',string='PIC')
+    new_pic=fields.Many2one('hr.employee',string='New PIC')
     location=fields.Char()
     designation=fields.Char()
     department=fields.Many2one('hr.department')
@@ -194,13 +195,6 @@ class ManajemenAssets(models.Model):
         for record in self:
             record.current_date = fields.Date.context_today(record)
 
-    @api.model
-    def update_usage_day(self):
-        records = self.search([])
-        for record in records:
-            record._compute_usage_day()
-
-    @api.depends('purchase_date')
     def _compute_usage_day(self):
         for rec in self:
             rec.usage_day=0
@@ -209,14 +203,13 @@ class ManajemenAssets(models.Model):
                 today = date.today()
                 rec.usage_day = (today - purchase_date).days
 
-    @api.depends('value','usage_day','validity_days','current_date')
+
     def _compute_depreciation(self):
         for rec in self:
             rec.depreciation=0
             if rec.value and rec.usage_day and rec.validity_days:
                 rec.depreciation=(rec.value/rec.validity_days)*rec.usage_day
     
-    @api.depends('value','depreciation')
     def _compute_current_value(self):
         for rec in self:
             rec.current_value=0

@@ -48,6 +48,7 @@
                             <field name="brand" invisible="asset_type != 'storable'"/>
                             <field name="qty" invisible="asset_type != 'storable'"/>
                             <field name="pic" invisible="asset_type != 'storable'"/>
+                            <field name="new_pic" invisible="asset_type != 'storable'"/>
                             <field name="location" invisible="asset_type != 'storable'"/>
                             <field name="designation" invisible="asset_type != 'storable'"/>
                             <field name="department"/>
