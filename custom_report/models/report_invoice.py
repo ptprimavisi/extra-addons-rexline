@@ -93,7 +93,7 @@ class InheritInvoice(models.Model):
 
             query="""
                 SELECT 
-                    aml.name AS tax, 
+                    tax.id AS tax, 
                     tax.invoice_label as tax_label,
                     tax.amount as percentage,
                     COALESCE(abs(SUM(aml.balance)), 0) AS tax_amount
@@ -103,14 +103,14 @@ class InheritInvoice(models.Model):
                     aml.move_id = """+str(rec.id)+"""
                     AND aml.display_type = 'tax'
                 GROUP BY 
-                    aml.name,tax.invoice_label,tax.amount;
+                    tax.id,tax.invoice_label,tax.amount;
             """
             self.env.cr.execute(query)
             query_vals = self.env.cr.dictfetchall()
             if query_vals:
                 for line in query_vals:
                     taxes.append({
-                        'name':line['tax'],
+                        'name':self.env['account.tax'].search([('id','=',line['tax'])]).name,
                         'percentage':line['percentage'],
                         'amount':f"{int(line['tax_amount']):,}"})
 
