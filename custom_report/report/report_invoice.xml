@@ -98,7 +98,7 @@
                                     <td t-if="lines[1]" style="text-align: center;">
                                         <t t-esc="lines[1]"/>
                                     </td>
-                                    <td t-if="lines[2]" style="text-align: center;">
+                                    <td t-if="lines[2]" style="text-align: right;">
                                         <t t-esc="lines[2]"/>
                                     </td>
                                     <td t-if="lines[3]" style="text-align: center;">
@@ -120,7 +120,7 @@
 
                     <br/><br/><br/>
                     <table class="table" style="width: 100%; font-size: 14px;">
-                        <tr style="border: 1px solid #ffffff;">
+                        <tr style="border: 1px solid #ffffff;vertical-align: top;">
                             <td style="border: 1px solid #ffffff;">
                                 <b>Note</b><br/><br/>
                                 <t t-raw="invoice_tnc"/>
@@ -132,8 +132,10 @@
                                     <!-- <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> -->
                                     <t t-esc="tax['name']"/><br/>
                                 </t>
-                                <b><br/>Total</b><br/>
-                                <br/>Balance Due
+                                <b><br/>Total</b>
+                                <br/><br/>Deduction
+                                <pre>        Rounded</pre>
+                                Balance Due
                             </td>
                             <td style="text-align: right;">
                                 <t t-esc="subtotal"/><br/><br/>
@@ -141,8 +143,9 @@
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['amount']"/><br/>
                                 </t>
-                                <b><br/><t t-esc="balance_due"/></b><br/>
-                                <br/><t t-esc="balance_due"/>
+                                <b><br/><t t-esc="balance_due"/></b><br/><br/><br/>
+                                <pre><t t-esc="rounded"/></pre>
+                                <t t-esc="round_balance_due"/>
                             </td>
                         </tr>
                     </table>

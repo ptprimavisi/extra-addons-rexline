@@ -72,8 +72,10 @@ class InheritInvoice(models.Model):
             invoice_name = rec.name
             invoice_date = rec.invoice_date.strftime('%d-%m-%Y') if rec.invoice_date else ''
             invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y') if rec.invoice_date_due else ''
-
-            balance_due = f"{int(rec.amount_total):,}"
+            
+            balance_due = f"{rec.amount_total:,}"
+            round_balance_due = f"{int(rec.amount_total):,}"
+            rounded = round(rec.amount_total - int(rec.amount_total), 2)
 
             so_ids = rec.line_ids.sale_line_ids.order_id
             so_name = so_ids.ref_quotation if so_ids.name == '/' else so_ids.name
@@ -166,6 +168,8 @@ class InheritInvoice(models.Model):
                     'invoice_date':invoice_date,
                     'invoice_date_due':invoice_date_due,
                     'balance_due':balance_due,
+                    'round_balance_due':round_balance_due,
+                    'rounded':rounded,
                     'subtotal':subtotal,
                     'tags_info':tags_info,
                     'taxes':taxes,
