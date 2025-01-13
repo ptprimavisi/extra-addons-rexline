@@ -114,7 +114,7 @@ class InheritInvoice(models.Model):
                     taxes.append({
                         'name':self.env['account.tax'].search([('id','=',line['tax'])]).name,
                         'percentage':line['percentage'],
-                        'amount':f"{int(line['tax_amount']):,}"})
+                        'amount':f"{round(line['tax_amount'],2):,}"})
 
             product_line=[]
             move_lines = self.env['account.move.line'].search([('move_id','=',rec.id),('product_id','!=',False)])
@@ -126,11 +126,11 @@ class InheritInvoice(models.Model):
                         tax_name = ", ".join(tax.name for tax in lines.tax_ids)
                     else:
                         tax_name='-'
-                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}",f"{int(lines.tax_base):,}"])
+                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{round(lines.price_unit,2):,}",f"{round(lines.discount,2):,}",tax_name,f"{round(lines.price_subtotal,2):,}",f"{round(lines.tax_base,2):,}"])
                     subtotal+=lines.price_subtotal
-            subtotal = f"{int(subtotal):,}"
+            subtotal = f"{round(subtotal,2):,}"
 
-            total_tax_base = f"{int(rec.amount_tax_base):,}"
+            total_tax_base = f"{round(rec.amount_tax_base,2):,}"
 
             # Get Direktur Signature
             signature = self.env['sale.direktur.signature'].search([],limit=1)
