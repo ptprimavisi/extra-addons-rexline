@@ -35,7 +35,7 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td style="text-align: right;font-size: 14px;">Balance Due Rp. <t t-esc="balance_due"/></td>
+                            <td style="text-align: right;font-size: 14px;">Balance Due Rp. <t t-esc="round_balance_due"/></td>
                         </tr>
                         <tr>
                             <td></td>
