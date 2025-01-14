@@ -55,8 +55,10 @@ class PermintaanDana(models.Model):
     def _compute_state_realisasi(self):
         for line in self:
             line.realisasi_status = 'To Realisasi'
-            realisasi_draft = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id)), ('state','=', 'draft')])
-            realisasi_post = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id)), ('state','=', 'posted')])
+            realisasi_draft = self.env['realisasi.dana'].search(
+                [('permintaan_id', '=', int(line.id)), ('state', '=', 'draft')])
+            realisasi_post = self.env['realisasi.dana'].search(
+                [('permintaan_id', '=', int(line.id)), ('state', '=', 'posted')])
             if realisasi_draft:
                 line.realisasi_status = 'Draft Realisasi'
             if realisasi_post:
@@ -182,6 +184,7 @@ class PermintaanDana(models.Model):
                 'date': line.date_request,
                 # 'branch_id': line.branch_id.id,
                 'ref': line.name,
+                'dana_id': int(line.id),
                 'line_ids': [
                     (0, 0, {
                         'account_id': line.journal_id.id,
@@ -227,6 +230,24 @@ class PermintaanDana(models.Model):
         self.message_post(body=f"Transfer success. {str(line.total_amount)}")
         line.state = 'transfer'
 
+    def action_reset_to_draft(self):
+        for line in self:
+            saldo = self.env['saldo.dana'].search([('employee_id','=',int(line.employee_id.id))])
+            realisasi_dana = self.env['realisasi.dana'].search([('permintaan_id','=',int(line.id))])
+            refund_dana = self.env['refund.dana'].search([('dana_id','=',int(line.id))])
+            if realisasi_dana:
+                raise UserError('Sudah dilakukan realisasi, batalkan dan hapus realisasi terlebih dahulu!')
+                exit()
+            if refund_dana:
+                raise UserError('Sudah dilakukan refund, batalkan dan hapus refund terlebih dahulu!')
+                exit()
+            saldo_update = saldo.saldo - line.total_amount
+            saldo.write({'saldo': saldo_update})
+            journal = self.env['account.move'].search([('dana_id','=',int(line.id))])
+            journal.button_draft()
+            journal.unlink()
+            line.state = 'confirm'
+
     def action_realisasi(self):
         for line in self:
             saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)]).saldo
@@ -258,7 +279,7 @@ class PermintaanDana(models.Model):
     def action_refund(self):
         for line in self:
             saldo = self.env['saldo.dana'].search([('employee_id', '=', line.employee_id.id)]).saldo
-            realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', line.id), ('state','=', 'draft')])
+            realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', line.id), ('state', '=', 'draft')])
             if realisasi:
                 saldos = float(saldo) - float(realisasi.total_amount)
                 if saldos <= 0.0:
@@ -299,7 +320,7 @@ class PermintaanDana(models.Model):
         index = 2
         department = self.env['hr.department'].search([('id', '=', int(moves['department']))])
         if department and department.code:
-            code = '-'+str(department.code) or ''
+            code = '-' + str(department.code) or ''
             a = a[:index] + code + a[index:]
         moves['name'] = a
         return moves
@@ -346,12 +367,10 @@ class RealisasiDana(models.Model):
             if line.employee_id.department_id:
                 line.department_id = line.employee_id.department_id.id
 
-
     @api.depends('permintaan_id')
     def _compute_advance_amount(self):
         for line in self:
             line.advance_amount = line.permintaan_id.total_amount
-
 
     def action_print_report(self):
         for line in self:
@@ -382,6 +401,7 @@ class RealisasiDana(models.Model):
                 'date': line.request_date,
                 # 'branch_id': line.branch_id.id,
                 'ref': line.name,
+                'realisasi_id': int(line.id),
             })
             if move:
                 move_line = []
@@ -414,6 +434,16 @@ class RealisasiDana(models.Model):
                 })
             self.message_post(body="This document has been posted.")
             line.state = 'posted'
+
+    def action_reset_to_draft(self):
+        for line in self:
+            saldo = self.env['saldo.dana'].search([('employee_id','=',int(line.employee_id.id))])
+            saldo_update = saldo.saldo + line.total_amount
+            saldo.write({'saldo': saldo_update})
+            journal = self.env['account.move'].search([('realisasi_id','=',int(line.id))])
+            journal.button_draft()
+            journal.unlink()
+            line.state = 'draft'
 
     def default_get(self, fields_list):
         defaults = super(RealisasiDana, self).default_get(fields_list)
@@ -467,7 +497,6 @@ class RealisasiDana(models.Model):
             a = a[:index] + code + a[index:]
         moves['name'] = a
 
-
         return moves
 
 
@@ -516,6 +545,7 @@ class RefundDana(models.Model):
                     'date': line.date,
                     # 'branch_id': line.branch_id.id,
                     'ref': line.name,
+                    'refund_id': int(line.id),
                     'line_ids': [
                         (0, 0, {
                             'account_id': line.dest_account.id,
@@ -545,6 +575,16 @@ class RefundDana(models.Model):
 
             self.message_post(body=f"This document has been posted. Refund amount : {str(line.amount)}")
 
+    def action_reset_to_draft(self):
+        for line in self:
+            saldo = self.env['saldo.dana'].search([('employee_id','=',int(line.employee_id.id))])
+            saldo_update = saldo.saldo + line.amount
+            saldo.write({'saldo': saldo_update})
+            journal = self.env['account.move'].search([('refund_id','=',int(line.id))])
+            journal.button_draft()
+            journal.unlink()
+            line.state = 'draft'
+
     def default_get(self, fields_list):
         defaults = super(RefundDana, self).default_get(fields_list)
 
@@ -567,7 +607,6 @@ class RefundDana(models.Model):
 
         return defaults
 
-
     @api.model
     def create(self, vals_list):
         moves = super().create(vals_list)
@@ -586,3 +625,11 @@ class HrDepartmentINh(models.Model):
     _inherit = 'hr.department'
 
     code = fields.Char()
+
+
+class AccountMoveInherit(models.Model):
+    _inherit = 'account.move'
+
+    dana_id = fields.Many2one('permintaan.dana')
+    realisasi_id = fields.Many2one('realisasi.dana')
+    refund_id = fields.Many2one('refund.dana')

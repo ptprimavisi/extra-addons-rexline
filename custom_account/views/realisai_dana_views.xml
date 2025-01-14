@@ -8,6 +8,7 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                         <button name="action_post" string="Posted" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="Proses ini akan mempengaruhi saldo dan journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'posted'"/>
                         <button name="action_print_report" string="Print" type="object"  invisible="id == False"/>
                     </header>
                     <sheet>
