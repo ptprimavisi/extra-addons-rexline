@@ -19,7 +19,7 @@
                     
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;"><b><t t-esc="company_name"/></b></td>
+                            <td style="border: 1px solid #ffffff; vertical-align: top;"><b><t t-esc="company_name"/></b></td>
                             <td style="border: 1px solid #ffffff;"></td>
                             <td style="border: 1px solid #ffffff;">
                                 <t t-if="company_street1 and company_street2">
@@ -32,6 +32,16 @@
                                 <t t-esc="company_npwp"/><br/>
                             </td>
                         </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: right;font-size: 14px;">Balance Due Rp. <t t-esc="round_balance_due"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">Customer<br/>
                                 <t t-esc="partner_name"/>
@@ -39,10 +49,10 @@
                             <td style="border: 1px solid #ffffff;">Invoice#<br/>
                                 <t t-esc="invoice_name"/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">Customer Reference</td>
+                            <td style="border: 1px solid #ffffff; vertical-align: top;">Customer Reference</td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;">Address<br/>
+                            <td style="border: 1px solid #ffffff; vertical-align: top;">Address<br/>
                                 <t t-if="partner_street1 and partner_street2">
                                     <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/><br/>
                                 </t>
@@ -53,9 +63,11 @@
                             <td style="border: 1px solid #ffffff;">Date<br/>
                                 <t t-esc="invoice_date"/><br/><br/>
                                 Due Date<br/>
-                                <t t-esc="invoice_date_due"/>
+                                <t t-esc="invoice_date_due"/><br/><br/>
+                                Term<br/>
+                                <br/><br/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">Tags<br/>
+                            <td style="border: 1px solid #ffffff; vertical-align: top;">Tags<br/>
                                 <t t-esc="tags_info"/>
                             </td>
                         </tr>
@@ -86,7 +98,7 @@
                                     <td t-if="lines[1]" style="text-align: center;">
                                         <t t-esc="lines[1]"/>
                                     </td>
-                                    <td t-if="lines[2]" style="text-align: center;">
+                                    <td t-if="lines[2]" style="text-align: right;">
                                         <t t-esc="lines[2]"/>
                                     </td>
                                     <td t-if="lines[3]" style="text-align: center;">
@@ -108,7 +120,7 @@
 
                     <br/><br/><br/>
                     <table class="table" style="width: 100%; font-size: 14px;">
-                        <tr style="border: 1px solid #ffffff;">
+                        <tr style="border: 1px solid #ffffff;vertical-align: top;">
                             <td style="border: 1px solid #ffffff;">
                                 <b>Note</b><br/><br/>
                                 <t t-raw="invoice_tnc"/>
@@ -120,8 +132,10 @@
                                     <!-- <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> -->
                                     <t t-esc="tax['name']"/><br/>
                                 </t>
-                                <b><br/>Total</b><br/>
-                                <br/>Balance Due
+                                <b><br/>Total</b>
+                                <br/><br/>Deduction
+                                <pre>        Rounded</pre>
+                                Balance Due
                             </td>
                             <td style="text-align: right;">
                                 <t t-esc="subtotal"/><br/><br/>
@@ -129,8 +143,9 @@
                                 <t t-foreach="taxes" t-as="tax">
                                     <t t-esc="tax['amount']"/><br/>
                                 </t>
-                                <b><br/><t t-esc="balance_due"/></b><br/>
-                                <br/><t t-esc="balance_due"/>
+                                <b><br/><t t-esc="balance_due"/></b><br/><br/><br/>
+                                <pre><t t-esc="rounded"/></pre>
+                                <t t-esc="round_balance_due"/>
                             </td>
                         </tr>
                     </table>
@@ -138,7 +153,7 @@
                         <br/><img t-if="signature_image" t-att-src="signature_image" 
                             style="width: 100px; height: auto;" alt="Signature" />
                         <br/><t t-esc="signature_name"/><br/>
-                        National Sales Leader<br/>
+                        DIREKTUR<br/>
                         REXLINE ENGINEERING INDONESIA
                     </p>
                 </div>

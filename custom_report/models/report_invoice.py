@@ -72,8 +72,10 @@ class InheritInvoice(models.Model):
             invoice_name = rec.name
             invoice_date = rec.invoice_date.strftime('%d-%m-%Y') if rec.invoice_date else ''
             invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y') if rec.invoice_date_due else ''
-
-            balance_due = f"{int(rec.amount_total):,}"
+            
+            balance_due = f"{rec.amount_total:,}"
+            round_balance_due = f"{int(rec.amount_total):,}"
+            rounded = round(rec.amount_total - int(rec.amount_total), 2)
 
             so_ids = rec.line_ids.sale_line_ids.order_id
             so_name = so_ids.ref_quotation if so_ids.name == '/' else so_ids.name
@@ -93,7 +95,7 @@ class InheritInvoice(models.Model):
 
             query="""
                 SELECT 
-                    aml.name AS tax, 
+                    tax.id AS tax, 
                     tax.invoice_label as tax_label,
                     tax.amount as percentage,
                     COALESCE(abs(SUM(aml.balance)), 0) AS tax_amount
@@ -103,16 +105,16 @@ class InheritInvoice(models.Model):
                     aml.move_id = """+str(rec.id)+"""
                     AND aml.display_type = 'tax'
                 GROUP BY 
-                    aml.name,tax.invoice_label,tax.amount;
+                    tax.id,tax.invoice_label,tax.amount;
             """
             self.env.cr.execute(query)
             query_vals = self.env.cr.dictfetchall()
             if query_vals:
                 for line in query_vals:
                     taxes.append({
-                        'name':line['tax'],
+                        'name':self.env['account.tax'].search([('id','=',line['tax'])]).name,
                         'percentage':line['percentage'],
-                        'amount':f"{int(line['tax_amount']):,}"})
+                        'amount':f"{round(line['tax_amount'],2):,}"})
 
             product_line=[]
             move_lines = self.env['account.move.line'].search([('move_id','=',rec.id),('product_id','!=',False)])
@@ -124,11 +126,11 @@ class InheritInvoice(models.Model):
                         tax_name = ", ".join(tax.name for tax in lines.tax_ids)
                     else:
                         tax_name='-'
-                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{int(lines.price_unit):,}",f"{int(lines.discount):,}",tax_name,f"{int(lines.price_subtotal):,}",f"{int(lines.tax_base):,}"])
+                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{round(lines.price_unit,2):,}",f"{round(lines.discount,2):,}",tax_name,f"{round(lines.price_subtotal,2):,}",f"{round(lines.tax_base,2):,}"])
                     subtotal+=lines.price_subtotal
-            subtotal = f"{int(subtotal):,}"
+            subtotal = f"{round(subtotal,2):,}"
 
-            total_tax_base = f"{int(rec.amount_tax_base):,}"
+            total_tax_base = f"{round(rec.amount_tax_base,2):,}"
 
             # Get Direktur Signature
             signature = self.env['sale.direktur.signature'].search([],limit=1)
@@ -166,6 +168,8 @@ class InheritInvoice(models.Model):
                     'invoice_date':invoice_date,
                     'invoice_date_due':invoice_date_due,
                     'balance_due':balance_due,
+                    'round_balance_due':round_balance_due,
+                    'rounded':rounded,
                     'subtotal':subtotal,
                     'tags_info':tags_info,
                     'taxes':taxes,

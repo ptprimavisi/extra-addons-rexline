@@ -30,18 +30,6 @@ class InheritPurchaseOrder(models.Model):
     @api.depends('order_line')
     def compute_generate(self):
         for rec in self:
-            user=self.env.user
-            # if user.is_it:
-            #     # Check if any line has qty_received < 1 and if all lines have is_generate_asset == True
-            #     if any(line.qty_received < 1 for line in rec.order_line):
-            #         rec.is_generate_asset = True  # If any line has qty_received < 1, don't generate asset
-            #     elif all(line.is_generate_asset == True for line in rec.order_line):
-            #         rec.is_generate_asset = True  # If all lines are marked to generate asset, set True
-            #     else:
-            #         rec.is_generate_asset = False  # Default case, if neither condition is met
-            # else:
-            #     rec.is_generate_asset = True
-            # Check if any line has qty_received < 1 and if all lines have is_generate_asset == True
             if any(line.qty_received < 1 for line in rec.order_line):
                 rec.is_generate_asset = True  # If any line has qty_received < 1, don't generate asset
             elif all(line.is_generate_asset == True for line in rec.order_line):
@@ -55,6 +43,7 @@ class InheritPurchaseOrder(models.Model):
                 if all(product.is_generate_asset for line in rec.order_line):
                     raise UserError('All products have already been added to the Asset Management master.')
                 if product.is_generate_asset==False:
+                    stock_move=self.env['stock.move'].search([('picking_id.origin','=',rec.name),('product_id','=',product.product_id.id)],limit=1)
                     if product.product_id.product_tmpl_id.type=='product':
                         asset_type='storable'
                     else:
