@@ -12,7 +12,7 @@
         <template id="report_invoice">
             <t t-call="web.html_container">
                 <div class="container" style="font-family: Calibri, sans-serif;">
-                    <div style="text-align: left;">
+                    <div style="text-align: center;">
                         <img t-if="logo" t-att-src="logo" 
                             style="width: 90px; height: auto;" alt="Logo" />
                     </div>
@@ -35,7 +35,7 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td style="text-align: right;font-size: 14px;">Balance Due Rp. <t t-esc="round_balance_due"/></td>
+                            <td style="text-align: right;font-size: 14px;"><b>Sisa Tagihan Rp. <t t-esc="round_balance_due"/></b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -43,16 +43,21 @@
                             <td></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;">Customer<br/>
+                            <td style="border: 1px solid #ffffff;">
+                            <!-- Customer<br/> -->
                                 <t t-esc="partner_name"/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">Invoice#<br/>
+                            <td style="border: 1px solid #ffffff;">
+                            <!-- Invoice#<br/> -->
                                 <t t-esc="invoice_name"/>
                             </td>
-                            <td style="border: 1px solid #ffffff; vertical-align: top;">Customer Reference</td>
+                            <td style="border: 1px solid #ffffff; vertical-align: top;">
+                                <!-- Customer Reference -->
+                            </td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff; vertical-align: top;">Address<br/>
+                            <td style="border: 1px solid #ffffff; vertical-align: top;">
+                            <!-- Address<br/> -->
                                 <t t-if="partner_street1 and partner_street2">
                                     <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/><br/>
                                 </t>
@@ -60,14 +65,16 @@
                                 <t t-esc="partner_street3"/><br/>
                                 <t t-esc="partner_phone"/><br/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">Date<br/>
+                            <td style="border: 1px solid #ffffff;vertical-align: top;">
+                                <!-- Date<br/> -->
                                 <t t-esc="invoice_date"/><br/><br/>
-                                Due Date<br/>
+                                <!-- Due Date<br/> -->
                                 <t t-esc="invoice_date_due"/><br/><br/>
-                                Term<br/>
+                                <!-- Term<br/> -->
                                 <br/><br/>
                             </td>
-                            <td style="border: 1px solid #ffffff; vertical-align: top;">Tags<br/>
+                            <td style="border: 1px solid #ffffff;vertical-align: top;">
+                                <!-- Tags<br/> -->
                                 <t t-esc="tags_info"/>
                             </td>
                         </tr>
@@ -78,13 +85,13 @@
                         <thead>
                             <tr style="background-color: #cccccc">
                                 <th>No.</th>
-                                <th>Description</th>
-                                <th>Quantity</th>
-                                <th>Unit Price (Rp.)</th>
-                                <th>Discount</th>
-                                <th>Taxed</th>
-                                <th>Amount (Rp.)</th>
-                                <th>Tax Base (Rp.)</th>
+                                <th>Keterangan</th>
+                                <th>Qty</th>
+                                <th>Harga Satuan (Rp.)</th>
+                                <th>Diskon</th>
+                                <th>Pajak</th>
+                                <th>Jumlah (Rp.)</th>
+                                <th>DPP (Rp.)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,35 +127,71 @@
 
                     <br/><br/><br/>
                     <table class="table" style="width: 100%; font-size: 14px;">
-                        <tr style="border: 1px solid #ffffff;vertical-align: top;">
-                            <td style="border: 1px solid #ffffff;">
-                                <b>Note</b><br/><br/>
+                        <tr style="border: 1px solid #ffffff; vertical-align: top;">
+                            <td style="border: 1px solid #ffffff; width: 60%;">
+                                <b>Pesan</b>
+                            </td>
+                            <td style="border: 1px solid #ffffff; width: 30%;">
+                                Subtotal
+                            </td>
+                            <td style="border: 1px solid #ffffff; width: 10%;text-align: right;">
+                                <t t-esc="subtotal"/>
+                            </td>
+                        </tr>
+                        <tr style="border: 1px solid #ffffff; vertical-align: top;">
+                            <td t-att-rowspan="total_rows" style="border: 1px solid #ffffff; width: 60%;">
                                 <t t-raw="invoice_tnc"/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">
-                                Subtotal<br/><br/>
-                                Total Tax Base<br/><br/>
-                                <t t-foreach="taxes" t-as="tax">
-                                    <!-- <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> -->
-                                    <t t-esc="tax['name']"/><br/>
-                                </t>
-                                <b><br/>Total</b>
-                                <br/><br/>Deduction
-                                <pre>        Rounded</pre>
-                                Balance Due
+                            <td style="border: 1px solid #ffffff; width: 30%;">
+                                Total DPP
                             </td>
-                            <td style="text-align: right;">
-                                <t t-esc="subtotal"/><br/><br/>
-                                <t t-esc="total_tax_base"/><br/><br/>
-                                <t t-foreach="taxes" t-as="tax">
-                                    <t t-esc="tax['amount']"/><br/>
-                                </t>
-                                <b><br/><t t-esc="balance_due"/></b><br/><br/><br/>
-                                <pre><t t-esc="rounded"/></pre>
-                                <t t-esc="round_balance_due"/>
+                            <td style="border: 1px solid #ffffff; width: 10%;text-align: right;">
+                                <t t-esc="total_tax_base"/>
+                            </td>
+                        </tr>
+                        <t t-foreach="taxes" t-as="tax">
+                            <tr style="border: 1px solid #ffffff; vertical-align: top;">
+                                <td style="border: 1px solid #ffffff; width: 30%;">
+                                    <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %
+                                </td>
+                                <td style="border: 1px solid #ffffff; width: 10%;text-align: right;">
+                                    <t t-esc="tax['amount']"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr style="border-top: 2px solid black; vertical-align: top;">
+                            <td style="border-top: 2px solid black; width: 30%;">
+                                <b>TOTAL</b>
+                            </td>
+                            <td style="border-top: 2px solid black; width: 10%;text-align: right;">
+                                <t t-esc="balance_due"/>
+                            </td>
+                        </tr>
+                        <tr style="border: 1px solid #ffffff; vertical-align: top;">
+                            <td style="border: 1px solid #ffffff; width: 30%;">
+                                Jumlah Pemotongan
+                            </td>
+                            <td style="border: 1px solid #ffffff; width: 10%;">
+                            </td>
+                        </tr>
+                        <tr style="border: 1px; vertical-align: top;">
+                            <td style="border: 1px solid #ffffff; width: 30%;">
+                                <pre><i>        PEMBULATAN</i></pre>
+                            </td>
+                            <td style="border: 1px solid #ffffff; width: 10%;text-align: right;">
+                                <t t-esc="rounded"/>
+                            </td>
+                        </tr>
+                        <tr style="border-top: 2px solid black; vertical-align: top;">
+                            <td style="border-top: 2px solid black; width: 30%;">
+                                <b>Sisa Tagihan</b>
+                            </td>
+                            <td style="border-top: 2px solid black; width: 10%;text-align: right;">
+                                <b><t t-esc="round_balance_due"/></b>
                             </td>
                         </tr>
                     </table>
+
                     <p style="text-align: right; font-size: 14px;"> 
                         <br/><img t-if="signature_image" t-att-src="signature_image" 
                             style="width: 100px; height: auto;" alt="Signature" />

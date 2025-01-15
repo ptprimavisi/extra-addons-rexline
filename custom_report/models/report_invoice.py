@@ -74,7 +74,7 @@ class InheritInvoice(models.Model):
             invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y') if rec.invoice_date_due else ''
             
             balance_due = f"{rec.amount_total:,}"
-            round_balance_due = f"{int(rec.amount_total):,}"
+            round_balance_due = f"{int(rec.amount_total):,.0f}"
             rounded = round(rec.amount_total - int(rec.amount_total), 2)
 
             so_ids = rec.line_ids.sale_line_ids.order_id
@@ -85,7 +85,7 @@ class InheritInvoice(models.Model):
                 if len(crm_ids.tag_ids)>1:
                     tags = ", ".join(tag.name or '' for tag in crm_ids.tag_ids)
                 else:
-                    tags = join(tag.name or '' for tag in crm_ids.tag_ids)
+                    tags = "".join(tag.name or '' for tag in crm_ids.tag_ids)
                 tags_info = tags+', '+so_name
             else:
                 tags_info = so_name
@@ -111,9 +111,10 @@ class InheritInvoice(models.Model):
             query_vals = self.env.cr.dictfetchall()
             if query_vals:
                 for line in query_vals:
+                    tax_name=self.env['account.tax'].search([('id','=',line['tax'])]).name
                     taxes.append({
-                        'name':self.env['account.tax'].search([('id','=',line['tax'])]).name,
-                        'percentage':line['percentage'],
+                        'name':tax_name,
+                        'percentage':12 if '12' in tax_name else line['percentage'],
                         'amount':f"{round(line['tax_amount'],2):,}"})
 
             product_line=[]
@@ -149,6 +150,9 @@ class InheritInvoice(models.Model):
             )
 
             invoice_tnc = rec.narration or ''
+
+            # Hitung jumlah baris secara dinamis
+            total_rows = len(taxes) + 5  # 5 adalah jumlah baris tetap di luar 'taxes'
             
             report_data = {
                     'doc_ids': self.ids,
@@ -178,7 +182,8 @@ class InheritInvoice(models.Model):
                     'signature_image':signature_image,
                     'logo':logo,
                     'invoice_tnc':invoice_tnc,
-                    'total_tax_base':total_tax_base
+                    'total_tax_base':total_tax_base,
+                    'total_rows':total_rows
                 }
             return self.env.ref('custom_report.action_report_invoice').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data)
