@@ -19,9 +19,9 @@
                     
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff; vertical-align: top;"><b><t t-esc="company_name"/></b></td>
-                            <td style="border: 1px solid #ffffff;"></td>
-                            <td style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff; vertical-align: top;width: 40%;"><b><t t-esc="company_name"/></b></td>
+                            <td style="border: 1px solid #ffffff;width: 30%;"></td>
+                            <td style="border: 1px solid #ffffff;width: 30%;">
                                 <t t-if="company_street1 and company_street2">
                                     <t t-esc="company_street1"/>, <t t-esc="company_street2"/><br/>
                                 </t>
@@ -43,20 +43,20 @@
                             <td></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;width: 40%;">
                             <!-- Customer<br/> -->
                                 <t t-esc="partner_name"/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff;width: 30%;">
                             <!-- Invoice#<br/> -->
                                 <t t-esc="invoice_name"/>
                             </td>
-                            <td style="border: 1px solid #ffffff; vertical-align: top;">
+                            <td style="border: 1px solid #ffffff; vertical-align: top;width: 30%;">
                                 <!-- Customer Reference -->
                             </td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff; vertical-align: top;">
+                            <td style="border: 1px solid #ffffff; vertical-align: top;width: 40%;">
                             <!-- Address<br/> -->
                                 <t t-if="partner_street1 and partner_street2">
                                     <t t-esc="partner_street1"/>, <t t-esc="partner_street2"/><br/>
@@ -65,7 +65,7 @@
                                 <t t-esc="partner_street3"/><br/>
                                 <t t-esc="partner_phone"/><br/>
                             </td>
-                            <td style="border: 1px solid #ffffff;vertical-align: top;">
+                            <td style="border: 1px solid #ffffff;vertical-align: top;width: 30%;">
                                 <!-- Date<br/> -->
                                 <t t-esc="invoice_date"/><br/><br/>
                                 <!-- Due Date<br/> -->
@@ -73,7 +73,7 @@
                                 <!-- Term<br/> -->
                                 <br/><br/>
                             </td>
-                            <td style="border: 1px solid #ffffff;vertical-align: top;">
+                            <td style="border: 1px solid #ffffff;vertical-align: top;width: 30%;">
                                 <!-- Tags<br/> -->
                                 <t t-esc="tags_info"/>
                             </td>
@@ -159,12 +159,12 @@
                                 </td>
                             </tr>
                         </t>
-                        <tr style="border-top: 2px solid black; vertical-align: top;">
-                            <td style="border-top: 2px solid black; width: 30%;">
+                        <tr style="border-top: 1px solid black; vertical-align: top;">
+                            <td style="border-top: 1px solid black; width: 30%;">
                                 <b>TOTAL</b>
                             </td>
-                            <td style="border-top: 2px solid black; width: 10%;text-align: right;">
-                                <t t-esc="balance_due"/>
+                            <td style="border-top: 1px solid black; width: 10%;text-align: right;">
+                                <b><t t-esc="balance_due"/></b>
                             </td>
                         </tr>
                         <tr style="border: 1px solid #ffffff; vertical-align: top;">
@@ -182,20 +182,22 @@
                                 <t t-esc="rounded"/>
                             </td>
                         </tr>
-                        <tr style="border-top: 2px solid black; vertical-align: top;">
-                            <td style="border-top: 2px solid black; width: 30%;">
+                        <tr style="border-top: 1px solid black; vertical-align: top;">
+                            <td style="border-top: 1px solid black; width: 30%;">
                                 <b>Sisa Tagihan</b>
                             </td>
-                            <td style="border-top: 2px solid black; width: 10%;text-align: right;">
+                            <td style="border-top: 1px solid black; width: 10%;text-align: right;">
                                 <b><t t-esc="round_balance_due"/></b>
                             </td>
                         </tr>
                     </table>
 
+                    <br/><br/><br/>
                     <p style="text-align: right; font-size: 14px;"> 
+                        <t t-esc="signature_name"/><br/>
                         <br/><img t-if="signature_image" t-att-src="signature_image" 
                             style="width: 100px; height: auto;" alt="Signature" />
-                        <br/><t t-esc="signature_name"/><br/>
+                        <br/>
                         DIREKTUR<br/>
                         REXLINE ENGINEERING INDONESIA
                     </p>
