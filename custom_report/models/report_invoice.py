@@ -74,7 +74,7 @@ class InheritInvoice(models.Model):
             invoice_date_due = rec.invoice_date_due.strftime('%d-%m-%Y') if rec.invoice_date_due else ''
             
             balance_due = f"{rec.amount_total:,}"
-            round_balance_due = f"{int(rec.amount_total):,.0f}"
+            round_balance_due = f"{int(rec.amount_total):,.0f}"+'.00'
             rounded = round(rec.amount_total - int(rec.amount_total), 2)
 
             so_ids = rec.line_ids.sale_line_ids.order_id
@@ -115,7 +115,7 @@ class InheritInvoice(models.Model):
                     taxes.append({
                         'name':tax_name,
                         'percentage':12 if '12' in tax_name else line['percentage'],
-                        'amount':f"{round(line['tax_amount'],2):,}"})
+                        'amount':f"{line['tax_amount']:,.2f}"})
 
             product_line=[]
             move_lines = self.env['account.move.line'].search([('move_id','=',rec.id),('product_id','!=',False)])
