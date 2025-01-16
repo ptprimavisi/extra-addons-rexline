@@ -91,7 +91,7 @@
                                             <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                 <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                             </td>
-                                            <t t-if="docs.x_review_result == 'approved'">
+                                            <t t-if="docs.state == 'posted'">
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                                 </td>
@@ -118,7 +118,7 @@
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">GM</td>
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">COO</td>
                                         </tr>
-                                        <t t-if="docs.x_review_result == 'approved'">
+                                        <t t-if="docs.state == 'posted'">
                                             <tr>
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
@@ -387,7 +387,7 @@
                                             <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                 <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                             </td>
-                                            <t t-if="docs.x_review_result == 'approved'">
+                                            <t t-if="docs.state == 'posted'">
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                                 </td>
@@ -414,7 +414,7 @@
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">GM</td>
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">COO</td>
                                         </tr>
-                                        <t t-if="docs.x_review_result == 'approved'">
+                                        <t t-if="docs.state == 'posted'">
                                             <tr>
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
@@ -442,7 +442,7 @@
                                     </table>
                                 </div>
                                 
-                                <t t-if="docs.state == 'transfer'">
+                                <t t-if="docs.state == 'posted'">
                                     <div class="col col-4">
                                         <table class="table" style="width: 80%; border-collapse: collapse; font-size: 12px;">
                                             <tbody>
@@ -519,7 +519,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <t t-if="docs.state == 'transfer'">
+                                <t t-if="docs.state == 'posted'">
                                     <div class="col col-6">
                                         <table class="table" style="width: 95%; border-collapse: collapse; font-size: 12px;">
                                             <tbody>
