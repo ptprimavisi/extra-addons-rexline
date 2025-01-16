@@ -368,7 +368,7 @@
                         <br/>
                         
                         <div class="row">
-                            <t t-if="docs.department.code != 'FIN'">
+                            <t t-if="docs.department_id.code != 'FIN'">
                                 <div class="col col-5">
                                     <table class="table" style="width: 80%; border-collapse: collapse;  font-size: 12px;">
                                         <tbody>
