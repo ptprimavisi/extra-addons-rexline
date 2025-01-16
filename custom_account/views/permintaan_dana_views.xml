@@ -1,5 +1,65 @@
 <odoo>
     <data>
+        <record id="general_manager_wizard_form_view" model="ir.ui.view">
+            <field name="name">general.manager.wizard.form</field>
+            <field name="model">general.manager</field>
+            <field name="arch" type="xml">
+                <form string="General Manager Position" create='0'>
+                    <group>
+                        <field name="general_manager"/>
+                    </group>
+                    <footer>
+                        <button name="update" string="Update" type="object" class="btn-primary oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_job_tittle_gm" model="ir.actions.act_window">
+            <field name="name">General Manager</field>
+            <field name="res_model">general.manager</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_job_tittle_gm"
+                name="General Manager"
+                parent="hr.menu_config_employee"
+                action="action_job_tittle_gm"
+                sequence="20"/>
+
+        <record id="coo_wizard_form_view" model="ir.ui.view">
+            <field name="name">coo.coo.wizard.form</field>
+            <field name="model">coo.coo</field>
+            <field name="arch" type="xml">
+                <form string="Chief Operating Officer Position" create='0'>
+                    <group>
+                        <field name="coo"/>
+                    </group>
+                    <footer>
+                        <button name="update" string="Update" type="object" class="btn-primary oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_job_tittle_coo" model="ir.actions.act_window">
+            <field name="name">Chief Operating Officer</field>
+            <field name="res_model">coo.coo</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_job_tittle_coo"
+                name="Chief Operating Officer"
+                parent="hr.menu_config_employee"
+                action="action_job_tittle_coo"
+                sequence="20"/>
+
         <record id="permintaan_dana_form_view" model="ir.ui.view">
             <field name="name">permintaan.dana.form.view</field>
             <field name="model">permintaan.dana</field>

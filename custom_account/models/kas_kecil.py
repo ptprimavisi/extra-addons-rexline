@@ -5,6 +5,65 @@ from datetime import datetime
 from odoo.exceptions import UserError
 
 
+class JobTittleGM(models.Model):
+    _name='general.manager'
+
+    general_manager = fields.Many2one('hr.employee',string='General Manager')
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(JobTittleGM, self).default_get(fields_list)
+        gm = self.search([], limit=1)
+        if gm:
+            res.update({
+                'general_manager': gm.general_manager.id
+            })
+        return res
+
+    def update(self):
+        for rec in self:
+            # Buat signature baru
+            new_gm = self.env['general.manager'].create({
+                'general_manager': rec.general_manager.id
+                
+            })
+            # Cari semua signature lain
+            existing_gm = self.env['general.manager'].search([('id', '!=', new_gm.id)])
+            # Hapus semua signature kecuali signature yang baru saja dibuat
+            if existing_gm:
+                for gm in existing_gm:
+                    gm.unlink()
+
+class JobTittleCOO(models.Model):
+    _name='coo.coo'
+
+    coo = fields.Many2one('hr.employee',string='Chief Operating Officer')
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(JobTittleCOO, self).default_get(fields_list)
+        coo = self.search([], limit=1)
+        if coo:
+            res.update({
+                'coo': coo.coo.id
+            })
+        return res
+
+    def update(self):
+        for rec in self:
+            # Buat signature baru
+            new_coo = self.env['coo.coo'].create({
+                'coo': rec.coo.id
+                
+            })
+            # Cari semua signature lain
+            existing_coo = self.env['coo.coo'].search([('id', '!=', new_coo.id)])
+            # Hapus semua signature kecuali signature yang baru saja dibuat
+            if existing_coo:
+                for coo in existing_coo:
+                    coo.unlink()
+
+
 class PermintaanDana(models.Model):
     _name = 'permintaan.dana'
 
