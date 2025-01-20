@@ -89,21 +89,24 @@
             <field name="model">manajemen.assets</field>
             <field name="arch" type="xml">
                 <tree string="Manajemen Assets">
+                    <field name="name"/>
+                    <field name="asset_type"/>
                     <field name="product_name"/>
-                    <field name="department"/>
+                    <field name="value"/>
+                    <field name="purchase_date"/>
                 </tree>
             </field>
         </record>
 
         <record id="action_manajemen_assets" model="ir.actions.act_window">
-            <field name="name">Manajemen Assets</field>
+            <field name="name">Product Assets</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">manajemen.assets</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <menuitem id="menuitem_manajemen_assets"
-                name="Manajemen Assets"
+                name="Product Assets"
                 parent="sale_custome.maintenance_report_menu"
                 action="action_manajemen_assets"
                 sequence="20"/>

@@ -82,7 +82,7 @@ class ManajemenAssets(models.Model):
     asset_type = fields.Selection([
         ('storable', 'Hardware'),
         ('consumable', 'Software')], string='Asset Type')
-    product_name=fields.Char(string='Product')
+    product_name=fields.Char(string='Description')
     qty=fields.Float('Quantity')
     uom_id=fields.Many2one('uom.uom')
     value=fields.Float()

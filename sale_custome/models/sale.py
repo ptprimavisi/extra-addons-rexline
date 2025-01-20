@@ -2071,9 +2071,11 @@ class InquiryLineDetail(models.Model):
         for line in self:
             line.cost_price = False
             line.unit_weight = False
+            line.product_uom = False
             if line.product_id:
                 line.cost_price = line.product_id.product_tmpl_id.standard_price
                 line.unit_weight = line.product_id.product_tmpl_id.weight
+                line.product_uom = line.product_id.product_tmpl_id.uom_id.id
 
     cost_price = fields.Float('Unit Price')
     due_date = fields.Datetime(compute="_compute_due_date")

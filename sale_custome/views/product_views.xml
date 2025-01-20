@@ -46,11 +46,11 @@
         </record>
 
 
-        <menuitem id="product_report_menuitem"
-        name="Products"
-        sequence="2"
-        parent="maintenance_report_menu"
-        action="action_product_it"
-        />
+<!--        <menuitem id="product_report_menuitem"-->
+<!--        name="Products"-->
+<!--        sequence="2"-->
+<!--        parent="maintenance_report_menu"-->
+<!--        action="action_product_it"-->
+<!--        />-->
     </data>
 </odoo>

@@ -147,7 +147,7 @@
                                         <field name="brand"/>
                                         <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>
                                         <field name="product_uom_quantity"/>
-                                        <field name="product_uom" string="Uom"/>
+                                        <field name="product_uom" string="Uom" required="1"/>
                                         <field name="product_uom_category_id" invisible="1"/>
                                         <field name="unit_weight"/>
                                         <field name="total_weight"/>
