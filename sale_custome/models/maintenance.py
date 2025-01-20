@@ -26,9 +26,29 @@ class MaintenanceReport(models.Model):
         string='Attachments'
     )
 
+    def action_done(self):
+        for line in self:
+            line.state = 'done'
+
+    def action_draft(self):
+        for line in self:
+            line.state = 'draft'
+
     def create(self, vals_list):
         vals_list['name'] = self.env['ir.sequence'].next_by_code('MNT') or '/'
         return super(MaintenanceReport, self).create(vals_list)
+
+    def action_create_schedule(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "maintenance.wizard",
+            "name": "Schedule",
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'res_id': int(self.id),
+            }
+        }
 
 
 class ProductTemplateIt(models.Model):

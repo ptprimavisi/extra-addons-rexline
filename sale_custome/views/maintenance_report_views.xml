@@ -8,7 +8,8 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft, done"/>
-<!--                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>-->
+                        <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_draft" string="Reset To Draft" type="object" invisible="id == False or state != 'done'"/>
 <!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
                     </header>
                     <sheet>
@@ -25,6 +26,7 @@
                             <field name="user_id" required="1"/>
                             <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                         </group>
+                        <button name="action_create_schedule" string="Send Report" type="object" class="oe_highlight" invisible="id == False or state != 'done'"/>
 
                     </sheet>
                     <div class="oe_chatter">

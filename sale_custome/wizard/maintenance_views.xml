@@ -1,0 +1,40 @@
+<odoo>
+    <data>
+        <record id="maintenance_wizard_form_view" model="ir.ui.view">
+            <field name="name">maintenance.wizard.form</field>
+            <field name="model">maintenance.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="notification_date" required="1"/>
+                                <field name="user_ids" widget="many2many_tags" required="1"/>
+                            </group>
+                            <group>
+<!--                                <label for="plan_assignation_summary" class="o_form_label" string="Plan summary" colspan="2"/>-->
+<!--                                <field name="plan_assignation_summary" colspan="2" nolabel="1"/>-->
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="summary" placeholder="e.g. Discuss proposal"/>
+                            </group>
+                            <field name="note" class="oe-bordered-editor" placeholder="Log a note..."/>
+                        </group>
+
+                    </sheet>
+                    <footer>
+                        <button
+                            name="action_send_schedule"
+                            string="Schedule"
+                            type="object"
+                            class="oe_highlight"
+                        />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+   </data>
+</odoo>
