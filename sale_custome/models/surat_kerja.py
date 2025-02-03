@@ -1,6 +1,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 import pytz
 import re
 
@@ -127,3 +127,28 @@ class SuratKerjaLine(models.Model):
                 final_hour = hours_difference - line.rest
                 line.work_hour = final_hour
                 line.work_hour_approve = final_hour
+
+
+class HrEmployeeInherit(models.Model):
+    _inherit = 'hr.employee'
+
+    alert_state = fields.Boolean(compute="_compute_contract")
+    color_field = fields.Char(string='Background color')
+
+    @api.depends('contract_ids')
+    def _compute_contract(self):
+        for line in self:
+
+            today = datetime.now()
+
+            # Tanggal 40 hari sebelumnya
+            days_before = today + timedelta(days=40)
+            # raise UserError(days_before)
+            contract = self.env['hr.contract'].search([('id', 'in', line.contract_ids.ids), ('date_end','>',str(days_before))])
+            if contract:
+                line.alert_state = False
+                line.color_field = 'white'
+            else:
+                line.alert_state = True
+                line.color_field = '#fdc6c673'
+

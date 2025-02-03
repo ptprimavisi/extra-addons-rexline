@@ -124,5 +124,57 @@
         parent="surat_kerja_root"
         action="action_surat_kerja"
         />
+
+
+        <record id="hr_employee_inhrt_tree_view" model="ir.ui.view">
+        <field name="name">
+            hr.employee.alert.inherit
+        </field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_email']" position="after">
+                <field name="alert_state" readonly="1"/>
+                <field name="color_field" readonly="1"/>
+            </xpath>
+<!--            <tree position="attributes">-->
+<!--                <attribute name="decoration-danger">alert_state == True-->
+<!--                </attribute>-->
+<!--            </tree>-->
+        </field>
+    </record>
+        <record id="hr_employee_tree_view" model="ir.ui.view">
+            <field name="name">hr.employee.inherit.alert</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_email']" position="after">
+                    <field name="alert_state" column_invisible="True"/>
+                </xpath>
+                <tree position="attributes">
+                    <attribute name="decoration-danger">alert_state == True
+                    </attribute>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_employee_inherit_kanban_view" model="ir.ui.view">
+            <field name="name">hr.employee.alert</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <field name="model">hr.employee</field>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="inside">
+                    <field name="alert_state"/>
+                    <field name="color_field"/>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_kanban_global_click')]"
+                       position="attributes">
+                    <attribute name="t-attf-style">
+                        background-color:#{record.color_field.raw_value}
+                        !important;
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

@@ -598,8 +598,12 @@ class HrPayslip(models.Model):
                                 if roster and not timeoff:
                                     site_al = nominal + mealall
                                     abs_ded += site_al
-                                # if not timeoff and not roster:
-
+                                if not timeoff and not roster:
+                                    nonsite = payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
+                                    final_nonsite = nonsite / 30
+                                    site_al = nominal + mealall
+                                    final = final_nonsite + site_al
+                                    abs_ded += final
                                 # raise UserError(timeoff)
 
                         current_date += timedelta(days=1)  # Menambah 1 hari

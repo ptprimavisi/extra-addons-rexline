@@ -39,8 +39,8 @@
                         <group>
                             <field name="asset_type"/>
                             <field name="name"/>
-                            <field name="purchase_date" invisible="asset_type != 'storable'"/>
-                            <field name="value" invisible="asset_type != 'storable'"/>
+                            <field name="purchase_date"/>
+                            <field name="value"/>
                             <field name="purchase_id" invisible="asset_type != 'storable'"/>
                             <field name="spesification" invisible="asset_type != 'storable'"/>
                             <field name="mac_address" invisible="asset_type != 'storable'"/>
@@ -48,7 +48,7 @@
                             <field name="brand" invisible="asset_type != 'storable'"/>
                             <field name="qty" invisible="asset_type != 'storable'"/>
                             <field name="pic" invisible="asset_type != 'storable'"/>
-                            <field name="new_pic" invisible="asset_type != 'storable'"/>
+<!--                            <field name="new_pic" invisible="asset_type != 'storable'"/>-->
                             <field name="location" invisible="asset_type != 'storable'"/>
                             <field name="designation" invisible="asset_type != 'storable'"/>
                             <field name="department"/>
@@ -56,25 +56,27 @@
                             
                             <field name="tipe" invisible="asset_type != 'consumable'"/>
                             <field name="license_number" invisible="asset_type != 'consumable'"/>
+                            <field name="days_number" string="Number of Days" invisible="asset_type != 'consumable'"/>
                             <field name="expired_date" invisible="asset_type != 'consumable'"/>
                             <field name="admin_login" invisible="asset_type != 'consumable'"/>
                             <field name="portal_admin" widget="url" invisible="asset_type != 'consumable'"/>
                             <field name="contact_person" invisible="asset_type != 'consumable'"/>
+
                         </group>
                         <group>
                             <field name="delivered_date" invisible="asset_type != 'storable'"/>
                             <field name="returned_date" invisible="asset_type != 'storable'"/>
-                            <field name="transfer_date" invisible="asset_type != 'storable'"/>
+<!--                            <field name="transfer_date" invisible="asset_type != 'storable'"/>-->
                             <field name="usage_month" invisible="asset_type != 'storable'"/>
                             <field name="upgrade_ssd" invisible="asset_type != 'storable'"/>
                             <field name="spec_type" invisible="asset_type != 'storable'"/>
-                            <field name="status" invisible="asset_type != 'storable'"/>
                             <field name="validity_days" invisible="asset_type != 'storable'"/>
                             <field name="current_date" invisible="asset_type != 'storable'"/>
                             <field name="usage_day" invisible="asset_type != 'storable'"/>
                             <field name="depreciation" invisible="asset_type != 'storable'"/>
                             <field name="current_value" invisible="asset_type != 'storable'"/>
                             <field name="remarks"/>
+                            <field name="status"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -94,6 +96,7 @@
                     <field name="product_name"/>
                     <field name="value"/>
                     <field name="purchase_date"/>
+                    <field name="status"/>
                 </tree>
             </field>
         </record>
