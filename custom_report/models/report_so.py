@@ -100,7 +100,7 @@ class InheritSaleOrder(models.Model):
                 if len(crm_ids.tag_ids)>1:
                     tags = ", ".join(tag.name or '' for tag in crm_ids.tag_ids)
                 else:
-                    tags = crm_ids.tags_ids.name
+                    tags = crm_ids.tag_ids.name
                 tags_info = tags+', '+so_name
             else:
                 tags_info = so_name
