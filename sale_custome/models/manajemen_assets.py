@@ -132,7 +132,8 @@ class ManajemenAssets(models.Model):
         for line in self:
             line.expired_date = False
             if line.purchase_date and line.days_number:
-                exp = line.purchase_date + timedelta(days=int(line.days_number))
+                number_exp = int(line.days_number) - 1
+                exp = line.purchase_date + timedelta(days=number_exp)
                 line.expired_date = str(exp)
 
     def write(self, vals):
