@@ -49,7 +49,6 @@ class ManufacturWizard(models.TransientModel):
             })
             if create_mo:
                 create_mo.action_confirm()
-                create_mo.product_qty = line.product_qty
             if create_mo:
                 inquiry_id = self.env.context.get('inquiry_id', False)
                 inquiry = self.env['inquiry.inquiry'].search([('id','=',int(inquiry_id))])

@@ -150,12 +150,14 @@ class MrpProductionInherith(models.Model):
                     [('production_id.mo_id', '=', int(line.id)), ('product_id', '=', lines.product_id.id),
                      ('state', '=', 'done')])
                 if report_line:
+                    line.state = 'progress'
                     jumlah = 0
                     for consume in report_line:
                         jumlah += consume.qty_consume
 
                     lines.quantity = jumlah
                     lines.picked = True
+                    lines.manual_consumption = True
 
     def action_count_report(self):
         for line in self:
