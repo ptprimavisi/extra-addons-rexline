@@ -155,6 +155,7 @@ class MrpProductionInherith(models.Model):
                         jumlah += consume.qty_consume
 
                     lines.quantity = jumlah
+                    lines.picked = True
 
     def action_count_report(self):
         for line in self:
