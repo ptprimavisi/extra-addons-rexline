@@ -46,6 +46,9 @@ class PurchaseRequisition(models.Model):
     department_id = fields.Many2one('hr.department', default=lambda self: self.env['hr.employee'].search(
         [('user_id', '=', self.env.user.id)]).department_id.id)
     requisition_date = fields.Date(default=lambda self: datetime.now())
+    purpose = fields.Char()
+    due_date = fields.Date()
+    ref = fields.Char()
     is_ga = fields.Boolean(compute='_compute_ga')
     is_purchase = fields.Boolean(compute='_compute_purchase')
     state = fields.Selection([
@@ -65,6 +68,7 @@ class PurchaseRequisition(models.Model):
     ], default="ga")
     akses_quot = fields.Boolean(compute="_akses_quot")
     akses_proccess = fields.Boolean(compute="_akses_proccess")
+    it_id = fields.Many2one('it.request')
 
     def _akses_quot(self):
         for line in self:

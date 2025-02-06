@@ -86,6 +86,21 @@
             </field>
         </record>
 
+        <record id="assets_filtered_view" model="ir.ui.view">
+            <field name="name">manajemen.assets.filtered.view</field>
+            <field name="model">manajemen.assets</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Hardware" name="hardware" domain="[('asset_type', '=', 'storable')]"/>
+                        <filter string="Software" name="software" domain="[('asset_type', '=', 'consumable')]"/>
+<!--                        <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>-->
+                        <field name="name"/>
+
+                    </search>
+            </field>
+        </record>
+
         <record id="manajemen_assets_tree_view" model="ir.ui.view">
             <field name="name">manajemen.assets.tree</field>
             <field name="model">manajemen.assets</field>
@@ -101,18 +116,36 @@
             </field>
         </record>
 
-        <record id="action_manajemen_assets" model="ir.actions.act_window">
-            <field name="name">Product Assets</field>
+        <record id="action_manajemen_assets_hardware" model="ir.actions.act_window">
+            <field name="name">Assets Hardware</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">manajemen.assets</field>
+            <field name="context">{"search_default_hardware":1}</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="action_manajemen_assets_software" model="ir.actions.act_window">
+            <field name="name">Assets Software</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">manajemen.assets</field>
+            <field name="context">{"search_default_software":1}</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <menuitem id="menuitem_manajemen_assets"
                 name="Product Assets"
                 parent="sale_custome.maintenance_report_menu"
-                action="action_manajemen_assets"
                 sequence="20"/>
+        <menuitem id="menuitem_manajemen_assets_hardware"
+                name="Hardware"
+                parent="sale_custome.menuitem_manajemen_assets"
+                action="action_manajemen_assets_hardware"
+                sequence="20"/>
+        <menuitem id="menuitem_manajemen_assets_software"
+                name="Software"
+                parent="sale_custome.menuitem_manajemen_assets"
+                action="action_manajemen_assets_software"
+                sequence="20"/>
+
     </data>
 
     <data noupdate="1">

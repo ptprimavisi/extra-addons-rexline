@@ -36,14 +36,18 @@
                         </div>
                         <group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
-                            <field name="responsible" readonly="state not in ['confirm','ready']"/>
+                            <field name="responsible" invisible="1" readonly="state not in ['confirm','ready']"/>
                             <field name="employee_id" readonly="state not in ['confirm','ready']"/>
                             <field name="department_id" required="1" readonly="state not in ['confirm','ready']"/>
                             <field name="is_ga" invisible="1"/>
                             <field name="akses_quot" invisible="1"/>
                             <field name="akses_proccess" invisible="1"/>
                             <field name="is_purchase" invisible="1"/>
+                            <field name="it_id" string="Reference IT" readonly="1" invisible="category != 'ut'"/>
+                            <field name="purpose"/>
                             <field name="requisition_date" required="1" readonly="state not in ['confirm','ready']"/>
+                            <field name="due_date" required="1"/>
+                            <field name="ref"/>
                             <field name="category" string="Category Product" required="1" readonly="state not in ['confirm','ready']"/>
 <!--                            <field name="inquiry_id" readonly="1"/>-->
 <!--                            <field name="request_date"/>-->
@@ -106,8 +110,10 @@
                 <tree>
                     <field name="name" string="Number"/>
                     <field name="category" string="Requisition Category"/>
-                    <field name="responsible" string="Requisition Responsible"/>
+                    <field name="purpose" string="Purpose"/>
+<!--                    <field name="responsible" string="Requisition Responsible"/>-->
                     <field name="requisition_date" string="Requisition Date"/>
+                    <field name="due_date" string="Due Date"/>
                     <field name="state" string="Stage"/>
                 </tree>
             </field>

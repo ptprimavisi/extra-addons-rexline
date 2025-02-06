@@ -1,5 +1,6 @@
 <odoo>
     <menuitem id="maintenance_report_menu" name="IT Management" sequence="20" groups="sale_custome.it_custom_group"/>
+    <menuitem id="it_request_root" name="IT Request" sequence="21"/>
     <data>
         <record id="maintenance_report_form_view" model="ir.ui.view">
             <field name="name">maintenance.report.form.view</field>
@@ -42,7 +43,7 @@
         <record id="seq_maint_report" model="ir.sequence">
             <field name="name">Maintenance Report</field>
             <field name="code">MNT</field>
-            <field name="prefix">MNT/%(y)s/000/</field>
+            <field name="prefix">MNT/%(y)s/000</field>
             <field name="company_id" eval="False"/>
         </record>
 
@@ -71,6 +72,98 @@
         sequence="1"
         parent="maintenance_report_menu"
         action="action_maintenance_report"
+        />
+
+        <record id="it_request_form_view" model="ir.ui.view">
+            <field name="name">it.request.form.view</field>
+            <field name="model">it.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_create_mrf" string="Create Purchase Requisition" type="object" groups="sale_custome.it_custom_group" invisible="id == False or state != 'done'"/>
+<!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_requisition"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-list">
+                                    <field name="count_requisition" widget="statinfo" string="Purchase Requisition"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id" required="1"/>
+                                <field name="employee_id" required="1"/>
+                            </group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <group>
+                                <field name="department_id" required="1"/>
+                                <field name="date_request" required="1"/>
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <group string="Detail Request" name="detail_request" priority="1">
+                                    <field name="description" string="Request Description" required="1"/>
+                                    <field name="justification" required="1"/>
+                                    <field name="estimate_price" string="Estimate Price (IDR)" required="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="seq_it_req" model="ir.sequence">
+            <field name="name">IT Request</field>
+            <field name="code">ITR</field>
+            <field name="prefix">IT-REQ/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="it_request_tree_view" model="ir.ui.view">
+            <field name="name">it.request.tree.view</field>
+            <field name="model">it.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="employee_id" required="1"/>
+                    <field name="department_id" required="1"/>
+                    <field name="date_request" required="1"/>
+                    <field name="state" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_it_request" model="ir.actions.act_window">
+            <field name="name">IT Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">it.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="it_request_menuitem"
+        name="IT Request"
+        sequence="1"
+        parent="it_request_root"
+        action="action_it_request"
         />
     </data>
 </odoo>
