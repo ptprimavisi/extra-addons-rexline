@@ -119,5 +119,9 @@
 
             </field>
         </record>
+
+        <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="domain">[('state', 'in', ['draft', 'sent'])]</field>
+        </record>
     </data>
 </odoo>

@@ -570,6 +570,7 @@ class CrmLead(models.Model):
     def create(self, vals):
         # if vals.get('name', '/') == '/':
         vals['inquiry_name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
+        vals['name'] = vals['name'].upper()
         return super(CrmLead, self).create(vals)
 
     def _compute_isApprove(self):
