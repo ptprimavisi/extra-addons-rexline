@@ -7,6 +7,7 @@ class PurchaseWizard(models.TransientModel):
 
     mrf_id = fields.Many2one('mrf.mrf')
     partner_id = fields.Many2one('res.partner')
+    picking_type_id = fields.Many2one('stock.picking.type', domain="[('code','=','incoming')]")
     order_line = fields.One2many('order.line.wizard', 'order_id')
 
     def action_confirm(self):
@@ -36,6 +37,7 @@ class PurchaseWizard(models.TransientModel):
                 'partner_id': line.partner_id.id,
                 'source_doc': doc,
                 'paymen_term_id' : line.partner_id.property_supplier_payment_term_id.id or False,
+                'picking_type_id': line.picking_type_id.id,
                 'order_line': list_line
             })
             po.button_confirm()

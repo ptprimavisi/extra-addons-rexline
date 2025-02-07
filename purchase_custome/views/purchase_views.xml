@@ -38,7 +38,7 @@
                                     class="oe_stat_button"
                                     invisible="count_quotation == 0"
                                     icon="fa-list">
-                                    <field name="count_quotation" widget="statinfo" string="Quotations"/>
+                                    <field name="count_quotation" widget="statinfo" string="Purchase Order"/>
                             </button>
                         </div>
                         <div class="oe_title">
@@ -47,21 +47,29 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="partner_id" string="Customer" required="1"/>
-                            <field name="inquiry_id" readonly="1"/>
-                            <field name="request_date"/>
-                            <field name="to_inventory" invisible="1"/>
-                            <field name="due_date" required="1"/>
-                            <field name="quotation_state" invisible="1"/>
-                            <field name="is_accounting" invisible="1"/>
+                            <group>
+                                <field name="partner_id" string="Customer" required="1"/>
+                                <field name="inquiry_id" readonly="1"/>
+                                <field name="request_date"/>
+                                <field name="to_inventory" invisible="1"/>
+                                <field name="picking_type_id" string="Deliver To" required="1"/>
+                            </group>
+                            <group>
+                                <field name="due_date" required="1"/>
+                                <field name="validity"/>
+                                <field name="lead_time"/>
+                                <field name="quotation_state" invisible="1"/>
+                                <field name="is_accounting" invisible="1"/>
+                            </group>
+
+
 <!--                            <field name="bol" invisible="1"/>-->
 <!--                            <button string="Cretae Quotation" name="action_rfq" type="object" class="oe_highlight" invisible="id == False"/>-->
                         </group>
-                        <group>
-                            <field name="validity"/>
-                            <field name="lead_time"/>
-                        </group>
-                        <button string="Create Quotation" name="action_rfq" type="object" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
+<!--                        <group>-->
+<!--                            -->
+<!--                        </group>-->
+                        <button string="Create Purchase Order" name="action_rfq" type="object" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
                         <notebook>
 <!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
                             <page string="Product Lines">
@@ -75,7 +83,7 @@
                                         <field name="description"/>
                                         <field name="specs_detail" string="Specs detail"/>
                                         <field name="brand" required="1"/>
-                                        <field name="count_quotation"/>
+                                        <field name="count_quotation" invisible="1"/>
                                         <field name="quantity"/>
                                         <field name="qty_onhand" string="On Hand"/>
                                         <field name="avilable_qty"/>
@@ -85,7 +93,10 @@
                                         <field name="product_uom_id"/>
                                         <field name="unit_weight" string="Unit weight/kg"/>
                                         <field name="total_weight" string="Total weight/kg"/>
+                                        <field name="qty_budget" readonly="is_accounting != True"/>
                                         <field name="budget" readonly="is_accounting != True"/>
+                                        <field name="subtotal_budget" readonly="is_accounting != True"/>
+                                        <field name="budget_use" readonly="1"/>
                                         <field name="best_price"/>
                                         <field name="year" readonly="is_accounting != True"/>
                                         <field name="unit_cost"/>
@@ -108,6 +119,7 @@
                                 <group class="oe_subtotal_footer oe_right" >
                                     <field name="total_cost" widget="monetary" string="Total Cost" readonly="1"/>
                                     <field name="total_budget" widget="monetary" string="Total Budget" readonly="1"/>
+                                    <field name="total_budget_use" widget="monetary" string="Total Budget Use" readonly="1"/>
 <!--                                <field name="amount_total" invisible="1"/>-->
 <!--                                <field name="amount_fix" string="Total Invoice Setelah Potongan" required="1"/>-->
                                 </group>

@@ -14,6 +14,7 @@ class RfqWizard(models.TransientModel):
     sale_id = fields.Many2one('sale.order')
     validity = fields.Datetime()
     lead_time = fields.Datetime()
+    picking_type_id = fields.Many2one('stock.picking.type', domain="[('code','=','incoming')]")
 
     # state = fields.Selection([
     #     ('rfp', 'Request for Price'),
@@ -56,6 +57,7 @@ class RfqWizard(models.TransientModel):
                 'validity': str(line.validity),
                 'lead_time': str(line.lead_time),
                 "inquiry_id": line.inquiry_id.id,
+                "picking_type_id": line.picking_type_id.id,
                 "mrf_line_ids": line_list
             }
             mrf.create(data)

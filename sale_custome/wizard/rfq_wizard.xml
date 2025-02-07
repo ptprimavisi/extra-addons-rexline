@@ -21,6 +21,7 @@
                         <group>
                             <field name="lead_time" required="1"/>
                             <field name="validity" required="1"/>
+                            <field name="picking_type_id" string="Deliver To" required="1"/>
                         </group>
                         <notebook>
                             <page string="Product Lines">

@@ -1,6 +1,6 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class AcoountMove(models.Model):
@@ -68,9 +68,10 @@ class PurchaseOrderLine(models.Model):
     def _compute_source_po(self):
         for line in self:
             line.source_po = False
+            three_years_ago = (datetime.today() - timedelta(days=3 * 365)).strftime('%Y-%m-%d')
             order_lines = self.env['purchase.order.line'].search(
                 [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
-                 ('qty_received', '!=', 0)])
+                 ('qty_received', '!=', 0), ('date_planned','>=',three_years_ago)])
             if order_lines:
                 min_price_line = min(order_lines, key=lambda x: x.price_unit)
 
@@ -79,9 +80,10 @@ class PurchaseOrderLine(models.Model):
     def _compute_best_price(self):
         for line in self:
             line.best_price = 0
+            three_years_ago = (datetime.today() - timedelta(days=3 * 365)).strftime('%Y-%m-%d')
             order_lines = self.env['purchase.order.line'].search(
                 [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
-                 ('qty_received', '!=', 0)])
+                 ('qty_received', '!=', 0), ('date_planned','>=',three_years_ago)])
             if order_lines:
                 min_price_unit = min(order_lines.mapped('price_unit'))
                 line.best_price = min_price_unit
@@ -165,6 +167,8 @@ class MaterialRequestForm(models.Model):
     ], default="draft")
     total_cost = fields.Float(compute="_compute_total_cost")
     total_budget = fields.Float(compute="_compute_total_budget")
+    total_budget_use = fields.Float(compute="_compute_total_budget_use")
+    picking_type_id = fields.Many2one('stock.picking.type', domain="[('code','=','incoming')]")
 
     def unlink(self):
         for line in self:
@@ -197,8 +201,17 @@ class MaterialRequestForm(models.Model):
         for line in self:
             cost = 0
             for lines in line.mrf_line_ids:
-                cost += lines.budget * lines.quantity
+                cost += lines.subtotal_budget
             line.total_budget = cost
+
+    @api.depends('mrf_line_ids.budget_use')
+    def _compute_total_budget_use(self):
+        for line in self:
+            cost = 0
+            for lines in line.mrf_line_ids:
+                cost += lines.budget_use
+            line.total_budget_use = cost
+
 
     def _compute_acc_user(self):
         for line in self:
@@ -226,6 +239,8 @@ class MaterialRequestForm(models.Model):
             for lines in line.mrf_line_ids:
                 if lines.budget == 0:
                     raise UserError('Budget cannot be empty!')
+                if lines.qty_budget == 0:
+                    raise UserError('Please fill Qty Budget first!')
             line.state = 'confirm'
 
     def action_inventory(self):
@@ -315,6 +330,7 @@ class MaterialRequestForm(models.Model):
                     'target': 'new',
                     'context': {
                         'default_mrf_id': int(line.id),
+                        'default_picking_type_id': line.picking_type_id.id,
                         'default_order_line': list_product
                     }
                 }
@@ -350,8 +366,11 @@ class MrfLine(models.Model):
         # compute='_compute_product_uom_id', store=True, readonly=False, precompute=True,
         # ondelete="restrict",
     )
+    qty_budget = fields.Float()
     budget = fields.Float()
-    best_price = fields.Float(compute="_compute_bestprice")
+    subtotal_budget = fields.Float(compute="_compute_sub_budget")
+    budget_use = fields.Float(compute="_budget_use", store=True)
+    best_price = fields.Float(compute="_compute_bestprice", store=True)
     mrf_id = fields.Many2one('mrf.mrf')
     vendor_id = fields.Many2one('res.partner', string='Vendor', domain="[('supplier_rank', '!=', 0)]")
     attachment = fields.Binary(string='Attachment', attachment=True)
@@ -363,6 +382,20 @@ class MrfLine(models.Model):
         ('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)])
     count_quotation = fields.Integer(compute="_compute_quotation")
     year = fields.Float()
+
+    @api.depends('product_id')
+    def _budget_use(self):
+        for line in self:
+            purchase = self.env['purchase.order.line'].search(
+                [('order_id.mrf_id', '=', int(line.mrf_id.id)), ('state', '=', 'purchase'),
+                 ('product_id', '=', line.product_id.id)])
+            line.budget_use = sum(purchase.mapped('price_unit'))
+
+
+    @api.depends('qty_budget','budget')
+    def _compute_sub_budget(self):
+        for line in self:
+            line.subtotal_budget = line.qty_budget * line.budget
 
     def _compute_bestprice(self):
         for line in self:

@@ -9,6 +9,7 @@
                         <group>
                             <field name="mrf_id" string="No Mrf" readonly="1" required="1"/>
                             <field name="partner_id" string="Vendor" required="1"/>
+                            <field name="picking_type_id" string="Deliver To" required="1"/>
 <!--                            <field name="date" string="Request Date" readonly="1"/>-->
                         </group>
                         <notebook>
