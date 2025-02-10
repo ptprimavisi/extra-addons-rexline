@@ -1,5 +1,6 @@
 <odoo>
     <data>
+        <menuitem id="cost_control_mrf" groups="sale_custome.cost_control" name="Cost Control" sequence="10"/>
         <record id="view_move_form_inherit_purchase" model="ir.ui.view">
         <field name="name">account.move.inherit.purchase</field>
         <field name="model">account.move</field>
@@ -28,7 +29,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,to_inventory,request,confirm,cancel"/>
                         <button name="action_inventory" string="To Inventory" type="object" class="oe_highlight" invisible="state != 'draft'"/>
                         <button name="request_budget" string="Request Budget" type="object" groups="sale_custome.inventory_custom_group" class="oe_highlight" invisible="state != 'to_inventory'"/>
-                        <button name="action_confirm" string="Confirm" class="oe_highlight" groups="sale_custome.accounting_custom_group" type="object" invisible="state == 'confirm' or id == False or state != 'request' or state == 'cancel'"/>
+                        <button name="action_confirm" string="Confirm" class="oe_highlight" groups="sale_custome.cost_control" type="object" invisible="state == 'confirm' or id == False or state != 'request' or state == 'cancel'"/>
                         <button name="action_cancel" confirm="Do you want to cancel this proccess?" string="Cancel" type="object" invisible="state == 'draft' or id == False or state == 'cancel'"/>
                     </header>
                     <sheet>
@@ -95,7 +96,7 @@
                                         <field name="total_weight" string="Total weight/kg"/>
                                         <field name="qty_budget" readonly="is_accounting != True"/>
                                         <field name="budget" readonly="is_accounting != True"/>
-                                        <field name="subtotal_budget" readonly="is_accounting != True"/>
+                                        <field name="subtotal_budget"/>
                                         <field name="budget_use" readonly="1"/>
                                         <field name="best_price"/>
                                         <field name="year" readonly="is_accounting != True"/>
@@ -224,7 +225,7 @@
 
         <menuitem id="menu_mrf" name="Material Request" parent="purchase.menu_procurement_management" action="action_mrf_mrf" sequence="100"/>
         <menuitem id="menu_mrf_inventory" name="Material Request" parent="stock.menu_stock_warehouse_mgmt" action="action_mrf_mrf_inventory" sequence="100"/>
-        <menuitem id="menu_mrf_account" name="Material Request" parent="account.menu_finance" action="action_mrf_mrf_account" sequence="6"/>
+        <menuitem id="menu_mrf_account" name="Material Request" parent="cost_control_mrf" action="action_mrf_mrf_account" sequence="6"/>
 
     </data>
 </odoo>

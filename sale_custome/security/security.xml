@@ -48,6 +48,10 @@
             <field name="name">IT Custom Access</field>
         </record>
 
+        <record model="res.groups" id="cost_control">
+            <field name="name">Cost Control Custom Access</field>
+        </record>
+
       
     </data>
 </odoo>

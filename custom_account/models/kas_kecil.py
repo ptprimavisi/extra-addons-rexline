@@ -692,3 +692,65 @@ class AccountMoveInherit(models.Model):
     dana_id = fields.Many2one('permintaan.dana')
     realisasi_id = fields.Many2one('realisasi.dana')
     refund_id = fields.Many2one('refund.dana')
+    detail_ids = fields.One2many('detail.move.product', 'move_id')
+    is_dp = fields.Boolean()
+
+
+class DetailMoveProduct(models.Model):
+    _name = 'detail.move.product'
+
+    partner_id = fields.Many2one('res.partner', related="move_id.partner_id")
+    product_id = fields.Many2one('product.product')
+    currency_id = fields.Many2one('res.currency', related="move_id.currency_id")
+    name = fields.Text()
+    quantity = fields.Float()
+    uom_id = fields.Many2one('uom.uom')
+    price_unit = fields.Float()
+    discount = fields.Float()
+    tax_ids = fields.Many2many('account.tax')
+    subtotal = fields.Float(compute="_compute_subtotal")
+    move_id = fields.Many2one('account.move')
+    tax_base = fields.Monetary(
+        string='Tax Base',
+        currency_field='currency_id',
+        compute="_compute_tax_base",
+        store=True,
+        help="Calculated tax base as 11/12 of the subtotal."
+    )
+
+    @api.depends('quantity', 'price_unit', 'discount')
+    def _compute_tax_base(self):
+        for rec in self:
+            rec.tax_base = (11 / 12) * ((rec.quantity * rec.price_unit) - rec.discount) if rec.quantity and rec.price_unit else 0.0
+
+    @api.onchange('product_id')
+    def onchange_product(self):
+        for line in self:
+            line.uom_id = False
+            line.tax_ids = False
+            line.price_unit = 0
+            if line.product_id:
+                # raise UserError('test')
+                line.uom_id = line.product_id.uom_id.id
+                line.price_unit = line.product_id.lst_price
+                line.tax_ids = line.product_id.taxes_id
+                line.quantity = 1
+
+    @api.depends('quantity','discount','price_unit','tax_ids','currency_id')
+    def _compute_subtotal(self):
+        for line in self:
+            line_discount_price_unit = line.price_unit * (1 - (line.discount / 100.0))
+            subtotal = line.quantity * line_discount_price_unit
+            if line.tax_ids:
+                taxes_res = line.tax_ids.compute_all(
+                    line_discount_price_unit,
+                    quantity=line.quantity,
+                    currency=line.currency_id,
+                    product=line.product_id,
+                    partner=line.partner_id,
+                    is_refund=False,
+                )
+                # line.price_subtotal = taxes_res['total_excluded']
+                line.subtotal = taxes_res['total_included']
+            else:
+                line.subtotal = subtotal

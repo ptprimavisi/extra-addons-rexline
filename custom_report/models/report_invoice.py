@@ -118,17 +118,32 @@ class InheritInvoice(models.Model):
                         'amount':f"{line['tax_amount']:,.2f}"})
 
             product_line=[]
-            move_lines = self.env['account.move.line'].search([('move_id','=',rec.id),('product_id','!=',False)])
+            move_lines = self.env['account.move.line'].search([('move_id','=',rec.id),('product_id','!=',False),('display_type','=','product')])
+            dp_info = self.env['detail.move.product'].search([('move_id','=',rec.id),('product_id','!=',False)])
             subtotal=0
-            if move_lines:
-                for lines in move_lines:
-                    tax_name=''
-                    if lines.tax_ids:
-                        tax_name = ", ".join(tax.name for tax in lines.tax_ids)
-                    else:
-                        tax_name='-'
-                    product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{round(lines.price_unit,2):,}",f"{round(lines.discount,2):,}",tax_name,f"{round(lines.price_subtotal,2):,}",f"{round(lines.tax_base,2):,}"])
-                    subtotal+=lines.price_subtotal
+            if rec.is_dp:
+                if dp_info:
+                    for lines in dp_info:
+                        tax_name = ''
+                        if lines.tax_ids:
+                            tax_name = ", ".join(tax.name for tax in lines.tax_ids)
+                        else:
+                            tax_name = '-'
+                        product_line.append([lines.name, str(lines.quantity) + ' ' + str(lines.uom_id.name),
+                                             f"{round(lines.price_unit, 2):,}", f"{round(lines.discount, 2):,}",
+                                             tax_name, f"{round(lines.subtotal, 2):,}",
+                                             f"{round(lines.tax_base, 2):,}"])
+                        subtotal += lines.subtotal
+            else:
+                if move_lines:
+                    for lines in move_lines:
+                        tax_name=''
+                        if lines.tax_ids:
+                            tax_name = ", ".join(tax.name for tax in lines.tax_ids)
+                        else:
+                            tax_name='-'
+                        product_line.append([lines.name,str(lines.quantity)+' '+str(lines.product_uom_id.name),f"{round(lines.price_unit,2):,}",f"{round(lines.discount,2):,}",tax_name,f"{round(lines.price_subtotal,2):,}",f"{round(lines.tax_base,2):,}"])
+                        subtotal+=lines.price_subtotal
             subtotal = f"{round(subtotal,2):,}"
 
             total_tax_base = f"{round(rec.amount_tax_base,2):,}"

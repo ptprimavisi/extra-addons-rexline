@@ -38,7 +38,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='tax_totals']" position="before">
-                    <field name="amount_tax_base"/>
+                    <field name="amount_tax_base" string="DPP Nilai Lain"/>
                 </xpath>
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_total']" position="attributes">
                     <attribute name="invisible">is_sales == False</attribute>
@@ -114,7 +114,7 @@
                     <field name="tax_base" optional="hide"/>
                 </xpath>
                 <xpath expr="//field[@name='tax_totals']" position="before">
-                    <field name="amount_tax_base"/>
+                    <field name="amount_tax_base" string="DPP Nilai Lain"/>
                 </xpath>
 
             </field>

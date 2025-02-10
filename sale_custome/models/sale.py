@@ -385,6 +385,8 @@ class SaleOrderInherith(models.Model):
         help="Total Amount of Tax Base"
     )
 
+
+
     @api.depends('order_line')
     def _compute_amount_tax_base(self):
         for rec in self:

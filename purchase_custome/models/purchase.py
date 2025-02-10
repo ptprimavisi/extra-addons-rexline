@@ -218,7 +218,7 @@ class MaterialRequestForm(models.Model):
             user = self.env.uid
             users = self.env['res.users'].browse(user)
             line.is_accounting = False
-            if users.is_accounting:
+            if self.env.user.has_group('sale_custome.cost_control'):
                 line.is_accounting = True
 
     @api.model
