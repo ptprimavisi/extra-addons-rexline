@@ -71,7 +71,7 @@ class PurchaseOrderLine(models.Model):
             three_years_ago = (datetime.today() - timedelta(days=3 * 365)).strftime('%Y-%m-%d')
             order_lines = self.env['purchase.order.line'].search(
                 [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
-                 ('qty_received', '!=', 0), ('date_planned','>=',three_years_ago)])
+                 ('qty_received', '!=', 0), ('date_planned', '>=', three_years_ago)])
             if order_lines:
                 min_price_line = min(order_lines, key=lambda x: x.price_unit)
 
@@ -83,7 +83,7 @@ class PurchaseOrderLine(models.Model):
             three_years_ago = (datetime.today() - timedelta(days=3 * 365)).strftime('%Y-%m-%d')
             order_lines = self.env['purchase.order.line'].search(
                 [('product_id', '=', line.product_id.id), ('order_id.state', '=', 'purchase'),
-                 ('qty_received', '!=', 0), ('date_planned','>=',three_years_ago)])
+                 ('qty_received', '!=', 0), ('date_planned', '>=', three_years_ago)])
             if order_lines:
                 min_price_unit = min(order_lines.mapped('price_unit'))
                 line.best_price = min_price_unit
@@ -170,6 +170,10 @@ class MaterialRequestForm(models.Model):
     total_budget_use = fields.Float(compute="_compute_total_budget_use")
     picking_type_id = fields.Many2one('stock.picking.type', domain="[('code','=','incoming')]")
 
+    def action_print(self):
+        return self.env.ref('custom_report.action_report_mrf').with_context(
+            paperformat=4, landscape=False).report_action(self)
+
     def unlink(self):
         for line in self:
             mrf_line = self.env['mrf.line'].search([('mrf_id', '=', int(line.id))])
@@ -211,7 +215,6 @@ class MaterialRequestForm(models.Model):
             for lines in line.mrf_line_ids:
                 cost += lines.budget_use
             line.total_budget_use = cost
-
 
     def _compute_acc_user(self):
         for line in self:
@@ -391,8 +394,7 @@ class MrfLine(models.Model):
                  ('product_id', '=', line.product_id.id)])
             line.budget_use = sum(purchase.mapped('price_unit'))
 
-
-    @api.depends('qty_budget','budget')
+    @api.depends('qty_budget', 'budget')
     def _compute_sub_budget(self):
         for line in self:
             line.subtotal_budget = line.qty_budget * line.budget

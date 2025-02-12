@@ -11,6 +11,7 @@
         'views/sale_order.xml',
         'report/report_so.xml',
         'report/report_quotation.xml',
+        'report/mrf_report.xml',
     ],
     'assets': {
         'web.assets_backend': [
