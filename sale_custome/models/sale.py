@@ -575,6 +575,7 @@ class CrmLead(models.Model):
         vals['name'] = vals['name'].upper()
         return super(CrmLead, self).create(vals)
 
+
     def _compute_isApprove(self):
         for line in self:
             line.is_approve = False
@@ -646,6 +647,8 @@ class CrmLead(models.Model):
         for record in self:
             old_category_value = record.category_project
             old_note = record.description
+        if 'name' in vals and vals['name']:
+            vals['name'] = vals['name'].upper()
 
             # Panggil metode 'write' dari superclass
         res = super(CrmLead, self).write(vals)
