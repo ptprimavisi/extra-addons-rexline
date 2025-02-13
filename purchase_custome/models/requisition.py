@@ -70,6 +70,16 @@ class PurchaseRequisition(models.Model):
     akses_proccess = fields.Boolean(compute="_akses_proccess")
     it_id = fields.Many2one('it.request')
 
+    def write(self, vals):
+        res = super(PurchaseRequisition, self).write(vals)
+        for record in self:
+            if 'x_review_result' in vals:
+                x_result = record.x_review_result
+                if x_result == 'approved':
+                    vals['state'] = 'to_purchase'
+        res = super(PurchaseRequisition, self).write(vals)
+        return res
+
     def _akses_quot(self):
         for line in self:
             line.akses_quot = True

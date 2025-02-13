@@ -172,7 +172,7 @@ class MaterialRequestForm(models.Model):
 
     def action_print(self):
         return self.env.ref('custom_report.action_report_mrf').with_context(
-            paperformat=4, landscape=False).report_action(self)
+            paperformat=4, landscape=True).report_action(self)
 
     def unlink(self):
         for line in self:
