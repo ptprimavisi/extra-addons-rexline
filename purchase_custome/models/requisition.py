@@ -239,6 +239,7 @@ class RequisitionLine(models.Model):
     select = fields.Boolean(default=True)
     approve = fields.Boolean(default=True)
     product_id = fields.Many2one('product.product')
+    product_request = fields.Char()
     name = fields.Char()
     quantity = fields.Float(default=1)
     qty_ordered = fields.Float(compute="_compute_qty_ordered")
@@ -248,6 +249,17 @@ class RequisitionLine(models.Model):
     subtotal = fields.Float(compute='_compute_subtotal')
     requisition_id = fields.Many2one('purchase.requisition')
     is_it = fields.Boolean(compute="_compute_is_it")
+    brand = fields.Char()
+    remark = fields.Char()
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'To Confirm'),
+        ('ready', 'Confirm'),
+        ('to_purchase', 'Process to Purchase'),
+        ('po', 'Purchase Order Created'),
+        ('cancel', 'Cancel'),
+    ], related="requisition_id.state")
+    # state = fields.Char(related="requisition_id.state")
 
     def _compute_qty_ordered(self):
         for line in self:

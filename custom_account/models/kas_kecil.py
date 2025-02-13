@@ -110,6 +110,56 @@ class PermintaanDana(models.Model):
     count_refund = fields.Float(compute="_compute_count_refund")
     bank_note = fields.Text()
     realisasi_status = fields.Char(compute="_compute_state_realisasi")
+    manager_approve = fields.Boolean(compute="_compute_manager_approve")
+    gm_approve = fields.Boolean(compute="_compute_gm_approve")
+    coo_approve = fields.Boolean(compute="_compute_coo_approve")
+
+    def _compute_manager_approve(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            line.manager_approve = False
+            if line.department.manager_id.user_id:
+                approval = self.env['multi.approval'].search([('origin_ref','=',origin_ref)])
+                print(origin_ref)
+                if approval:
+                    multi_approval_line = self.env['multi.approval.line'].search([('approval_id','=',int(approval.id)), ('user_id','=',line.department.manager_id.user_id.id),
+                                                                                  ('state','=','Approved')])
+                    if multi_approval_line:
+                        line.manager_approve = True
+
+    def _compute_gm_approve(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            line.gm_approve = False
+            if line.department.manager_id.user_id:
+                approval = self.env['multi.approval'].search([('origin_ref','=',origin_ref)])
+                print(origin_ref)
+                if approval:
+                    gm = self.env['general.manager'].search([], limit=1)
+                    multi_approval_line = self.env['multi.approval.line'].search([('approval_id','=',int(approval.id)), ('user_id','=',int(gm.general_manager.user_id.id)),
+                                                                                  ('state','=','Approved')])
+                    if multi_approval_line:
+                        line.gm_approve = True
+
+    def _compute_coo_approve(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            line.coo_approve = False
+            if line.department.manager_id.user_id:
+                approval = self.env['multi.approval'].search([('origin_ref','=',origin_ref)])
+                print(origin_ref)
+                if approval:
+                    gm = self.env['coo.coo'].search([], limit=1)
+                    multi_approval_line = self.env['multi.approval.line'].search([('approval_id','=',int(approval.id)), ('user_id','=',int(gm.coo.user_id.id)),
+                                                                                  ('state','=','Approved')])
+                    if multi_approval_line:
+                        line.coo_approve = True
 
     def _compute_state_realisasi(self):
         for line in self:

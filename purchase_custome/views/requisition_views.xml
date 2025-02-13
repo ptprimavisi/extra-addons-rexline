@@ -45,9 +45,9 @@
                             <field name="is_purchase" invisible="1"/>
                             <field name="it_id" string="Reference IT" readonly="1" invisible="category != 'ut'"/>
                             <field name="purpose"/>
-                            <field name="requisition_date" required="1" readonly="state not in ['confirm','ready']"/>
+                            <field name="requisition_date" required="1" readonly="1"/>
                             <field name="due_date" required="1"/>
-                            <field name="ref"/>
+                            <field name="ref" invisible="1"/>
                             <field name="category" string="Category Product" required="1" readonly="state not in ['confirm','ready']"/>
 <!--                            <field name="inquiry_id" readonly="1"/>-->
 <!--                            <field name="request_date"/>-->
@@ -62,16 +62,21 @@
                                 <field name="requisition_line" required="1">
                                     <tree editable="bottom">
                                         <field name="select" invisible="is_it == False and approve == False"/>
-                                        <field name="is_it" invisible="1" nolabel="1"/>
-                                        <field name="approve" invisible="is_it == False"/>
-                                        <field name="product_id" string="Product" invisible="is_it == False and approve == False"/>
-                                        <field name="name" string="Description" invisible="is_it == False and approve == False"/>
+<!--                                        <field name="product_id" string="Product" invisible="is_it == False and approve == False or state not in ['to_purchase','po']"/>-->
+                                        <field name="product_id" string="Product Purchase" groups="sale_custome.purchasing_custom_group"/>
+                                        <field name="product_request" required="1"/>
+                                        <field name="name" string="Specification" invisible="is_it == False and approve == False"/>
+                                        <field name="brand" invisible="is_it == False and approve == False"/>
                                         <field name="quantity" invisible="is_it == False and approve == False"/>
-                                        <field name="qty_ordered" invisible="is_it == False and approve == False"/>
-                                        <field name="qty_received" invisible="is_it == False and approve == False"/>
+                                        <field name="qty_ordered" string="Quantity Purchase" invisible="is_it == False and approve == False"/>
+<!--                                        <field name="qty_received" invisible="is_it == False and approve == False"/>-->
                                         <field name="product_uom" invisible="is_it == False and approve == False"/>
                                         <field name="price_unit" invisible="is_it == False and approve == False"/>
                                         <field name="subtotal" readonly="1" invisible="is_it == False and approve == False"/>
+                                        <field name="remark" invisible="is_it == False and approve == False"/>
+                                        <field name="approve" invisible="1" nolabel="1"/>
+                                        <field name="state" invisible="1" nolabel="1"/>
+                                        <field name="is_it" invisible="1" nolabel="1"/>
                                     </tree>
                                 </field>
                             </page>

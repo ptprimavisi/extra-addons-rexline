@@ -106,8 +106,9 @@
                             </group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <group>
-                                <field name="department_id" required="1"/>
-                                <field name="date_request" required="1"/>
+                                <field name="department_id" required="1" readonly="1"/>
+                                <field name="date_request" required="1" readonly="1"/>
+                                <field name="due_date" required="1" />
                             </group>
 
                         </group>

@@ -109,6 +109,9 @@
                             <group>
                                 <field name="date_request" required="1" readonly="state == 'transfer'"/>
                                 <field name="saldo" string="Saldo" readonly="1"/>
+                                <field name="manager_approve" readonly="1"/>
+                                <field name="gm_approve" readonly="1"/>
+                                <field name="coo_approve" readonly="1"/>
                                 <field name="source_account" groups="sale_custome.accounting_custom_group" readonly="state == 'transfer'"/>
                                 <field name="journal_id" groups="sale_custome.accounting_custom_group" readonly="state == 'transfer'"/>
                             </group>

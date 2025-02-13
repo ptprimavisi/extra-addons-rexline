@@ -91,7 +91,7 @@
                                             <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                 <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                             </td>
-                                            <t t-if="docs.x_review_result == 'approved'">
+                                            <t t-if="docs.manager_approve">
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                                 </td>
@@ -118,7 +118,7 @@
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">GM</td>
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">COO</td>
                                         </tr>
-                                        <t t-if="docs.x_review_result == 'approved'">
+                                        <t t-if="docs.gm_approve and docs.coo_approve">
                                             <tr>
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
@@ -166,7 +166,7 @@
                                                 </td>
                                             </tr>
                                              <tr>
-                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Tasya</td>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Mega</td>
                                                 <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="env['hr.department'].search([('code','=','FIN')], limit=1).manager_id.name or ''"/></td>
                                             </tr>
                                             </tbody>
@@ -243,7 +243,7 @@
                                                 </td>
                                             </tr>
                                              <tr>
-                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Tasya</td>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Mega</td>
                                                 <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="env['hr.department'].search([('code','=','FIN')], limit=1).manager_id.name or ''"/></td>
                                             </tr>
                                             </tbody>
@@ -462,7 +462,7 @@
                                                 </td>
                                             </tr>
                                              <tr>
-                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Tasya</td>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Mega</td>
                                                 <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="env['hr.department'].search([('code','=','FIN')], limit=1).manager_id.name or ''"/></td>
                                             </tr>
                                             </tbody>
@@ -539,7 +539,7 @@
                                                 </td>
                                             </tr>
                                              <tr>
-                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Tasya</td>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;">Mega</td>
                                                 <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="env['hr.department'].search([('code','=','FIN')], limit=1).manager_id.name or ''"/></td>
                                             </tr>
                                             </tbody>

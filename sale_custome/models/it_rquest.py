@@ -7,10 +7,11 @@ class ItRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
-    employee_id = fields.Many2one('hr.employee')
-    department_id = fields.Many2one('hr.department')
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid, domain=lambda self: [('id', '=', self.env.uid)])
+    employee_id = fields.Many2one('hr.employee', domain=lambda self: [('user_id','=',self.env.uid)], default=lambda self: self.env['hr.employee'].search([('user_id','=',self.env.uid)], limit=1))
+    department_id = fields.Many2one('hr.department', compute="_compute_department")
     date_request = fields.Date(default=lambda self: fields.Datetime.today())
+    due_date = fields.Date()
     description = fields.Text()
     justification = fields.Text()
     estimate_price = fields.Float()
@@ -20,14 +21,21 @@ class ItRequest(models.Model):
     ], default='draft')
     count_requisition = fields.Integer(compute="_count_requisition")
 
-    @api.onchange('employee_id')
-    def oc_employee(self):
+    @api.depends('employee_id')
+    def _compute_department(self):
         for line in self:
             line.department_id = False
-            if line.employee_id:
-                if line.employee_id.department_id:
-                    # raise UserError(line.employee_id.department_id)
-                    line.department_id = line.employee_id.department_id.id
+            if line.employee_id and line.employee_id.department_id:
+                line.department_id = line.employee_id.department_id.id
+
+    # @api.onchange('employee_id')
+    # def oc_employee(self):
+    #     for line in self:
+    #         line.department_id = False
+    #         if line.employee_id:
+    #             if line.employee_id.department_id:
+    #                 # raise UserError(line.employee_id.department_id)
+    #                 line.department_id = line.employee_id.department_id.id
 
     @api.model
     def create(self, vals):
