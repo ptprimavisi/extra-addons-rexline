@@ -118,13 +118,18 @@
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">GM</td>
                                             <td style="text-align: center; height: 15px; width: 50%; border: 1px solid black;">COO</td>
                                         </tr>
-                                        <t t-if="docs.gm_approve and docs.coo_approve">
+                                        <t t-if="docs.x_has_request_approval">
                                             <tr>
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
-                                                    <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
+                                                    <t t-if="docs.gm_approve">
+                                                        <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
+                                                    </t>
+
                                                 </td>
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
-                                                    <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
+                                                    <t t-if="docs.coo_approve">
+                                                        <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
+                                                    </t>
                                                 </td>
                                             </tr>
                                             <tr>
