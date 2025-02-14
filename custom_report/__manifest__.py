@@ -12,6 +12,7 @@
         'report/report_so.xml',
         'report/report_quotation.xml',
         'report/mrf_report.xml',
+        'report/requisition_report.xml',
     ],
     'assets': {
         'web.assets_backend': [

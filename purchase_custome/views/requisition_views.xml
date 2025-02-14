@@ -9,6 +9,7 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ready,to_purchase,po,cancel"/>
                         <button string="Confirm" name="action_confirm" type="object" class="oe_highlight"  invisible="id == False or state != 'confirm'"/>
+                        <button string="Print" name="action_print" type="object"  invisible="id == False or state not in ['to_purchase','po']"/>
                         <button string="Proceed to Purchasing" name="action_to_purchase" confirm="Do you want to delegate to purchasing?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group" class="oe_highlight"  invisible="id == False or state != 'ready' or akses_proccess == False"/>
                         <button string="Create Quotation" name="action_create_quotation" confirm="Do you want to create quotation?" type="object" groups="sale_custome.hr_ga_custom_group,sale_custome.it_custom_group,sale_custome.purchasing_custom_group" class="oe_highlight"  invisible="id == False or state not in ['ready', 'to_purchase','po'] or akses_quot == False"/>
                     </header>
@@ -64,12 +65,14 @@
                                         <field name="select" invisible="is_it == False and approve == False"/>
 <!--                                        <field name="product_id" string="Product" invisible="is_it == False and approve == False or state not in ['to_purchase','po']"/>-->
                                         <field name="product_id" string="Product Purchase" groups="sale_custome.purchasing_custom_group"/>
+                                        <field name="type"/>
                                         <field name="product_request" required="1"/>
                                         <field name="name" string="Specification" invisible="is_it == False and approve == False"/>
                                         <field name="brand" invisible="is_it == False and approve == False"/>
                                         <field name="quantity" invisible="is_it == False and approve == False"/>
-                                        <field name="qty_ordered" string="Quantity Purchase" invisible="is_it == False and approve == False"/>
-<!--                                        <field name="qty_received" invisible="is_it == False and approve == False"/>-->
+                                        <field name="qty_purchase" invisible="is_it == False and approve == False"/>
+                                        <field name="qty_ordered" groups="sale_custome.purchasing_custom_group" string="Quantity Purchase" invisible="is_it == False and approve == False"/>
+                                        <field name="qty_received" groups="sale_custome.purchasing_custom_group" invisible="is_it == False and approve == False"/>
                                         <field name="product_uom" invisible="is_it == False and approve == False"/>
                                         <field name="price_unit" invisible="is_it == False and approve == False"/>
                                         <field name="subtotal" readonly="1" invisible="is_it == False and approve == False"/>

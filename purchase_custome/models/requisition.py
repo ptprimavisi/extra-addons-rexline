@@ -70,6 +70,10 @@ class PurchaseRequisition(models.Model):
     akses_proccess = fields.Boolean(compute="_akses_proccess")
     it_id = fields.Many2one('it.request')
 
+    def action_print(self):
+        return self.env.ref('custom_report.action_report_requisition').with_context(
+            paperformat=4, landscape=True).report_action(self)
+
     def write(self, vals):
         res = super(PurchaseRequisition, self).write(vals)
         for record in self:
@@ -249,9 +253,11 @@ class RequisitionLine(models.Model):
     select = fields.Boolean(default=True)
     approve = fields.Boolean(default=True)
     product_id = fields.Many2one('product.product')
+    type = fields.Char()
     product_request = fields.Char()
     name = fields.Char()
     quantity = fields.Float(default=1)
+    qty_purchase = fields.Float(default=1)
     qty_ordered = fields.Float(compute="_compute_qty_ordered")
     qty_received = fields.Float(compute="_compute_qty_received")
     product_uom = fields.Many2one('uom.uom', compute="_default_product_uom", readonly=False, precompute=True)
@@ -270,6 +276,13 @@ class RequisitionLine(models.Model):
         ('cancel', 'Cancel'),
     ], related="requisition_id.state")
     # state = fields.Char(related="requisition_id.state")
+
+    @api.onchange('quantity')
+    def onchange_qty(self):
+        for line in self:
+            line.qty_purchase = 0
+            if line.quantity:
+                line.qty_purchase = line.quantity
 
     def _compute_qty_ordered(self):
         for line in self:
