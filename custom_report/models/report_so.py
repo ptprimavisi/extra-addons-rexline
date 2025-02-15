@@ -70,7 +70,7 @@ class InheritSaleOrder(models.Model):
             company = self.env.user.company_id
 
             company_name = company.partner_id.name or ''
-            company_street1 = company.partner_id.street or ''
+            company_street1 = company.street or ''
             company_street2 = company.partner_id.street2 or ''
             company_street3 = ', '.join(filter(None, [
                 rec.company_id.city or '',
@@ -80,7 +80,7 @@ class InheritSaleOrder(models.Model):
             ]))
             company_npwp = company.partner_id.vat or ''
             company_phone = company.partner_id.phone or ''
-            company_web = company.partner_id.website or ''
+            company_web = company.website or ''
 
             partner_name = rec.partner_id.name,
             partner_street1 = rec.partner_id.street or ''

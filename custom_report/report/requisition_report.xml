@@ -78,7 +78,7 @@
                                     <t t-foreach="doc.requisition_line" t-as="data">
                                         <t t-set="c" t-value="c+1"/>
                                         <tr>
-                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="c"/></td>
                                             <td style="text-align: left; border: 1px solid black; padding: 8px;"><t/></td>
                                             <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data.type or ''"/></td>
                                             <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data.product_request or ''"/></td>

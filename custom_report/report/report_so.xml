@@ -28,10 +28,10 @@
                                 <t t-esc="company_street1"/> <t t-esc="company_street2"/>
                                 <t t-esc="company_street3"/><br/>
                                 <t t-esc="company_phone"/><br/>
-                                <t t-esc="company_web"/><br/>
-                                <t t-esc="company_npwp"/><br/>
+<!--                                <t t-esc="company_web"/><br/>-->
+<!--                                <t t-esc="company_npwp"/><br/>-->
                             </td>
-                            <td style="border: 1px solid #ffffff;"><b>Invoice #:</b></td>
+                            <td style="border: 1px solid #ffffff;"><b>Sales Order #:</b></td>
                             <td style="border: 1px solid #ffffff;"><t t-esc="so_name"/></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
@@ -45,7 +45,7 @@
                     </table>
 
                     <table class="table" style="width: 50%; font-size: 14px;">
-                        <tr style="border: 1px solid #ffffff; background-color: #03045E; color: white;">
+                        <tr style="border: 1px solid #ffffff; background-color: #092e4d; color: white;">
                             <td style="border: 1px solid #ffffff;"><b>CUSTOMER</b></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
@@ -60,7 +60,7 @@
                     </table>
 
                     <table class="table" style="width: 100%; font-size: 14px;text-align: left;">
-                        <tr style="border: 1px solid #ffffff; background-color: #03045E; color: white;">
+                        <tr style="border: 1px solid #ffffff; background-color: #092e4d; color: white;">
                             <th>Tags</th>
                             <th>Term</th>
                             <th>Due Date</th>
@@ -75,15 +75,15 @@
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <thead>
                             <tr style="background-color: #03045E; color: white;">
-                                <th>No.</th>
-                                <th>Quantity</th>
-                                <th>Product</th>
-                                <th>Description</th>
-                                <th>Unit Price (Rp.)</th>
-                                <th>Discount</th>
-                                <th>Taxed</th>
-                                <th>Amount (Rp.)</th>
-                                <th>Tax Base (Rp.)</th>
+                                <th style="border: 1px solid black;">No.</th>
+                                <th style="border: 1px solid black;">Quantity</th>
+                                <th style="border: 1px solid black;">Product</th>
+                                <th style="border: 1px solid black;">Description</th>
+                                <th style="border: 1px solid black;">Unit Price (Rp.)</th>
+                                <th style="border: 1px solid black;">Discount</th>
+                                <th style="border: 1px solid black;">Taxed</th>
+                                <th style="border: 1px solid black;">Amount (Rp.)</th>
+                                <th style="border: 1px solid black;">Tax Base (Rp.)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,7 +141,7 @@
                                     <t t-esc="tax['name']"/><br/>
                                 </t>
                                 <b><br/>Total</b><br/>
-                                <br/><p style="background-color: #03045E; color: white;">Balance Due</p>
+                                <br/><p style="background-color: #092e4d; color: white;">Balance Due</p>
                             </td>
                             <td style="border: 1px solid #ffffff;text-align: right;">
                                 <t t-esc="subtotal"/><br/><br/>
@@ -150,14 +150,14 @@
                                     <t t-esc="tax['amount']"/><br/>
                                 </t>
                                 <b><br/><t t-esc="balance_due"/></b><br/>
-                                <br/><p style="background-color: #03045E; color: white;"><t t-esc="balance_due"/></p>
+                                <br/><p style="background-color: #092e4d; color: white;"><t t-esc="balance_due"/></p>
                             </td>
                         </tr>
                     </table>
                     
                     <br/><br/>
                     <table class="table" style="width: 50%; font-size: 14px;text-align: left;">
-                        <tr style="border: 1px solid #ffffff;background-color: #03045E; color: white;">
+                        <tr style="border: 1px solid #ffffff;background-color: #092e4d; color: white;">
                             <th>Special Notes and Instructions</th>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
