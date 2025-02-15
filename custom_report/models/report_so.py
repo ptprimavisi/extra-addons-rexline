@@ -64,6 +64,7 @@ class InheritSaleOrder(models.Model):
     _inherit = 'sale.order'
 
     expense_count=fields.Integer(readonly=True)
+    customer_ref = fields.Char()
 
     def get_data(self,recs):
         for rec in recs:
@@ -95,6 +96,7 @@ class InheritSaleOrder(models.Model):
             so_date = rec.date_order.strftime('%d-%m-%Y')
             so_date_due = rec.validity_date.strftime('%d-%m-%Y')
             payment_term = rec.payment_term_id.name or ''
+            customer_ref = rec.customer_ref or ''
             so_name = rec.ref_quotation if rec.name == '/' else rec.name
             crm_ids = rec.opportunity_id
             if crm_ids.tag_ids:
@@ -191,6 +193,7 @@ class InheritSaleOrder(models.Model):
                     'so_date':so_date,
                     'so_date_due':so_date_due,
                     'so_term': str(payment_term),
+                    'customer_ref': str(customer_ref),
                     'so_tnc':so_tnc,
                     'balance_due':balance_due,
                     'subtotal':subtotal,
