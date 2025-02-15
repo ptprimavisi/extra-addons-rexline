@@ -94,6 +94,7 @@ class InheritSaleOrder(models.Model):
 
             so_date = rec.date_order.strftime('%d-%m-%Y')
             so_date_due = rec.validity_date.strftime('%d-%m-%Y')
+            payment_term = rec.payment_term_id.name or ''
             so_name = rec.ref_quotation if rec.name == '/' else rec.name
             crm_ids = rec.opportunity_id
             if crm_ids.tag_ids:
@@ -189,6 +190,7 @@ class InheritSaleOrder(models.Model):
                     'so_name':so_name,
                     'so_date':so_date,
                     'so_date_due':so_date_due,
+                    'so_term': str(payment_term),
                     'so_tnc':so_tnc,
                     'balance_due':balance_due,
                     'subtotal':subtotal,
