@@ -146,7 +146,7 @@ class InheritSaleOrder(models.Model):
                     subtotal+=order_line.price_subtotal
 
             # Format hasil
-            taxes = [{'name': key[0], 'percentage': key[1], 'amount': values['tax_amount']}
+            taxes = [{'name': key[0], 'percentage': key[1], 'amount': f"{int(values['tax_amount']):,}"}
                     for key, values in tax_data.items()]
 
             total_tax_base = f"{int(rec.amount_tax_base):,}"
