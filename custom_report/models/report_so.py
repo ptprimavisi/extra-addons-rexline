@@ -112,24 +112,25 @@ class InheritSaleOrder(models.Model):
             subtotal=0
 
             for order_line in rec.order_line:
-                for tax in order_line.tax_id:
-                    # Hitung total pajak untuk setiap baris
-                    tax_result = tax.compute_all(
-                        order_line.price_unit,
-                        rec.currency_id,
-                        order_line.product_uom_qty,
-                        product=order_line.product_id,
-                        partner=rec.partner_id
-                    )
-                    # Proses hasil pajak
-                    for tax_detail in tax_result['taxes']:
-                        tax_name = tax.name
-                        tax_percentage = tax.amount  # Persentase pajak
-                        
-                        # Kelompokkan berdasarkan nama pajak dan persentase
-                        key = (tax_name, tax_percentage)
-                        tax_data[key]['percentage'] = tax_percentage
-                        tax_data[key]['tax_amount'] += tax_detail['amount']
+                if order_line.product_id:
+                    for tax in order_line.tax_id:
+                        # Hitung total pajak untuk setiap baris
+                        tax_result = tax.compute_all(
+                            order_line.price_unit,
+                            rec.currency_id,
+                            order_line.product_uom_qty,
+                            product=order_line.product_id,
+                            partner=rec.partner_id
+                        )
+                        # Proses hasil pajak
+                        for tax_detail in tax_result['taxes']:
+                            tax_name = tax.name
+                            tax_percentage = tax.amount  # Persentase pajak
+
+                            # Kelompokkan berdasarkan nama pajak dan persentase
+                            key = (tax_name, tax_percentage)
+                            tax_data[key]['percentage'] = tax_percentage
+                            tax_data[key]['tax_amount'] += tax_detail['amount']
 
                 
                 tax_name=""

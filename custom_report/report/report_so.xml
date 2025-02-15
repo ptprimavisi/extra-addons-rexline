@@ -13,10 +13,10 @@
             <t t-call="web.html_container">
                 <div class="container" style="font-family: Calibri, sans-serif;">
                     <div style="text-align: left;">
-                        <img t-if="logo" t-att-src="logo" style="width: 120px; height: auto;" alt="Logo" /><br/><br/>
+                        <img t-if="logo" t-att-src="logo" style="width: 120px; height: auto;" alt="Logo"/><br/><br/>
                         <!-- <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /> -->
                     </div>
-                    
+
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;"><b><t t-esc="company_name"/></b></td>
@@ -40,13 +40,13 @@
                                 <t t-esc="company_npwp"/>
                             </td>
                             <td style="border: 1px solid #ffffff;">Customer's Reference :</td>
-                            <td style="border: 1px solid #ffffff;"></td>
+                            <td style="border: 1px solid #ffffff;"/>
                         </tr>
                     </table>
 
                     <table class="table" style="width: 50%; font-size: 14px;">
-                        <tr style="border: 1px solid #ffffff; background-color: #092e4d; color: white;">
-                            <td style="border: 1px solid #ffffff;"><b>CUSTOMER</b></td>
+                        <tr style="border: 1px solid #ffffff; background-color: #12476e; color: white;">
+                            <td><b>CUSTOMER</b></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;"><t t-esc="partner_name"/></td>
@@ -59,60 +59,60 @@
                         </tr>
                     </table>
 
-                    <table class="table" style="width: 100%; font-size: 14px;text-align: left;">
-                        <tr style="border: 1px solid #ffffff; background-color: #092e4d; color: white;">
-                            <th>Tags</th>
-                            <th>Term</th>
-                            <th>Due Date</th>
+                    <table class="table" style="border-collapse: collapse; width: 100%; font-size: 14px;text-align: left;">
+                        <tr style="background-color: #12476e; color: white;">
+                            <th style="border: 1.5px solid black;">Tags</th>
+                            <th style="border: 1.5px solid black;">Term</th>
+                            <th style="border: 1.5px solid black;">Due Date</th>
                         </tr>
-                        <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;"><t t-esc="tags_info"/></td>
-                            <td style="border: 1px solid #ffffff;"></td>
-                            <td style="border: 1px solid #ffffff;"><t t-esc="so_date_due"/></td>
+                        <tr>
+                            <td style="border: 1.5px solid black;"><t t-esc="tags_info"/></td>
+                            <td style="border: 1.5px solid black;"/>
+                            <td style="border: 1.5px solid black;"><t t-esc="so_date_due"/></td>
                         </tr>
                     </table>
-
-                    <table class="table" style="width: 100%; font-size: 14px;">
+                    <br></br>
+                    <table class="table table-bordered" style="border-collapse: collapse; width: 100%; font-size: 14px;">
                         <thead>
-                            <tr style="background-color: #03045E; color: white;">
-                                <th style="border: 1px solid black;">No.</th>
-                                <th style="border: 1px solid black;">Quantity</th>
-                                <th style="border: 1px solid black;">Product</th>
-                                <th style="border: 1px solid black;">Description</th>
-                                <th style="border: 1px solid black;">Unit Price (Rp.)</th>
-                                <th style="border: 1px solid black;">Discount</th>
-                                <th style="border: 1px solid black;">Taxed</th>
-                                <th style="border: 1px solid black;">Amount (Rp.)</th>
-                                <th style="border: 1px solid black;">Tax Base (Rp.)</th>
+                            <tr style="border: 1.5px solid black; background-color: #12476e; color: white;">
+                                <th style="border: 1.5px solid black;">No.</th>
+                                <th style="border: 1.5px solid black;">Quantity</th>
+                                <th style="border: 1.5px solid black;">Product</th>
+                                <th style="border: 1.5px solid black;">Description</th>
+                                <th style="border: 1.5px solid black;">Unit Price (Rp.)</th>
+                                <th style="border: 1.5px solid black;">Discount</th>
+                                <th style="border: 1.5px solid black;">Taxed</th>
+                                <th style="border: 1.5px solid black;">Amount (Rp.)</th>
+                                <th style="border: 1.5px solid black;">Tax Base (Rp.)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-set="counter" t-value="0"/>
                             <t t-foreach="order_lines" t-as="lines">
                                 <tr>
-                                    <td><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
-                                    <td t-if="lines[0]" style="text-align: left;">
+                                    <td style="border: 1.5px solid black;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
+                                    <td t-if="lines[0]" style="border: 1.5px solid black; text-align: left;">
                                         <t t-esc="lines[0]"/>
                                     </td>
-                                    <td t-if="lines[1]" style="text-align: left;">
+                                    <td  t-if="lines[1]" style="border: 1.5px solid black; text-align: left;">
                                         <t t-esc="lines[1]"/>
                                     </td>
-                                    <td t-if="lines[2]" style="text-align: left;">
+                                    <td t-if="lines[2]" style="border: 1.5px solid black; text-align: left;">
                                         <t t-esc="lines[2]"/>
                                     </td>
-                                    <td t-if="lines[3]" style="text-align: right;">
+                                    <td t-if="lines[3]" style="border: 1.5px solid black; text-align: right;">
                                         <t t-esc="lines[3]"/>
                                     </td>
-                                    <td t-if="lines[4]" style="text-align: right;">
+                                    <td t-if="lines[4]" style="border: 1.5px solid black; text-align: right;">
                                         <t t-esc="lines[4]"/>
                                     </td>
-                                    <td t-if="lines[5]" style="text-align: right;">
+                                    <td t-if="lines[5]" style="border: 1.5px solid black; text-align: right;">
                                         <t t-esc="lines[5]"/>
                                     </td>
-                                    <td t-if="lines[6]" style="text-align: right;">
+                                    <td t-if="lines[6]" style="border: 1.5px solid black; text-align: right;">
                                         <t t-esc="lines[6]"/>
                                     </td>
-                                    <td t-if="lines[7]" style="text-align: right;">
+                                    <td t-if="lines[7]" style="border: 1.5px solid black; text-align: right;">
                                         <t t-esc="lines[7]"/>
                                     </td>
                                 </tr>
@@ -141,7 +141,7 @@
                                     <t t-esc="tax['name']"/><br/>
                                 </t>
                                 <b><br/>Total</b><br/>
-                                <br/><p style="background-color: #092e4d; color: white;">Balance Due</p>
+                                <br/><p style="background-color: #12476e; color: white;">Balance Due</p>
                             </td>
                             <td style="border: 1px solid #ffffff;text-align: right;">
                                 <t t-esc="subtotal"/><br/><br/>
@@ -150,14 +150,14 @@
                                     <t t-esc="tax['amount']"/><br/>
                                 </t>
                                 <b><br/><t t-esc="balance_due"/></b><br/>
-                                <br/><p style="background-color: #092e4d; color: white;"><t t-esc="balance_due"/></p>
+                                <br/><p style="background-color: #12476e; color: white;"><t t-esc="balance_due"/></p>
                             </td>
                         </tr>
                     </table>
-                    
+
                     <br/><br/>
                     <table class="table" style="width: 50%; font-size: 14px;text-align: left;">
-                        <tr style="border: 1px solid #ffffff;background-color: #092e4d; color: white;">
+                        <tr style="border: 1px solid #ffffff;background-color: #12476e; color: white;">
                             <th>Special Notes and Instructions</th>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
@@ -169,9 +169,8 @@
                         </tr>
                     </table>
 
-                    <p style="text-align: right; font-size: 14px;"> 
-                        <br/><img t-if="signature_image" t-att-src="signature_image" 
-                            style="width: 100px; height: auto;" alt="Signature" />
+                    <p style="text-align: right; font-size: 14px;">
+                        <br/><img t-if="signature_image" t-att-src="signature_image" style="width: 100px; height: auto;" alt="Signature"/>
                         <br/><t t-esc="signature_name"/><br/>
                         National Sales Leader<br/>
                         REXLINE ENGINEERING INDONESIA
