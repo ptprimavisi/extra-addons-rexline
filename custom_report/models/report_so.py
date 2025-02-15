@@ -112,7 +112,7 @@ class InheritSaleOrder(models.Model):
             subtotal=0
 
             for order_line in rec.order_line:
-                if order_line.product_id:
+                if order_line.product_id and order_line.product_uom_qty > 0:
                     for tax in order_line.tax_id:
                         # Hitung total pajak untuk setiap baris
                         tax_result = tax.compute_all(
@@ -132,15 +132,15 @@ class InheritSaleOrder(models.Model):
                             tax_data[key]['percentage'] = tax_percentage
                             tax_data[key]['tax_amount'] += tax_detail['amount']
 
-                
-                tax_name=""
-                if order_line.tax_id:
-                    tax_name = ", ".join(tax.name for tax in order_line.tax_id)
-                else:
-                    tax_name='-'
-                order_lines.append([str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),order_line.product_id.product_tmpl_id.name,order_line.name,f"{int(order_line.price_unit):,}","0",tax_name,f"{int(order_line.price_subtotal):,}",f"{int(order_line.tax_base):,}"])
-                quotation_lines.append([order_line.name,str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),'0',f"{int(order_line.price_unit):,}",f"{int(order_line.price_subtotal):,}",f"{int(order_line.tax_base):,}"])
-                subtotal+=order_line.price_subtotal
+
+                    tax_name=""
+                    if order_line.tax_id:
+                        tax_name = ", ".join(tax.name for tax in order_line.tax_id)
+                    else:
+                        tax_name='-'
+                    order_lines.append([str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),order_line.product_id.product_tmpl_id.name,order_line.name,f"{int(order_line.price_unit):,}","0",tax_name,f"{int(order_line.price_subtotal):,}",f"{int(order_line.tax_base):,}"])
+                    quotation_lines.append([order_line.name,str(order_line.product_uom_qty)+' '+str(order_line.product_uom.name),'0',f"{int(order_line.price_unit):,}",f"{int(order_line.price_subtotal):,}",f"{int(order_line.tax_base):,}"])
+                    subtotal+=order_line.price_subtotal
 
             # Format hasil
             taxes = [{'name': key[0], 'percentage': key[1], 'amount': values['tax_amount']}
