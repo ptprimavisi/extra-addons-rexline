@@ -10,6 +10,7 @@
         </record>
         
         <template id="report_quotation">
+            <t t-set="data_report_margin_top" t-value="15"/>
             <t t-call="web.html_container">
                 <div class="container" style="font-family: Calibri, sans-serif;">
                     <table class="table" style="width: 100%; font-size: 14px;">
