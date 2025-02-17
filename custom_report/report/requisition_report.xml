@@ -99,39 +99,39 @@
 
                         <div class="row">
                             <t t-if="doc.category == 'ut'">
-                                <div class="col col-lg-3">
-                                    <table style="width: 90%;">
+                                <div class="col col-3">
+                                    <table style="width: 90%; margin: 0 auto;">
                                         <thead>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Requested by</th></tr>
-                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;"><t t-esc="doc.department_id.name or ''"/></th></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px;">Requested by</td></tr>
+                                            <tr><td style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></td></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white; padding: 8px;"><t t-esc="doc.department_id.name or ''"/></td></tr>
                                         </thead>
                                     </table>
                                 </div>
-                                <div class="col col-lg-3">
-                                    <table style="width: 90%;">
+                                <div class="col col-3">
+                                    <table style="width: 90%; margin: 0 auto;">
                                         <thead>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Acknowledge by</th></tr>
-                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;">MD Nasirujjaman / IT Manager</th></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px;">Acknowledge by</td></tr>
+                                            <tr><td style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></td></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white; padding: 8px;">MD Nasirujjaman / IT Manager</td></tr>
                                         </thead>
                                     </table>
                                 </div>
-                                <div class="col col-lg-3">
-                                    <table style="width: 90%;">
+                                <div class="col col-3">
+                                    <table style="width: 90%; margin: 0 auto;">
                                         <thead>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Prepared and Reviewed by</th></tr>
-                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;">Arigusandio / IT Support</th></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px;">Prepared and Reviewed by</td></tr>
+                                            <tr><td style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></td></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white; padding: 8px;">Arigusandio / IT Support</td></tr>
                                         </thead>
                                     </table>
                                 </div>
-                                <div class="col col-lg-3">
-                                    <table style="width: 90%;">
+                                <div class="col col-3">
+                                    <table style="width: 90%; margin: 0 auto;">
                                         <thead>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Approved by</th></tr>
-                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
-                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;">(M. Rizal S. / Director)</th></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px;">Approved by</td></tr>
+                                            <tr><td style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></td></tr>
+                                            <tr><td style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white; padding: 8px;">(M. Rizal S. / Director)</td></tr>
                                         </thead>
                                     </table>
                                 </div>
