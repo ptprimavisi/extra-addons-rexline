@@ -54,23 +54,23 @@
                             <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
                                 <thead>
                                     <tr>
-                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">No</th>
-                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Project</th>
-                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Type / Category</th>
-                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Item Description</th>
-                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Specs</th>
-                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Brand</th>
-                                      <th class="text-center" colspan="3" style="border: 1px solid black; ">Quantity</th>
-                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">UoM</th>
-                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Due Date</th>
-                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Delivery Location</th>
-                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center;">Remark</th>
+                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">No</th>
+                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Project</th>
+                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Type / Category</th>
+                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Item Description</th>
+                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Specs</th>
+                                    <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Brand</th>
+                                      <th class="text-center" colspan="3" style="border: 1px solid black; background-color: #4764ba; color: white; ">Quantity</th>
+                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">UoM</th>
+                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Due Date</th>
+                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Delivery Location</th>
+                                      <th class="text-center" rowspan="2" style="border: 1px solid black; vertical-align: middle; text-align: center; background-color: #4764ba; color: white;">Remark</th>
 
                                   </tr>
                                   <tr>
-                                      <th style="border: 1px solid black; ">Request</th>
-                                      <th style="border: 1px solid black; ">Stock</th>
-                                      <th style="border: 1px solid black; ">Purchase</th>
+                                      <th style="border: 1px solid black; background-color: #4764ba; color: white;">Request</th>
+                                      <th style="border: 1px solid black; background-color: #4764ba; color: white; ">Stock</th>
+                                      <th style="border: 1px solid black; background-color: #4764ba; color: white; ">Purchase</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -89,13 +89,54 @@
                                             <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data.qty_purchase"/></td>
                                             <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data.product_uom.name or ''"/></td>
                                             <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data.requisition_id.due_date or ''"/></td>
-                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"><t /></td>
-                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"><t/></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
                                         </tr>
                                     </t>
 
                                 </tbody>
                             </table>
+
+                        <div class="row">
+                            <t t-if="doc.category == 'ut'">
+                                <div class="col col-lg-3">
+                                    <table style="width: 90%;">
+                                        <thead>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Requested by</th></tr>
+                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;"><t t-esc="doc.department_id.name or ''"/></th></tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="col col-lg-3">
+                                    <table style="width: 90%;">
+                                        <thead>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Acknowledge by</th></tr>
+                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;">MD Nasirujjaman / IT Manager</th></tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="col col-lg-3">
+                                    <table style="width: 90%;">
+                                        <thead>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Prepared and Reviewed by</th></tr>
+                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;">Arigusandio / IT Support</th></tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="col col-lg-3">
+                                    <table style="width: 90%;">
+                                        <thead>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #e00732; color: white;">Approved by</th></tr>
+                                            <tr><th style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></th></tr>
+                                            <tr><th style="text-align: center; border: 1px solid black; background-color: #4764ba; color: white;">(M. Rizal S. / Director)</th></tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </t>
+                        </div>
 
 
                         <!-- <p style="font-size: 14px;">Total Uang Diterima : <t t-esc="total_diterima"/></p> -->
