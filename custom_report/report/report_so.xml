@@ -134,7 +134,7 @@
                                 Bank Account Number : 2790000188<br/>
                                 Bank Account Name : PT Rexline Engineering Indonesia<br/>
                             </td>
-                            <td style="border: 1px solid #ffffff;">
+                            <td style="border: 1px solid #ffffff; min-width:170px;">
                                 Subtotal<br/><br/>
                                 Total Tax Base<br/><br/>
                                 <t t-foreach="taxes" t-as="tax">

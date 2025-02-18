@@ -9,7 +9,7 @@ class ItRequest(models.Model):
     name = fields.Char()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid, domain=lambda self: [('id', '=', self.env.uid)])
     employee_id = fields.Many2one('hr.employee', default=lambda self: self.env['hr.employee'].search([('user_id','=',self.env.uid)], limit=1))
-    department_id = fields.Many2one('hr.department', compute="_compute_department")
+    department_id = fields.Many2one('hr.department', compute="_compute_department", store=True)
     date_request = fields.Date(default=lambda self: fields.Datetime.today())
     due_date = fields.Date()
     description = fields.Text()
