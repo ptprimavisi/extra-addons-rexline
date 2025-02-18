@@ -12,6 +12,7 @@ class InheritResCompany(models.Model):
     _inherit='res.company'
 
     sale_logo = fields.Image('Sale Logo', store=True)
+    watermark_mrf = fields.Image('Watermark MRF', store=True)
 
     @api.model
     def default_get(self, fields_list):

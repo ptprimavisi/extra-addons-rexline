@@ -100,7 +100,7 @@
                         <div class="row">
                             <t t-if="doc.category == 'ut'">
                                 <div class="col col-3">
-                                    <table style="width: 90%; margin: 0 auto;">
+                                    <table style="width: 90%; float: left;">
                                         <thead>
                                             <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px;">Requested by</td></tr>
                                             <tr><td style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></td></tr>
@@ -127,7 +127,7 @@
                                     </table>
                                 </div>
                                 <div class="col col-3">
-                                    <table style="width: 90%; margin: 0 auto;">
+                                    <table style="width: 90%; float: right;">
                                         <thead>
                                             <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px;">Approved by</td></tr>
                                             <tr><td style="text-align: center; height: 60px; border: 1px solid black;"><h2 style="color: grey;"><strong>APPROVED</strong></h2></td></tr>
