@@ -72,7 +72,7 @@ class PurchaseRequisition(models.Model):
 
     def action_print(self):
         return self.env.ref('custom_report.action_report_requisition').with_context(
-            paperformat_id=9, landscape=True).report_action(self)
+            paperformat_id=10, landscape=True).report_action(self)
 
     def write(self, vals):
         res = super(PurchaseRequisition, self).write(vals)
