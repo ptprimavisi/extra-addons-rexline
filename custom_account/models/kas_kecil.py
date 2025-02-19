@@ -6,9 +6,9 @@ from odoo.exceptions import UserError
 
 
 class JobTittleGM(models.Model):
-    _name='general.manager'
+    _name = 'general.manager'
 
-    general_manager = fields.Many2one('hr.employee',string='General Manager')
+    general_manager = fields.Many2one('hr.employee', string='General Manager')
 
     @api.model
     def default_get(self, fields_list):
@@ -25,7 +25,7 @@ class JobTittleGM(models.Model):
             # Buat signature baru
             new_gm = self.env['general.manager'].create({
                 'general_manager': rec.general_manager.id
-                
+
             })
             # Cari semua signature lain
             existing_gm = self.env['general.manager'].search([('id', '!=', new_gm.id)])
@@ -34,10 +34,11 @@ class JobTittleGM(models.Model):
                 for gm in existing_gm:
                     gm.unlink()
 
-class JobTittleCOO(models.Model):
-    _name='coo.coo'
 
-    coo = fields.Many2one('hr.employee',string='Chief Operating Officer')
+class JobTittleCOO(models.Model):
+    _name = 'coo.coo'
+
+    coo = fields.Many2one('hr.employee', string='Chief Operating Officer')
 
     @api.model
     def default_get(self, fields_list):
@@ -54,7 +55,7 @@ class JobTittleCOO(models.Model):
             # Buat signature baru
             new_coo = self.env['coo.coo'].create({
                 'coo': rec.coo.id
-                
+
             })
             # Cari semua signature lain
             existing_coo = self.env['coo.coo'].search([('id', '!=', new_coo.id)])
@@ -121,11 +122,13 @@ class PermintaanDana(models.Model):
             origin_ref = f"{model_name},{active_id}"
             line.manager_approve = False
             if line.department.manager_id.user_id:
-                approval = self.env['multi.approval'].search([('origin_ref','=',origin_ref)])
+                approval = self.env['multi.approval'].search([('origin_ref', '=', origin_ref)])
                 print(origin_ref)
                 if approval:
-                    multi_approval_line = self.env['multi.approval.line'].search([('approval_id','=',int(approval.id)), ('user_id','=',line.department.manager_id.user_id.id),
-                                                                                  ('state','=','Approved')])
+                    multi_approval_line = self.env['multi.approval.line'].search(
+                        [('approval_id', '=', int(approval.id)),
+                         ('user_id', '=', line.department.manager_id.user_id.id),
+                         ('state', '=', 'Approved')])
                     if multi_approval_line:
                         line.manager_approve = True
 
@@ -136,12 +139,13 @@ class PermintaanDana(models.Model):
             origin_ref = f"{model_name},{active_id}"
             line.gm_approve = False
             if line.department.manager_id.user_id:
-                approval = self.env['multi.approval'].search([('origin_ref','=',origin_ref)])
+                approval = self.env['multi.approval'].search([('origin_ref', '=', origin_ref)])
                 print(origin_ref)
                 if approval:
                     gm = self.env['general.manager'].search([], limit=1)
-                    multi_approval_line = self.env['multi.approval.line'].search([('approval_id','=',int(approval.id)), ('user_id','=',int(gm.general_manager.user_id.id)),
-                                                                                  ('state','=','Approved')])
+                    multi_approval_line = self.env['multi.approval.line'].search(
+                        [('approval_id', '=', int(approval.id)), ('user_id', '=', int(gm.general_manager.user_id.id)),
+                         ('state', '=', 'Approved')])
                     if multi_approval_line:
                         line.gm_approve = True
 
@@ -152,12 +156,13 @@ class PermintaanDana(models.Model):
             origin_ref = f"{model_name},{active_id}"
             line.coo_approve = False
             if line.department.manager_id.user_id:
-                approval = self.env['multi.approval'].search([('origin_ref','=',origin_ref)])
+                approval = self.env['multi.approval'].search([('origin_ref', '=', origin_ref)])
                 print(origin_ref)
                 if approval:
                     gm = self.env['coo.coo'].search([], limit=1)
-                    multi_approval_line = self.env['multi.approval.line'].search([('approval_id','=',int(approval.id)), ('user_id','=',int(gm.coo.user_id.id)),
-                                                                                  ('state','=','Approved')])
+                    multi_approval_line = self.env['multi.approval.line'].search(
+                        [('approval_id', '=', int(approval.id)), ('user_id', '=', int(gm.coo.user_id.id)),
+                         ('state', '=', 'Approved')])
                     if multi_approval_line:
                         line.coo_approve = True
 
@@ -341,9 +346,9 @@ class PermintaanDana(models.Model):
 
     def action_reset_to_draft(self):
         for line in self:
-            saldo = self.env['saldo.dana'].search([('employee_id','=',int(line.employee_id.id))])
-            realisasi_dana = self.env['realisasi.dana'].search([('permintaan_id','=',int(line.id))])
-            refund_dana = self.env['refund.dana'].search([('dana_id','=',int(line.id))])
+            saldo = self.env['saldo.dana'].search([('employee_id', '=', int(line.employee_id.id))])
+            realisasi_dana = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id))])
+            refund_dana = self.env['refund.dana'].search([('dana_id', '=', int(line.id))])
             if realisasi_dana:
                 raise UserError('Sudah dilakukan realisasi, batalkan dan hapus realisasi terlebih dahulu!')
                 exit()
@@ -352,7 +357,7 @@ class PermintaanDana(models.Model):
                 exit()
             saldo_update = saldo.saldo - line.total_amount
             saldo.write({'saldo': saldo_update})
-            journal = self.env['account.move'].search([('dana_id','=',int(line.id))])
+            journal = self.env['account.move'].search([('dana_id', '=', int(line.id))])
             journal.button_draft()
             journal.unlink()
             line.state = 'confirm'
@@ -546,10 +551,10 @@ class RealisasiDana(models.Model):
 
     def action_reset_to_draft(self):
         for line in self:
-            saldo = self.env['saldo.dana'].search([('employee_id','=',int(line.employee_id.id))])
+            saldo = self.env['saldo.dana'].search([('employee_id', '=', int(line.employee_id.id))])
             saldo_update = saldo.saldo + line.total_amount
             saldo.write({'saldo': saldo_update})
-            journal = self.env['account.move'].search([('realisasi_id','=',int(line.id))])
+            journal = self.env['account.move'].search([('realisasi_id', '=', int(line.id))])
             journal.button_draft()
             journal.unlink()
             line.state = 'draft'
@@ -686,10 +691,10 @@ class RefundDana(models.Model):
 
     def action_reset_to_draft(self):
         for line in self:
-            saldo = self.env['saldo.dana'].search([('employee_id','=',int(line.employee_id.id))])
+            saldo = self.env['saldo.dana'].search([('employee_id', '=', int(line.employee_id.id))])
             saldo_update = saldo.saldo + line.amount
             saldo.write({'saldo': saldo_update})
-            journal = self.env['account.move'].search([('refund_id','=',int(line.id))])
+            journal = self.env['account.move'].search([('refund_id', '=', int(line.id))])
             journal.button_draft()
             journal.unlink()
             line.state = 'draft'
@@ -744,6 +749,15 @@ class AccountMoveInherit(models.Model):
     refund_id = fields.Many2one('refund.dana')
     detail_ids = fields.One2many('detail.move.product', 'move_id')
     is_dp = fields.Boolean()
+    total_dp = fields.Float(compute="_compute_total_dp")
+
+    def _compute_total_dp(self):
+        for line in self:
+            detail = self.env['detail.move.product'].search([('move_id', '=', int(line.id))])
+            c = 0
+            for lines in detail:
+                c += detail.subtotal
+            line.total_dp = c
 
 
 class DetailMoveProduct(models.Model):
@@ -771,7 +785,8 @@ class DetailMoveProduct(models.Model):
     @api.depends('quantity', 'price_unit', 'discount')
     def _compute_tax_base(self):
         for rec in self:
-            rec.tax_base = (11 / 12) * ((rec.quantity * rec.price_unit) - rec.discount) if rec.quantity and rec.price_unit else 0.0
+            rec.tax_base = (11 / 12) * (
+                        (rec.quantity * rec.price_unit) - rec.discount) if rec.quantity and rec.price_unit else 0.0
 
     @api.onchange('product_id')
     def onchange_product(self):
@@ -786,7 +801,7 @@ class DetailMoveProduct(models.Model):
                 line.tax_ids = line.product_id.taxes_id
                 line.quantity = 1
 
-    @api.depends('quantity','discount','price_unit','tax_ids','currency_id')
+    @api.depends('quantity', 'discount', 'price_unit', 'tax_ids', 'currency_id')
     def _compute_subtotal(self):
         for line in self:
             line_discount_price_unit = line.price_unit * (1 - (line.discount / 100.0))

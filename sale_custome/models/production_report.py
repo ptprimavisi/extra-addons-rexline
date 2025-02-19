@@ -241,6 +241,34 @@ class ProductionReportLine(models.Model):
                 line.qty_to_consume = materials.product_uom_qty - sum(schedule_done.mapped('qty_consume'))
 
 
+class MrpProductionInherit(models.Model):
+    _inherit = 'mrp.production'
+
+    # def write(self, vals):
+    #         # for lines in vals['move_raw_ids']:
+    #         #     print(lines[2]['product_id'])
+    #             # line_ids = self.env['production.report.line'].search([('production_id.mo_id','=',int(line.id)),('product_id','=',int(lines['product_id']))])
+    #             # if not line.ids:
+    #             #     print('update')
+    #     res = super(MrpProductionInherit, self).write(vals)
+    #     for line in self:
+    #         if 'move_raw_ids' in vals and vals['move_raw_ids']:
+    #             raw_ids = self.env['stock.move'].search([('raw_material_production_id','=',int(line.id))])
+    #             for lines in raw_ids:
+    #                 line_ids = self.env['production.report.line'].search(
+    #                     [('production_id.mo_id', '=', int(line.id))])
+    #                 if line_ids:
+    #                     print('ada update')
+    #                     if not line_ids.search([('raw_id','=',int(lines.id))]):
+    #                         pass
+    #                 # if not line_ids:
+    #
+    #     exit()
+    #
+    #     return res
+
+
+
 class ProductionTag(models.Model):
     _name = 'production.tag'
 

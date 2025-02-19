@@ -21,8 +21,16 @@
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
+                        <group colspan="4">
+                                <group class="oe_subtotal_footer oe_right" >
+                                    <field name="total_dp" widget="monetary" string="Total Amount" readonly="1"/>
+                                </group>
+                            </group>
                     </page>
                 </xpath>
+<!--                <xpath expr="//field[@name='invoice_date']" position="after">-->
+<!--                    <field name="total_dp"/>-->
+<!--                </xpath>-->
             </field>
         </record>
     </data>
