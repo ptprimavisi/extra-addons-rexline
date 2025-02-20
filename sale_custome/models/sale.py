@@ -1948,6 +1948,7 @@ class InquiryLine(models.Model):
     _name = 'inquiry.line'
 
     bom_id = fields.Many2one('mrp.bom')
+    quantity = fields.Float(related="bom_id.product_qty")
     inquiry_id = fields.Many2one('inquiry.inquiry')
     bom_cost = fields.Float()
     kategory = fields.Selection([
