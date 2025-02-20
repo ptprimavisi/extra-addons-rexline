@@ -69,6 +69,37 @@ class PurchaseRequisition(models.Model):
     akses_quot = fields.Boolean(compute="_akses_quot")
     akses_proccess = fields.Boolean(compute="_akses_proccess")
     it_id = fields.Many2one('it.request')
+    date_confirm = fields.Date()
+    date_approved1 = fields.Date(compute="_compute_approved1")
+    date_approved2 = fields.Date(compute="_compute_approved2")
+
+    def _compute_approved1(self):
+        for line in self:
+            line.date_approved1 = False
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            approval = self.env['multi.approval'].search([('origin_ref', '=', origin_ref)])
+            if approval:
+                multi_approval_line = self.env['multi.approval.line'].search(
+                    [('approval_id', '=', int(approval.id))])
+                if multi_approval_line and len(multi_approval_line) > 1:
+                    if multi_approval_line[0].state == 'Approved':
+                        line.date_approved1 = multi_approval_line[0].write_date.strftime('%Y-%m-%d')
+
+    def _compute_approved2(self):
+        for line in self:
+            line.date_approved2 = False
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            approval = self.env['multi.approval'].search([('origin_ref', '=', origin_ref)])
+            if approval:
+                multi_approval_line = self.env['multi.approval.line'].search(
+                    [('approval_id', '=', int(approval.id))])
+                if multi_approval_line and len(multi_approval_line) > 1:
+                    if multi_approval_line[1].state == 'Approved':
+                        line.date_approved2 = multi_approval_line[1].write_date.strftime('%Y-%m-%d')
 
     def action_print(self):
         return self.env.ref('custom_report.action_report_requisition').with_context(
@@ -193,6 +224,7 @@ class PurchaseRequisition(models.Model):
         for line in self:
             req = self.env['purchase.requisition'].browse(int(line.id))
             req.write({'state': 'ready'})
+            line.date_confirm = fields.Date.today()
 
     def action_to_purchase(self):
         for line in self:
@@ -275,6 +307,7 @@ class RequisitionLine(models.Model):
         ('po', 'Purchase Order Created'),
         ('cancel', 'Cancel'),
     ], related="requisition_id.state")
+
     # state = fields.Char(related="requisition_id.state")
 
     @api.onchange('quantity')

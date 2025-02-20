@@ -42,6 +42,9 @@
                             <field name="department_id" required="1" readonly="state not in ['confirm','ready']"/>
                             <field name="is_ga" invisible="1"/>
                             <field name="akses_quot" invisible="1"/>
+                            <field name="date_confirm" invisible="1"/>
+                            <field name="date_approved1" invisible="1"/>
+                            <field name="date_approved2" invisible="1"/>
                             <field name="akses_proccess" invisible="1"/>
                             <field name="is_purchase" invisible="1"/>
                             <field name="it_id" string="Reference IT" readonly="1" invisible="category != 'ut'"/>
