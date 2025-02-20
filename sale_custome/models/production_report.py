@@ -244,28 +244,40 @@ class ProductionReportLine(models.Model):
 class MrpProductionInherit(models.Model):
     _inherit = 'mrp.production'
 
-    # def write(self, vals):
-    #         # for lines in vals['move_raw_ids']:
-    #         #     print(lines[2]['product_id'])
-    #             # line_ids = self.env['production.report.line'].search([('production_id.mo_id','=',int(line.id)),('product_id','=',int(lines['product_id']))])
-    #             # if not line.ids:
-    #             #     print('update')
-    #     res = super(MrpProductionInherit, self).write(vals)
-    #     for line in self:
-    #         if 'move_raw_ids' in vals and vals['move_raw_ids']:
-    #             raw_ids = self.env['stock.move'].search([('raw_material_production_id','=',int(line.id))])
-    #             for lines in raw_ids:
-    #                 line_ids = self.env['production.report.line'].search(
-    #                     [('production_id.mo_id', '=', int(line.id))])
-    #                 if line_ids:
-    #                     print('ada update')
-    #                     if not line_ids.search([('raw_id','=',int(lines.id))]):
-    #                         pass
-    #                 # if not line_ids:
-    #
-    #     exit()
-    #
-    #     return res
+    def write(self, vals):
+            # for lines in vals['move_raw_ids']:
+            #     print(lines[2]['product_id'])
+                # line_ids = self.env['production.report.line'].search([('production_id.mo_id','=',int(line.id)),('product_id','=',int(lines['product_id']))])
+                # if not line.ids:
+                #     print('update')
+        res = super(MrpProductionInherit, self).write(vals)
+        for line in self:
+            if 'move_raw_ids' in vals and vals['move_raw_ids']:
+                raw_ids = self.env['stock.move'].search([('raw_material_production_id','=',int(line.id))])
+                line_ids = []
+                for lines in raw_ids:
+                    # line_ids.append((0,0, {
+                    #     'product_id'
+                    # }))
+                    report = self.env['production.report'].search(
+                        [('mo_id', '=', int(line.id))])
+                    for reports in report:
+                        if reports:
+                            if int(lines.id) not in reports.production_line_ids.mapped('raw_id.id'):
+                                self.env['production.report.line'].create({
+                                    'production_id': int(reports.id),
+                                    'product_id': lines.product_id.id,
+                                    'raw_id': int(lines.id)
+                                })
+                    # if line_ids:
+                    #     print('ada update')
+                    #     if not line_ids.search([('raw_id','=',int(lines.id))]):
+                    #         pass
+                    # if not line_ids:
+
+        # exit()
+
+        return res
 
 
 
