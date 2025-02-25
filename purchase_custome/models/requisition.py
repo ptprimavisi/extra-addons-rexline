@@ -86,6 +86,9 @@ class PurchaseRequisition(models.Model):
                 if multi_approval_line and len(multi_approval_line) > 1:
                     if multi_approval_line[0].state == 'Approved':
                         line.date_approved1 = multi_approval_line[0].write_date.strftime('%Y-%m-%d')
+                if len(multi_approval_line) == 1:
+                    if multi_approval_line.state == 'Approved':
+                        line.date_approved1 = multi_approval_line.write_date.strftime('%Y-%m-%d')
 
     def _compute_approved2(self):
         for line in self:
