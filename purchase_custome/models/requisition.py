@@ -227,7 +227,7 @@ class PurchaseRequisition(models.Model):
         for line in self:
             req = self.env['purchase.requisition'].browse(int(line.id))
             req.write({'state': 'ready'})
-            line.date_confirm = fields.Date.today()
+            line.date_confirm = datetime.today()
 
     def action_to_purchase(self):
         for line in self:

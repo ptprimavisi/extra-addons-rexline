@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 class RequestPrice(models.Model):
     _name = 'request.price'
 
+    name = fields.Char(compute="_compute_name", store=True)
     inquiry_id = fields.Many2one('inquiry.inquiry')
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -34,6 +35,12 @@ class RequestPrice(models.Model):
         ('service', 'Service'),
         ('supply', 'Supply')
     ])
+
+
+    @api.depends('inquiry_id')
+    def _compute_name(self):
+        for line in self:
+            line.name = line.inquiry_id.name
 
     @api.depends('request_line_ids.tax', 'request_line_ids.duty', 'request_line_ids.vat')
     def _compute_total_pajak(self):

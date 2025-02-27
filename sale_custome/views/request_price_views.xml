@@ -10,9 +10,17 @@
                         <button name="action_confirm" string="Confirm" confirm="Are you sure you want to continue with the process?" groups="sale_custome.purchasing_custom_group" class="oe_highlight" type="object" invisible="state != 'draft' or id == False"/>
                         <button name="action_print_report" string="Print Report" type="object" invisible="state != 'posted'"/>
                         <button name="action_other_cost" string="Add other cost" type="object" invisible="id == False or state != 'draft'"/>
-                    </header>
+                    </header>cd ..
                     <sheet>
+                        <div class="o_lead_opportunity_form_inline_fields">
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name" reqdonly="1"/>
+                                    </h1>
+                                </div>
+                            </div>
                         <group>
+
                             <field name="inquiry_id" string="Inquiry Ref" readonly="1"/>
                             <field name="date" string="Request Date" readonly="1"/>
 
