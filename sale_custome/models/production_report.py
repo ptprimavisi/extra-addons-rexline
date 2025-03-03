@@ -244,6 +244,8 @@ class ProductionReportLine(models.Model):
 class MrpProductionInherit(models.Model):
     _inherit = 'mrp.production'
 
+    notes = fields.Text()
+
     def write(self, vals):
             # for lines in vals['move_raw_ids']:
             #     print(lines[2]['product_id'])
