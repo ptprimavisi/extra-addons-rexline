@@ -313,6 +313,10 @@
             parent="crm.crm_menu_sales"
             action="sale_custome.action_inquiry_inquiry"
             />
+        <menuitem id="menu_manufacture_sales"
+                  name="Manufacturing Orders"
+                  parent="crm.crm_menu_sales"
+                  action="mrp.mrp_production_action"/>
 <!--        <menuitem action="action_inquiry_inquiry"-->
 <!--                  id="menu_inquiry_tree"-->
 <!--                  name="Inquiry"-->
