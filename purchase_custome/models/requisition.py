@@ -72,6 +72,15 @@ class PurchaseRequisition(models.Model):
     date_confirm = fields.Date()
     date_approved1 = fields.Date(compute="_compute_approved1")
     date_approved2 = fields.Date(compute="_compute_approved2")
+    create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created", store=True)
+
+    def _compute_employee_created(self):
+        for line in self:
+            line.create_employee_id = False
+            if line.create_uid:
+                employee_id = self.env['hr.employee'].search([('user_id','=',line.create_uid.id)])
+                if employee_id:
+                    line.create_employee_id = int(employee_id.id)
 
     def _compute_approved1(self):
         for line in self:
