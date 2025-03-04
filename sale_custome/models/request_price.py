@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class RequestPrice(models.Model):
     _name = 'request.price'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(compute="_compute_name", store=True)
     inquiry_id = fields.Many2one('inquiry.inquiry')
@@ -14,7 +15,7 @@ class RequestPrice(models.Model):
     date = fields.Date()
 
     due_date = fields.Datetime(string='Deadline')
-    
+
     attachment_ids = fields.One2many(
         'ir.attachment', 'res_id',
         domain=[('res_model', '=', 'request.price')],
@@ -36,6 +37,39 @@ class RequestPrice(models.Model):
         ('supply', 'Supply')
     ])
 
+    def write(self, vals):
+        for record in self:
+            field_labels = []
+            log_message = ""
+            user_name = self.env.user.name
+
+            # Iterate over the keys in vals (these are field names)
+            for field_name, field_value in vals.items():
+                # Get the field label using the model's fields_get method
+                field_label = record._fields[field_name].string
+
+                # If the field is a Many2one relation (i.e., an ID field pointing to another model)
+                field = record._fields[field_name]
+                if field.type == 'many2one' and field_value:
+                    related_record = self.env[field.comodel_name].browse(field_value)
+                    field_value = related_record.name  # Get the name of the related record
+
+                # Add the field label and its value to the message
+                if field.type != 'one2many':
+                    field_labels.append(f"{field_label}: {field_value}")
+                    log_message += f"\n{field_label} → {field_value}"  # Use plain text for logging
+
+            # Check if the log message has changed and format the user_name correctly
+            if log_message:
+                record.message_post(
+                    body=f"Record updated by {user_name}.\nChanges:\n{log_message}",
+                    subject="Record Updated",
+                    message_type='notification',
+                    subtype_xmlid='mail.mt_note'  # To ensure it appears correctly in chatter
+                )
+
+            result = super(RequestPrice, self).write(vals)
+        return result
 
     @api.depends('inquiry_id')
     def _compute_name(self):
@@ -209,6 +243,41 @@ class RequestPriceLine(models.Model):
     percentage = fields.Float(compute="_compute_percentage")
     total_price = fields.Float(compute="_compute_total_price")
     final_cost = fields.Float(compute="_compute_final")
+
+    def write(self, vals):
+        for record in self:
+            field_labels = []
+            log_message = ""
+            user_name = self.env.user.name
+
+            # Iterate over the keys in vals (these are field names)
+            # print(record.product_id.name)
+            for field_name, field_value in vals.items():
+                # Get the field label using the model's fields_get method
+                field_label = record._fields[field_name].string
+
+                # If the field is a Many2one relation (i.e., an ID field pointing to another model)
+                field = record._fields[field_name]
+                if field.type == 'many2one' and field_value:
+                    related_record = self.env[field.comodel_name].browse(field_value)
+                    field_value = related_record.name  # Get the name of the related record
+
+                # Add the field label and its value to the message
+                field_labels.append(f"{field_label}: {field_value}")
+                log_message += f" {field_label} → {field_value} for product {record.product_id.name}, "  # Use plain text for logging
+
+            # Check if the log message has changed and format the user_name correctly
+
+            if log_message:
+                record.request_id.message_post(
+                    body=f"Record updated by {user_name}.\nChanges :\n{log_message}",
+                    subject="Record Updated",
+                    message_type='notification',
+                    subtype_xmlid='mail.mt_note'  # To ensure it appears correctly in chatter
+                )
+
+            result = super(RequestPriceLine, self).write(vals)
+        return result
 
     @api.depends('weight')
     def _compute_total_weight(self):
