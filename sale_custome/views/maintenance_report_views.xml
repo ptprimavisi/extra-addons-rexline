@@ -158,6 +158,7 @@
             <field name="name">IT Request</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">it.request</field>
+            <field name="domain">[('user_domain','=',1)]</field>
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="it_request_menuitem"

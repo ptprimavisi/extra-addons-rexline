@@ -20,6 +20,23 @@ class ItRequest(models.Model):
         ('done', 'Done'),
     ], default='draft')
     count_requisition = fields.Integer(compute="_count_requisition")
+    user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    def _user_domain(self):
+        uid = self.env.uid
+        self.user_domain = self.env['res.users'].search([('id','=',uid)])
+
+    def _search_domain(self, operator, value):
+        uid = self.env.uid
+        print(uid)
+        if self.env.user.has_group('sale_custome.it_custom_group') and uid not in [1,2]:
+            domain = ["|", ('state', '=', 'done'), ("user_id", '=', int(uid))]
+        else:
+            if uid == 1 or uid == 2:
+                domain = [('id', '!=', False)]
+            else:
+                domain = [("user_id", '=', int(uid))]
+        return domain
 
     @api.depends('employee_id')
     def _compute_department(self):
