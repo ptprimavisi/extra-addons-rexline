@@ -20,7 +20,18 @@ class ItRequest(models.Model):
         ('done', 'Done'),
     ], default='draft')
     count_requisition = fields.Integer(compute="_count_requisition")
+    requisition_state = fields.Selection([
+        ('to_requisition', 'To Requisition'),
+        ('requisition', 'Requisition')
+    ], compute="_compute_requisition_state")
     user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    @api.depends('count_requisition')
+    def _compute_requisition_state(self):
+        for line in self:
+            line.requisition_state = 'to_requisition'
+            if line.count_requisition > 0:
+                line.requisition_state = 'requisition'
 
     def _user_domain(self):
         uid = self.env.uid
