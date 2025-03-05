@@ -129,13 +129,57 @@
                     <table class="table" style="width: 100%; font-size: 14px;">
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">
-                                <b>AMOUNT IN WORD</b><br/><br/>
-                                <t t-esc="balance_due_in_word"/> (RUPIAH)<br/><br/>
-                                <b>Payment Detail</b><br/><br/>
-                                Bank Name : MAYBANK<br/>
-                                Bank Branch : SURABAYA<br/>
-                                Bank Account Number : 2790000188<br/>
-                                Bank Account Name : PT Rexline Engineering Indonesia<br/>
+                                <div style="width: 90%;  background-color: #d1d0cf;">
+                                    <div style="padding: 10px;">
+                                        <b>AMOUNT IN WORD</b><br/><br/>
+                                        <t t-esc="balance_due_in_word"/> (RUPIAH)<br/><br/>
+                                        <b>Payment Detail</b><br/>
+                                        <br/>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="vertical-align: top;">
+                                                        <p>Bank Name : </p>
+                                                    </td>
+                                                    <td>
+                                                        <p><t t-esc="bank_name"/></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align: top;">
+                                                        <p>Bank Branch : </p>
+                                                    </td>
+                                                    <td>
+                                                        <p><t t-esc="bank_branch"/></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align: top;">
+                                                        <p>Bank Account Number : </p>
+                                                    </td>
+                                                    <td style="vertical-align: top;">
+                                                        <p><t t-esc="bank_number"/></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align: top;">
+                                                        <p>Bank Account Name : </p>
+                                                    </td>
+                                                    <td>
+                                                        <p><t t-esc="bank_account_name"/></p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!--Bank Name : MAYBANK<br/>-->
+                                        <!--Bank Branch : SURABAYA<br/>-->
+                                        <!--Bank Account Number : 2790000188<br/>-->
+                                        <!--Bank Account Name : PT Rexline Engineering Indonesia<br/>-->
+                                    </div>
+                                </div>
+
+
                             </td>
                             <td style="border: 1px solid #ffffff; min-width:170px;">
                                 Subtotal<br/><br/>

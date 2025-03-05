@@ -165,6 +165,10 @@ class InheritSaleOrder(models.Model):
 
             # Get T&C
             so_tnc = rec.note or ''
+            bank_name = rec.bank_name or ''
+            bank_branch = rec.bank_branch or ''
+            bank_number = rec.bank_number or ''
+            bank_account_name = rec.bank_account_name or ''
 
             # Get Manager Signature
             signature = self.env['sale.manager.signature'].search([],limit=1)
@@ -207,7 +211,11 @@ class InheritSaleOrder(models.Model):
                     'signature_image':signature_image,
                     'logo':logo,
                     'balance_due_in_word':balance_due_in_word,
-                    'total_tax_base':total_tax_base
+                    'total_tax_base':total_tax_base,
+                    'bank_name': bank_name,
+                    'bank_branch': bank_branch,
+                    'bank_number': bank_number,
+                    'bank_account_name': bank_account_name,
                 }
             return report_data
 
