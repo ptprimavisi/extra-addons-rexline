@@ -17,6 +17,14 @@
                             <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                         </group>
                     </page>
+                    <page string="Payment Detail">
+                        <group>
+                            <field name="bank_name"/>
+                            <field name="bank_branch"/>
+                            <field name="bank_number"/>
+                            <field name="bank_account_name"/>
+                        </group>
+                    </page>
                 </xpath>
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="order_id" invisible="1" nolabel="1"/>
