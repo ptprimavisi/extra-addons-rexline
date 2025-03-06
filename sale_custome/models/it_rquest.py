@@ -107,7 +107,7 @@ class ItRequest(models.Model):
         for line in self:
             if line.count_requisition > 0:
                 raise UserError('This document cannot be deleted, because you have purchase requisition document')
-            exit()
+                exit()
         return super().unlink()
 
     def action_requisition(self):
