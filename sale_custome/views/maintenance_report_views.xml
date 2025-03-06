@@ -74,6 +74,17 @@
         action="action_maintenance_report"
         />
 
+        <record id="it_request_search_view" model="ir.ui.view">
+            <field name="name">it.request.search.view</field>
+            <field name="model">it.request</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                    </search>
+            </field>
+        </record>
+
         <record id="it_request_form_view" model="ir.ui.view">
             <field name="name">it.request.form.view</field>
             <field name="model">it.request</field>

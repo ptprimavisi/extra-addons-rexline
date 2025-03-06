@@ -240,7 +240,8 @@
                     <field name="partner_id" string="Customer"/>
                     <field name="date"/>
 <!--                    <field name="due_date" string="Scheduled Date" optional="show" widget="remaining_days" readonly="1"/>-->
-                    <field name="warning_time" invisible="1"/>
+<!--                    <field name="warning_time" invisible="1"/>-->
+                    <field name="project_category" string="Category"/>
                     <field name="due_date" string="Deadline"
                            decoration-warning="warning_time == 'yellow'"
                            decoration-success="warning_time == 'green'"
@@ -253,6 +254,7 @@
                             widget="badge"
                             optional="show"/>
                     <field name="crm_state"/>
+                    <field name="warning_time" nolabel="1" invisible="1"/>
                 </tree>
             </field>
         </record>

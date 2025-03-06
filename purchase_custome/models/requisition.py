@@ -73,6 +73,7 @@ class PurchaseRequisition(models.Model):
     date_approved1 = fields.Date(compute="_compute_approved1")
     date_approved2 = fields.Date(compute="_compute_approved2")
     create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created", store=True)
+    active = fields.Boolean(default=True)
 
     def _compute_employee_created(self):
         for line in self:

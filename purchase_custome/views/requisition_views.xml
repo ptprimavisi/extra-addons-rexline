@@ -114,6 +114,17 @@
             </field>
         </record>
 
+        <record id="purchase_requisition_search_view" model="ir.ui.view">
+            <field name="name">purchase.requisition.search.view</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                    </search>
+            </field>
+        </record>
+
         <record id="requisition_tree_view" model="ir.ui.view">
             <field name="name">purchase.requisition.tree.view</field>
             <field name="model">purchase.requisition</field>

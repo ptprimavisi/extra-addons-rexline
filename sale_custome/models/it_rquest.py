@@ -25,6 +25,7 @@ class ItRequest(models.Model):
         ('requisition', 'Requisition')
     ], compute="_compute_requisition_state")
     user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+    active = fields.Boolean(default=True)
 
     @api.depends('count_requisition')
     def _compute_requisition_state(self):
