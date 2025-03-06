@@ -50,6 +50,8 @@ class ItRequest(models.Model):
                 domain = [("user_id", '=', int(uid))]
         return domain
 
+
+
     @api.depends('employee_id')
     def _compute_department(self):
         for line in self:
@@ -103,8 +105,9 @@ class ItRequest(models.Model):
 
     def unlink(self):
         for line in self:
-            if line.state == 'done':
-                raise UserError('This document cannot be deleted, because already done!')
+            if line.count_requisition > 0:
+                raise UserError('This document cannot be deleted, because you have purchase requisition document')
+            exit()
         return super().unlink()
 
     def action_requisition(self):
