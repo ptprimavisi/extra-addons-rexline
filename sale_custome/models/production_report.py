@@ -244,6 +244,7 @@ class ProductionReportLine(models.Model):
 class MrpProductionInherit(models.Model):
     _inherit = 'mrp.production'
 
+    customer_note = fields.Char()
     notes = fields.Text()
 
     def write(self, vals):

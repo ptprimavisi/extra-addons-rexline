@@ -53,7 +53,8 @@
             <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='bom_div']" position="after">
-                    <field name="notes"/>
+                    <field name="customer_note"/>
+                    <field name="notes" widget="html"/>
                 </xpath>
                 <xpath expr="//group" position="after">
                     <button string="Compute Material Consume" name="action_compute_consume" type="object" invisible="id == False or count_report == 0"/>
