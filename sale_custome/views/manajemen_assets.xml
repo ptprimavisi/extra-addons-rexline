@@ -105,11 +105,11 @@
             <field name="name">manajemen.assets.tree</field>
             <field name="model">manajemen.assets</field>
             <field name="arch" type="xml">
-                <tree string="Manajemen Assets">
+                <tree string="Manajemen Assets" default_order="name asc">
                     <field name="name"/>
                     <field name="asset_type"/>
                     <field name="product_name"/>
-                    <field name="expired_date" string="Remaining Expiry" optional="show" widget="remaining_days" invisible="asset_type != 'consumable'"/>
+                    <field name="days_number" string="Remaining Expiry"/>
                     <field name="value"/>
                     <field name="purchase_date"/>
                     <field name="status"/>

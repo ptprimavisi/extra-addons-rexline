@@ -105,7 +105,7 @@ class ManajemenAssets(models.Model):
     delivered_date = fields.Date()
     returned_date = fields.Date()
     transfer_date = fields.Date()
-    expired_date = fields.Date(compute="_compute_exp_date")
+    expired_date = fields.Date()
     admin_login = fields.Char()
     portal_admin = fields.Char()
     contact_person = fields.Char()
@@ -118,7 +118,7 @@ class ManajemenAssets(models.Model):
     depreciation = fields.Float(string='Depreciation', compute="_compute_depreciation")
     current_value = fields.Float(string='Current Value', compute="_compute_current_value")
     upgrade_ssd = fields.Boolean(string='Upgrade SSD')
-    days_number = fields.Float()
+    days_number = fields.Char(compute="_compute_exp_date")
     spec_type = fields.Selection([
         ('std', 'STD'),
         ('hgh', 'HGH')], string='Spec Type')
@@ -127,14 +127,18 @@ class ManajemenAssets(models.Model):
         ('inactive', 'Inactive'),
         ('stock', 'Stock')], string='Status')
 
-    @api.depends('purchase_date', 'days_number')
+    @api.depends('purchase_date', 'expired_date')
     def _compute_exp_date(self):
         for line in self:
-            line.expired_date = False
-            if line.purchase_date and line.days_number:
-                number_exp = int(line.days_number) - 1
-                exp = line.purchase_date + timedelta(days=number_exp)
-                line.expired_date = str(exp)
+            line.days_number = False
+            if line.purchase_date and line.expired_date:
+                total_days = (line.expired_date - date.today()).days
+                if total_days > 0:
+                    line.days_number = f'In {str(total_days)} days'
+                if total_days == 0:
+                    line.days_number = f'Today'
+                if total_days < 0:
+                    line.days_number = f'{str(abs(total_days))} days ago'
 
     def write(self, vals):
         for record in self:
