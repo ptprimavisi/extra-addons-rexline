@@ -118,8 +118,8 @@ class ManajemenAssets(models.Model):
     depreciation = fields.Float(string='Depreciation', compute="_compute_depreciation")
     current_value = fields.Float(string='Current Value', compute="_compute_current_value")
     upgrade_ssd = fields.Boolean(string='Upgrade SSD')
-    days_number = fields.Char(compute="_compute_exp_date", store=True)
-    dec_expired = fields.Char(compute="_compute_decor", store=True)
+    days_number = fields.Char(compute="_compute_exp_date")
+    dec_expired = fields.Char(compute="_compute_decor")
     spec_type = fields.Selection([
         ('std', 'STD'),
         ('hgh', 'HGH')], string='Spec Type')
