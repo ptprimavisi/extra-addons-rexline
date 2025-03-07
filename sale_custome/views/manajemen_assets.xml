@@ -109,10 +109,15 @@
                     <field name="name"/>
                     <field name="asset_type"/>
                     <field name="product_name"/>
-                    <field name="days_number" string="Remaining Expiry"/>
+                    <field name="days_number" string="Remaining Expiry"
+                        decoration-danger="dec_expired == 'red'"
+                        decoration-success="dec_expired == 'green'"
+                           invisible="asset_type != 'consumable'"
+                    />
                     <field name="value"/>
                     <field name="purchase_date"/>
                     <field name="status"/>
+                    <field name="dec_expired" invisible="1" nolabel="1"/>
                 </tree>
             </field>
         </record>

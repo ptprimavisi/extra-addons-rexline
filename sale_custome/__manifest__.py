@@ -38,6 +38,7 @@
     'assets': {
         'web.assets_backend': [
             "sale_custome/static/src/js/notif.js",
+            # "sale_custome/static/src/js/custom_css.js",
             # "/sale_custome/static/src/js/button.js",
             "sale_custome/static/src/xml/notif_views.xml",
             # "/sale_custome/static/src/xml/button_view.xml"

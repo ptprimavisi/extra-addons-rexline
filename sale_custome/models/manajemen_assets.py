@@ -118,7 +118,8 @@ class ManajemenAssets(models.Model):
     depreciation = fields.Float(string='Depreciation', compute="_compute_depreciation")
     current_value = fields.Float(string='Current Value', compute="_compute_current_value")
     upgrade_ssd = fields.Boolean(string='Upgrade SSD')
-    days_number = fields.Char(compute="_compute_exp_date")
+    days_number = fields.Char(compute="_compute_exp_date", store=True)
+    dec_expired = fields.Char(compute="_compute_decor", store=True)
     spec_type = fields.Selection([
         ('std', 'STD'),
         ('hgh', 'HGH')], string='Spec Type')
@@ -126,6 +127,17 @@ class ManajemenAssets(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('stock', 'Stock')], string='Status')
+
+    @api.depends('expired_date')
+    def _compute_decor(self):
+        for line in self:
+            line.dec_expired = False
+            if line.expired_date:
+                total_days = (line.expired_date - date.today()).days
+                if total_days <= 30:
+                    line.dec_expired = 'red'
+                if total_days > 30:
+                    line.dec_expired = 'green'
 
     @api.depends('purchase_date', 'expired_date')
     def _compute_exp_date(self):
