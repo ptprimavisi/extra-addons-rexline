@@ -72,7 +72,7 @@ class PurchaseRequisition(models.Model):
     date_confirm = fields.Date()
     date_approved1 = fields.Date(compute="_compute_approved1")
     date_approved2 = fields.Date(compute="_compute_approved2")
-    create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created", store=True)
+    create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created")
     active = fields.Boolean(default=True)
 
     @api.depends('create_uid')
