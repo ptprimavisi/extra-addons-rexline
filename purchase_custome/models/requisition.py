@@ -75,12 +75,12 @@ class PurchaseRequisition(models.Model):
     create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created", store=True)
     active = fields.Boolean(default=True)
 
-    @api.depends('responsible')
+    @api.depends('create_uid')
     def _compute_employee_created(self):
         for line in self:
             line.create_employee_id = False
-            if line.responsible:
-                employee_id = self.env['hr.employee'].search([('user_id','=',line.responsible.id)])
+            if line.create_uid:
+                employee_id = self.env['hr.employee'].search([('user_id','=',line.create_uid.id)])
                 if employee_id:
                     line.create_employee_id = int(employee_id.id)
 
