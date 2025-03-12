@@ -92,6 +92,7 @@ class ItRequest(models.Model):
                     'default_employee_id': int(line.employee_id.id),
                     'default_department_id': line.department_id.id,
                     'default_requisition_date': line.date_request,
+                    'default_due_date': line.due_date,
                     'default_category': 'ut'
                 }
             }

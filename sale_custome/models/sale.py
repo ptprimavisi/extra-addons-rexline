@@ -1188,133 +1188,133 @@ class InquirySales(models.Model):
                                         list_data[2]['product_uom_quantity'] += liness.product_qty
 
                         # jika product memiliki BOM
-                        if any(liness.product_id.product_tmpl_id.id == items.product_tmpl_id.id for items in
-                               bom_global):
-                            bom_line_kit = self.env['mrp.bom'].search(
-                                [('product_tmpl_id', '=', liness.product_id.product_tmpl_id.id)])
-                            if bom_line_kit:
-                                if len(bom_line_kit) > 1:
-                                    raise UserError('The product (' + str(
-                                        bom_line_kit.product_tmpl_id.name) + ') bomb cannot be more than 1')
-                                else:
-                                    for line_kit in bom_line_kit.bom_line_ids:
-                                        bom_line_kit2 = self.env['mrp.bom'].search(
-                                            [('product_tmpl_id', '=', line_kit.product_id.product_tmpl_id.id)])
-                                        if bom_line_kit2:
-                                            if len(bom_line_kit2) > 1:
-                                                raise UserError('The product (' + str(
-                                                    bom_line_kit2.product_tmpl_id.name) + ') bomb cannot be more than 1')
-                                            else:
-                                                for line_kit2 in bom_line_kit2.bom_line_ids:
-                                                    bom_line_kit3 = self.env['mrp.bom'].search(
-                                                        [('product_tmpl_id', '=',
-                                                          line_kit2.product_id.product_tmpl_id.id)])
-                                                    if bom_line_kit3:
-                                                        if len(bom_line_kit3) > 1:
-                                                            raise UserError('The product (' + str(
-                                                                bom_line_kit3.product_tmpl_id.name) + ') bomb cannot be more than 1')
-                                                        else:
-                                                            for line_kit3 in bom_line_kit3.bom_line_ids:
-                                                                bom_line_kit4 = self.env['mrp.bom'].search(
-                                                                    [('product_tmpl_id', '=',
-                                                                      line_kit3.product_id.product_tmpl_id.id)])
-                                                                if bom_line_kit4:
-                                                                    if len(bom_line_kit4) > 1:
-                                                                        raise UserError('The product (' + str(
-                                                                            bom_line_kit4.product_tmpl_id.name) + ') bomb cannot be more than 1')
-                                                                    else:
-                                                                        for line_kit4 in bom_line_kit4.bom_line_ids:
-                                                                            if not any(
-                                                                                    line_kit4.product_id.product_tmpl_id.id == items.product_tmpl_id.id
-                                                                                    for items in bom_global):
-                                                                                description = line_kit4.product_id.product_tmpl_id.name
-                                                                                if line_kit4.product_id.product_tmpl_id.description:
-                                                                                    description = line_kit4.product_id.product_tmpl_id.description
-                                                                                if not any(
-                                                                                        line_kit4.product_id.id ==
-                                                                                        item[2]['product_id']
-                                                                                        for item in list_product):
-                                                                                    list_product.append((0, 0, {
-                                                                                        'product_id': line_kit4.product_id.id,
-                                                                                        'name': str(description),
-                                                                                        'product_uom_quantity': line_kit4.product_qty,
-                                                                                        'cost_price': line_kit4.product_id.product_tmpl_id.standard_price,
-                                                                                        'unit_weight': line_kit4.product_id.product_tmpl_id.weight,
-                                                                                        'product_uom': line_kit4.product_uom_id.id
-                                                                                    }))
-                                                                                else:
-                                                                                    for list_data in list_product:
-                                                                                        if list_data[2][
-                                                                                            'product_id'] == line_kit4.product_id.id:
-                                                                                            list_data[2][
-                                                                                                'product_uom_quantity'] += line_kit4.product_qty
-                                                                if not any(
-                                                                        line_kit3.product_id.product_tmpl_id.id == items.product_tmpl_id.id
-                                                                        for items in bom_global):
-                                                                    description = line_kit3.product_id.product_tmpl_id.name
-                                                                    if line_kit3.product_id.product_tmpl_id.description:
-                                                                        description = line_kit3.product_id.product_tmpl_id.description
-                                                                    if not any(
-                                                                            line_kit3.product_id.id == item[2][
-                                                                                'product_id']
-                                                                            for item in list_product):
-                                                                        list_product.append((0, 0, {
-                                                                            'product_id': line_kit3.product_id.id,
-                                                                            'name': str(description),
-                                                                            'product_uom_quantity': line_kit3.product_qty,
-                                                                            'cost_price': line_kit3.product_id.product_tmpl_id.standard_price,
-                                                                            'unit_weight': line_kit3.product_id.product_tmpl_id.weight,
-                                                                            'product_uom': line_kit3.product_uom_id.id
-                                                                        }))
-                                                                    else:
-                                                                        for list_data in list_product:
-                                                                            if list_data[2][
-                                                                                'product_id'] == line_kit3.product_id.id:
-                                                                                list_data[2][
-                                                                                    'product_uom_quantity'] += line_kit3.product_qty
-                                                    if not any(
-                                                            line_kit2.product_id.product_tmpl_id.id == items.product_tmpl_id.id
-                                                            for items in bom_global):
-                                                        description = line_kit2.product_id.product_tmpl_id.name
-                                                        if line_kit2.product_id.product_tmpl_id.description:
-                                                            description = line_kit2.product_id.product_tmpl_id.description
-                                                        if not any(
-                                                                line_kit2.product_id.id == item[2]['product_id']
-                                                                for item in list_product):
-                                                            list_product.append((0, 0, {
-                                                                'product_id': line_kit2.product_id.id,
-                                                                'name': str(description),
-                                                                'product_uom_quantity': line_kit2.product_qty,
-                                                                'cost_price': line_kit2.product_id.product_tmpl_id.standard_price,
-                                                                'unit_weight': line_kit2.product_id.product_tmpl_id.weight,
-                                                                'product_uom': line_kit2.product_uom_id.id
-                                                            }))
-                                                        else:
-                                                            for list_data in list_product:
-                                                                if list_data[2][
-                                                                    'product_id'] == line_kit2.product_id.id:
-                                                                    list_data[2][
-                                                                        'product_uom_quantity'] += line_kit2.product_qty
-                                        description = line_kit.product_id.product_tmpl_id.name
-                                        if line_kit.product_id.product_tmpl_id.description:
-                                            description = line_kit.product_id.product_tmpl_id.description
-                                        if not any(
-                                                line_kit.product_id.product_tmpl_id.id == items.product_tmpl_id.id for
-                                                items in bom_global):
-                                            if not any(line_kit.product_id.id == item[2]['product_id'] for item in
-                                                       list_product):
-                                                list_product.append((0, 0, {
-                                                    'product_id': line_kit.product_id.id,
-                                                    'name': str(description),
-                                                    'product_uom_quantity': line_kit.product_qty,
-                                                    'cost_price': line_kit.product_id.product_tmpl_id.standard_price,
-                                                    'unit_weight': line_kit.product_id.product_tmpl_id.weight,
-                                                    'product_uom': line_kit.product_uom_id.id
-                                                }))
-                                            else:
-                                                for list_data in list_product:
-                                                    if list_data[2]['product_id'] == line_kit.product_id.id:
-                                                        list_data[2]['product_uom_quantity'] += line_kit.product_qty
+                        # if any(liness.product_id.product_tmpl_id.id == items.product_tmpl_id.id for items in
+                        #        bom_global):
+                        #     bom_line_kit = self.env['mrp.bom'].search(
+                        #         [('product_tmpl_id', '=', liness.product_id.product_tmpl_id.id)])
+                        #     if bom_line_kit:
+                        #         if len(bom_line_kit) > 1:
+                        #             raise UserError('The product (' + str(
+                        #                 bom_line_kit.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                        #         else:
+                        #             for line_kit in bom_line_kit.bom_line_ids:
+                        #                 bom_line_kit2 = self.env['mrp.bom'].search(
+                        #                     [('product_tmpl_id', '=', line_kit.product_id.product_tmpl_id.id)])
+                        #                 if bom_line_kit2:
+                        #                     if len(bom_line_kit2) > 1:
+                        #                         raise UserError('The product (' + str(
+                        #                             bom_line_kit2.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                        #                     else:
+                        #                         for line_kit2 in bom_line_kit2.bom_line_ids:
+                        #                             bom_line_kit3 = self.env['mrp.bom'].search(
+                        #                                 [('product_tmpl_id', '=',
+                        #                                   line_kit2.product_id.product_tmpl_id.id)])
+                        #                             if bom_line_kit3:
+                        #                                 if len(bom_line_kit3) > 1:
+                        #                                     raise UserError('The product (' + str(
+                        #                                         bom_line_kit3.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                        #                                 else:
+                        #                                     for line_kit3 in bom_line_kit3.bom_line_ids:
+                        #                                         bom_line_kit4 = self.env['mrp.bom'].search(
+                        #                                             [('product_tmpl_id', '=',
+                        #                                               line_kit3.product_id.product_tmpl_id.id)])
+                        #                                         if bom_line_kit4:
+                        #                                             if len(bom_line_kit4) > 1:
+                        #                                                 raise UserError('The product (' + str(
+                        #                                                     bom_line_kit4.product_tmpl_id.name) + ') bomb cannot be more than 1')
+                        #                                             else:
+                        #                                                 for line_kit4 in bom_line_kit4.bom_line_ids:
+                        #                                                     if not any(
+                        #                                                             line_kit4.product_id.product_tmpl_id.id == items.product_tmpl_id.id
+                        #                                                             for items in bom_global):
+                        #                                                         description = line_kit4.product_id.product_tmpl_id.name
+                        #                                                         if line_kit4.product_id.product_tmpl_id.description:
+                        #                                                             description = line_kit4.product_id.product_tmpl_id.description
+                        #                                                         if not any(
+                        #                                                                 line_kit4.product_id.id ==
+                        #                                                                 item[2]['product_id']
+                        #                                                                 for item in list_product):
+                        #                                                             list_product.append((0, 0, {
+                        #                                                                 'product_id': line_kit4.product_id.id,
+                        #                                                                 'name': str(description),
+                        #                                                                 'product_uom_quantity': line_kit4.product_qty,
+                        #                                                                 'cost_price': line_kit4.product_id.product_tmpl_id.standard_price,
+                        #                                                                 'unit_weight': line_kit4.product_id.product_tmpl_id.weight,
+                        #                                                                 'product_uom': line_kit4.product_uom_id.id
+                        #                                                             }))
+                        #                                                         else:
+                        #                                                             for list_data in list_product:
+                        #                                                                 if list_data[2][
+                        #                                                                     'product_id'] == line_kit4.product_id.id:
+                        #                                                                     list_data[2][
+                        #                                                                         'product_uom_quantity'] += line_kit4.product_qty
+                        #                                         if not any(
+                        #                                                 line_kit3.product_id.product_tmpl_id.id == items.product_tmpl_id.id
+                        #                                                 for items in bom_global):
+                        #                                             description = line_kit3.product_id.product_tmpl_id.name
+                        #                                             if line_kit3.product_id.product_tmpl_id.description:
+                        #                                                 description = line_kit3.product_id.product_tmpl_id.description
+                        #                                             if not any(
+                        #                                                     line_kit3.product_id.id == item[2][
+                        #                                                         'product_id']
+                        #                                                     for item in list_product):
+                        #                                                 list_product.append((0, 0, {
+                        #                                                     'product_id': line_kit3.product_id.id,
+                        #                                                     'name': str(description),
+                        #                                                     'product_uom_quantity': line_kit3.product_qty,
+                        #                                                     'cost_price': line_kit3.product_id.product_tmpl_id.standard_price,
+                        #                                                     'unit_weight': line_kit3.product_id.product_tmpl_id.weight,
+                        #                                                     'product_uom': line_kit3.product_uom_id.id
+                        #                                                 }))
+                        #                                             else:
+                        #                                                 for list_data in list_product:
+                        #                                                     if list_data[2][
+                        #                                                         'product_id'] == line_kit3.product_id.id:
+                        #                                                         list_data[2][
+                        #                                                             'product_uom_quantity'] += line_kit3.product_qty
+                        #                             if not any(
+                        #                                     line_kit2.product_id.product_tmpl_id.id == items.product_tmpl_id.id
+                        #                                     for items in bom_global):
+                        #                                 description = line_kit2.product_id.product_tmpl_id.name
+                        #                                 if line_kit2.product_id.product_tmpl_id.description:
+                        #                                     description = line_kit2.product_id.product_tmpl_id.description
+                        #                                 if not any(
+                        #                                         line_kit2.product_id.id == item[2]['product_id']
+                        #                                         for item in list_product):
+                        #                                     list_product.append((0, 0, {
+                        #                                         'product_id': line_kit2.product_id.id,
+                        #                                         'name': str(description),
+                        #                                         'product_uom_quantity': line_kit2.product_qty,
+                        #                                         'cost_price': line_kit2.product_id.product_tmpl_id.standard_price,
+                        #                                         'unit_weight': line_kit2.product_id.product_tmpl_id.weight,
+                        #                                         'product_uom': line_kit2.product_uom_id.id
+                        #                                     }))
+                        #                                 else:
+                        #                                     for list_data in list_product:
+                        #                                         if list_data[2][
+                        #                                             'product_id'] == line_kit2.product_id.id:
+                        #                                             list_data[2][
+                        #                                                 'product_uom_quantity'] += line_kit2.product_qty
+                        #                 description = line_kit.product_id.product_tmpl_id.name
+                        #                 if line_kit.product_id.product_tmpl_id.description:
+                        #                     description = line_kit.product_id.product_tmpl_id.description
+                        #                 if not any(
+                        #                         line_kit.product_id.product_tmpl_id.id == items.product_tmpl_id.id for
+                        #                         items in bom_global):
+                        #                     if not any(line_kit.product_id.id == item[2]['product_id'] for item in
+                        #                                list_product):
+                        #                         list_product.append((0, 0, {
+                        #                             'product_id': line_kit.product_id.id,
+                        #                             'name': str(description),
+                        #                             'product_uom_quantity': line_kit.product_qty,
+                        #                             'cost_price': line_kit.product_id.product_tmpl_id.standard_price,
+                        #                             'unit_weight': line_kit.product_id.product_tmpl_id.weight,
+                        #                             'product_uom': line_kit.product_uom_id.id
+                        #                         }))
+                        #                     else:
+                        #                         for list_data in list_product:
+                        #                             if list_data[2]['product_id'] == line_kit.product_id.id:
+                        #                                 list_data[2]['product_uom_quantity'] += line_kit.product_qty
                 # print(list_product)
                 # exit()
                 # to_create = [(0, 0, item) for item in list_product]

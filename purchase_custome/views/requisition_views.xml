@@ -141,6 +141,20 @@
             </field>
         </record>
 
+        <record id="pr_ga" model="ir.sequence">
+            <field name="name">Purchase Requisition</field>
+            <field name="code">EPR_GA</field>
+            <field name="suffix">-MRF-REI-GA-%(year)s</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="pr_it" model="ir.sequence">
+            <field name="name">Purchase Requisition</field>
+            <field name="code">EPR_IT</field>
+            <field name="suffix">-MRF-REI-IT-%(year)s</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
         <record id="action_requisition" model="ir.actions.act_window">
             <field name="name">Purchase Requisition</field>
             <field name="type">ir.actions.act_window</field>

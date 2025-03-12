@@ -2,7 +2,11 @@ from odoo import models, api, fields
 from odoo.exceptions import UserError
 from datetime import date, datetime
 
-
+ROMAWI_BULAN = {
+    1: "I", 2: "II", 3: "III", 4: "IV",
+    5: "V", 6: "VI", 7: "VII", 8: "VIII",
+    9: "IX", 10: "X", 11: "XI", 12: "XII"
+}
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
@@ -189,10 +193,29 @@ class PurchaseRequisition(models.Model):
     #     return domain
 
     @api.model
-    def create(self, vals_list):
-        moves = super().create(vals_list)
-        moves['name'] = self.env['ir.sequence'].next_by_code('EPR')
-        return moves
+    def create(self, vals):
+        # moves = super().create(vals_list)
+        if vals.get('category') == 'ga':
+            bulan_sekarang = datetime.now().month
+            romawi_bulan = ROMAWI_BULAN[bulan_sekarang]
+            vals['name'] = self.env['ir.sequence'].next_by_code('EPR_GA')
+            full_seq = vals['name']
+            suffix = full_seq[:full_seq.find("A") + 1]
+            prefix = full_seq[-5:]
+            full_ga = suffix + '-' + str(romawi_bulan) + prefix
+            final_ga = '0' + full_ga
+            vals['name'] = final_ga
+        if vals.get('category') == 'ut':
+            bulan_sekarang = datetime.now().month
+            romawi_bulan = ROMAWI_BULAN[bulan_sekarang]
+            vals['name'] = self.env['ir.sequence'].next_by_code('EPR_IT')
+            full_seq = vals['name']
+            suffix = full_seq[:full_seq.find("T") + 1]
+            prefix = full_seq[-5:]
+            full_ga = suffix + '-' + str(romawi_bulan) + prefix
+            final_ga = '0' + full_ga
+            vals['name'] = final_ga
+        return super().create(vals)
 
     def _compute_count_po(self):
         for line in self:
