@@ -100,7 +100,7 @@ class ManajemenAssets(models.Model):
     new_pic = fields.Many2one('hr.employee', string='New PIC')
     location = fields.Char()
     designation = fields.Char()
-    department = fields.Many2one('hr.department')
+    department = fields.Many2one('hr.department', compute="_compute_department", store=True)
     head_department = fields.Many2one('hr.employee')
     delivered_date = fields.Date()
     returned_date = fields.Date()
@@ -138,6 +138,11 @@ class ManajemenAssets(models.Model):
                     line.dec_expired = 'red'
                 if total_days > 30:
                     line.dec_expired = 'green'
+
+    @api.depends('pic')
+    def _compute_department(self):
+        for line in self:
+            line.department = line.pic.department_id.id
 
     @api.depends('purchase_date', 'expired_date')
     def _compute_exp_date(self):

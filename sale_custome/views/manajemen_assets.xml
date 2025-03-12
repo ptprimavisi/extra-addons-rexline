@@ -47,7 +47,7 @@
                             <field name="serial_number" invisible="asset_type != 'storable'"/>
                             <field name="brand" invisible="asset_type != 'storable'"/>
                             <field name="qty" invisible="asset_type != 'storable'"/>
-                            <field name="pic" invisible="asset_type != 'storable'"/>
+                            <field name="pic"/>
 <!--                            <field name="new_pic" invisible="asset_type != 'storable'"/>-->
                             <field name="location" invisible="asset_type != 'storable'"/>
                             <field name="designation" invisible="asset_type != 'storable'"/>
@@ -56,8 +56,8 @@
                             
                             <field name="tipe" invisible="asset_type != 'consumable'"/>
                             <field name="license_number" invisible="asset_type != 'consumable'"/>
-                            <field name="days_number" string="Number of Days" invisible="asset_type != 'consumable'"/>
-                            <field name="expired_date" invisible="asset_type != 'consumable'"/>
+                            <field name="expired_date" />
+                            <field name="days_number" string="Number of Days"/>
                             <field name="admin_login" invisible="asset_type != 'consumable'"/>
                             <field name="portal_admin" widget="url" invisible="asset_type != 'consumable'"/>
                             <field name="contact_person" invisible="asset_type != 'consumable'"/>
@@ -112,7 +112,6 @@
                     <field name="days_number" string="Remaining Expiry"
                         decoration-danger="dec_expired == 'red'"
                         decoration-success="dec_expired == 'green'"
-                           invisible="asset_type != 'consumable'"
                     />
                     <field name="value"/>
                     <field name="purchase_date"/>

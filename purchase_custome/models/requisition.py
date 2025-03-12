@@ -80,7 +80,7 @@ class PurchaseRequisition(models.Model):
         for line in self:
             line.create_employee_id = False
             if line.create_uid:
-                employee_id = self.env['hr.employee'].search([('user_id','=',line.create_uid.id)])
+                employee_id = self.env['hr.employee'].search([('user_id', '=', line.create_uid.id)])
                 if employee_id:
                     line.create_employee_id = int(employee_id.id)
 
@@ -261,7 +261,7 @@ class PurchaseRequisition(models.Model):
         for line in self:
             line.is_purchase = False
             users = self.env['res.users'].browse(self.env.uid)
-            if users.is_purchase:
+            if self.env.user.has_group('sale_custome.purchasing_custom_group'):
                 line.is_purchase = True
 
     def action_create_quotation(self):

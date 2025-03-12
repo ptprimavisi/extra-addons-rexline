@@ -63,7 +63,7 @@
                         <notebook>
 <!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
                             <page string="Requisition Lines">
-                                <field name="requisition_line" required="1">
+                                <field name="requisition_line" required="1" readonly="state in ['to_purchase','po'] and is_purchase == False">
                                     <tree editable="bottom">
                                         <field name="select" invisible="is_it == False and approve == False"/>
 <!--                                        <field name="product_id" string="Product" invisible="is_it == False and approve == False or state not in ['to_purchase','po']"/>-->
