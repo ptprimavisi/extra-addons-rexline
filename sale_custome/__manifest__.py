@@ -33,7 +33,8 @@
         "views/sale_order_views.xml",
         "views/maintenance_report_views.xml",
         "views/hr_surat_tugas_views.xml",
-        'views/manajemen_assets.xml'
+        'views/manajemen_assets.xml',
+        'views/hari_kerja_views.xml'
     ],
     'assets': {
         'web.assets_backend': [

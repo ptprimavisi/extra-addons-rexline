@@ -529,7 +529,6 @@ class HrPayslip(models.Model):
                              ('surat_id.date_to', '>=', today)  # date_to >= today
                              ])
                         # raise UserError(today)
-                        print(today)
                         if surat_tugas:
                             nominal = surat_tugas.surat_id.meal_allowance
                             jumlah_surat += 1
@@ -545,6 +544,75 @@ class HrPayslip(models.Model):
                     gaji_gross.amount = gaji_gross.amount + meal_allowance
 
                     # raise UserError(meal_allowance)
+
+                # absence deduction
+                if slip_line.salary_rule_id.code == 'ABSDED':
+                    date_from_obj = datetime.strptime(str(payslip.date_from), "%Y-%m-%d")
+                    date_to_obj = datetime.strptime(str(payslip.date_to), "%Y-%m-%d")
+                    current_date = date_from_obj
+                    abs_ded_amount = 0
+                    jumlah_tdk_absence = 0
+                    if payslip.contract_id.schedule_type_id:
+                        while current_date <= date_to_obj:
+                            today = current_date.strftime("%Y-%m-%d")
+                            hari = current_date.strftime('%A')
+                            if payslip.contract_id.schedule_type_id.hari_id:
+                                master_hari = self.env['master.hari'].search([('id','in',payslip.contract_id.schedule_type_id.hari_id.ids),
+                                                                              ('name','=',str(hari))])
+                                if master_hari:
+                                    print(f'Available tgl {today} -- Available Hari {master_hari.name}')
+                                    attendance = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),
+                                        ('check_in', '>=',current_date.strftime('%Y-%m-%d 00:00:00')),
+                                        # Awal hari
+                                        ('check_in', '<=', current_date.strftime('%Y-%m-%d 23:59:59'))])
+
+                                    # sakit
+                                    timeoff = self.env['hr.leave'].search([('employee_id', '=', payslip.employee_id.id),
+                                                                           ('request_date_from', '>=',
+                                                                            current_date.strftime('%Y-%m-%d 00:00:00')),
+                                                                           # Awal hari
+                                                                           ('request_date_from', '<=',
+                                                                            current_date.strftime('%Y-%m-%d 23:59:59'))
+                                                                           ])
+
+                                    roster = self.env['hr.roster'].search([('employee_id', '=', payslip.employee_id.id),
+                                                                           ('state', '=', 'confirm'),
+                                                                           ('date_from', '<=', today),
+                                                                           ('date_to', '>=', today)
+                                                                           ])
+                                    surat_tugas = self.env['hr.surat.tugas.line'].search(
+                                        [('employee_id', '=', payslip.employee_id.id),
+                                         ('surat_id.state', '=', 'done'),
+                                         ('surat_id.date_from', '<=', today),  # date_from <= today
+                                         ('surat_id.date_to', '>=', today)  # date_to >= today
+                                         ])
+                                    if not attendance:
+                                        if timeoff and not roster: #cuti
+                                            nonsite = payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
+                                            final_nonsite = nonsite / 30
+                                            abs_ded_amount += final_nonsite
+                                            # raise UserError(today)
+                                            if surat_tugas:
+                                                abs_ded_amount += surat_tugas.surat_id.site_allowance
+                                        if roster and not timeoff:
+                                            if surat_tugas:
+                                                sites_alw = surat_tugas.surat_id.site_allowance + surat_tugas.surat_id.meal_allowance
+                                                abs_ded_amount += sites_alw
+                                        if not roster and not timeoff:
+                                            thp = payslip.contract_id.wage + payslip.contract_id.position_allowance + payslip.contract_id.medical_allowance + payslip.contract_id.hra + payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
+                                            total_ded = thp / 30
+                                            abs_ded_amount += total_ded
+                                        jumlah_tdk_absence += 1
+
+                            current_date += timedelta(days=1)
+                        absence_deduction = self.env['hr.payslip.line'].search(
+                            [('slip_id', '=', int(payslip.id)), ('code', 'in', ['ABSDED'])])
+                        if absence_deduction and not absence_deduction.is_manual:
+                            absence_deduction.amount = abs_ded_amount
+                        gaji_net = self.env['hr.payslip.line'].search(
+                            [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
+                        gaji_net.amount = gaji_net.amount - abs_ded_amount
+                        print(f'{int(abs_ded_amount)} -- {jumlah_tdk_absence}')
 
                 if slip_line.salary_rule_id.code == 'STALLSITE':
                     date_from = payslip.date_from  # Format: YYYY-MM-DD
@@ -572,39 +640,39 @@ class HrPayslip(models.Model):
                             nominal = surat_tugas.surat_id.site_allowance
                             mealall = surat_tugas.surat_id.meal_allowance
                             jumlah_surat += 1
-                            attendance = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),
-                                                                           ('check_in', '>=',
-                                                                            current_date.strftime('%Y-%m-%d 00:00:00')),
-                                                                           # Awal hari
-                                                                           ('check_in', '<=', current_date.strftime(
-                                                                               '%Y-%m-%d 23:59:59'))])
-                            if not attendance and not slip_line.salary_rule_id.is_manual:
-                                timeoff = self.env['hr.leave'].search([('employee_id', '=', payslip.employee_id.id),
-                                                                       ('request_date_from', '>=',
-                                                                        current_date.strftime('%Y-%m-%d 00:00:00')),# Awal hari
-                                                                       ('request_date_from', '<=',
-                                                                        current_date.strftime('%Y-%m-%d 23:59:59'))
-                                                                       ])
-                                roster = self.env['hr.roster'].search([('employee_id','=',payslip.employee_id.id),
-                                                                       ('state','=','confirm'),
-                                                                       ('date_from', '<=', today),
-                                                                       ('date_to', '>=', today)
-                                                                       ])
-                                if timeoff and not roster:
-                                    nonsite = payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
-                                    final_nonsite = nonsite / 30
-                                    abs_ded += final_nonsite
-                                    abs_ded += nominal
-                                if roster and not timeoff:
-                                    site_al = nominal + mealall
-                                    abs_ded += site_al
-                                if not timeoff and not roster:
-                                    nonsite = payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
-                                    final_nonsite = nonsite / 30
-                                    site_al = nominal + mealall
-                                    final = final_nonsite + site_al
-                                    abs_ded += final
-                                # raise UserError(timeoff)
+                            # attendance = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),
+                            #                                                ('check_in', '>=',
+                            #                                                 current_date.strftime('%Y-%m-%d 00:00:00')),
+                            #                                                # Awal hari
+                            #                                                ('check_in', '<=', current_date.strftime(
+                            #                                                    '%Y-%m-%d 23:59:59'))])
+                            # if not attendance and not slip_line.salary_rule_id.is_manual:
+                            #     timeoff = self.env['hr.leave'].search([('employee_id', '=', payslip.employee_id.id),
+                            #                                            ('request_date_from', '>=',
+                            #                                             current_date.strftime('%Y-%m-%d 00:00:00')),# Awal hari
+                            #                                            ('request_date_from', '<=',
+                            #                                             current_date.strftime('%Y-%m-%d 23:59:59'))
+                            #                                            ])
+                            #     roster = self.env['hr.roster'].search([('employee_id','=',payslip.employee_id.id),
+                            #                                            ('state','=','confirm'),
+                            #                                            ('date_from', '<=', today),
+                            #                                            ('date_to', '>=', today)
+                            #                                            ])
+                            #     if timeoff and not roster:
+                            #         nonsite = payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
+                            #         final_nonsite = nonsite / 30
+                            #         abs_ded += final_nonsite
+                            #         abs_ded += nominal
+                            #     if roster and not timeoff:
+                            #         site_al = nominal + mealall
+                            #         abs_ded += site_al
+                            #     if not timeoff and not roster:
+                            #         nonsite = payslip.contract_id.meal_allowance + payslip.contract_id.transport_allowance
+                            #         final_nonsite = nonsite / 30
+                            #         site_al = nominal + mealall
+                            #         final = final_nonsite + site_al
+                            #         abs_ded += final
+                            # raise UserError(timeoff)
 
                         current_date += timedelta(days=1)  # Menambah 1 hari
                     site_allowance = nominal * jumlah_surat
@@ -616,11 +684,11 @@ class HrPayslip(models.Model):
                     slip_line.amount = nominal
                     gaji_net.amount = gaji_net.amount + site_allowance
                     gaji_gross.amount = gaji_gross.amount + site_allowance
-                    absence_deduction = self.env['hr.payslip.line'].search(
-                        [('slip_id', '=', int(payslip.id)), ('code', 'in', ['ABSDED'])])
-                    if absence_deduction and not absence_deduction.is_manual:
-                        absence_deduction.amount = abs_ded
-                    gaji_net.amount = gaji_net.amount - abs_ded
+                    # absence_deduction = self.env['hr.payslip.line'].search(
+                    #     [('slip_id', '=', int(payslip.id)), ('code', 'in', ['ABSDED'])])
+                    # if absence_deduction and not absence_deduction.is_manual:
+                    #     absence_deduction.amount = abs_ded
+                    # gaji_net.amount = gaji_net.amount - abs_ded
 
                 if slip_line.salary_rule_id.code == 'PARTIME':
                     pt_amount = 0

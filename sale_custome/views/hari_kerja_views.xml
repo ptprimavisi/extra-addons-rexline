@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <menuitem id="schedule_work" name="Type Schedule" sequence="10" parent="sale_custome.surat_tugas"/>
+        <record id="hari_kerja_form_view" model="ir.ui.view">
+            <field name="name">hari.kerja.form.inherit</field>
+            <field name="model">hari.kerja</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="hari_id" widget="many2many_tags" string="Days" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="hari_kerja_tree_view" model="ir.ui.view">
+            <field name="name">hari.kerja.tree.view</field>
+            <field name="model">hari.kerja</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="hari_id" string="Days"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_hari_kerja" model="ir.actions.act_window">
+            <field name="name">Type Schedule Work</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hari.kerja</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_schedule_work"
+                name="Schedule Work"
+                action="sale_custome.action_hari_kerja"
+                parent="sale_custome.schedule_work"
+                sequence="1"/>
+
+        <record id="master_hari_form_view" model="ir.ui.view">
+            <field name="name">master.hari.form.inherit</field>
+            <field name="model">master.hari</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="master_hari_tree_view" model="ir.ui.view">
+            <field name="name">master.hari.tree.view</field>
+            <field name="model">master.hari</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_master_hari" model="ir.actions.act_window">
+            <field name="name">Days</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">master.hari</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_master_hari"
+                name="Days"
+                action="sale_custome.action_master_hari"
+                parent="sale_custome.schedule_work"
+                sequence="2"/>
+
+    </data>
+</odoo>

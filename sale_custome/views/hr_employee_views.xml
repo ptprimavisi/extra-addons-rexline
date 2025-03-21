@@ -64,6 +64,11 @@
                         <span>/ month</span>
                     </div>
                 </xpath>
+                <xpath expr="//field[@name='contract_type_id']" position="before">
+                    <!-- Adding a new field -->
+<!--                    <field name="pph_kategori"/>-->
+                    <field name="schedule_type_id" required="1"/>
+                </xpath>
             </field>
         </record>
     </data>

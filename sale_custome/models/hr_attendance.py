@@ -24,7 +24,7 @@ class HrEmployee(models.Model):
                 user_data = data['data']
                 for users in user_data:
                     lst_id.append(users['ref_id'])
-                employee = self.env['hr.employee'].search([('id','not in',lst_id)])
+                employee = self.env['hr.employee'].search([('id', 'not in', lst_id)])
                 print(employee)
                 if employee:
                     for employes in employee:
@@ -77,3 +77,17 @@ class HrContarct(models.Model):
     position_allowance = fields.Monetary()
     backpay_salary = fields.Monetary()
     transport_allowance = fields.Monetary()
+    schedule_type_id = fields.Many2one('hari.kerja')
+
+
+class MasterHari(models.Model):
+    _name = 'master.hari'
+
+    name = fields.Char()
+
+
+class HariKerja(models.Model):
+    _name = 'hari.kerja'
+
+    name = fields.Char()
+    hari_id = fields.Many2many('master.hari')
