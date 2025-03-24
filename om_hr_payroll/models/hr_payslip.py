@@ -834,7 +834,8 @@ class HrPayslip(models.Model):
                                                                             current_date.strftime('%Y-%m-%d 00:00:00')),
                                                                            # Awal hari
                                                                            ('request_date_from', '<=',
-                                                                            current_date.strftime('%Y-%m-%d 23:59:59'))
+                                                                            current_date.strftime('%Y-%m-%d 23:59:59')),
+                                                                           ('state', '=', 'validate')
                                                                            ])
 
                                     roster = self.env['hr.roster'].search([('employee_id', '=', payslip.employee_id.id),

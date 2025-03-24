@@ -109,7 +109,7 @@ class SaleOrderController(http.Controller):
         uid = request.session.authenticate('rexline', 'admin', 'admin123')
         request.session.db = 'rexline'
         request.session.uid = odoo.SUPERUSER_ID
-        employe_id = request.env['hr.employee'].search([('id', '=', rec['ref_id'])])
+        employe_id = request.env['hr.employee'].search([('id','=', 576)])
 
         cek = request.env['hr.leave'].search(
             [('employee_id', '=', int(employe_id.id)), ('date_from', '=', rec['date_from'])])
