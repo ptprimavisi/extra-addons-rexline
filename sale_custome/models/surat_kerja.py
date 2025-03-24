@@ -132,7 +132,7 @@ class SuratKerjaLine(models.Model):
 class HrEmployeeInherit(models.Model):
     _inherit = 'hr.employee'
 
-    alert_state = fields.Boolean(compute="_compute_contract")
+    alert_state = fields.Boolean(compute="_compute_contract", store=True)
     color_field = fields.Char(string='Background color')
 
     @api.depends('contract_ids')
