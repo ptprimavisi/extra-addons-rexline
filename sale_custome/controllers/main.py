@@ -122,8 +122,8 @@ class SaleOrderController(http.Controller):
                 'name': data['name'],
                 'employee_id': employe_id.id,
                 'department_id': employe_id.department_id.id,
-                'date_from': data['date_from'],
-                'date_to': data['date_to'],
+                'request_date_from': data['date_from'],
+                'request_date_to': data['date_to'],
                 'number_of_days': 1,
                 'holiday_status_id': data['holiday_status']
             })
