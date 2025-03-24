@@ -109,10 +109,12 @@ class SaleOrderController(http.Controller):
         uid = request.session.authenticate('rexline', 'admin', 'admin123')
         request.session.db = 'rexline'
         request.session.uid = odoo.SUPERUSER_ID
-        employe_id = request.env['hr.employee'].search([('id','=', 576)])
-
+        ref_id = int(rec['ref_id'])
+        employe_id = request.env['hr.employee'].search([('id','=', ref_id)])
+        date_from = str(rec['date_from'])
+        date_to = str(rec['date_to'])
         cek = request.env['hr.leave'].search(
-            [('employee_id', '=', int(employe_id.id)), ('date_from', '=', rec['date_from'])])
+            [('employee_id', '=', int(employe_id.id)), ('date_from', '=', date_from)])
 
         # args = {'failed': True, 'message': 'User not found', "ID": cek.id}
         # try:
@@ -123,8 +125,8 @@ class SaleOrderController(http.Controller):
                 'name': rec['name'],
                 'employee_id': employe_id.id,
                 'department_id': employe_id.department_id.id,
-                'date_from': rec['date_from'],
-                'date_to': rec['date_to'],
+                'date_from': date_from,
+                'date_to': date_to,
                 'number_of_days': 1,
                 'holiday_status_id': rec['holiday_status']
             })
