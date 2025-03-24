@@ -7,6 +7,26 @@ import json
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    def write(self, vals):
+        url = f'https://rexline.primasen.id/api/update_users'
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        if 'work_email' in vals and vals['work_email']:
+            data = {
+                "id": vals['id'],
+                "email": vals['work_email']
+            }
+            requests.post(url, headers=headers, data=json.dumps(data))
+        else:
+            if 'private_email' in vals and vals['private_email']:
+                data = {
+                    "id": vals['id'],
+                    "email": vals['private_email']
+                }
+                requests.post(url, headers=headers, data=json.dumps(data))
+        return super(HrEmployee, self).write(vals)
+
     def action_sync_employee(self):
         url = f'https://rexline.primasen.id/api/attendance/cek-users'
 
