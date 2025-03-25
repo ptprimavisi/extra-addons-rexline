@@ -112,3 +112,36 @@ class HariKerja(models.Model):
 
     name = fields.Char()
     hari_id = fields.Many2many('master.hari')
+
+
+class HrleaveInhrith(models.Model):
+    _inherit = 'hr.leave'
+
+    def update_status(self, status):
+        for line in self:
+            url = f'https://rexline.primasen.id/api/timeOff/update_status'
+            headers = {
+                'Content-Type': 'application/json',
+                # 'Authorization': 'Bearer your_access_token',  # Jika ada token atau autentikasi lainnya
+            }
+            body = {
+                "user_id": line.employee_id.id,
+                "date": str(line.request_date_from),
+                "status": status
+            }
+            requests.post(url, headers=headers, data=json.dumps(body))
+
+    def action_approve(self):
+        res = super(HrleaveInhrith, self).action_approve()
+        self.update_status(1)
+        return res
+
+    def action_refuse(self):
+        res = super(HrleaveInhrith, self).action_refuse()
+        self.update_status(2)
+        return res
+
+    def action_draft(self):
+        res = super(HrleaveInhrith, self).action_refuse()
+        self.update_status(0)
+        return res
