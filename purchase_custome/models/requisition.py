@@ -330,7 +330,7 @@ class RequisitionLine(models.Model):
     qty_ordered = fields.Float(compute="_compute_qty_ordered")
     qty_received = fields.Float(compute="_compute_qty_received")
     product_uom = fields.Many2one('uom.uom', compute="_default_product_uom", readonly=False, precompute=True)
-    price_unit = fields.Float(compute="_default_price_unit", readonly=False, precompute=True)
+    price_unit = fields.Float()
     subtotal = fields.Float(compute='_compute_subtotal')
     requisition_id = fields.Many2one('purchase.requisition')
     is_it = fields.Boolean(compute="_compute_is_it")
@@ -390,7 +390,7 @@ class RequisitionLine(models.Model):
             if line.product_id:
                 line.product_uom = line.product_id.uom_po_id.id
 
-    @api.depends('product_id')
+    @api.onchange('product_id')
     def _default_price_unit(self):
         for line in self:
             line.price_unit = line.product_id.standard_price
