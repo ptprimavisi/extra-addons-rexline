@@ -1,2 +1,2 @@
 from . import report_invoice
-from . import report_so, inquiry
+from . import report_so, inquiry, purchase

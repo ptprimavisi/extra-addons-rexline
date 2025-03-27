@@ -4,7 +4,7 @@
         Custom Report
     """,
     'category': 'Custom',
-    'depends' : ['hr','sale_management','stock','account', 'base', 'hr','sale_custome','sale'],
+    'depends': ['hr','sale_management','stock','account', 'base', 'hr','sale_custome','sale', 'purchase'],
     'data': [
         'views/report_invoice.xml',
         'report/report_invoice.xml',
@@ -14,6 +14,7 @@
         'report/mrf_report.xml',
         'report/requisition_report.xml',
         'report/inquiry_report.xml',
+        'report/purchase_order.xml',
     ],
     'assets': {
         'web.assets_backend': [

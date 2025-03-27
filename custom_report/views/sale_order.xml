@@ -19,6 +19,20 @@
             </field>
         </record>
 
+        <record id="view_purchase_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.purchase.order</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <button name="button_confirm" position="after">
+                    <button name="action_print" string="Print PO" type="object" invisible="id == False"/>
+                </button>
+<!--                <xpath expr="//field[@name='partner_id']" position="after">-->
+<!--                    <field name="customer_ref"/>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
         <record id="view_company_form_inherit" model="ir.ui.view">
             <field name="name">inherit.res.company</field>
             <field name="model">res.company</field>
