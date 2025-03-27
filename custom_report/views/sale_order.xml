@@ -41,6 +41,7 @@
                 <xpath expr="//field[@name='color']" position="after">
                     <field name="sale_logo" widget="image" class="oe_avatar"/>
                     <field name="watermark_mrf" widget="image" class="oe_avatar"/>
+                    <field name="watermark" widget="image" class="oe_avatar"/>
                 </xpath>
             </field>
         </record>
