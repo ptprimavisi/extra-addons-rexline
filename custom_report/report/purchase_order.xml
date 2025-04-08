@@ -14,29 +14,48 @@
                 <t t-call="web.external_layout">
                     <div class="row">
                         <div class="col-6">
-                            <p><t t-esc="company_street1"/></p><br></br>
-                            <p>Phone : <t t-esc="company_phone"/></p><br></br>
-                            <p>Fax : </p><br></br>
-                            <p>Email : <t t-esc="email"/></p><br></br>
-                            <p>Website : <t t-esc="company_web"/></p><br></br>
+                            <p style="margin-bottom: 4px;"><t t-esc="company_street1"/></p>
+                            <p style="margin-bottom: 4px;">Phone : <t t-esc="company_phone"/></p>
+                            <p style="margin-bottom: 4px;">Fax : </p>
+                            <p style="margin-bottom: 4px;">Email : <t t-esc="email"/></p>
+                            <p style="margin-bottom: 0;">Website : <t t-esc="company_web"/></p>
                         </div>
-                        <div class="col-6"></div>
-                    </div>
+                        <div class="col-6">
+                            <table style="margin-left: 90px;">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-bottom: 10px;">DATE</td>
+                                        <td><span style="margin-left:10px;"/> : <span style="margin-left:10px;"/><t t-esc="po_date"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-bottom: 10px;">ORDER #</td>
+                                        <td><span style="margin-left:10px;"/> : <span style="margin-left:10px;"/><t t-esc="po_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-bottom: 10px;">DUE DATE</td>
+                                        <td><span style="margin-left:10px;"/> : <span style="margin-left:10px;"/><t t-esc="po_date_due"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-<!--                    <table class="table" style="width: 50%; font-size: 14px;">-->
-<!--                        <tr style="border: 1px solid #ffffff; background-color: #12476e; color: white;">-->
-<!--                            <td style="padding: 5px;"><b>CUSTOMER</b></td>-->
-<!--                        </tr>-->
-<!--                        <tr style="border: 1px solid #ffffff;">-->
-<!--                            <td style="border: 1px solid #ffffff;"><t t-esc="partner_name"/></td>-->
-<!--                        </tr>-->
-<!--                        <tr style="border: 1px solid #ffffff;">-->
-<!--                            <td style="border: 1px solid #ffffff;">-->
-<!--                                <t t-esc="partner_street1"/> <t t-esc="partner_street2"/>-->
-<!--                                <t t-esc="partner_street3"/><br/>-->
-<!--                            </td>-->
-<!--                        </tr>-->
-<!--                    </table>-->
+                        </div>
+                    </div>
+                    <br></br>
+
+                    <table style="width: 50%;">
+                        <tr style="solid #ffffff; background-color: #12476e; color: white;">
+                            <td style="padding: 5px;"><b>FOR</b></td>
+                        </tr>
+                        <tr>
+                            <td class="p-1"><t t-esc="partner_name"/></td>
+                        </tr>
+                        <tr>
+                            <td class="p-1">
+                                <t t-esc="partner_street1"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
 
 <!--                    <table class="table" style="border-collapse: collapse; width: 100%; font-size: 14px;text-align: left;">-->
 <!--                        <tr style="background-color: #12476e; color: white;">-->
@@ -51,53 +70,53 @@
 <!--                        </tr>-->
 <!--                    </table>-->
 <!--                    <br/>-->
-<!--                    <table class="table table-bordered" style="border-collapse: collapse; width: 100%; font-size: 14px;">-->
-<!--                        <thead>-->
-<!--                            <tr style="border: 1.5px solid black; background-color: #12476e; color: white;">-->
-<!--                                <th style="border: 1.5px solid black; padding: 5px;">No.</th>-->
-<!--                                <th style="border: 1.5px solid black; padding: 5px;">Quantity</th>-->
-<!--                                <th style="border: 1.5px solid black; padding: 5px;">Product</th>-->
-<!--                                <th style="border: 1.5px solid black;">Description</th>-->
-<!--                                <th style="border: 1.5px solid black; padding: 5px;">Unit Price (Rp.)</th>-->
-<!--                                &lt;!&ndash;<th style="border: 1.5px solid black;">Discount</th>&ndash;&gt;-->
-<!--                                <th style="border: 1.5px solid black; padding: 5px;">Taxed</th>-->
-<!--                                <th style="border: 1.5px solid black; padding: 5px;">Amount (Rp.)</th>-->
-<!--                                &lt;!&ndash;<th style="border: 1.5px solid black;">Tax Base (Rp.)</th>&ndash;&gt;-->
-<!--                            </tr>-->
-<!--                        </thead>-->
-<!--                        <tbody>-->
-<!--                            <t t-set="counter" t-value="0"/>-->
-<!--                            <t t-foreach="order_lines" t-as="lines">-->
-<!--                                <tr>-->
-<!--                                    <td style="border: 1.5px solid black; vertical-align: top;  padding: 5px;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  &lt;!&ndash; No. &ndash;&gt;-->
-<!--                                    <td t-if="lines[0]" style="border: 1.5px solid black; text-align: left; vertical-align: top;  padding: 5px;">-->
-<!--                                        <t t-esc="lines[0]"/>-->
-<!--                                    </td>-->
-<!--                                    <td t-if="lines[1]" style="border: 1.5px solid black; text-align: right; vertical-align: top;  padding: 5px;">-->
-<!--                                        <t t-esc="lines[1]"/>-->
-<!--                                    </td>-->
-<!--                                    <td t-if="lines[2]" style="border: 1.5px solid black; text-align: left; padding: 5px; vertical-align: top;">-->
-<!--                                        <strong><pre t-esc="lines[2]"/></strong>-->
-<!--                                    </td>-->
-<!--                                    <td t-if="lines[3]" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">-->
-<!--                                        <t t-esc="lines[3]"/>-->
-<!--                                    </td>-->
-<!--                                    &lt;!&ndash;<td t-if="lines[4]" style="border: 1.5px solid black; text-align: center;">&ndash;&gt;-->
-<!--                                    &lt;!&ndash;    <t t-esc="lines[4]"/>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;</td>&ndash;&gt;-->
-<!--                                    <td t-if="lines[5]" style="border: 1.5px solid black; text-align: center; vertical-align: top; padding: 5px;">-->
-<!--                                        <t t-esc="lines[5]"/>-->
-<!--                                    </td>-->
-<!--                                    <td t-if="lines[6]" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">-->
-<!--                                        <t t-esc="lines[6]"/>-->
-<!--                                    </td>-->
-<!--                                    &lt;!&ndash;<td t-if="lines[7]" style="border: 1.5px solid black; text-align: right;">&ndash;&gt;-->
-<!--                                    &lt;!&ndash;    <t t-esc="lines[7]"/>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;</td>&ndash;&gt;-->
-<!--                                </tr>-->
-<!--                            </t>-->
-<!--                        </tbody>-->
-<!--                    </table>-->
+                    <table class="table table-bordered" style="border-collapse: collapse; width: 100%; font-size: 14px;">
+                        <thead>
+                            <tr style="border: 1.5px solid black; background-color: #12476e; color: white;">
+                                <th style="border: 1.5px solid black; padding: 5px;">No.</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Description</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Unit Price (RP.)</th>
+                                <th style="border: 1.5px solid black;">Qty</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Discount</th>
+                                <!--&lt;!&ndash;<th style="border: 1.5px solid black;">Discount</th>&ndash;&gt;-->
+                                <th style="border: 1.5px solid black; padding: 5px;">Taxed</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Amount (Rp.)</th>
+                                <!--&lt;!&ndash;<th style="border: 1.5px solid black;">Tax Base (Rp.)</th>&ndash;&gt;-->
+                            </tr>
+                        </thead>
+                        <!--<tbody>-->
+                        <!--    <t t-set="counter" t-value="0"/>-->
+                        <!--    <t t-foreach="order_lines" t-as="lines">-->
+                        <!--        <tr>-->
+                        <!--            <td style="border: 1.5px solid black; vertical-align: top;  padding: 5px;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  &lt;!&ndash; No. &ndash;&gt;-->
+                        <!--            <td t-if="lines[0]" style="border: 1.5px solid black; text-align: left; vertical-align: top;  padding: 5px;">-->
+                        <!--                <t t-esc="lines[0]"/>-->
+                        <!--            </td>-->
+                        <!--            <td t-if="lines[1]" style="border: 1.5px solid black; text-align: right; vertical-align: top;  padding: 5px;">-->
+                        <!--                <t t-esc="lines[1]"/>-->
+                        <!--            </td>-->
+                        <!--            <td t-if="lines[2]" style="border: 1.5px solid black; text-align: left; padding: 5px; vertical-align: top;">-->
+                        <!--                <strong><pre t-esc="lines[2]"/></strong>-->
+                        <!--            </td>-->
+                        <!--            <td t-if="lines[3]" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">-->
+                        <!--                <t t-esc="lines[3]"/>-->
+                        <!--            </td>-->
+                        <!--            &lt;!&ndash;<td t-if="lines[4]" style="border: 1.5px solid black; text-align: center;">&ndash;&gt;-->
+                        <!--            &lt;!&ndash;    <t t-esc="lines[4]"/>&ndash;&gt;-->
+                        <!--            &lt;!&ndash;</td>&ndash;&gt;-->
+                        <!--            <td t-if="lines[5]" style="border: 1.5px solid black; text-align: center; vertical-align: top; padding: 5px;">-->
+                        <!--                <t t-esc="lines[5]"/>-->
+                        <!--            </td>-->
+                        <!--            <td t-if="lines[6]" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">-->
+                        <!--                <t t-esc="lines[6]"/>-->
+                        <!--            </td>-->
+                        <!--            &lt;!&ndash;<td t-if="lines[7]" style="border: 1.5px solid black; text-align: right;">&ndash;&gt;-->
+                        <!--            &lt;!&ndash;    <t t-esc="lines[7]"/>&ndash;&gt;-->
+                        <!--            &lt;!&ndash;</td>&ndash;&gt;-->
+                        <!--        </tr>-->
+                        <!--    </t>-->
+                        <!--</tbody>-->
+                    </table>
 
 <!--                    <br/><br/><br/>-->
 
