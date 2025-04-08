@@ -47,7 +47,7 @@ class PurchaseOrderInh(models.Model):
 
             for order_line in rec.order_line:
                 if order_line.product_id and order_line.product_uom_qty > 0:
-                    for tax in order_line.tax_id:
+                    for tax in order_line.taxes_id:
                         # Hitung total pajak untuk setiap baris
                         tax_result = tax.compute_all(
                             order_line.price_unit,
@@ -67,25 +67,33 @@ class PurchaseOrderInh(models.Model):
                             tax_data[key]['tax_amount'] += tax_detail['amount']
 
                     tax_name = ""
-                    if order_line.tax_id:
-                        tax_name = ", ".join(tax.name for tax in order_line.tax_id)
+                    if order_line.taxes_id:
+                        tax_name = ", ".join(tax.name for tax in order_line.taxes_id)
                     else:
                         tax_name = '-'
-                    order_lines.append([str(order_line.product_uom_qty) + ' ' + str(order_line.product_uom.name),
-                                        order_line.product_id.product_tmpl_id.name, order_line.name,
-                                        f"{int(order_line.price_unit):,}", "0", tax_name,
-                                        f"{int(order_line.price_subtotal):,}", f"{int(order_line.tax_base):,}"])
-                    quotation_lines.append(
-                        [order_line.name, str(order_line.product_uom_qty) + ' ' + str(order_line.product_uom.name), '0',
-                         f"{int(order_line.price_unit):,}", f"{int(order_line.price_subtotal):,}",
-                         f"{int(order_line.tax_base):,}"])
-                    subtotal += order_line.price_subtotal
+                    order_lines.append({
+                        "product_name": order_line.product_id.product_tmpl_id.name,
+                        "unit_price": f"{int(order_line.price_unit):,}",
+                        "qty": order_line.product_uom_qty,
+                        "discount": order_line.discount,
+                        "taxed": tax_name,
+                        "amount": f"{int(order_line.price_subtotal):,}"
+                    })
+                    # order_lines.append([str(order_line.product_uom_qty) + ' ' + str(order_line.product_uom.name),
+                    #                     order_line.product_id.product_tmpl_id.name, order_line.name,
+                    #                     f"{int(order_line.price_unit):,}", "0", tax_name,
+                    #                     f"{int(order_line.price_subtotal):,}"])
+                    # quotation_lines.append(
+                    #     [order_line.name, str(order_line.product_uom_qty) + ' ' + str(order_line.product_uom.name), '0',
+                    #      f"{int(order_line.price_unit):,}", f"{int(order_line.price_subtotal):,}",
+                    #      f"{int(order_line.tax_base):,}"])
+                    # subtotal += order_line.price_subtotal
 
             # Format hasil
             taxes = [{'name': key[0], 'percentage': key[1], 'amount': f"{int(values['tax_amount']):,}"}
                      for key, values in tax_data.items()]
 
-            total_tax_base = f"{int(rec.amount_tax_base):,}"
+            # total_tax_base = f"{int(rec.amount_tax_base):,}"
 
             subtotal = f"{int(subtotal):,}"
             balance_due = f"{int(rec.amount_total):,}"
@@ -97,7 +105,8 @@ class PurchaseOrderInh(models.Model):
                 if self.env.company.sale_logo
                 else None
             )
-            raise UserError(order_lines)
+            print(order_lines)
+            exit()
 
             # Get T&C
             po_tnc = rec.notes or ''
