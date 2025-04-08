@@ -206,18 +206,6 @@
                     </table>
 
                     <br/><br/>
-<!--                    <table class="table" style="width: 50%; font-size: 14px;text-align: left;">-->
-<!--                        <tr style="background-color: #12476e; color: white; display: table-row-group;">-->
-<!--                            <th style="padding: 5px; border: 1.5px solid black;">Special Notes and Instructions</th>-->
-<!--                        </tr>-->
-<!--                        <tr style="display: table-row-group;">-->
-<!--                            <td style="padding: 5px; border: 1.5px solid black;">-->
-<!--                                <b>Message</b><br/><br/>-->
-<!--                                Terms &amp; Conditions:<br/>-->
-<!--                                <t t-raw="so_tnc"/>-->
-<!--                            </td>-->
-<!--                        </tr>-->
-<!--                    </table>-->
                     <div style=" min-width: 600px; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; display: inline-block; font-size: 14px; text-align: left; border: 1.5px solid black; padding: 10px; page-break-inside: avoid;">
                         <div style="background-color: #12476e; color: white; padding: 8px; font-weight: bold;">
                             Special Notes and Instructions
