@@ -77,45 +77,39 @@
                                 <th style="border: 1.5px solid black; padding: 5px;">Description</th>
                                 <th style="border: 1.5px solid black; padding: 5px;">Unit Price (RP.)</th>
                                 <th style="border: 1.5px solid black;">Qty</th>
-                                <th style="border: 1.5px solid black; padding: 5px;">Discount</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Discount (%)</th>
                                 <!--&lt;!&ndash;<th style="border: 1.5px solid black;">Discount</th>&ndash;&gt;-->
                                 <th style="border: 1.5px solid black; padding: 5px;">Taxed</th>
                                 <th style="border: 1.5px solid black; padding: 5px;">Amount (Rp.)</th>
                                 <!--&lt;!&ndash;<th style="border: 1.5px solid black;">Tax Base (Rp.)</th>&ndash;&gt;-->
                             </tr>
                         </thead>
-                        <!--<tbody>-->
-                        <!--    <t t-set="counter" t-value="0"/>-->
-                        <!--    <t t-foreach="order_lines" t-as="lines">-->
-                        <!--        <tr>-->
-                        <!--            <td style="border: 1.5px solid black; vertical-align: top;  padding: 5px;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  &lt;!&ndash; No. &ndash;&gt;-->
-                        <!--            <td t-if="lines[0]" style="border: 1.5px solid black; text-align: left; vertical-align: top;  padding: 5px;">-->
-                        <!--                <t t-esc="lines[0]"/>-->
-                        <!--            </td>-->
-                        <!--            <td t-if="lines[1]" style="border: 1.5px solid black; text-align: right; vertical-align: top;  padding: 5px;">-->
-                        <!--                <t t-esc="lines[1]"/>-->
-                        <!--            </td>-->
-                        <!--            <td t-if="lines[2]" style="border: 1.5px solid black; text-align: left; padding: 5px; vertical-align: top;">-->
-                        <!--                <strong><pre t-esc="lines[2]"/></strong>-->
-                        <!--            </td>-->
-                        <!--            <td t-if="lines[3]" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">-->
-                        <!--                <t t-esc="lines[3]"/>-->
-                        <!--            </td>-->
-                        <!--            &lt;!&ndash;<td t-if="lines[4]" style="border: 1.5px solid black; text-align: center;">&ndash;&gt;-->
-                        <!--            &lt;!&ndash;    <t t-esc="lines[4]"/>&ndash;&gt;-->
-                        <!--            &lt;!&ndash;</td>&ndash;&gt;-->
-                        <!--            <td t-if="lines[5]" style="border: 1.5px solid black; text-align: center; vertical-align: top; padding: 5px;">-->
-                        <!--                <t t-esc="lines[5]"/>-->
-                        <!--            </td>-->
-                        <!--            <td t-if="lines[6]" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">-->
-                        <!--                <t t-esc="lines[6]"/>-->
-                        <!--            </td>-->
-                        <!--            &lt;!&ndash;<td t-if="lines[7]" style="border: 1.5px solid black; text-align: right;">&ndash;&gt;-->
-                        <!--            &lt;!&ndash;    <t t-esc="lines[7]"/>&ndash;&gt;-->
-                        <!--            &lt;!&ndash;</td>&ndash;&gt;-->
-                        <!--        </tr>-->
-                        <!--    </t>-->
-                        <!--</tbody>-->
+                        <tbody>
+                            <t t-set="counter" t-value="0"/>
+                            <t t-foreach="order_lines" t-as="lines">
+                                <tr>
+                                    <td style="border: 1.5px solid black; vertical-align: top;  padding: 5px;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>
+                                    <td t-if="lines['product_name']" style="border: 1.5px solid black; text-align: left; vertical-align: top;  padding: 5px;">
+                                        <t t-esc="lines['product_name']"/>
+                                    </td>
+                                    <td t-if="lines['unit_price']" style="border: 1.5px solid black; text-align: right; vertical-align: top;  padding: 5px;">
+                                        <t t-esc="lines['unit_price']"/>
+                                    </td>
+                                    <td t-if="lines['qty']" style="border: 1.5px solid black; text-align: left; padding: 5px; vertical-align: top;">
+                                        <strong><pre t-esc="lines['qty']"/></strong>
+                                    </td>
+                                    <td style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">
+                                        <t t-esc="lines['discount']"/>
+                                    </td>
+                                    <td t-if="lines['taxed']" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">
+                                        <t t-esc="lines['taxed']"/>
+                                    </td>
+                                    <td t-if="lines['amount']" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">
+                                        <t t-esc="lines['amount']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
                     </table>
 
 <!--                    <br/><br/><br/>-->

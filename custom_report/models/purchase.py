@@ -87,7 +87,7 @@ class PurchaseOrderInh(models.Model):
                     #     [order_line.name, str(order_line.product_uom_qty) + ' ' + str(order_line.product_uom.name), '0',
                     #      f"{int(order_line.price_unit):,}", f"{int(order_line.price_subtotal):,}",
                     #      f"{int(order_line.tax_base):,}"])
-                    # subtotal += order_line.price_subtotal
+                    subtotal += order_line.price_subtotal
 
             # Format hasil
             taxes = [{'name': key[0], 'percentage': key[1], 'amount': f"{int(values['tax_amount']):,}"}
@@ -142,17 +142,17 @@ class PurchaseOrderInh(models.Model):
                 # 'so_term': str(payment_term),
                 # 'customer_ref': str(customer_ref),
                 'po_tnc': po_tnc,
-                # 'balance_due': balance_due,
-                # 'subtotal': subtotal,
+                'balance_due': balance_due,
+                'subtotal': subtotal,
                 # 'tags_info': tags_info,
-                # 'taxes': taxes,
+                'taxes': taxes,
                 'order_lines': order_lines,
                 # 'quotation_lines': quotation_lines,
                 # 'company_logo': company_logo,
                 # 'signature_name': signature_name,
                 # 'signature_image': signature_image,
                 # 'logo': logo,
-                # 'balance_due_in_word': balance_due_in_word,
+                'balance_due_in_word': balance_due_in_word,
                 # 'total_tax_base': total_tax_base,
                 # 'bank_name': bank_name,
                 # 'bank_branch': bank_branch,
