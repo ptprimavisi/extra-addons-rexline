@@ -105,8 +105,8 @@ class PurchaseOrderInh(models.Model):
                 if self.env.company.sale_logo
                 else None
             )
-            print(order_lines)
-            exit()
+            # print(order_lines)
+            # exit()
 
             # Get T&C
             po_tnc = rec.notes or ''
