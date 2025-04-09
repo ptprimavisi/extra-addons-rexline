@@ -106,8 +106,8 @@ class PurchaseOrderInh(models.Model):
                 else None
             )
             watermark = (
-                f"data:image/png;base64,{self.env.company.layout_background_image.decode('utf-8')}"
-                if self.env.company.layout_background_image
+                f"data:image/png;base64,{self.env.company.watermark.decode('utf-8')}"
+                if self.env.company.watermark
                 else None
             )
             # print(order_lines)
