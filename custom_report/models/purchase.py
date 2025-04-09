@@ -152,7 +152,7 @@ class PurchaseOrderInh(models.Model):
                 # 'company_logo': company_logo,
                 # 'signature_name': signature_name,
                 # 'signature_image': signature_image,
-                # 'logo': logo,
+                'logo': logo,
                 'balance_due_in_word': balance_due_in_word,
                 # 'total_tax_base': total_tax_base,
                 # 'bank_name': bank_name,
