@@ -105,6 +105,11 @@ class PurchaseOrderInh(models.Model):
                 if self.env.company.sale_logo
                 else None
             )
+            watermark = (
+                f"data:image/png;base64,{self.env.company.layout_background_image.decode('utf-8')}"
+                if self.env.company.layout_background_image
+                else None
+            )
             # print(order_lines)
             # exit()
 
@@ -153,6 +158,7 @@ class PurchaseOrderInh(models.Model):
                 # 'signature_name': signature_name,
                 # 'signature_image': signature_image,
                 'logo': logo,
+                'watermark': watermark,
                 'balance_due_in_word': balance_due_in_word,
                 # 'total_tax_base': total_tax_base,
                 # 'bank_name': bank_name,
