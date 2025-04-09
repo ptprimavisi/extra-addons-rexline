@@ -127,6 +127,7 @@ class PurchaseOrderInh(models.Model):
 
             report_data = {
                 'doc_ids': self.ids,
+                'company_id': rec.company_id.id,
                 'doc_model': 'sale.order',
                 'company_name': company_name,
                 'company_street1': company_street1,
