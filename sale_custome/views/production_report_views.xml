@@ -62,7 +62,10 @@
                                         <field name="product_id" string="Material" required="1"/>
                                         <field name="qty_to_consume" string="To Consume" required="1" readonly="state == 'done'"/>
                                         <field name="qty_consume" string="Consume" readonly="state == 'done'"/>
+                                        <field name="note_prod" string="Notes"/>
+                                        <field name="note_inv" string="Inventory Notes" readonly="is_inventory == False"/>
                                         <field name="weight"/>
+                                        <field name="is_inventory" invisible="1" nolabel="1"/>
                                     </tree>
                                 </field>
                             </page>

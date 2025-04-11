@@ -222,9 +222,18 @@ class ProductionReportLine(models.Model):
     ], related='production_id.state')
     qty_consume = fields.Float()
     qty_to_consume = fields.Float(compute="_compute_to_consume", readonly=False)
+    note_prod = fields.Char()
+    note_inv = fields.Char()
     weight = fields.Integer()
     production_id = fields.Many2one('production.report')
     raw_id = fields.Many2one('stock.move')
+    is_inventory = fields.Boolean(compute="_compute_is_inventory")
+
+    def _compute_is_inventory(self):
+        for line in self:
+            line.is_inventory = False
+            if self.env.user.has_group('sale_custome.inventory_custom_group'):
+                line.is_inventory = True
 
     def _compute_to_consume(self):
         for line in self:
@@ -248,15 +257,15 @@ class MrpProductionInherit(models.Model):
     notes = fields.Text()
 
     def write(self, vals):
-            # for lines in vals['move_raw_ids']:
-            #     print(lines[2]['product_id'])
-                # line_ids = self.env['production.report.line'].search([('production_id.mo_id','=',int(line.id)),('product_id','=',int(lines['product_id']))])
-                # if not line.ids:
-                #     print('update')
+        # for lines in vals['move_raw_ids']:
+        #     print(lines[2]['product_id'])
+        # line_ids = self.env['production.report.line'].search([('production_id.mo_id','=',int(line.id)),('product_id','=',int(lines['product_id']))])
+        # if not line.ids:
+        #     print('update')
         res = super(MrpProductionInherit, self).write(vals)
         for line in self:
             if 'move_raw_ids' in vals and vals['move_raw_ids']:
-                raw_ids = self.env['stock.move'].search([('raw_material_production_id','=',int(line.id))])
+                raw_ids = self.env['stock.move'].search([('raw_material_production_id', '=', int(line.id))])
                 line_ids = []
                 for lines in raw_ids:
                     # line_ids.append((0,0, {
@@ -281,7 +290,6 @@ class MrpProductionInherit(models.Model):
         # exit()
 
         return res
-
 
 
 class ProductionTag(models.Model):

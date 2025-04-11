@@ -98,6 +98,7 @@ class PurchaseOrder(models.Model):
     tp_value = fields.Integer(compute="_compute_tp_value")
     paymen_term_id = fields.Many2one('account.payment.term')
     source_doc = fields.Char()
+    tag_ids = fields.Many2many('purchase.tag')
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -135,6 +136,12 @@ class PurchaseOrder(models.Model):
             defaults['mrf_id'] = mrf_id
             defaults['order_line'] = order_line
         return defaults
+
+
+class PurchaseTag(models.Model):
+    _name = 'purchase.tag'
+
+    name = fields.Char()
 
 
 class MaterialRequestForm(models.Model):

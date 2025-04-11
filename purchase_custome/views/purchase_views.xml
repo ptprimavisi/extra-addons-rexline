@@ -171,6 +171,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='picking_type_id']" position="after">
                     <field name="source_doc"/>
+                    <field name="tag_ids" string="Tags" widget="many2many_tags"/>
                 </xpath>
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="down_payment" string="Down Payment" readonly="1"/>

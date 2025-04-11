@@ -9,9 +9,37 @@
             <field name="print_report_name">object.name</field>
         </record>
         <template id="purchase_order">
-<!--            <t t-set="data_report_margin_top" t-value="15"/>-->
+            <t t-set="data_report_margin_top" t-value="10"/>
+            <t t-set="data_report_margin_bottom" t-value="10"/>
             <t t-call="web.html_container">
-                <t t-call="web.external_layout">
+                <div t-attf-class="header o_company_#{company_id}_layout" t-att-style="report_header_style">
+                    <div style="padding-top: 500px; padding-left: 300px;">
+                        <img t-att-src="watermark" style="max-width: 220px;" alt="Logo"/>
+                        <!--<div class="col-3 " style="padding-left: 270px;">-->
+                        <!--    <img t-att-src="'data:image/png;base64,' + company.info.decode('utf-8')" style="max-width: 350px;" alt="Logo"/>-->
+                        <!--</div>-->
+                        <!--<div class="col-9 text-end" style="margin-top:22px;" t-if="company.report_header" t-field="company.report_header" name="moto">Company tagline</div>-->
+                    </div>
+
+                </div>
+                <!--<t t-call="web.external_layout">-->
+                <div t-attf-class="article o_report_layout_standard">
+                    <div class="row">
+                        <div class="col-6">
+                            <div style="text-align: left;">
+                                <img t-if="logo" t-att-src="logo" style="width: 150px; height: auto;" alt="Logo"/><br/><br/>
+                                <!-- <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /> -->
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="text-align: right;">
+                                <h2 style="color: #5996d4; margin-bottom: 2px;"><strong>PURCHASE</strong></h2>
+                                <h2 style="color: #5996d4;"><strong>ORDER</strong></h2>
+                                <!-- <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /> -->
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-6">
                             <p style="margin-bottom: 4px;"><t t-esc="company_street1"/></p>
@@ -21,39 +49,54 @@
                             <p style="margin-bottom: 0;">Website : <t t-esc="company_web"/></p>
                         </div>
                         <div class="col-6">
-                            <table style="margin-left: 90px;">
+                            <table class="table" style="margin-left: 90px; width: 50%; float: right;">
                                 <tbody>
-                                    <tr>
-                                        <td style="padding-bottom: 10px;">DATE</td>
-                                        <td><span style="margin-left:10px;"/> : <span style="margin-left:10px;"/><t t-esc="po_date"/></td>
+                                    <tr style="border: 1.5px solid black;">
+                                        <td style="border: 1.5px solid black;">DATE</td>
+                                        <td style="border: 1.5px solid black;"><t t-esc="po_date"/></td>
                                     </tr>
-                                    <tr>
-                                        <td style="padding-bottom: 10px;">ORDER #</td>
-                                        <td><span style="margin-left:10px;"/> : <span style="margin-left:10px;"/><t t-esc="po_name"/></td>
+                                    <tr style="border: 1.5px solid black;">
+                                        <td style="border: 1.5px solid black;">ORDER #</td>
+                                        <td style="border: 1.5px solid black;"><t t-esc="po_name"/></td>
                                     </tr>
-                                    <tr>
-                                        <td style="padding-bottom: 10px;">DUE DATE</td>
-                                        <td><span style="margin-left:10px;"/> : <span style="margin-left:10px;"/><t t-esc="po_date_due"/></td>
+                                    <tr style="border: 1.5px solid black;">
+                                        <td style="border: 1.5px solid black;">DUE DATE</td>
+                                        <td style="border: 1.5px solid black;"><t t-esc="po_date_due"/></td>
                                     </tr>
+                                    <!--<tr style="border: 1.5px solid black;">-->
+                                    <!--    <td style="border: 1.5px solid black;">DATE</td>-->
+                                    <!--    <td style="border: 1.5px solid black;"><span style="margin-left:10px;"/>  <span style="margin-left:10px;"/><t t-esc="po_date"/></td>-->
+                                    <!--</tr>-->
+                                    <!--<tr style="border: 1.5px solid black;">-->
+                                    <!--    <td style="border: 1.5px solid black;">ORDER #</td>-->
+                                    <!--    <td style="border: 1.5px solid black;"><span style="margin-left:10px;"/>  <span style="margin-left:10px;"/><t t-esc="po_name"/></td>-->
+                                    <!--</tr>-->
+                                    <!--<tr style="border: 1.5px solid black;">-->
+                                    <!--    <td style="border: 1.5px solid black;">DUE DATE</td>-->
+                                    <!--    <td style="border: 1.5px solid black;"><span style="margin-left:10px;"/>  <span style="margin-left:10px;"/><t t-esc="po_date_due"/></td>-->
+                                    <!--</tr>-->
                                 </tbody>
                             </table>
 
                         </div>
                     </div>
-                    <br></br>
+                    <br/>
 
-                    <table style="width: 50%;">
-                        <tr style="solid #ffffff; background-color: #12476e; color: white;">
-                            <td style="padding: 5px;"><b>FOR</b></td>
+                    <table class="table" style="width: 50%;">
+                        <tr style="solid #ffffff; background-color: #12476e; color: white; border: 1.5px solid black; padding: 5px;">
+                            <td style="padding: 5px; border: 1.5px solid black; padding: 5px;"><b>FOR</b></td>
                         </tr>
-                        <tr>
-                            <td class="p-1"><t t-esc="partner_name"/></td>
-                        </tr>
-                        <tr>
-                            <td class="p-1">
-                                <t t-esc="partner_street1"/>
+                        <tr style="border: 1.5px solid black;">
+                            <td style="border: 1.5px solid black; padding: 5px;">
+                                <p style="margin-bottom: 4px;"><t t-esc="partner_name"/></p>
+                                <p style="margin-bottom: 4px;"><t t-esc="partner_street1"/></p>
                             </td>
                         </tr>
+                        <!--<tr style="border: 1.5px solid black; padding: 5px;">-->
+                        <!--    <td class="p-1" style="border: 1.5px solid black; padding: 5px;">-->
+                        <!--        <t t-esc="partner_street1"/>-->
+                        <!--    </td>-->
+                        <!--</tr>-->
                     </table>
                     <br/>
 
@@ -95,13 +138,13 @@
                                     <td t-if="lines['unit_price']" style="border: 1.5px solid black; text-align: right; vertical-align: top;  padding: 5px;">
                                         <t t-esc="lines['unit_price']"/>
                                     </td>
-                                    <td t-if="lines['qty']" style="border: 1.5px solid black; text-align: left; padding: 5px; vertical-align: top;">
-                                        <strong><pre t-esc="lines['qty']"/></strong>
+                                    <td t-if="lines['qty']" style="border: 1.5px solid black; text-align: right; padding: 5px; vertical-align: top;">
+                                        <t t-esc="lines['qty']"/>
                                     </td>
                                     <td style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">
                                         <t t-esc="lines['discount']"/>
                                     </td>
-                                    <td t-if="lines['taxed']" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">
+                                    <td t-if="lines['taxed']" style="border: 1.5px solid black; text-align: center; vertical-align: top; padding: 5px;">
                                         <t t-esc="lines['taxed']"/>
                                     </td>
                                     <td t-if="lines['amount']" style="border: 1.5px solid black; text-align: right; vertical-align: top; padding: 5px;">
@@ -112,109 +155,156 @@
                         </tbody>
                     </table>
 
-<!--                    <br/><br/><br/>-->
+                    <br/><br/>
 
-<!--                    <table class="table" style="width: 100%; font-size: 14px;">-->
-<!--                        <tr style="border: 1px solid #ffffff;">-->
-<!--                            <td style="border: 1px solid #ffffff;">-->
-<!--                                <div style="width: 90%;  background-color: #d1d0cf;">-->
-<!--                                    <div style="padding: 10px;">-->
-<!--                                        <b>AMOUNT IN WORD</b><br/><br/>-->
-<!--                                        <t t-esc="balance_due_in_word"/> (RUPIAH)<br/><br/>-->
-<!--                                        <b>Payment Detail</b><br/>-->
-<!--                                        <br/>-->
-<!--                                        <table>-->
-<!--                                            <tbody>-->
-<!--                                                <tr>-->
-<!--                                                    <td style="vertical-align: top;">-->
-<!--                                                        <p>Bank Name : </p>-->
-<!--                                                    </td>-->
-<!--                                                    <td>-->
-<!--                                                        <p><t t-esc="bank_name"/></p>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-<!--                                                <tr>-->
-<!--                                                    <td style="vertical-align: top;">-->
-<!--                                                        <p>Bank Branch : </p>-->
-<!--                                                    </td>-->
-<!--                                                    <td>-->
-<!--                                                        <p><t t-esc="bank_branch"/></p>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-<!--                                                <tr>-->
-<!--                                                    <td style="vertical-align: top;">-->
-<!--                                                        <p>Bank Account Number : </p>-->
-<!--                                                    </td>-->
-<!--                                                    <td style="vertical-align: top;">-->
-<!--                                                        <p><t t-esc="bank_number"/></p>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-<!--                                                <tr>-->
-<!--                                                    <td style="vertical-align: top;">-->
-<!--                                                        <p>Bank Account Name : </p>-->
-<!--                                                    </td>-->
-<!--                                                    <td>-->
-<!--                                                        <p><t t-esc="bank_account_name"/></p>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-<!--                                            </tbody>-->
-<!--                                        </table>-->
+                    <div style="word-wrap: break-word; overflow-wrap: break-word; display: inline-block; page-break-inside: avoid;">
+                        <table class="table" style="width: 100%; font-size: 14px; ">
+                            <tr style="border: 1px solid #ffffff;">
+                                <td style="border: 1px solid #ffffff;">
+                                    <!--<div style="width: 90%;  background-color: #d1d0cf;">-->
+                                    <!--    <div style="padding: 10px;">-->
+                                    <!--        <b>AMOUNT IN WORD</b><br/><br/>-->
+                                    <!--        <t t-esc="balance_due_in_word"/> (RUPIAH)<br/><br/>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <!--<br></br>-->
+                                    <!--<br></br>-->
+                                    <div style="width: 90%; font-size: 14px; text-align: left; border: 1.5px solid black; padding: 10px;">
+                                        <div style="background-color: #12476e; color: white; padding: 5px; font-weight: bold;">
+                                            Other Comments
+                                        </div>
+                                        <div style="padding: 5px;">
+                                            <div class="row">
+                                                <span style="font-size: 16px;"><t t-raw="po_tnc"/></span>
+                                            </div>
 
-<!--                                        &lt;!&ndash;Bank Name : MAYBANK<br/>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;Bank Branch : SURABAYA<br/>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;Bank Account Number : 2790000188<br/>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;Bank Account Name : PT Rexline Engineering Indonesia<br/>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="border: 1px solid #ffffff; min-width:170px;">
+                                    Subtotal<br/><br/>
+                                    <!--Total Tax Base<br/><br/>-->
+                                    <t t-foreach="taxes" t-as="tax">
+                                        <!--&lt;!&ndash; <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> &ndash;&gt;-->
+                                        <t t-esc="tax['name']"/><br/>
+                                    </t>
+                                    <b><br/><p style="background-color: #e3e1e1; color: black; padding: 5px;"><strong>Total</strong></p></b>
+                                    <p style="padding: 5px; background-color: #e3e1e1; color: black;"><strong>Balance Due</strong></p>
+                                </td>
+                                <td style="border: 1px solid #ffffff;text-align: right;">
+                                    <t t-esc="subtotal"/><br/><br/>
+                                    <!--<t t-esc="total_tax_base"/><br/><br/>-->
+                                    <t t-foreach="taxes" t-as="tax">
+                                        <t t-esc="tax['amount']"/><br/>
+                                    </t>
+                                    <b><br/><p style="background-color: #e3e1e1; color: black; padding: 5px;"><strong><t t-esc="balance_due"/></strong></p></b>
+                                    <p style="background-color: #e3e1e1; color: black; padding: 5px;">
+                                        <strong><t t-esc="balance_due"/></strong>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <!--<div style=" min-width: 400px; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; display: inline-block; font-size: 14px; text-align: left; border: 1.5px solid black; padding: 10px; page-break-inside: avoid;">-->
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="col" style="float-right; padding-left: 100px;">
+                                        <b style="margin-bottom: 7px;">Supplier Acceptance</b>
+                                        <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                        <p style="margin-bottom: 1px;">Name :</p>
+                                        <p style="margin-bottom: 1px;">Company :</p>
+                                        <p style="margin-bottom: 1px;">Date :</p>
+                                    </div>
+                                </div>
+                                <!--<table style="width: 50%; float: left; margin-left: 100px; border-collapse: collapse; border: none !important;">-->
+                                <!--    <tr>-->
+                                <!--        <td><b style="margin-bottom: 7px;">Customer Acceptance</b>-->
+                                <!--            <br/>-->
+                                <!--            <br/>-->
+                                <!--            <br/>-->
+                                <!--            <br/>-->
+                                <!--            <br/>-->
+                                <!--            <br/>-->
+                                <!--        </td>-->
+                                <!--    </tr>-->
+                                <!--    <tr>-->
+                                <!--        <td>-->
+                                <!--            <p style="margin-bottom: 1px;">Name :</p>-->
+                                <!--            <p style="margin-bottom: 1px;">Company :</p>-->
+                                <!--            <p style="margin-bottom: 1px;">Date :</p>-->
+                                <!--        </td>-->
+                                <!--    </tr>-->
+                                    <!--<tr style="border: 1.5px solid black; padding: 5px;">-->
+                                    <!--    <td class="p-1" style="border: 1.5px solid black; padding: 5px;">-->
+                                    <!--        <t t-esc="partner_street1"/>-->
+                                    <!--    </td>-->
+                                    <!--</tr>-->
+                                <!--</table>-->
+
+                            </div>
+                            <div class="col-4">
+                                <div style=" font-size: 14px; line-height: 1.6;">
+                                    <p style="text-align: center; margin-bottom: 2px;">Yours Faithfully,</p>
+                                    <!--<br/><img t-if="signature_image" t-att-src="signature_image" style="width: 200px; height: auto;" alt="Signature"/>-->
+                                    <!--<br/><t t-esc="signature_name"/><br/>-->
+                                    <strong><p style="text-align: center;  margin-bottom: 2px;">REXLINE ENGINEERING</p></strong>
+                                    <strong><p style="text-align: center;">INDONESIA</p></strong>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <p style="text-align: center;">Purchase Dept</p>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <p style="text-align: center; margin-bottom: 2px;">If you have any questions about this order, please contact</p>
+                        <p style="text-align: center; margin-bottom: 2px;">REXLINE ENGINEERING INDONESIA at 03199343867</p>
+                        <strong><p style="text-align: center;">Thank You For Your Business</p></strong>
+                    </div>
+
+                </div>
+                <div t-attf-class="footer o_standard_footer o_company_#{company_id}_layout">
+                    <div style="border-top: 1px solid black;">
+                        <!--<ul class="list-inline mb4">-->
+                        <!--    <div t-field="company.report_footer"/>-->
+                        <!--</ul>-->
+                        <div class="row">
+                            <div class="col-6">
+                                <!--<div  style="border-top: 1px solid black; text-align: left;">-->
+                                    <div t-if="report_type == 'pdf'" class="text-muted" style="text-align: left;">
+                                        Purchase Order #<span><t t-esc="po_name"/></span>
+                                    </div>
+                                <!--</div>-->
+                            </div>
+                            <div class="col-6">
+                                <!--<div  style="border-top: 1px solid black; text-align: right;">-->
+                                    <div t-if="report_type == 'pdf'" class="text-muted" style="text-align: right;">
+                                        Page <span class="page"/> of <span class="topage"/>
+                                    </div>
+                                <!--</div>-->
+                            </div>
+                        </div>
 
 
-<!--                            </td>-->
-<!--                            <td style="border: 1px solid #ffffff; min-width:170px;">-->
-<!--                                Subtotal<br/><br/>-->
-<!--                                Total Tax Base<br/><br/>-->
-<!--                                <t t-foreach="taxes" t-as="tax">-->
-<!--                                    &lt;!&ndash; <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> &ndash;&gt;-->
-<!--                                    <t t-esc="tax['name']"/><br/>-->
-<!--                                </t>-->
-<!--                                <b><br/>Total</b><br/>-->
-<!--                                <br/><p style="padding: 5px; background-color: #12476e; color: white;"><strong>Balance Due</strong></p>-->
-<!--                            </td>-->
-<!--                            <td style="border: 1px solid #ffffff;text-align: right;">-->
-<!--                                <t t-esc="subtotal"/><br/><br/>-->
-<!--                                <t t-esc="total_tax_base"/><br/><br/>-->
-<!--                                <t t-foreach="taxes" t-as="tax">-->
-<!--                                    <t t-esc="tax['amount']"/><br/>-->
-<!--                                </t>-->
-<!--                                <b><br/><t t-esc="balance_due"/></b><br/>-->
-<!--                                <br/><p style="background-color: #12476e; color: white; padding: 5px;">-->
-<!--                                    <strong><t t-esc="balance_due"/></strong>-->
-<!--                                </p>-->
-<!--                            </td>-->
-<!--                        </tr>-->
-<!--                    </table>-->
+                        <!--<div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">-->
+                        <!--    <span t-out="o.name">(document name)</span>-->
+                        <!--</div>-->
+                    </div>
+                </div>
 
-<!--                    <br/><br/>-->
-<!--                    <div style=" min-width: 600px; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; display: inline-block; font-size: 14px; text-align: left; border: 1.5px solid black; padding: 10px; page-break-inside: avoid;">-->
-<!--                        <div style="background-color: #12476e; color: white; padding: 8px; font-weight: bold;">-->
-<!--                            Special Notes and Instructions-->
-<!--                        </div>-->
-<!--                        <div style="padding: 10px;">-->
-<!--                            <b>Message</b><br/><br/>-->
-<!--                            <p>Terms &amp; Conditions:</p>-->
-<!--                            <div class="row">-->
-<!--                                <span style="font-size: 16px;"><t t-raw="so_tnc"/></span>-->
-<!--                            </div>-->
 
-<!--                        </div>-->
-<!--                    </div>-->
 
-<!--                    <p style="text-align: right; font-size: 14px;">-->
-<!--                        <br/><img t-if="signature_image" t-att-src="signature_image" style="width: 200px; height: auto;" alt="Signature"/>-->
-<!--                        <br/><t t-esc="signature_name"/><br/>-->
-<!--                        National Sales Leader<br/>-->
-<!--                        PT REXLINE ENGINEERING INDONESIA-->
-<!--                    </p>-->
-                </t>
+
+
+                <!--</t>-->
             </t>
         </template>
     </data>

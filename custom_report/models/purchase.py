@@ -38,6 +38,10 @@ class PurchaseOrderInh(models.Model):
             #     tags_info = tags + ', ' + so_name
             # else:
             #     tags_info = so_name
+            tags_info = ''
+            if rec.tag_ids:
+                if rec.tag_ids:
+                    tags_info = ', '.join(tag.name for tag in rec.tag_ids)
 
             tax_data = defaultdict(lambda: {'percentage': 0, 'tax_amount': 0})
             #
@@ -150,7 +154,7 @@ class PurchaseOrderInh(models.Model):
                 'po_tnc': po_tnc,
                 'balance_due': balance_due,
                 'subtotal': subtotal,
-                # 'tags_info': tags_info,
+                'tags_info': tags_info,
                 'taxes': taxes,
                 'order_lines': order_lines,
                 # 'quotation_lines': quotation_lines,
