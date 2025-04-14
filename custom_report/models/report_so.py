@@ -69,6 +69,10 @@ class InheritSaleOrder(models.Model):
     expense_count=fields.Integer(readonly=True)
     customer_ref = fields.Char()
 
+    def get_report_filename(self, report):
+        self.ensure_one()
+        return self.name  # langsung ambil dari field model
+
     def get_data(self,recs):
         for rec in recs:
             company = self.env.user.company_id
