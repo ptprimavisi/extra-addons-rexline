@@ -112,6 +112,17 @@
 
         </field>
     </record>
+    <record id="inherit_crm_case_tree_view_leads" model="ir.ui.view">
+        <field name="name">crm.lead.tree.inquiry_name</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <!-- Tambahkan field inquiry_name di bawah activity_ids -->
+            <xpath expr="//field[@name='create_date']" position="after">
+                <field name="inquiry_name" string="CRF Number"/>
+            </xpath>
+        </field>
+    </record>
 
 
 
