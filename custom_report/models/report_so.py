@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.fields import Date
+from odoo.fields import Date, _logger
 from odoo.exceptions import UserError
 from num2words import num2words
 import base64
@@ -225,7 +225,13 @@ class InheritSaleOrder(models.Model):
         for recs in self:
             report_data=self.get_data(recs)
             return self.env.ref('custom_report.action_report_so').with_context(
-                paperformat=4, landscape=False).report_action(self)
+                name=str(recs.name), paperformat=4, landscape=False).report_action(self, data=report_data)
+
+    def get_report_filename(self, report):
+        self.ensure_one()
+        filename = self.env.context.get('name', self.name).replace('/', '_')
+        raise UserError(filename)
+        return filename
 
     def action_print_custom_quotation(self):
         for recs in self:
