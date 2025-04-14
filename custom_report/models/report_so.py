@@ -68,9 +68,9 @@ class InheritSaleOrder(models.Model):
     expense_count = fields.Integer(readonly=True)
     customer_ref = fields.Char()
 
-    def get_report_filename(self, report):
-        self.ensure_one()
-        return self.name  # langsung ambil dari field model
+    # def get_report_filename(self, report):
+    #     self.ensure_one()
+    #     return self.name  # langsung ambil dari field model
 
     def get_data(self, recs):
         for rec in recs:
@@ -233,13 +233,13 @@ class InheritSaleOrder(models.Model):
         for recs in self:
             report_data = self.get_data(recs)
             return self.env.ref('custom_report.action_report_so').with_context(
-                paperformat=4, landscape=False, name=report_data['so_name']).report_action(self, data=report_data)
+                paperformat=4, landscape=False).report_action(self, data=report_data)
 
     def action_print_custom_quotation(self):
         for recs in self:
             report_data = self.get_data(recs)
             return self.env.ref('custom_report.action_report_quotation').with_context(
-                paperformat=4, landscape=False, name=report_data['so_name']).report_action(self, data=report_data)
+                paperformat=4, landscape=False).report_action(self, data=report_data)
 
     # def action_print_so(self):
     #     for line in self:
