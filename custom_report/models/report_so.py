@@ -70,7 +70,7 @@ class InheritSaleOrder(models.Model):
 
     def get_report_filename(self, report):
         self.ensure_one()
-        return self.name  # langsung ambil dari field model
+        return self.env.context.get('name', self.name).replace('/', '_')
 
     def get_data(self, recs):
         for rec in recs:
@@ -233,7 +233,7 @@ class InheritSaleOrder(models.Model):
         for recs in self:
             report_data = self.get_data(recs)
             return self.env.ref('custom_report.action_report_so').with_context(
-                paperformat=4, landscape=False).report_action(self, data=report_data)
+                name=recs.name,paperformat=4, landscape=False).report_action(self, data=report_data)
 
     def action_print_custom_quotation(self):
         for recs in self:
