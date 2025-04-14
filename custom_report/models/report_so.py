@@ -225,7 +225,7 @@ class InheritSaleOrder(models.Model):
         for recs in self:
             report_data=self.get_data(recs)
             return self.env.ref('custom_report.action_report_so').with_context(
-                paperformat=4, landscape=False).report_action(self, data=recs)
+                paperformat=4, landscape=False).report_action(self)
 
     def action_print_custom_quotation(self):
         for recs in self:
