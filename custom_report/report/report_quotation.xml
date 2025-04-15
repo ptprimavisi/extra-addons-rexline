@@ -6,31 +6,33 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">custom_report.report_quotation</field>
             <field name="report_file">custom_report.report_quotation</field>
-            <field name="print_report_name">"Quotation Print"</field>
+            <field name="print_report_name">object.name</field>
         </record>
         
         <template id="report_quotation">
             <t t-set="data_report_margin_top" t-value="15"/>
             <t t-call="web.html_container">
+                <t t-set="doc" t-value="docs"/>
+                <t t-set="data" t-value="docs.get_data()"/>
                 <div class="container" style="font-family: Calibri, sans-serif;">
                     <div style="text-align: left;">
-                        <img t-if="logo" t-att-src="logo" style="width: 120px; height: auto;" alt="Logo"/><br/><br/>
+                        <img t-if="data['logo']" t-att-src="data['logo']" style="width: 120px; height: auto;" alt="Logo"/><br/><br/>
                         <!-- <img src="/custom_report/static/src/img/invoice_rexline.png" style="width: 120px; height: auto;" /> -->
                     </div>
                     <table>
                         <tr>
                             <td style="width: 50%;">
-                                <b><t t-esc="company_name"/></b><br/>
-                                <t t-esc="company_street1"/><br/>
-                                <t t-esc="company_phone"/><br/>
-                                <t t-esc="company_web"/><br/>
+                                <b><t t-esc="data['company_name']"/></b><br/>
+                                <t t-esc="data['company_street1']"/><br/>
+                                <t t-esc="data['company_phone']"/><br/>
+                                <t t-esc="data['company_web']"/><br/>
                             </td>
-                            <td  style="width: 50%;">
+                            <td style="width: 50%;">
                                 <table style="width: 70%; float: right; font-size: 14px;">
                                     <tr style="border-collapse: collapse;">
                                         <th style="background-color: #778899; color: white; width: 50%; padding: 5px; text-align: left;">QUOTE #</th>
                                         <th style="background-color: #778899; color: white; width: 50%; padding: 5px; text-align: left;">
-                                            <t t-esc="so_name"/>
+                                            <t t-esc="data['so_name']"/>
                                         </th>
                                     </tr>
                                     <tr style="border-collapse: collapse;">
@@ -42,7 +44,7 @@
                                     <tr style="border-collapse: collapse;">
                                         <th style="background-color: #778899; color: white; padding: 5px; text-align: left;">EXPIRED DATE</th>
                                         <th style="background-color: #778899; color: white; padding: 5px; text-align: left;">
-                                            <t t-esc="so_date_due"/>
+                                            <t t-esc="data['so_date_due']"/>
                                         </th>
                                     </tr>
                                 </table>
@@ -55,12 +57,12 @@
                             <td style="padding: 5px;"><b>CUSTOMER</b></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
-                            <td style="border: 1px solid #ffffff;"><t t-esc="partner_name"/></td>
+                            <td style="border: 1px solid #ffffff;"><t t-esc="data['partner_name']"/></td>
                         </tr>
                         <tr style="border: 1px solid #ffffff;">
                             <td style="border: 1px solid #ffffff;">
-                                <t t-esc="partner_street1"/> <t t-esc="partner_street2"/>
-                                <t t-esc="partner_street3"/><br/>
+                                <t t-esc="data['partner_street1']"/> <t t-esc="data['partner_street2']"/>
+                                <t t-esc="data['partner_street3']"/><br/>
                             </td>
                         </tr>
                     </table>
@@ -72,9 +74,9 @@
                             <th style="padding: 5px; border: 1.5px solid black;">Due Date</th>
                         </tr>
                         <tr>
-                            <td style="border: 1.5px solid black; padding: 5px;"><t t-esc="tags_info"/></td>
-                            <td style="border: 1.5px solid black; padding: 5px;"><t t-esc="so_term"/></td>
-                            <td style="border: 1.5px solid black; padding: 5px;"><t t-esc="so_date_due"/></td>
+                            <td style="border: 1.5px solid black; padding: 5px;"><t t-esc="data['tags_info']"/></td>
+                            <td style="border: 1.5px solid black; padding: 5px;"><t t-esc="data['so_term']"/></td>
+                            <td style="border: 1.5px solid black; padding: 5px;"><t t-esc="data['so_date_due']"/></td>
                         </tr>
                     </table>
                     <br/>
@@ -96,7 +98,7 @@
                         </thead>
                         <tbody>
                             <t t-set="counter" t-value="0"/>
-                            <t t-foreach="order_lines" t-as="lines">
+                            <t t-foreach="data['order_lines']" t-as="lines">
                                 <tr>
                                     <td style="border: 1.5px solid black; vertical-align: top;  padding: 5px;"><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>  <!-- No. -->
                                     <td t-if="lines[0]" style="border: 1.5px solid black; text-align: left; vertical-align: top;  padding: 5px;">
@@ -134,13 +136,13 @@
                                 <div style="width: 90%;  background-color: #d1d0cf;">
                                     <div style="padding: 10px;">
                                         <b>AMOUNT IN WORD</b><br/><br/>
-                                        <t t-esc="balance_due_in_word"/> (RUPIAH)<br/><br/>
+                                        <t t-esc="data['balance_due_in_word']"/> (RUPIAH)<br/><br/>
                                     </div>
                                 </div>
                             </td>
                             <td style="border: 1px solid #ffffff; vertical-align: top;">
                                 Subtotal<br/><br/>
-                                <t t-foreach="taxes" t-as="tax">
+                                <t t-foreach="data['taxes']" t-as="tax">
                                     <!-- <t t-esc="tax['name']"/> <t t-esc="tax['percentage']"/> %<br/> -->
                                     <t t-esc="tax['name']"/><br/>
                                 </t>
@@ -148,12 +150,12 @@
                                 <br/><p style="background-color: #778899; color: white; padding: 5px;">Balance Due</p>
                             </td>
                             <td style="border: 1px solid #ffffff;text-align: right; vertical-align: top;">
-                                <t t-esc="subtotal"/><br/><br/>
-                                <t t-foreach="taxes" t-as="tax">
+                                <t t-esc="data['subtotal']"/><br/><br/>
+                                <t t-foreach="data['taxes']" t-as="tax">
                                     <t t-esc="tax['amount']"/><br/>
                                 </t>
-                                <b><br/><t t-esc="balance_due"/></b><br/>
-                                <br/><p style="background-color: #778899; color: white; padding: 5px;"><t t-esc="balance_due"/></p>
+                                <b><br/><t t-esc="data['balance_due']"/></b><br/>
+                                <br/><p style="background-color: #778899; color: white; padding: 5px;"><t t-esc="data['balance_due']"/></p>
                             </td>
                         </tr>
                     </table>
@@ -173,7 +175,7 @@
                             <tbody>
                                 <tr>
                                     <td style="color: grey; font-size: 14px;">
-                                        <t t-raw="so_tnc"/>
+                                        <t t-raw="data['so_tnc']"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -186,8 +188,8 @@
                     </div>
 
                     <p style="text-align: right; font-size: 14px;">
-                        <br/><img t-if="signature_image" t-att-src="signature_image" style="width: 200px; height: auto;" alt="Signature"/>
-                        <br/><t t-esc="signature_name"/><br/>
+                        <br/><img t-if="data['signature_image']" t-att-src="data['signature_image']" style="width: 200px; height: auto;" alt="Signature"/>
+                        <br/><t t-esc="data['signature_name']"/><br/>
                         National Sales Leader<br/>
                         PT REXLINE ENGINEERING INDONESIA
                     </p>
