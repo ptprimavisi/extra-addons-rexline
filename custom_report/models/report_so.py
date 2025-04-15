@@ -221,11 +221,16 @@ class InheritSaleOrder(models.Model):
                 }
             return report_data
 
+    def get_report_filename(self, report):
+        name = self.env.context.get("name") or self.name or "Report"
+        return name.replace("/", "_")
+
     def action_print_custom_so(self):
         for recs in self:
             report_data=self.get_data(recs)
+            print("TEST")
             return self.env.ref('custom_report.action_report_so').with_context(
-                print_report_name=recs.name, paperformat=4, landscape=False).report_action(self, data=report_data, config=False)
+                name=f"SO_{recs.name}").report_action(recs, data=report_data, config={'filename': 'Sales Print'})
 
     def action_print_custom_quotation(self):
         for recs in self:

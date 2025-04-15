@@ -6,7 +6,7 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">custom_report.report_so</field>
             <field name="report_file">custom_report.report_so</field>
-<!--            <field name="print_report_name">"Sale Orders"</field>-->
+            <field name="print_report_name">object.name</field>
         </record>
         
         <template id="report_so">
