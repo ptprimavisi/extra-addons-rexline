@@ -69,8 +69,8 @@ class InheritSaleOrder(models.Model):
     expense_count=fields.Integer(readonly=True)
     customer_ref = fields.Char()
 
-    def get_data(self,recs):
-        for rec in recs:
+    def get_data(self):
+        for rec in self:
             company = self.env.user.company_id
 
             company_name = company.partner_id.name or ''
@@ -227,14 +227,14 @@ class InheritSaleOrder(models.Model):
 
     def action_print_custom_so(self):
         for recs in self:
-            report_data=self.get_data(recs)
-            print("TEST")
+            report_data = self.get_data()
+            print(report_data)
             return self.env.ref('custom_report.action_report_so').with_context(
-                name=f"SO_{recs.name}").report_action(recs, data=report_data, config={'filename': 'Sales Print'})
+                name=f"SO_{recs.name}").report_action(self)
 
     def action_print_custom_quotation(self):
         for recs in self:
-            report_data=self.get_data(recs)
+            report_data = self.get_data()
             return self.env.ref('custom_report.action_report_quotation').with_context(
                 paperformat=4, landscape=False).report_action(self, data=report_data, config=False)
 
