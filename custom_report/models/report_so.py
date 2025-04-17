@@ -166,7 +166,7 @@ class InheritSaleOrder(models.Model):
             )
 
             # Get T&C
-            so_tnc = rec.note or ''
+            so_tnc = rec.tnc or ''
             bank_name = rec.bank_name or ''
             bank_branch = rec.bank_branch or ''
             bank_number = rec.bank_number or ''

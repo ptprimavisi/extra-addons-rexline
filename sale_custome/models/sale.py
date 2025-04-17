@@ -377,6 +377,7 @@ class SaleOrderInherith(models.Model):
         domain=[('res_model', '=', 'sale.order')],
         string='Attachments'
     )
+    tnc = fields.Text()
     is_sales = fields.Boolean(compute="_compute_is_sales")
 
     amount_tax_base = fields.Monetary(

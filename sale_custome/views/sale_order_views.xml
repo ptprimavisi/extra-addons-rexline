@@ -11,6 +11,13 @@
                     <field name="is_sales" invisible="1" nolabel="1"/>
                     <field name="ref_quotation" string="Quotation Ref" readonly="1"/>
                 </xpath>
+                <xpath expr="//field[@name='note']" position="after">
+                    <field colspan="2" name="tnc" nolabel="1" placeholder="Terms and conditions."/>
+                </xpath>
+<!--                <xpath expr="//field[@name='note']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+
                 <xpath expr="//notebook" position="inside">
                     <page groups="sale_custome.group_sales_custom" string="Attachment">
                         <group>
