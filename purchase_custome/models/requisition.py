@@ -125,11 +125,21 @@ class PurchaseRequisition(models.Model):
 
     def write(self, vals):
         res = super(PurchaseRequisition, self).write(vals)
+        model_name = self._name
+        active_id = int(self.id)
+        origin_ref = f"{model_name},{active_id}"
+        approval = self.env['multi.approval'].search([('origin_ref', '=', origin_ref)])
         for record in self:
             if 'x_review_result' in vals:
                 x_result = record.x_review_result
                 if x_result == 'approved':
                     vals['state'] = 'to_purchase'
+        if approval:
+            name = str(approval.name)
+            index = name[:20]
+            new_name = f"{index} {str(self.name)}"
+            approval.name = new_name
+
         res = super(PurchaseRequisition, self).write(vals)
         return res
 
