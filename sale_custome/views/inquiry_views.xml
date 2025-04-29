@@ -217,6 +217,11 @@
                                 </group>
 
                             </page>
+                            <page groups="sale_custome.group_sales_custom" string="Attachment">
+                                <group>
+                                    <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                                </group>
+                            </page>
                         </notebook>
 
                     </sheet>
@@ -236,6 +241,7 @@
                 <tree>
                     <field name="priority" widget="priority"/>
                     <field name="name"/>
+                    <field name="header_note" string="Header Notes"/>
                     <field name="sale_id" string="SO NO"/>
                     <field name="partner_id" string="Customer"/>
                     <field name="date"/>

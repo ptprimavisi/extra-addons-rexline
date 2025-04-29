@@ -965,6 +965,11 @@ class InquirySales(models.Model):
     date_additional = fields.Date()
     location_additional = fields.Text()
     members = fields.Text()
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        domain=[('res_model', '=', 'sale.order')],
+        string='Attachments'
+    )
 
     @api.depends('due_date')
     def _compute_warning(self):

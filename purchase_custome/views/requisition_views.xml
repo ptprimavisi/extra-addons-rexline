@@ -121,6 +121,9 @@
                     <search string="Filter views">
                         <!-- Define your filters here -->
                         <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                        <filter string="GA" name="requisition_ga" domain="[('category', '=', 'ga')]"/>
+                        <filter string="IT" name="requisition_it" domain="[('category', '=', 'ut')]"/>
+                        <filter string="Process PO" name="requisition_po" domain="[('state', 'in', ['to_purchase','po'])]"/>
                     </search>
             </field>
         </record>
@@ -155,18 +158,66 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <record id="action_requisition" model="ir.actions.act_window">
-            <field name="name">Purchase Requisition</field>
+        <record id="action_requisition_ga" model="ir.actions.act_window">
+            <field name="name">Purchase Requisition GA</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.requisition</field>
+            <field name="context">{"search_default_requisition_ga":1}</field>
 <!--            <field name="domain">[('users_branch','=',1)]</field>-->
             <field name="view_mode">tree,form</field>
         </record>
+
+        <record id="action_requisition_it" model="ir.actions.act_window">
+            <field name="name">Purchase Requisition IT</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="context">{"search_default_requisition_it":1}</field>
+<!--            <field name="domain">[('users_branch','=',1)]</field>-->
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_requisition_po" model="ir.actions.act_window">
+            <field name="name">Purchase Requisition IT</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="context">{"search_default_requisition_po":1}</field>
+<!--            <field name="domain">[('users_branch','=',1)]</field>-->
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <menuitem id="purchase_requisition_menuitem"
-        name="Purchase Requisition"
-        sequence="1"
-        parent="requisition_root"
-        action="action_requisition"
+                  name="Purchase Requisition"
+                  sequence="1"
+                  parent="requisition_root"/>
+
+        <menuitem id="purchase_requisition_ga_menuitem"
+                  name="GA"
+                  sequence="1"
+                  parent="purchase_requisition_menuitem"
+                  action="action_requisition_ga"/>
+        <menuitem id="purchase_requisition_it_menuitem"
+                  name="IT"
+                  sequence="1"
+                  parent="purchase_requisition_menuitem"
+                  action="action_requisition_it"/>
+
+        <menuitem id="requisition_purchase"
+                  name="Purchase Requisition"
+                  sequence="50"
+                  parent="purchase.menu_procurement_management"
+                  action="action_requisition_po"
         />
+<!--        <menuitem id="purchase_requisition_ga"-->
+<!--        name="GA"-->
+<!--        sequence="1"-->
+<!--        parent="requisition_purchase"-->
+<!--        action="action_requisition_ga"-->
+<!--        />-->
+<!--        <menuitem id="purchase_requisition_it"-->
+<!--        name="IT"-->
+<!--        sequence="1"-->
+<!--        parent="requisition_purchase"-->
+<!--        action="action_requisition_it"-->
+<!--        />-->
     </data>
 </odoo>
