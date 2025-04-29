@@ -217,7 +217,7 @@
                                 </group>
 
                             </page>
-                            <page groups="sale_custome.group_sales_custom" string="Attachment">
+                            <page string="Attachment">
                                 <group>
                                     <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                                 </group>
