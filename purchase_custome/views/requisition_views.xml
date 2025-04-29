@@ -197,7 +197,7 @@
                   action="action_requisition_ga"/>
         <menuitem id="purchase_requisition_it_menuitem"
                   name="IT"
-                  sequence="1"
+                  sequence="2"
                   parent="purchase_requisition_menuitem"
                   action="action_requisition_it"/>
 
