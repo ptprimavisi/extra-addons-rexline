@@ -567,8 +567,10 @@ class CrmLead(models.Model):
     specification = fields.Html()
     data_requirement = fields.Html()
     due_date_eng = fields.Date()
-    received_cust = fields.Date()
-    received_sales = fields.Date()
+    received_cust = fields.Char()
+    received_sales = fields.Char()
+    received_cust_date = fields.Date()
+    received_sales_date = fields.Date()
     site_survey = fields.Text()
     date_additional = fields.Date()
     location_additional = fields.Text()
@@ -701,8 +703,8 @@ class CrmLead(models.Model):
                     'specification': record.specification,
                     'data_requirement': record.data_requirement,
                     'due_date_eng': record.due_date_eng,
-                    'received_cust': record.received_cust,
-                    'received_sales': record.received_sales,
+                    'received_cust': record.received_cust_date,
+                    'received_sales': record.received_sales_date,
                     'site_survey': record.site_survey,
                     'date_additional': record.date_additional,
                     'location_additional': record.location_additional,
@@ -833,8 +835,8 @@ class CrmLead(models.Model):
                     'specification': line.specification,
                     'data_requirement': line.data_requirement,
                     'due_date_eng': line.due_date_eng,
-                    'received_cust': line.received_cust,
-                    'received_sales': line.received_sales,
+                    'received_cust': line.received_cust_date,
+                    'received_sales': line.received_sales_date,
                     'site_survey': line.site_survey,
                     'date_additional': line.date_additional,
                     'location_additional': line.location_additional,

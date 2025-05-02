@@ -69,8 +69,8 @@
                         <field name="due_date_eng" string="Due Date Engineering"/>
                     </group>
                      <group string="DELIVERABLE DOCUMENTS" name="deliverable" priority="1">
-                        <field name="received_cust" string="Received Inquiry from Customer"/>
-                        <field name="received_sales" string="Received Inquiry from Sales"/>
+                        <field name="received_cust_date" string="Received Inquiry from Customer"/>
+                        <field name="received_sales_date" string="Received Inquiry from Sales"/>
                     </group>
                     <group string="ADDITIONAL INFO" name="additional" priority="1">
                         <field name="site_survey" string="Site Survey"/>
