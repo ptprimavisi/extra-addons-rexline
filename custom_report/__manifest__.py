@@ -7,6 +7,7 @@
     'depends': ['hr','sale_management','stock','account', 'base', 'hr','sale_custome','sale', 'purchase'],
     'data': [
         'views/report_invoice.xml',
+        'views/crm_lead.xml',
         'report/report_invoice.xml',
         'views/sale_order.xml',
         'report/report_so.xml',
@@ -15,6 +16,7 @@
         'report/requisition_report.xml',
         'report/inquiry_report.xml',
         'report/purchase_order.xml',
+        'report/crm_report.xml',
     ],
     'assets': {
         'web.assets_backend': [

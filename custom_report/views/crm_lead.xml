@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="view_crm_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.crm.lead.print</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <button name="toggle_active" position="after">
+                    <button name="action_print" string="Print" type="object"/>
+                </button>
+            </field>
+        </record>
+    </data>
+</odoo>

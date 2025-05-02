@@ -68,6 +68,16 @@ class InheritSaleOrder(models.Model):
 
     expense_count=fields.Integer(readonly=True)
     customer_ref = fields.Char()
+    is_print = fields.Boolean(compute="_compute_is_print")
+
+    def _compute_is_print(self):
+        for line in self:
+            line.is_print = False
+            if hasattr(line, 'x_review_result'):
+                if line.x_review_result == 'approved':
+                    line.is_print = True
+            else:
+                line.is_print = True
 
     def get_data(self):
         for rec in self:

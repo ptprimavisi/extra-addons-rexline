@@ -567,8 +567,8 @@ class CrmLead(models.Model):
     specification = fields.Html()
     data_requirement = fields.Html()
     due_date_eng = fields.Date()
-    received_cust = fields.Text()
-    received_sales = fields.Text()
+    received_cust = fields.Date()
+    received_sales = fields.Date()
     site_survey = fields.Text()
     date_additional = fields.Date()
     location_additional = fields.Text()
@@ -585,6 +585,14 @@ class CrmLead(models.Model):
         vals['inquiry_name'] = self.env['ir.sequence'].next_by_code('INQ') or '/'
         vals['name'] = vals['name'].upper()
         return super(CrmLead, self).create(vals)
+
+    @api.onchange('partner_id')
+    def onchange_partner(self):
+        for line in self:
+            line.location = False
+            if line.partner_id:
+                if line.partner_id.street:
+                    line.location = str(line.partner_id.street)
 
     def _compute_isApprove(self):
         for line in self:
@@ -678,10 +686,33 @@ class CrmLead(models.Model):
                 inquiry.write({'header_note': record.note_header})
             # raise UserError('test')
             if inquiry:
-                inquiry.write({'due_date': record.date_deadline})
+                data = {
+                    "name": record.inquiry_name or '/',
+                    "partner_id": record.partner_id.id,
+                    'project_category': record.category_project,
+                    'header_note': record.note_header,
+                    "due_date": record.date_deadline,
+                    "priority": record.priority,
+                    "note": record.description,
+                    'location': record.location,
+                    'inquiry_desc': record.inquiry_desc,
+                    'doc_support': record.doc_support,
+                    'quantity': record.quantity,
+                    'specification': record.specification,
+                    'data_requirement': record.data_requirement,
+                    'due_date_eng': record.due_date_eng,
+                    'received_cust': record.received_cust,
+                    'received_sales': record.received_sales,
+                    'site_survey': record.site_survey,
+                    'date_additional': record.date_additional,
+                    'location_additional': record.location_additional,
+                    'members': record.members,
+                }
+                inquiry.write(data)
+                user = self.env['res.users'].browse(self.env.uid)
+                inquiry.message_post(body=f'{user.name} Update this record')
                 if old_note != new_note:
-                    user = self.env['res.users'].browse(self.env.uid)
-                    inquiry.message_post(body=f'{user.login} Update Note')
+                    inquiry.message_post(body=f'{user.login} Update Inquiry')
 
         return res
 

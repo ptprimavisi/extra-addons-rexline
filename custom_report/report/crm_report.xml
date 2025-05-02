@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="action_report_crm" model="ir.actions.report">
+            <field name="name">Print CRM</field>
+            <field name="model">crm.lead</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_report.template_report_crm</field>
+            <field name="report_file">custom_report.template_report_crm</field>
+            <field name="print_report_name">'%s - %s' % ('CRM', object.name)</field>
+        </record>
+        <template id="template_report_crm">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-set="doc" t-value="docs"/>
+                    <div style="text-align: center;">
+                        Ini Adalah Content
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

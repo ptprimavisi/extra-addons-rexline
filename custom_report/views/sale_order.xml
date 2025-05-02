@@ -10,11 +10,12 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <button name="action_confirm" position="after">
-                    <button name="action_print_custom_so" string="Print Out SO" type="object" invisible="id == False or state !='sale'"/>
-                    <button name="action_print_custom_quotation" string="Print Out Quotation" type="object" invisible="id == False or state !='draft'"/>
+                    <button name="action_print_custom_so" string="Print Out SO" type="object" invisible="id == False or state !='sale' or is_print == False"/>
+                    <button name="action_print_custom_quotation" string="Print Out Quotation" type="object" invisible="id == False or state !='draft' or is_print == False"/>
                 </button>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="customer_ref"/>
+                    <field name="is_print" invisible="1"/>
                 </xpath>
             </field>
         </record>
