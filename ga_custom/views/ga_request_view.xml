@@ -1,0 +1,116 @@
+<odoo>
+    <data>
+        <menuitem id="ga_request_root" name="GA Request" sequence="22"/>    
+        <record id="ga_request_search_view" model="ir.ui.view">
+            <field name="name">ga.request.search.view</field>
+            <field name="model">ga.request</field>
+            <field name="arch" type="xml">
+                    <search string="Filter views">
+                        <!-- Define your filters here -->
+                        <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                    </search>
+            </field>
+        </record>
+
+        <record id="ga_request_form_view" model="ir.ui.view">
+            <field name="name">ga.request.form.view</field>
+            <field name="model">ga.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_create_mrf" string="Create Purchase Requisition" type="object" groups="ga_custom.ga_custom_groups" invisible="id == False or state != 'done'"/>
+<!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_requisition"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-list">
+                                    <field name="count_requisition" widget="statinfo" string="Purchase Requisition"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id" string="Requester" readonly="1" required="1"/>
+                                <field name="employee_id" string="Requested For" required="1"/>
+                            </group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <group>
+                                <field name="department_id" required="1" readonly="1"/>
+                                <field name="date_request" required="1" readonly="1"/>
+                                <field name="due_date" required="1" />
+                                <field name="requisition_state" string="Requisition Status"/>
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <group string="Detail Request" name="detail_request" priority="1">
+                                    <field name="description" string="Request Description" required="1"/>
+                                    <field name="justification" required="1"/>
+                                    <field name="estimate_price" string="Estimate Price (IDR)" required="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="seq_ga_req" model="ir.sequence">
+            <field name="name">GA Request</field>
+            <field name="code">GAR</field>
+            <field name="prefix">GA-REQ/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="ga_request_tree_view" model="ir.ui.view">
+            <field name="name">ga.request.tree.view</field>
+            <field name="model">ga.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="employee_id" required="1"/>
+                    <field name="department_id" required="1"/>
+                    <field name="date_request" required="1"/>
+                    <field name="state" required="1"/>
+                    <field name="requisition_state" string="Requisition Status"
+                           decoration-warning="requisition_state == 'to_requisition'"
+                           decoration-success="requisition_state == 'requisition'"
+                           widget="badge"
+                           optional="show"/>
+<!--                    <field name="requisition_state" string="Requisition Status"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_ga_request" model="ir.actions.act_window">
+            <field name="name">GA Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ga.request</field>
+            <field name="domain">[('user_domain','=',1)]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="ga_request_menuitem"
+        name="GA Request"
+        sequence="1"
+        parent="ga_request_root"
+        action="action_ga_request"
+        />
+    </data>
+</odoo>
