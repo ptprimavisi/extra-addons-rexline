@@ -52,6 +52,10 @@
             <field name="name">Cost Control Custom Access</field>
         </record>
 
+        <record model="res.groups" id="project_custom">
+            <field name="name">Project Custom Access</field>
+        </record>
+
       
     </data>
 </odoo>
