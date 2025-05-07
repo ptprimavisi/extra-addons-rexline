@@ -1,0 +1,92 @@
+<odoo>
+    <data>
+        <menuitem id="manpower_request_root" name="Manpower Request" sequence="22"/>
+        <record id="manpower_request_form_view" model="ir.ui.view">
+            <field name="name">manpower.request.form.view</field>
+            <field name="model">manpower.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+<!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="project_name" required="1"/>
+                            <field name="project_location" required="1"/>
+                            <field name="date_request"/>
+                            <field name="date_requirement" string="Date of Requirement" required="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Manpower Lines">
+                                <field name="manpower_ids" readonly="state == 'done'">
+                                    <tree editable="bottom">
+                                        <field name="position_id" required="1"/>
+                                        <field name="required_qty"/>
+                                        <field name="replacement"/>
+                                        <field name="year_required"/>
+                                        <field name="day_required"/>
+                                        <field name="existing_required"/>
+                                        <field name="remark"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="seq_travel_req" model="ir.sequence">
+            <field name="name">Manpower Request</field>
+            <field name="code">MNREQ</field>
+            <field name="prefix">MAN-REQ/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="manpower_request_tree_view" model="ir.ui.view">
+            <field name="name">manpower.request.tree.view</field>
+            <field name="model">manpower.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="project_name" required="1"/>
+                    <field name="project_location" required="1"/>
+                    <field name="date_request"/>
+                    <field name="state" string="Status"
+                           decoration-warning="state == 'draft'"
+                           decoration-success="state == 'done'"
+                           widget="badge"
+                           optional="show"/>
+<!--                    <field name="requisition_state" string="Requisition Status"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_manpower_request" model="ir.actions.act_window">
+            <field name="name">Manpower Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">manpower.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="manpower_request_menuitem"
+        name="Manpower Request"
+        sequence="1"
+        parent="manpower_request_root"
+        action="action_manpower_request"
+        />
+    </data>
+</odoo>

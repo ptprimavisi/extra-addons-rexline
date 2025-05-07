@@ -13,8 +13,236 @@
                 <t t-call="web.external_layout">
                     <t t-set="doc" t-value="docs"/>
                     <div style="text-align: center;">
-                        Ini Adalah Content
+                        <h5><strong>CRM</strong></h5>
+                        <p><t t-esc="doc.inquiry_name or '/'"/></p>
+                    </div><br/>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th style="text-align: left;">Name  </th>
+                                        <td><t t-esc="doc.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Customer  </th>
+                                        <td><t t-esc="doc.partner_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Email  </th>
+                                        <td><t t-esc="doc.email_from"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Phone  </th>
+                                        <td><t t-esc="doc.phone"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Inaquiry Status  </th>
+                                        <td><t t-esc="doc.state_inquiry"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Tags  </th>
+                                        <td>
+                                            <t t-foreach="doc.tag_ids" t-as="tags">
+                                                <t t-esc="tags.name"/>,
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th style="text-align: left;">Salesperson  </th>
+                                        <td><t t-esc="doc.user_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Due Date  </th>
+                                        <td><t t-esc="doc.date_deadline"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Cost Estimation  </th>
+                                        <td>Rp. <t t-esc="doc.cost_estimation"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Category  </th>
+                                        <td><t t-esc="doc.category_project"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Header Notes  </th>
+                                        <td><t t-esc="doc.note_header"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Status  </th>
+                                        <td><t t-esc="doc.stage_id.name"/></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                    <br></br>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="9"><h5 style="text-align: center;"><strong>Sale Product</strong></h5></th>
+                            </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Order Quantity</th>
+                                <th>Unit of Measure</th>
+                                <th>Cost Price</th>
+                                <th>Margin (%)</th>
+                                <th>Unit Price</th>
+                                <th>Taxes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="counter" t-value="0"/>
+                            <t t-foreach="doc.lead_product_ids" t-as="line">
+                                <tr>
+                                    <td><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>
+                                    <td><t t-esc="line.product_id.product_tmpl_id.name"/></td>
+                                    <td><t t-esc="line.name"/></td>
+                                    <td><t t-esc="line.product_uom_quantity"/></td>
+                                    <td><t t-esc="line.product_uom.name"/></td>
+                                    <td><t t-esc="line.cost_price"/></td>
+                                    <td><t t-esc="line.margin"/></td>
+                                    <td><t t-esc="line.price_unit"/></td>
+                                    <td>
+                                        <t t-foreach="line.tax_id" t-as="taxs">
+                                            <t t-esc="taxs.name"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <t t-if="doc.category_project != 'supply'">
+                        <br></br>
+                        <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="9"><h5 style="text-align: center;"><strong>Detail Material</strong></h5></th>
+                            </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Order Quantity</th>
+                                <th>Unit of Measure</th>
+                                <th>Cost Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="counter" t-value="0"/>
+                            <t t-foreach="doc.lead_product_detail" t-as="lines">
+                                <tr>
+                                    <td><t t-set="counter" t-value="counter + 1"/><t t-esc="counter"/></td>
+                                    <td><t t-esc="lines.product_id.product_tmpl_id.name"/></td>
+                                    <td><t t-esc="lines.name"/></td>
+                                    <td><t t-esc="lines.product_uom_quantity"/></td>
+                                    <td><t t-esc="lines.product_uom.name"/></td>
+                                    <td><t t-esc="lines.cost_price"/></td>
+                                    <td><t t-esc="lines.subtotal"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    </t>
+                    <br></br>
+                    <hr></hr>
+                    <h5><strong>Internal Notes :</strong></h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;" colspan="2"><strong>DATA CLIENT</strong></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Company Name</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.partner_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Location</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.location"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;" colspan="2"><strong>INQUIRY</strong></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Type of Inquiry</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.category_project"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Name of Inquiry</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.inquiry_desc"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Doc support/Data info</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.doc_support"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Quantity</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.quantity"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Specification/Client Request</th>
+                                <td style="border: 1.5px solid black;"><t t-raw="doc.specification"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Data Requirements</th>
+                                <td style="border: 1.5px solid black;"><t t-raw="doc.data_requirement"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Due date Engineering</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.due_date_eng"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;" colspan="2"><strong>DELIVERABLE DOCUMENTS</strong></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Reqceived Inquiry from Customer</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.received_cust_date"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Reqceived Inquiry from Sales</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.received_sales_date"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;" colspan="2"><strong>ADDITIONAL INFO</strong></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Site Survey</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.site_survey"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Date</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.date_additional"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Location</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.location_additional"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Members</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.members"/></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;" colspan="2"><strong>NOTES</strong></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; border: 1.5px solid black;">Type of Inquiry</th>
+                                <td style="border: 1.5px solid black;"><t t-esc="doc.description"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </t>
             </t>
         </template>

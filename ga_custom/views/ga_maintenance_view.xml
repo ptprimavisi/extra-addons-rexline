@@ -1,0 +1,76 @@
+<odoo>
+    <menuitem id="ga_management_menu" name="GA Management" sequence="20" groups="ga_custom.ga_custom_groups"/>
+    <data>
+        <record id="ga_maintenance_report_form_view" model="ir.ui.view">
+            <field name="name">ga.maintenance.report.form.view</field>
+            <field name="model">ga.maintenance.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft, done"/>
+                        <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_draft" string="Reset To Draft" type="object" invisible="id == False or state != 'done'"/>
+<!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
+                    </header>
+                    <sheet>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <field name="date" required="1"/>
+                            <field name="type" required="1"/>
+                            <field name="user_id" required="1"/>
+                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                        </group>
+                        <button name="action_create_schedule" string="Send Report" type="object" class="oe_highlight" invisible="id == False or state != 'done'"/>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="seq_maint_report" model="ir.sequence">
+            <field name="name">GA Maintenance Report</field>
+            <field name="code">GAMNT</field>
+            <field name="prefix">GAMNT/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="ga_maintenance_report_tree_view" model="ir.ui.view">
+            <field name="name">ga.maintenance.report.tree.view</field>
+            <field name="model">ga.maintenance.report</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="date" required="1"/>
+                    <field name="type" required="1"/>
+                    <field name="state" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_ga_maintenance_report" model="ir.actions.act_window">
+            <field name="name">GA Maintenance Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ga.maintenance.report</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="ga_report_menuitem"
+        name="GA Maintenance Report"
+        sequence="1"
+        parent="ga_management_menu"
+        action="action_ga_maintenance_report"
+        />
+    </data>
+</odoo>

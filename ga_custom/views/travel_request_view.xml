@@ -1,0 +1,99 @@
+<odoo>
+    <data>
+        <menuitem id="travel_request_root" name="Travel Request" sequence="22"/>
+
+        <record id="travel_request_form_view" model="ir.ui.view">
+            <field name="name">travel.request.form.view</field>
+            <field name="model">travel.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+<!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" invisible="id == False" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id" required="1"/>
+                                <field name="purpose" string="Travel Purpose" required="1"/>
+                                <field name="so_number" string="SO Number"/>
+                                <field name="dest_from" string="From" required="1"/>
+                                <field name="dest_to" string="To" required="1"/>
+                            </group>
+<!--                            <field name="partner_id" string="Customer" required="1"/>-->
+                            <group>
+                                <field name="department_id" required="1" readonly="1"/>
+                                <field name="department_id" required="1" invisible="1"/>
+                                <field name="destination" required="1"/>
+                                <field name="request_date" required="1" readonly="1"/>
+                                <field name="days" required="1"/>
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page string="Estimated Budget">
+                                <group string="Type of expense" name="type_expense" priority="1">
+                                    <field name="tickets" />
+                                    <field name="hotels" />
+                                    <field name="other" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="seq_travel_req" model="ir.sequence">
+            <field name="name">Travel Request</field>
+            <field name="code">TREQ</field>
+            <field name="prefix">TRA-REQ/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="travel_request_tree_view" model="ir.ui.view">
+            <field name="name">travel.request.tree.view</field>
+            <field name="model">travel.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                    <field name="employee_id" required="1"/>
+                    <field name="department_id" required="1"/>
+                    <field name="request_date" required="1"/>
+                    <field name="state" string="Status"
+                           decoration-warning="state == 'draft'"
+                           decoration-success="state == 'done'"
+                           widget="badge"
+                           optional="show"/>
+<!--                    <field name="requisition_state" string="Requisition Status"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_travel_request" model="ir.actions.act_window">
+            <field name="name">Travel Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">travel.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="travel_request_menuitem"
+        name="Travel Request"
+        sequence="1"
+        parent="travel_request_root"
+        action="action_travel_request"
+        />
+    </data>
+</odoo>

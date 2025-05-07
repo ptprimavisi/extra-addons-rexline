@@ -7,8 +7,11 @@ class GaRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid, domain=lambda self: [('id', '=', self.env.uid)])
-    employee_id = fields.Many2one('hr.employee', default=lambda self: self.env['hr.employee'].search([('user_id','=',self.env.uid)], limit=1))
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid,
+                              domain=lambda self: [('id', '=', self.env.uid)])
+    employee_id = fields.Many2one('hr.employee',
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)],
+                                                                                      limit=1))
     department_id = fields.Many2one('hr.department', compute="_compute_department", store=True)
     date_request = fields.Date(default=lambda self: fields.Datetime.today())
     due_date = fields.Date()
@@ -36,12 +39,12 @@ class GaRequest(models.Model):
 
     def _user_domain(self):
         uid = self.env.uid
-        self.user_domain = self.env['res.users'].search([('id','=',uid)])
+        self.user_domain = self.env['res.users'].search([('id', '=', uid)])
 
     def _search_domain(self, operator, value):
         uid = self.env.uid
         print(uid)
-        if self.env.user.has_group('ga_custom.ga_custom_groups') and uid not in [1,2]:
+        if self.env.user.has_group('ga_custom.ga_custom_groups') and uid not in [1, 2]:
             domain = ["|", ('state', '=', 'done'), ("user_id", '=', int(uid))]
         else:
             if uid == 1 or uid == 2:
@@ -49,8 +52,6 @@ class GaRequest(models.Model):
             else:
                 domain = [("user_id", '=', int(uid))]
         return domain
-
-
 
     @api.depends('employee_id')
     def _compute_department(self):
@@ -99,7 +100,7 @@ class GaRequest(models.Model):
 
     def _count_requisition(self):
         for line in self:
-            requisition = self.env['purchase.requisition'].search([('it_id','=',int(line.id))])
+            requisition = self.env['purchase.requisition'].search([('it_id', '=', int(line.id))])
             line.count_requisition = 0
             if requisition:
                 line.count_requisition = len(requisition)
@@ -117,8 +118,8 @@ class GaRequest(models.Model):
                 "type": "ir.actions.act_window",
                 "res_model": "purchase.requisition",
                 "name": "Purchase Requisition",
-                "domain": [('it_id','=',int(line.id))],
+                "domain": [('it_id', '=', int(line.id))],
                 'view_mode': 'tree,form',
                 'context': {'create': False
-                }
+                            }
             }

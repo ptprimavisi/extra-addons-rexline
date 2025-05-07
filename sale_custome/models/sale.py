@@ -322,7 +322,7 @@ class SaleOrderLineInherit(models.Model):
     def _compute_tax_base(self):
         for rec in self:
             rec.tax_base = (11 / 12) * (
-                        rec.product_uom_qty * rec.price_unit) if rec.product_uom_qty and rec.price_unit else 0.0
+                    rec.product_uom_qty * rec.price_unit) if rec.product_uom_qty and rec.price_unit else 0.0
 
 
 class AccountMoveLineInherit(models.Model):
@@ -340,7 +340,7 @@ class AccountMoveLineInherit(models.Model):
     def _compute_tax_base(self):
         for rec in self:
             rec.tax_base = (11 / 12) * (
-                        (rec.quantity * rec.price_unit) - rec.discount) if rec.quantity and rec.price_unit else 0.0
+                    (rec.quantity * rec.price_unit) - rec.discount) if rec.quantity and rec.price_unit else 0.0
 
 
 class AccountMoveInherit(models.Model):
@@ -846,6 +846,11 @@ class CrmLead(models.Model):
                 #     data['process_to'] = line.process_to
                 # inquiry = self.env['inquiry.inquiry'].search([])
                 inquiry = self.env['inquiry.inquiry'].create(data)
+                if not line.category_project:
+                    raise UserError('Silahkan isi kategory project')
+                    exit()
+                if line.category_project == 'supply':
+                    inquiry.write({'state': 'boq'})
                 if line.category_project == 'supply' or line.category_project == 'project':
                     list_product = []
                     if not line.lead_product_ids:
@@ -966,6 +971,7 @@ class InquirySales(models.Model):
     inquiry_line_detail = fields.One2many('inquiry.line.detail', 'inquiry_id')
     inquiry_line_ids = fields.One2many('inquiry.line', 'inquiry_id')
     inquiry_line_task = fields.One2many('inquiry.line.task', 'inquiry_id')
+    inquiry_document_ids = fields.One2many('inquiry.line.document', 'inquiry_id')
     pic_user = fields.Many2one('res.users')
     pic_akses = fields.Boolean(compute="_compute_akses_pic")
     is_planner = fields.Boolean(compute="_compute_user_planner")
@@ -2057,6 +2063,15 @@ class InquiryLine(models.Model):
                     'origin': str(so.name),
                 }
             }
+
+
+class InquiryLineDocument(models.Model):
+    _name = 'inquiry.line.document'
+
+    name = fields.Char()
+    stage = fields.Char()
+    source = fields.Char()
+    inquiry_id = fields.Many2one('inquiry.inquiry')
 
 
 class InquiryLineTask(models.Model):
