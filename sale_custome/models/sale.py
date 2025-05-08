@@ -392,6 +392,31 @@ class SaleOrderInherith(models.Model):
     bank_number = fields.Char()
     bank_account_name = fields.Char()
 
+    def write(self, vals):
+        for record in self:
+            if 'name' in vals and vals['name']:
+                invoices = record.invoice_ids
+                picking = record.picking_ids
+                if invoices:
+                    if len(invoices) > 1:
+                        query = [('id', 'in', invoices.ids)]
+                    else:
+                        query = [('id', '=', invoices.id)]
+
+                    invoice = self.env['account.move'].search(query)
+                    invoice.write({'invoice_origin': vals['name']})
+                if picking:
+                    if len(picking) > 1:
+                        pick_query = [('id', 'in', picking.ids)]
+                    else:
+                        pick_query = [('id', '=', picking.id)]
+                    stock_picking = self.env['stock.picking'].search(pick_query)
+                    stock_picking.write({'origin': vals['name']})
+
+        # Panggil metode 'write' dari superclass
+        res = super(SaleOrderInherith, self).write(vals)
+        return res
+
     def default_get(self, vals):
         defaults = super(SaleOrderInherith, self).default_get(vals)
         user = self.env.user
