@@ -48,6 +48,7 @@
                             <field name="akses_proccess" invisible="1"/>
                             <field name="is_purchase" invisible="1"/>
                             <field name="it_id" string="Reference IT" readonly="1" invisible="category != 'ut'"/>
+                            <field name="ga_id" string="Reference GA" readonly="1" invisible="category != 'ga'"/>
                             <field name="purpose"/>
                             <field name="requisition_date" required="1" readonly="1"/>
                             <field name="due_date" required="1"/>

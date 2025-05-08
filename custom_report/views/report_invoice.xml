@@ -6,7 +6,7 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <button name="action_register_payment" position="after">
-                    <button name="action_print_custom" string="Print Out Finance" type="object" invisible="id == False and journal_id!=1"/>
+                    <button name="action_print_custom" string="Print Out Finance" type="object" invisible="id == False and journal_id!=1 or move_type != 'out_invoice'"/>
                 </button>
             </field>
         </record>

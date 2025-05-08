@@ -7,7 +7,7 @@
                 <form create="false">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
-                        <button name="action_post" string="Posted" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_post" string="Posted" type="object" class="oe_highlight" groups="sale_custome.accounting_custom_group" invisible="id == False or state != 'draft'"/>
                         <button name="action_reset_to_draft" string="Reset to Draft" confirm="Proses ini akan mempengaruhi saldo dan journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'posted'"/>
                         <button name="action_print_report" string="Print" type="object"  invisible="id == False"/>
                     </header>
@@ -32,6 +32,7 @@
                                 <field name="saldo" readonly="1"/>
                                 <field name="saldo" invisible="1"/>
                                 <field name="source_account" readonly="1"/>
+                                <field name="date_journal" string="Accounting Date" required="1"/>
                             </group>
                         </group>
                         <notebook>

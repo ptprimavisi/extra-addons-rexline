@@ -73,6 +73,7 @@ class PurchaseRequisition(models.Model):
     akses_quot = fields.Boolean(compute="_akses_quot")
     akses_proccess = fields.Boolean(compute="_akses_proccess")
     it_id = fields.Many2one('it.request')
+    ga_id = fields.Many2one('ga.request')
     date_confirm = fields.Date()
     date_approved1 = fields.Date(compute="_compute_approved1")
     date_approved2 = fields.Date(compute="_compute_approved2")

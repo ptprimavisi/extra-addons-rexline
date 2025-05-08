@@ -570,7 +570,7 @@ class CrmLead(models.Model):
 
     inquiry_name = fields.Char()
     count_inquiry = fields.Integer(compute="_compute_count_inquiry")
-    cost_estimation = fields.Float(compute="_compute_estimation_cost")
+    cost_estimation = fields.Monetary(compute="_compute_estimation_cost", store=True, currency_field="currency_id")
     is_planner = fields.Boolean(compute="_compute_is_planner")
     state_inquiry = fields.Char(compute="_compute_state_inq")
     is_approve = fields.Boolean(compute="_compute_isApprove")
@@ -605,6 +605,7 @@ class CrmLead(models.Model):
         domain=[('res_model', '=', 'crm.lead')],
         string='Attachments'
     )
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id.id)
 
     @api.model
     def create(self, vals):

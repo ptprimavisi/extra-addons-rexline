@@ -88,7 +88,7 @@ class GaRequest(models.Model):
                 'view_mode': 'form',
                 'target': 'new',
                 'context': {
-                    'default_it_id': int(line.id),
+                    'default_ga_id': int(line.id),
                     'default_responsible': int(line.user_id.id),
                     'default_employee_id': int(line.employee_id.id),
                     'default_department_id': line.department_id.id,
@@ -100,7 +100,7 @@ class GaRequest(models.Model):
 
     def _count_requisition(self):
         for line in self:
-            requisition = self.env['purchase.requisition'].search([('it_id', '=', int(line.id))])
+            requisition = self.env['purchase.requisition'].search([('ga_id', '=', int(line.id))])
             line.count_requisition = 0
             if requisition:
                 line.count_requisition = len(requisition)
@@ -118,8 +118,7 @@ class GaRequest(models.Model):
                 "type": "ir.actions.act_window",
                 "res_model": "purchase.requisition",
                 "name": "Purchase Requisition",
-                "domain": [('it_id', '=', int(line.id))],
+                "domain": [('ga_id', '=', int(line.id))],
                 'view_mode': 'tree,form',
-                'context': {'create': False
-                            }
+                'context': {'create': False}
             }

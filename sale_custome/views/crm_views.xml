@@ -17,6 +17,7 @@
 <!--                                <div class="oe_title">-->
 <!--                                    <h1>-->
                     <field name="inquiry_name" string="CRF Number" invisible="id == False" readonly="1"/>
+                    <field name="currency_id" required="1"/>
 <!--                                    </h1>-->
 <!--                                </div>-->
 <!--                        </div>-->
@@ -29,7 +30,7 @@
                     </page>
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="after">
-                    <field name="cost_estimation" class="o_input_13ch" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="1"/>
+                    <field name="cost_estimation" class="o_input_13ch" readonly="1"/>
                     <field name="is_planner" invisible="1"/>
                     <field name="category_project"/>
                     <field name="process_to" invisible="1" />

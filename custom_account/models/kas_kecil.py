@@ -74,6 +74,7 @@ class PermintaanDana(models.Model):
     project = fields.Char()
     description = fields.Text()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
+    date_journal = fields.Date()
 
     def action_print_report(self):
         for line in self:
@@ -277,6 +278,9 @@ class PermintaanDana(models.Model):
 
     def action_transfer(self):
         for line in self:
+            if not line.date_journal:
+                raise UserError('Tanggal journal tidak boleh kosong!')
+                exit()
             if not line.source_account:
                 raise UserError('Source account is mandatory fields!')
             if not line.journal_id:
@@ -295,13 +299,14 @@ class PermintaanDana(models.Model):
             partner_id = self.env['res.users'].browse(line.user_id.id).partner_id
             move = self.env['account.move'].create({
                 'journal_id': 3,
-                'date': line.date_request,
+                'date': line.date_journal,
                 # 'branch_id': line.branch_id.id,
                 'ref': line.name,
                 'dana_id': int(line.id),
                 'line_ids': [
                     (0, 0, {
                         'account_id': line.journal_id.id,
+                        'date': line.date_journal,
                         # Ganti dengan akun yang sesuai
                         'name': str(line.name) + " " + str(line.description or ''),
                         'partner_id': int(partner_id.id),
@@ -310,6 +315,7 @@ class PermintaanDana(models.Model):
                     }),
                     (0, 0, {
                         'account_id': line.source_account.default_account_id.id,
+                        'date': line.date_journal,
                         # Ganti dengan akun yang sesuai
                         'name': str(line.name) + " " + str(line.description or ''),
                         'partner_id': int(partner_id.id),
@@ -473,6 +479,7 @@ class RealisasiDana(models.Model):
         domain=[('res_model', '=', 'realisasi.dana')],
         string='Attachments'
     )
+    date_journal = fields.Date()
 
     @api.depends('employee_id')
     def _compute_department(self):
@@ -500,6 +507,9 @@ class RealisasiDana(models.Model):
 
     def action_post(self):
         for line in self:
+            if not line.date_journal:
+                raise UserError('Tanggal journal tidak boleh kosong!')
+                exit()
             if line.total_amount <= 0:
                 raise UserError('amount tidak boleh 0.0')
             if not line.realisasi_line:
@@ -512,7 +522,7 @@ class RealisasiDana(models.Model):
             partner_id = self.env['res.users'].browse(line.user_id.id).partner_id
             move = self.env['account.move'].create({
                 'journal_id': 3,
-                'date': line.request_date,
+                'date': line.date_journal,
                 # 'branch_id': line.branch_id.id,
                 'ref': line.name,
                 'realisasi_id': int(line.id),
@@ -523,6 +533,7 @@ class RealisasiDana(models.Model):
                     move_line.append((0, 0, {
                         'account_id': line.source_account.id,
                         # Ganti dengan akun yang sesuai
+                        'date': line.date_journal,
                         'name': str(line.name),
                         'partner_id': int(partner_id.id),
                         'debit': 0.0,
@@ -532,6 +543,7 @@ class RealisasiDana(models.Model):
                     move_line.append((0, 0, {
                         'account_id': lines.account_id.id,
                         # Ganti dengan akun yang sesuai
+                        'date': line.date_journal,
                         'name': str(line.name) + " " + str(lines.description or ''),
                         'partner_id': int(partner_id.id),
                         'debit': lines.amount,
@@ -664,6 +676,7 @@ class RefundDana(models.Model):
                         (0, 0, {
                             'account_id': line.dest_account.id,
                             # Ganti dengan akun yang sesuai
+                            'date': line.date,
                             'name': str(line.name),
                             'partner_id': int(partner_id.id),
                             'debit': line.amount,
@@ -672,6 +685,7 @@ class RefundDana(models.Model):
                         (0, 0, {
                             'account_id': line.source_account.id,
                             # Ganti dengan akun yang sesuai
+                            'date': line.date,
                             'name': str(line.name),
                             'partner_id': int(partner_id.id),
                             'debit': 0.0,

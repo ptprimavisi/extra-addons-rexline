@@ -144,12 +144,14 @@ class crm_lead(models.Model):
                 return {
                     'name': "Sale Order",
                     'type': 'ir.actions.act_window',
-                    'view_type': 'form',
-                    'view_mode': 'form',
+                    # 'view_type': 'tree,form',
+                    'view_mode': 'tree,form',
                     'res_model': 'sale.order',
-                    'view_id': self.env.ref('sale.view_order_form').id,
-                    'target': "new",
-                    'res_id': sale_create_obj.id
+                    "domain": [('opportunity_id', '=', int(self.id))],
+                    "context": {"create": False},
+                    # 'view_id': self.env.ref('sale.view_order_form').id,
+                    # 'target': "new",
+                    # 'res_id': sale_create_obj.id
                 }
             else:
                 raise UserError('Enter the "Product" and "Description".')
