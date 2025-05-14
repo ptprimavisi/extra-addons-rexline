@@ -38,5 +38,5 @@ class TravelRequest(models.Model):
     @api.model
     def create(self, vals):
         # if vals.get('name', '/') == '/':
-        vals['name'] = self.env['ir.sequence'].next_by_code('TREQ') or '/'
+        vals['name'] = self.env['ir.sequence'].next_by_code('TREQ')
         return super(TravelRequest, self).create(vals)

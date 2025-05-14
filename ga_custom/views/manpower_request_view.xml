@@ -49,7 +49,7 @@
         </record>
 
 
-        <record id="seq_travel_req" model="ir.sequence">
+        <record id="seq_manpower_req" model="ir.sequence">
             <field name="name">Manpower Request</field>
             <field name="code">MNREQ</field>
             <field name="prefix">MAN-REQ/%(y)s/000</field>
