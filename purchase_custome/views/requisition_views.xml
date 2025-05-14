@@ -121,6 +121,7 @@
             <field name="arch" type="xml">
                     <search string="Filter views">
                         <!-- Define your filters here -->
+                        <field name="name" string="Number"/>
                         <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
                         <filter string="GA" name="requisition_ga" domain="[('category', '=', 'ga')]"/>
                         <filter string="IT" name="requisition_it" domain="[('category', '=', 'ut')]"/>
@@ -133,7 +134,7 @@
             <field name="name">purchase.requisition.tree.view</field>
             <field name="model">purchase.requisition</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree default_order="name desc">
                     <field name="name" string="Number"/>
                     <field name="category" string="Requisition Category"/>
                     <field name="purpose" string="Purpose"/>
