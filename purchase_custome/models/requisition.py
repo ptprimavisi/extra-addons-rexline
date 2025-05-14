@@ -1,6 +1,7 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
 from datetime import date, datetime
+import pytz
 
 ROMAWI_BULAN = {
     1: "I", 2: "II", 3: "III", 4: "IV",
@@ -75,6 +76,7 @@ class PurchaseRequisition(models.Model):
     it_id = fields.Many2one('it.request')
     ga_id = fields.Many2one('ga.request')
     date_confirm = fields.Date()
+    datetime_confirm = fields.Datetime()
     date_approved1 = fields.Date(compute="_compute_approved1")
     date_approved2 = fields.Date(compute="_compute_approved2")
     create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created")
@@ -268,11 +270,29 @@ class PurchaseRequisition(models.Model):
             'view_mode': 'tree,form',
         }
 
+    def datetime_c(self):
+        # Ambil datetime dari database (biasanya UTC)
+        if self.datetime_confirm:
+            datetime_utc = self.datetime_confirm  # record = instance dari model
+
+            # Set timezone lokal
+            tz = pytz.timezone('Asia/Jakarta')
+
+            # Konversi ke lokal timezone
+            datetime_local = datetime_utc.astimezone(tz)
+
+            # Format jika diperlukan
+            formatted = datetime_local.strftime('%d-%m-%Y %H:%M:%S')
+        else:
+            formatted = ''
+        return formatted
+
     def action_confirm(self):
         for line in self:
             req = self.env['purchase.requisition'].browse(int(line.id))
             req.write({'state': 'ready'})
             line.date_confirm = datetime.today()
+            line.datetime_confirm = fields.Datetime.now()
 
     def action_to_purchase(self):
         for line in self:

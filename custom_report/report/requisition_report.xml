@@ -129,7 +129,7 @@
                                                                 <thead>
                                                                     <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px; font-size: 12px;">Requested by</td></tr>
                                                                     <tr><td style="text-align: center; vertical-align: middle; height: 50px; border: 1px solid black; font-size: 18px; font-weight: bold; padding: 10px;">APPROVED</td></tr>
-                                                                    <tr><td style="text-align: center; border: 1px solid black; padding: 8px; font-size: 12px;"><t t-esc="doc.date_confirm"/></td></tr>
+                                                                    <tr><td style="text-align: center; border: 1px solid black; padding: 8px; font-size: 12px;"><t t-esc="doc.datetime_c() or ''"/></td></tr>
                                                                     <tr><td style="text-align: center; border: 1px solid black; padding: 8px; font-size: 12px;"><t t-esc="doc.employee_id.name or ''"/> - <t t-esc="doc.department_id.name or ''"/></td></tr>
                                                                 </thead>
                                                             </table>
@@ -139,7 +139,7 @@
                                                                 <thead>
                                                                     <tr><td style="text-align: center; border: 1px solid black; background-color: #e00732; color: white; padding: 8px; font-size: 12px;">Prepared and Reviewed by</td></tr>
                                                                     <tr><td style="text-align: center; vertical-align: middle; height: 50px; border: 1px solid black; font-size: 18px; font-weight: bold; padding: 10px;">APPROVED</td></tr>
-                                                                    <tr><td style="text-align: center; border: 1px solid black; padding: 8px; font-size: 12px;"><t t-esc="doc.date_confirm"/></td></tr>
+                                                                    <tr><td style="text-align: center; border: 1px solid black; padding: 8px; font-size: 12px;"><t t-esc="doc.datetime_c() or ''"/></td></tr>
                                                                     <tr><td style="text-align: center; border: 1px solid black; padding: 8px; font-size: 12px;"><t t-esc="doc.create_employee_id.name or ''"/> - <t t-esc="doc.create_employee_id.department_id.name or ''"/></td></tr>
                                                                 </thead>
                                                             </table>

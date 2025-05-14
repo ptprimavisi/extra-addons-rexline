@@ -18,6 +18,14 @@ class lead_line(models.Model):
     tax_id = fields.Many2many('account.tax', string='Taxes')
     is_under = fields.Boolean()
     is_approve = fields.Boolean(compute="_compute_approve")
+    currency_id = fields.Many2one('res.currency',compute="_compute_currency_id", string="Currency")
+
+    # @api.depends('lead_line_id.currency_id')
+    def _compute_currency_id(self):
+        for line in self:
+            line.currency_id = False
+            if line.lead_line_id.currency_id:
+                line.currency_id = line.lead_line_id.currency_id.id
 
     def _compute_approve(self):
         for line in self:

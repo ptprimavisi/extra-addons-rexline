@@ -626,8 +626,10 @@ class CrmLead(models.Model):
         for line in self:
             line.is_approve = False
             if hasattr(line, 'x_review_result') and hasattr(line, 'x_has_request_approval'):
-                if line.x_review_result and line.x_has_request_approval:
+                if line.x_review_result == 'approved' and line.x_has_request_approval:
                     line.is_approve = True
+            if not getattr(line, 'x_review_result', False) or not getattr(line, 'x_has_request_approval', False):
+                line.is_approve = True
 
     @api.depends('date_deadline')
     def _compute_warning(self):

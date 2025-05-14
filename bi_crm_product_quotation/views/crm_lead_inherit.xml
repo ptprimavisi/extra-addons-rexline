@@ -29,6 +29,7 @@
                     <field name="lead_product_ids" nolabel="1">
                         <tree editable="bottom" string="Products">
                             <field name="product_id"/>
+                            <field name="currency_id"/>
                             <field name="name"/>
                             <field name="product_uom_quantity"/>
                             <field name="product_uom"/>
@@ -36,10 +37,9 @@
                             <field name="margin" required="1" readonly="is_approve == False" groups="sale_custome.group_sales_custom"/>
                             <field name="is_approve" invisible="1" nolabel="1"/>
                             <field name="is_under" invisible="margin == 0 or margin > 50" readonly="is_approve == False" groups="sale_custome.group_sales_custom"/>
-                            <field name="price_unit" readonly="is_approve == False" groups="sale_custome.group_sales_custom"/>
+                            <field name="price_unit" groups="sale_custome.group_sales_custom"/>
                             <field name="tax_id" widget="many2many_tags"/>
                             <field name="product_uom_category_id" invisible="1"/>
-
                         </tree>
                     </field>
                 </page>
