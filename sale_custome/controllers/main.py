@@ -9,10 +9,52 @@ from requests.auth import HTTPBasicAuth
 import logging
 import pytz
 import datetime
+
+import json
+import logging
+from odoo import http
+from odoo.http import content_disposition, request
+# from odoo.addons.web.controllers.main import _serialize_exception
+from odoo.tools import html_escape
 import threading
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrderController(http.Controller):
+    @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'], csrf=False)
+    def get_report_xlsx(self, model, options, output_format, report_name, type_report, **kw):
+        uid = request.session.uid
+        report_obj = request.env[model].with_user(uid)
+        options = json.loads(options)
+        token = 'dummy-because-api-expects-one'
+        try:
+            response = request.make_response(
+                None,
+                headers=[
+                    ('Content-Type', 'application/vnd.ms-excel'),
+                    ('Content-Disposition', content_disposition(report_name + '.xlsx'))
+                ]
+            )
+            if type_report == 'report_mingguan':
+                report_obj.get_xlsx_report_mingguan(options, response)
+            elif type_report == 'report_bank':
+                report_obj.get_xlsx_report_bank(options, response)
+            elif type_report == 'report_bulanan':
+                report_obj.get_xlsx_report_bulanan(options, response)
+            elif type_report == 'report_rekap_mingguan':
+                report_obj.get_xlsx_report_rekap_mingguan(options, response)
+            # report_obj.get_xlsx_report(options, response)
+            response.set_cookie('fileToken', token)
+            return response
+        except Exception as e:
+            _logger.error("Error while generating report: %s", str(e))
+            se = _serialize_exception(e)
+            error = {
+                'code': 200,
+                'message': 'Odoo Server Error',
+                'data': se
+            }
+            return request.make_response(html_escape(json.dumps(error)))
     @http.route('/sale/get_inquiry', type='json', auth='public', website=True)
     def call_method(self, **kwargs):
         # Call the method of the Odoo model

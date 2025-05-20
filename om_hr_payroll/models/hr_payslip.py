@@ -675,7 +675,7 @@ class HrPayslip(models.Model):
                         while current_date <= date_to_obj:
                             today = current_date.strftime("%Y-%m-%d")
                             hari = current_date.strftime('%A')
-                            if payslip.contract_id.schedule_type_id.hari_id:
+                            if payslip.contract_id.schedule_type_id.hari_id and payslip.contract_id.contract_type_id.code != 'Freelance':
                                 master_hari = self.env['master.hari'].search(
                                     [('id', 'in', payslip.contract_id.schedule_type_id.hari_id.ids),
                                      ('name', '=', str(hari))])
@@ -739,6 +739,8 @@ class HrPayslip(models.Model):
                             [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                         gaji_net.amount = gaji_net.amount - abs_ded_amount
                         print(f'{int(abs_ded_amount)} -- {jumlah_tdk_absence}')
+                        test = f'amount = {int(abs_ded_amount)} -- jumlah tidak absen = {jumlah_tdk_absence}'
+                        raise UserError()
 
             pph = self.env['hr.payslip.line'].search(
                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH21'])])
