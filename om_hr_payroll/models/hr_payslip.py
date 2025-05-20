@@ -742,7 +742,7 @@ class HrPayslip(models.Model):
                         gaji_net.amount = gaji_net.amount - abs_ded_amount
                         print(f'{int(abs_ded_amount)} -- {jumlah_tdk_absence}')
                         test = f'amount = {int(abs_ded_amount)} -- jumlah tidak absen = {jumlah_tdk_absence} -- jumlah hari kerja {total_hari_kerja}'
-                        raise UserError(test)
+                        # raise UserError(test)
 
             pph = self.env['hr.payslip.line'].search(
                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH21'])])
