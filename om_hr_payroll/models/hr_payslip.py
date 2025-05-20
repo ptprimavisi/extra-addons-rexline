@@ -509,7 +509,7 @@ class HrPayslip(models.Model):
                                 [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                             gaji_net.write({'amount': gaji_net.amount - liness.amount})
             for slip_line in payslip.line_ids:
-                if slip_line.salary_rule_id.code == 'MALLSITE':
+                if slip_line.salary_rule_id.code == 'MALLSITE' and not slip_line.salary_rule_id.is_manual:
                     date_from = payslip.date_from  # Format: YYYY-MM-DD
                     date_to = payslip.date_to
                     jumlah_surat = 0
@@ -545,7 +545,7 @@ class HrPayslip(models.Model):
 
                     # raise UserError(meal_allowance)
 
-                if slip_line.salary_rule_id.code == 'STALLSITE':
+                if slip_line.salary_rule_id.code == 'STALLSITE' and not slip_line.salary_rule_id.is_manual:
                     date_from = payslip.date_from  # Format: YYYY-MM-DD
                     date_to = payslip.date_to
                     jumlah_surat = 0
@@ -588,7 +588,7 @@ class HrPayslip(models.Model):
                     #     absence_deduction.amount = abs_ded
                     # gaji_net.amount = gaji_net.amount - abs_ded
 
-                if slip_line.salary_rule_id.code == 'PARTIME':
+                if slip_line.salary_rule_id.code == 'PARTIME' and not slip_line.salary_rule_id.is_manual:
                     pt_amount = 0
                     pt_quantity = 0
                     date_from = payslip.date_from  # Format: YYYY-MM-DD
@@ -618,7 +618,7 @@ class HrPayslip(models.Model):
                     gaji_net.amount = pengurang
                     gaji_net.amount = gaji_net.amount + slip_line.total
 
-                if slip_line.salary_rule_id.code == 'OVT':
+                if slip_line.salary_rule_id.code == 'OVT' and not slip_line.salary_rule_id.is_manual:
                     sk_amount = 0
                     sk = self.env['surat.kerja.line'].search(
                         [('employee_id', '=', payslip.employee_id.id), ('sk_id.type', '=', 'overtime'),
@@ -687,9 +687,9 @@ class HrPayslip(models.Model):
                 if payslip.contract_id.ptkp_id:
                     if payslip.contract_id.ptkp_id.kategori_pph == 'a':
                         persentase = self.get_percentage(gaji_bruto, 'a')
-                    elif payslip.contract_id.pph_kategori.kategori == 'b':
+                    elif payslip.contract_id.ptkp_id.kategori_pph == 'b':
                         persentase = self.get_percentage(gaji_bruto, 'b')
-                    elif payslip.contract_id.pph_kategori.kategori == 'b':
+                    elif payslip.contract_id.ptkp_id.kategori_pph == 'c':
                         persentase = self.get_percentage(gaji_bruto, 'c')
                     amount = (persentase) * (gaji_bruto)
 
@@ -715,7 +715,7 @@ class HrPayslip(models.Model):
 
                 # Mendapatkan tanggal awal dan akhir tahun
                 tanggal_awal_tahun = tanggal.replace(month=1, day=1)
-                tanggal_akhir_tahun = tanggal.replace(month=12, day=31)
+                tanggal_akhir_tahun = tanggal.replace(month=11, day=30)
                 self._cr.execute(
                     "SELECT * FROM hr_payslip WHERE date_from >= '" + str(
                         tanggal_awal_tahun) + "' and date_to <= '" + str(
@@ -758,7 +758,9 @@ class HrPayslip(models.Model):
                     penghasilanKenaPajak = netto - payslip.contract_id.ptkp_id.nominal
 
                     # pph = self.env['hr.payslip.line'].search([('slip_id', '=', int(payslip.id)), ('code', 'in', ['PPH_21_BARU'])])
-                    # pph.write({'amount': penghasilanKenaPajak})
+                    # pph.wr
+                    #
+                    # ite({'amount': penghasilanKenaPajak})
                     if penghasilanKenaPajak < 60000000:
                         amount = (5 / 100) * penghasilanKenaPajak
                         penghasilanKenaPajak -= penghasilanKenaPajak
@@ -806,7 +808,7 @@ class HrPayslip(models.Model):
                         pphs_alw.write({'amount': result})
             for slip_line in payslip.line_ids:
                 # absence deduction
-                if slip_line.salary_rule_id.code == 'ABSDED':
+                if slip_line.salary_rule_id.code == 'ABSDED' and not slip_line.salary_rule_id.is_manual:
                     date_from_obj = datetime.strptime(str(payslip.date_from), "%Y-%m-%d")
                     date_to_obj = datetime.strptime(str(payslip.date_to), "%Y-%m-%d")
                     current_date = date_from_obj

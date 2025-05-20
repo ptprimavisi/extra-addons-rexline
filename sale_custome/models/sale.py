@@ -1486,10 +1486,11 @@ class InquirySales(models.Model):
             # line.mrp_production_count = 0
             if so:
                 mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
-                for mos in mo:
+                if mo :
                     task_line = self.env['inquiry.line.task'].search([('id', 'in', line.inquiry_line_task.ids)])
                     if task_line:
                         task_line.unlink()
+                for mos in mo:
                     new_line.create({
                         'inquiry_id': int(line.id),
                         'mo_id': int(mos.id),
@@ -1660,29 +1661,31 @@ class InquirySales(models.Model):
         for line in self:
             so = self.env['sale.order'].search(
                 [('opportunity_id', '=', line.opportunity_id.id), ('state', '=', 'sale')])
-            mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
-            sub_mo = self.env['mrp.production'].search([('id', 'in', mo._get_children().ids)])
+            mo_master = self.env['mrp.production'].search([('origin', '=', str(so.name))])
 
             id = []
-            if mo:
-                for mos in mo:
-                    id.append(int(mos.id))
-            if sub_mo:
-                for sub_mos in sub_mo:
-                    id.append(int(sub_mos.id))
-                    sub2_mo = self.env['mrp.production'].search([('id', 'in', sub_mos._get_children().ids)])
-                    if sub2_mo:
-                        for sub2_mos in sub2_mo:
-                            id.append(int(sub2_mos.id))
-                            sub3_mo = self.env['mrp.production'].search([('id', 'in', sub2_mos._get_children().ids)])
-                            if sub3_mo:
-                                for sub3_mos in sub3_mo:
-                                    id.append(int(sub3_mos.id))
-                                    sub4_mo = self.env['mrp.production'].search(
-                                        [('id', 'in', sub3_mos._get_children().ids)])
-                                    if sub4_mo:
-                                        for sub4_mos in sub4_mo:
-                                            id.append(int(sub4_mos.id))
+            if mo_master:
+                for mo in mo_master:
+                    sub_mo = self.env['mrp.production'].search([('id', 'in', mo._get_children().ids)])
+                    if mo:
+                        for mos in mo:
+                            id.append(int(mos.id))
+                    if sub_mo:
+                        for sub_mos in sub_mo:
+                            id.append(int(sub_mos.id))
+                            sub2_mo = self.env['mrp.production'].search([('id', 'in', sub_mos._get_children().ids)])
+                            if sub2_mo:
+                                for sub2_mos in sub2_mo:
+                                    id.append(int(sub2_mos.id))
+                                    sub3_mo = self.env['mrp.production'].search([('id', 'in', sub2_mos._get_children().ids)])
+                                    if sub3_mo:
+                                        for sub3_mos in sub3_mo:
+                                            id.append(int(sub3_mos.id))
+                                            sub4_mo = self.env['mrp.production'].search(
+                                                [('id', 'in', sub3_mos._get_children().ids)])
+                                            if sub4_mo:
+                                                for sub4_mos in sub4_mo:
+                                                    id.append(int(sub4_mos.id))
 
             result = {
                 "type": "ir.actions.act_window",

@@ -1,5 +1,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+import datetime
 
 
 class RequestPrice(models.Model):
@@ -188,18 +189,18 @@ class RequestPrice(models.Model):
                 if lines.product_id:
                     product = self.env['product.product'].search([('id', '=', lines.product_id.id)])
                     if product:
-                        if lines.cost_price == 0:
-                            raise UserError('Price cannot be 0.0')
-                        else:
-                            inquiry_line_detail = self.env['inquiry.line.detail'].search(
-                                [('inquiry_id', '=', line.inquiry_id.id), ('product_id', '=', int(product.id))])
-                            cost = lines.final_cost
-                            if lines.other_cost:
-                                sesudah_dibagi = lines.other_price / lines.quantity
-                                cost = lines.final_cost + sesudah_dibagi
-                            # else:
+                        # if lines.cost_price == 0:
+                        #     raise UserError('Price cannot be 0.0')
+                        # else:
+                        inquiry_line_detail = self.env['inquiry.line.detail'].search(
+                            [('inquiry_id', '=', line.inquiry_id.id), ('product_id', '=', int(product.id))])
+                        cost = lines.final_cost
+                        if lines.other_cost:
+                            sesudah_dibagi = lines.other_price / lines.quantity
+                            cost = lines.final_cost + sesudah_dibagi
+                        # else:
 
-                            inquiry_line_detail.write({'cost_price': cost})
+                        inquiry_line_detail.write({'cost_price': cost})
                         # bom = self.env['mrp.bom'].search([('id', '=', int(line.bom_id.id))])
                         # bom.write({
                         #     'request_state': False
@@ -211,6 +212,16 @@ class RequestPrice(models.Model):
                 else:
                     raise UserError('Product is empty')
             inquiry.action_update_cost()
+            user = self.env['res.users'].browse(self.env.uid)
+            inquiry.message_post(body=f'{user.name} Has made a price update')
+            inquiry.activity_schedule(
+                activity_type_id=4,
+                automated=False,
+                summary='Price Request has been updated',
+                note='Please Review',
+                user_id=int(lines.id),
+                date_deadline=datetime.today()
+            )
 
 
 class RequestPriceLine(models.Model):
