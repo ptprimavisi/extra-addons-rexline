@@ -671,7 +671,7 @@ class HrPayslip(models.Model):
                     current_date = date_from_obj
                     abs_ded_amount = 0
                     jumlah_tdk_absence = 0
-                    master_hari = 0
+                    total_hari_kerja = 0
                     if payslip.contract_id.schedule_type_id:
                         while current_date <= date_to_obj:
                             today = current_date.strftime("%Y-%m-%d")
@@ -681,7 +681,7 @@ class HrPayslip(models.Model):
                                     [('id', 'in', payslip.contract_id.schedule_type_id.hari_id.ids),
                                      ('name', '=', str(hari))])
                                 if master_hari:
-                                    master_hari += 1
+                                    total_hari_kerja += 1
                                     print(f'Available tgl {today} -- Available Hari {master_hari.name}')
                                     attendance = self.env['hr.attendance'].search(
                                         [('employee_id', '=', payslip.employee_id.id),
@@ -741,7 +741,7 @@ class HrPayslip(models.Model):
                             [('slip_id', '=', int(payslip.id)), ('code', 'in', ['NET'])])
                         gaji_net.amount = gaji_net.amount - abs_ded_amount
                         print(f'{int(abs_ded_amount)} -- {jumlah_tdk_absence}')
-                        test = f'amount = {int(abs_ded_amount)} -- jumlah tidak absen = {jumlah_tdk_absence} -- jumlah hari kerja {master_hari}'
+                        test = f'amount = {int(abs_ded_amount)} -- jumlah tidak absen = {jumlah_tdk_absence} -- jumlah hari kerja {total_hari_kerja}'
                         raise UserError(test)
 
             pph = self.env['hr.payslip.line'].search(
