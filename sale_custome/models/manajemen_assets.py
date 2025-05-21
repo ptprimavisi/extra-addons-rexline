@@ -122,6 +122,9 @@ class ManajemenAssets(models.Model):
     dec_expired = fields.Char(compute="_compute_decor")
     spec_type = fields.Selection([
         ('std', 'STD'),
+        ('med', 'MED'),
+        ('eng', 'ENG'),
+        ('adm', 'ADM'),
         ('hgh', 'HGH')], string='Spec Type')
     status = fields.Selection([
         ('active', 'Active'),
