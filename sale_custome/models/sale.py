@@ -1032,11 +1032,66 @@ class InquirySales(models.Model):
     date_additional = fields.Date()
     location_additional = fields.Text()
     members = fields.Text()
+    total_jumlah = fields.Float(compute="_compute_total_jumlah")
+    total_submitted = fields.Float(compute="_compute_total_submitted")
+    total_ifa = fields.Float(compute="_compute_total_ifa")
+    total_a = fields.Float(compute="_compute_total_a")
+    total_b = fields.Float(compute="_compute_total_b")
+    total_c = fields.Float(compute="_compute_total_c")
+    total_issue = fields.Float(compute="_compute_total_issue")
+    total_percentage = fields.Float(compute="_compute_total_percentage")
     attachment_ids = fields.One2many(
         'ir.attachment', 'res_id',
         domain=[('res_model', '=', 'sale.order')],
         string='Attachments'
     )
+
+    def _compute_total_jumlah(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_jumlah = sum(document.mapped('jumlah'))
+
+    def _compute_total_submitted(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_submitted = sum(document.mapped('submitted'))
+
+    def _compute_total_ifa(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_ifa = sum(document.mapped('ifa'))
+
+    def _compute_total_a(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_a = sum(document.mapped('a'))
+
+    def _compute_total_b(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_b = sum(document.mapped('b'))
+
+    def _compute_total_c(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_c = sum(document.mapped('c'))
+
+    def _compute_total_issue(self):
+        for line in self:
+            document = line.inquiry_document_ids
+            line.total_issue = sum(document.mapped('issue'))
+
+    def _compute_total_percentage(self):
+        for line in self:
+            line.total_percentage = 0
+            if line.total_jumlah:
+                submit = (line.total_submitted / line.total_jumlah) * 0.5
+                a = (line.total_a / line.total_jumlah) * 0.5
+                b = (line.total_b / line.total_jumlah) * 0.4
+                c = (line.total_c / line.total_jumlah) * 0.2
+                total = submit + a + b + c
+                final = total * 100
+                line.total_percentage = final
 
     @api.depends('due_date')
     def _compute_warning(self):
@@ -1486,7 +1541,7 @@ class InquirySales(models.Model):
             # line.mrp_production_count = 0
             if so:
                 mo = self.env['mrp.production'].search([('origin', '=', str(so.name))])
-                if mo :
+                if mo:
                     task_line = self.env['inquiry.line.task'].search([('id', 'in', line.inquiry_line_task.ids)])
                     if task_line:
                         task_line.unlink()
@@ -1677,7 +1732,8 @@ class InquirySales(models.Model):
                             if sub2_mo:
                                 for sub2_mos in sub2_mo:
                                     id.append(int(sub2_mos.id))
-                                    sub3_mo = self.env['mrp.production'].search([('id', 'in', sub2_mos._get_children().ids)])
+                                    sub3_mo = self.env['mrp.production'].search(
+                                        [('id', 'in', sub2_mos._get_children().ids)])
                                     if sub3_mo:
                                         for sub3_mos in sub3_mo:
                                             id.append(int(sub3_mos.id))
@@ -2103,6 +2159,39 @@ class InquiryLineDocument(models.Model):
     stage = fields.Char()
     source = fields.Char()
     inquiry_id = fields.Many2one('inquiry.inquiry')
+    dicipline_category = fields.Selection([
+        ('site_plan', 'SITE PLAN'),
+        ('workshop_building', 'WORKSHOP BUILDING'),
+        ('office_building', 'OFFICE BUILDING'),
+        ('fabrication_building', 'FABRICATION BUILDING'),
+        ('tyreshop_building', 'TYRESHOP BUILDING'),
+        ('mechanical', 'MECHANICAL'),
+        ('electrical_instrument', 'ELECTRICAL & INSTRUMENT'),
+        ('calculation', 'CALCULATION'),
+        ('technical_data_sheet', 'TECHNICAL DATA SHEET'),
+        ('approval_brand', 'APPROVAL BRAND'),
+        ('qc_document', 'QC DOCUMENT'),
+    ], string="Discipline Category")
+    jumlah = fields.Float()
+    submitted = fields.Float()
+    ifa = fields.Float()
+    a = fields.Float()
+    b = fields.Float()
+    c = fields.Float()
+    issue = fields.Float()
+    percentage = fields.Float(compute="_compute_percentage")
+
+    def _compute_percentage(self):
+        for line in self:
+            line.percentage = False
+            if line.jumlah:
+                submit = (line.submitted / line.jumlah) * 0.5
+                a = (line.a / line.jumlah) * 0.5
+                b = (line.b / line.jumlah) * 0.4
+                c = (line.c / line.jumlah) * 0.2
+                total = submit + a + b + c
+                final = total * 100
+                line.percentage = final
 
 
 class InquiryLineTask(models.Model):

@@ -180,11 +180,30 @@
                             <page string="Document Control" invisible="project_category == 'supply'" groups="sale_custome.project_custom,sale_custome.engineering_custom_group">
                                 <field name="inquiry_document_ids">
                                     <tree editable="bottom">
-                                        <field name="name" string="Description"/>
-                                        <field name="stage" string="Stage"/>
-                                        <field name="source" string="Source"/>
+                                        <field name="source" string="Sumber Laporan" widget="url" required="1"/>
+                                        <field name="dicipline_category" string="Dicipline Category" required="1"/>
+                                        <field name="jumlah" string="Jumlah"/>
+                                        <field name="submitted" string="Submitted"/>
+                                        <field name="ifa" string="IFA"/>
+                                        <field name="a" string="A"/>
+                                        <field name="b" string="B"/>
+                                        <field name="c" string="C"/>
+                                        <field name="issue" string="Issue for Information"/>
+                                        <field name="percentage" string="%"/>
                                     </tree>
                                 </field>
+                                <group col="10" class="oe_invoice_lines_tab">
+                                    <group colspan="2">
+                                        <field name="total_jumlah" string="Total Jumlah"/>
+                                        <field name="total_submitted" string="Total Submitted"/>
+                                        <field name="total_ifa" string="Total IFA"/>
+                                        <field name="total_a" string="Total A"/>
+                                        <field name="total_b" string="Total B"/>
+                                        <field name="total_c" string="Total C"/>
+                                        <field name="total_issue" string="Total Issue"/>
+                                        <field name="total_percentage" string="Total Persentase %"/>
+                                    </group>
+                                </group>
                             </page>
                             <page string="Task Line" invisible="project_category == 'supply'">
                                 <field name="inquiry_line_task" readonly="pic_akses == False">
