@@ -142,6 +142,7 @@
                     <field name="requisition_date" string="Requisition Date"/>
                     <field name="due_date" string="Due Date"/>
                     <field name="state" string="Stage"/>
+                    <field name="approval_status" string="Approval Status"/>
                 </tree>
             </field>
         </record>

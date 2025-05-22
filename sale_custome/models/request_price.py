@@ -206,11 +206,13 @@ class RequestPrice(models.Model):
                         #     'request_state': False
                         # })
                         rp = self.env['request.price'].search([('id', '=', int(line.id))])
-                        rp.write({'state': 'posted'})
+
                     else:
                         raise UserError('Product is empty')
                 else:
                     raise UserError('Product is empty')
+            # rp.write({'state': 'posted'})
+            line.state = 'posted'
             inquiry.action_update_cost()
             user = self.env['res.users'].browse(self.env.uid)
             inquiry.message_post(body=f'{user.name} Has made a price update')
@@ -219,8 +221,8 @@ class RequestPrice(models.Model):
                 automated=False,
                 summary='Price Request has been updated',
                 note='Please Review',
-                user_id=int(lines.id),
-                date_deadline=datetime.today()
+                user_id=int(inquiry.pic_user.id),
+                date_deadline=datetime.datetime.today()
             )
 
 

@@ -958,6 +958,7 @@ class CrmLead(models.Model):
 
 class InquirySales(models.Model):
     _name = 'inquiry.inquiry'
+    _description = 'Inquiry'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(readonly=True)
@@ -1880,9 +1881,9 @@ class InquirySales(models.Model):
                 line.opportunity_id.is_approve = False
             # if lead_line_detail:
             # if lead_line_detail:
-            for cek in line.inquiry_line_detail:
-                if cek.cost_price == 0:
-                    raise UserError('There is a material product price of 0 !!')
+            # for cek in line.inquiry_line_detail:
+            #     if cek.cost_price == 0:
+            #         raise UserError('There is a material product price of 0 !!')
             if line.project_category == 'project' or line.project_category == 'service':
                 lead_line_detail.unlink()
                 for line_detail in line.inquiry_line_detail:

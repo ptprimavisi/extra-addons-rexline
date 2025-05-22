@@ -81,6 +81,22 @@ class PurchaseRequisition(models.Model):
     date_approved2 = fields.Date(compute="_compute_approved2")
     create_employee_id = fields.Many2one('hr.employee', compute="_compute_employee_created")
     active = fields.Boolean(default=True)
+    approval_status = fields.Char(compute="_compute_approval")
+
+    def _compute_approval(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            approval = self.env['multi.approval'].search(
+                [('origin_ref', '=', origin_ref)],
+                order='create_date desc',
+                limit=1
+            )
+            line.approval_status = 'Nothing to approval'
+            if approval:
+                line.approval_status = approval.state
+
 
     @api.depends('create_uid')
     def _compute_employee_created(self):
