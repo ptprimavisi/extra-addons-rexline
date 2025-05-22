@@ -35,7 +35,7 @@
                     <field name="category_project"/>
                     <field name="process_to" invisible="1" />
                     <field name="pic_supply" domain="[('groups_id', 'in', group_ids)]" invisible="1"/>
-                    <field name="note_header" string="Header Note"/>
+                    <field name="note_header" string="Header Note" required="1"/>
                     <field name="date_deadline" string="Due Date Submission"
                            decoration-warning="warning_time == 'yellow'"
                            decoration-success="warning_time == 'green'"
@@ -48,6 +48,15 @@
                     <field name="status_estimate" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='description']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='probability']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_set_won_rainbowman']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='iap_enrich']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
@@ -94,6 +103,16 @@
                 </button>
             </field>
     </record>
+<!--    <record id="crm_lead_reach_inherith_view" model="ir.ui.view">-->
+<!--            <field name="name">crm.lead.reach.inherit.view</field>-->
+<!--            <field name="model">crm.lead</field>-->
+<!--            <field name="inherit_id" ref="crm_iap_enrich.crm_lead_view_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//button[@name='iap_enrich']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--    </record>-->
     <record id="inherit_crm_case_kanban_view_leads" model="ir.ui.view">
         <field name="name">crm.lead.kanban.inquiry_name</field>
         <field name="model">crm.lead</field>
