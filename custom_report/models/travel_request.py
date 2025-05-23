@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.fields import Date
+import pytz
 from odoo.exceptions import UserError
 from num2words import num2words
 import base64
@@ -24,16 +25,21 @@ class TravelRequestInherith(models.Model):
             approval_list = []
             if approval:
                 for lines in approval.line_ids:
-                    date_confirm = str(lines.write_date)
-                    dt = datetime.strptime(date_confirm, "%Y-%m-%d %H:%M:%S.%f")
+                    datetime_utc = lines.write_date  # record = instance dari model
 
-                    # Format ulang tanpa milidetik
-                    result = dt.strftime("%Y-%m-%d %H:%M:%S")
+                    # Set timezone lokal
+                    tz = pytz.timezone('Asia/Jakarta')
+
+                    # Konversi ke lokal timezone
+                    datetime_local = datetime_utc.astimezone(tz)
+
+                    # Format jika diperlukan
+                    formatted = datetime_local.strftime('%d-%m-%Y %H:%M:%S')
                     approval_list.append({
                         'name': str(lines.name),
                         'status': str(lines.state),
                         'users': str(lines.user_id.name),
-                        'date': str(result),
+                        'date': str(formatted),
                     })
             return approval_list
 
