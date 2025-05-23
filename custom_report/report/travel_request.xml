@@ -2,14 +2,15 @@
     <data>
         <record id="action_travel_request" model="ir.actions.report">
             <field name="name">Print Travel Request</field>
-            <field name="model">crm.lead</field>
+            <field name="model">travel.request</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">custom_report.template_report_crm</field>
-            <field name="report_file">custom_report.template_report_crm</field>
+            <field name="report_name">custom_report.template_report_travel</field>
+            <field name="report_file">custom_report.template_report_travel</field>
             <field name="print_report_name">'%s - %s' % ('CRM', object.inquiry_name)</field>
         </record>
-        <template id="template_report_crm">
+        <template id="template_report_travel">
             <t t-call="web.html_container">
+                <h1>Content</h1>
             </t>
         </template>
     </data>

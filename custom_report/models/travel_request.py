@@ -13,5 +13,5 @@ class TravelRequestInherith(models.Model):
 
     def action_print(self):
         for line in self:
-            return self.env.ref('custom_report.action_report_travel_request').with_context(
+            return self.env.ref('custom_report.action_travel_request').with_context(
                 paperformat=4, landscape=False).report_action(self)
