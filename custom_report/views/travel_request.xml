@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="view_travel_request_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.travel.request.print</field>
+            <field name="model">travel.request</field>
+            <field name="inherit_id" ref="ga_custom.travel_request_form_view"/>
+            <field name="arch" type="xml">
+                <button name="action_confirm" position="after">
+                    <button name="action_print" string="Print" type="object"/>
+                </button>
+            </field>
+        </record>
+    </data>
+</odoo>

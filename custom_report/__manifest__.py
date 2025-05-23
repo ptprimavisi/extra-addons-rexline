@@ -10,6 +10,7 @@
         'views/crm_lead.xml',
         'report/report_invoice.xml',
         'views/sale_order.xml',
+        'views/travel_request.xml',
         'report/report_so.xml',
         'report/report_quotation.xml',
         'report/mrf_report.xml',
@@ -17,6 +18,7 @@
         'report/inquiry_report.xml',
         'report/purchase_order.xml',
         'report/crm_report.xml',
+        'report/travel_request.xml',
     ],
     'assets': {
         'web.assets_backend': [

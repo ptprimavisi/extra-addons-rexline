@@ -18,14 +18,44 @@ class HrEmployee(models.Model):
                     "id": int(line.id),
                     "email": line.work_email
                 }
-                requests.post(url, headers=headers, data=json.dumps(data))
+                try:
+                    response = requests.post(url, headers=headers, data=json.dumps(data), timeout=10)
+
+                    if response.status_code == 200:
+                        print("Berhasil:", response.json())
+                    else:
+                        print(f"Gagal. Status code: {response.status_code}, Response: {response.text}")
+
+                except requests.exceptions.ConnectTimeout:
+                    print("Koneksi ke server timeout. Cek koneksi internet atau apakah server aktif.")
+
+                except requests.exceptions.ConnectionError:
+                    print("Tidak bisa terhubung ke server. Cek URL atau koneksi jaringan.")
+
+                except requests.exceptions.RequestException as e:
+                    print("Terjadi error lain saat mengirim request:", e)
             else:
                 if line.private_email:
                     data = {
                         "id": int(line.id),
                         "email": line.private_email
                     }
-                    requests.post(url, headers=headers, data=json.dumps(data))
+                    try:
+                        response = requests.post(url, headers=headers, data=json.dumps(data), timeout=10)
+
+                        if response.status_code == 200:
+                            print("Berhasil:", response.json())
+                        else:
+                            print(f"Gagal. Status code: {response.status_code}, Response: {response.text}")
+
+                    except requests.exceptions.ConnectTimeout:
+                        print("Koneksi ke server timeout. Cek koneksi internet atau apakah server aktif.")
+
+                    except requests.exceptions.ConnectionError:
+                        print("Tidak bisa terhubung ke server. Cek URL atau koneksi jaringan.")
+
+                    except requests.exceptions.RequestException as e:
+                        print("Terjadi error lain saat mengirim request:", e)
         return super(HrEmployee, self).write(vals)
 
     def action_sync_employee(self):

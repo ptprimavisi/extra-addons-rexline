@@ -32,7 +32,7 @@
                                 <field name="saldo" readonly="1"/>
                                 <field name="saldo" invisible="1"/>
                                 <field name="source_account" readonly="1"/>
-                                <field name="date_journal" string="Accounting Date" required="1"/>
+                                <field name="date_journal" string="Accounting Date" required="state == 'confirm'" groups="sale_custome.accounting_custom_group"/>
                             </group>
                         </group>
                         <notebook>

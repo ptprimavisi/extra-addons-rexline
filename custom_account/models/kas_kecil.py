@@ -75,6 +75,12 @@ class PermintaanDana(models.Model):
     description = fields.Text()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     date_journal = fields.Date()
+    finance_state = fields.Selection([
+        ('no', 'No Response'),
+        ('waiting', 'Waiting Confirmation'),
+        ('approve', 'Approve'),
+        ('refused', 'Refused'),
+    ], default="no")
 
     def action_print_report(self):
         for line in self:
@@ -278,6 +284,9 @@ class PermintaanDana(models.Model):
 
     def action_transfer(self):
         for line in self:
+            if line.finance_state != 'approve':
+                raise UserError('Please change field Payment Response to "Approve" first ')
+                exit()
             if not line.date_journal:
                 raise UserError('Tanggal journal tidak boleh kosong!')
                 exit()

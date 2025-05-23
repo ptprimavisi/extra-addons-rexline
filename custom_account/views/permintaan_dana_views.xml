@@ -105,16 +105,17 @@
                                 <field name="description" required="1" readonly="state == 'transfer'"/>
                                 <field name="bank_note" required="1"/>
                                 <field name="realisasi_status" readonly="1"/>
+                                <field name="finance_state" string="Finance Response" groups="sale_custome.accounting_custom_group"/>
                             </group>
                             <group>
                                 <field name="date_request" required="1" readonly="state == 'transfer'"/>
                                 <field name="saldo" string="Saldo" readonly="1"/>
-                                <field name="manager_approve" readonly="1"/>
-                                <field name="gm_approve" readonly="1"/>
-                                <field name="coo_approve" readonly="1"/>
+                                <field name="manager_approve" readonly="1" invisible="1"/>
+                                <field name="gm_approve" readonly="1" invisible="1"/>
+                                <field name="coo_approve" readonly="1" invisible="1"/>
                                 <field name="source_account" groups="sale_custome.accounting_custom_group" readonly="state == 'transfer'"/>
                                 <field name="journal_id" groups="sale_custome.accounting_custom_group" readonly="state == 'transfer'"/>
-                                <field name="date_journal" string="Accounting Date" required="1"/>
+                                <field name="date_journal" string="Accounting Date" required="state == 'confirm'" groups="sale_custome.accounting_custom_group"/>
                             </group>
                         </group>
                         <notebook>
@@ -219,6 +220,12 @@
                             decoration-danger="realisasi_status == 'To Realisasi'"
                             decoration-warning="realisasi_status == 'Draft Realisasi'"
                             decoration-success="realisasi_status == 'Realisasi'"
+                            widget="badge"
+                            optional="show"/>
+                    <field name="finance_state" string="Finance Response"
+                            decoration-warning="finance_state == 'waiting'"
+                            decoration-success="finance_state == 'approve'"
+                            decoration-danger="finance_state == 'refused'"
                             widget="badge"
                             optional="show"/>
                 </tree>
