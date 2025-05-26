@@ -7,8 +7,10 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                         <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_mark_done" string="Confirm" type="object" groups="sale_custome.hr_ga_custom_group,ga_custom.ga_custom_groups" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
+                        <button name="action_reset" string="Reset to Draft" type="object" invisible="id == False or state in ['draft', 'done']"/>
 <!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
                     </header>
                     <sheet>
@@ -18,22 +20,25 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="project_name" required="1"/>
-                            <field name="project_location" required="1"/>
-                            <field name="date_request"/>
-                            <field name="date_requirement" string="Date of Requirement" required="1"/>
+                            <field name="project_name" required="1" readonly="state == 'done'"/>
+                            <field name="project_location" required="1" readonly="state == 'done'"/>
+                            <field name="date_request" readonly="state == 'done'"/>
+                            <field name="date_requirement" string="Date of Requirement" required="1" readonly="state == 'done'"/>
                         </group>
                         <notebook>
                             <page string="Manpower Lines">
                                 <field name="manpower_ids" readonly="state == 'done'">
                                     <tree editable="bottom">
                                         <field name="position_id" required="1"/>
-                                        <field name="required_qty"/>
-                                        <field name="replacement"/>
-                                        <field name="year_required"/>
-                                        <field name="day_required"/>
-                                        <field name="existing_required"/>
+                                        <field name="required_qty" required="1"/>
+                                        <field name="hr_feedback" string="HR Feedback" readonly="is_hr == False"/>
+                                        <field name="replacement" string="Replacement or New" required="1"/>
+<!--                                        <field name="year_required"/>-->
+                                        <field name="day_required" required="1"/>
+                                        <field name="existing_required" required="1"/>
                                         <field name="remark"/>
+                                        <field name="state" string="Status" readonly="is_hr == False"/>
+                                        <field name="is_hr" column_invisible="1"/>
                                     </tree>
                                 </field>
                             </page>

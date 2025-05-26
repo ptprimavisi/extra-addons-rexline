@@ -12,10 +12,18 @@ class ManpowerRequest(models.Model):
     date_request = fields.Date(default=lambda self: fields.Datetime.today())
     date_requirement = fields.Date()
     manpower_ids = fields.One2many('manpower.request.line', 'request_id')
+    is_hr = fields.Boolean(compute="_compute_is_hr")
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('confirm', 'Process'),
         ('done', 'Done')
     ], default='draft')
+
+    def _compute_is_hr(self):
+        for line in self:
+            line.is_hr = False
+            if self.env.user.has_group('sale_custome.hr_ga_custom_group') or self.env.user.has_group('ga_custom.ga_custom_groups'):
+                line.is_hr = True
 
     @api.model
     def create(self, vals):
@@ -25,7 +33,15 @@ class ManpowerRequest(models.Model):
 
     def action_confirm(self):
         for line in self:
+            line.state = 'confirm'
+
+    def action_mark_done(self):
+        for line in self:
             line.state = 'done'
+
+    def action_reset(self):
+        for line in self:
+            line.state = 'draft'
 
 
 class ManpowerRequestLine(models.Model):
@@ -33,12 +49,21 @@ class ManpowerRequestLine(models.Model):
 
     position_id = fields.Many2one('manpower.category')
     required_qty = fields.Float()
-    replacement = fields.Char()
+    hr_feedback = fields.Char()
+    replacement = fields.Selection([
+        ('new', 'New Manpower'),
+        ('replacement', 'Replacement'),
+    ], default='new')
     year_required = fields.Float()
     day_required = fields.Float()
     existing_required = fields.Float()
     remark = fields.Char()
     request_id = fields.Many2one('manpower.request')
+    is_hr = fields.Boolean(related="request_id.is_hr")
+    state = fields.Selection([
+        ('process', 'On Process'),
+        ('done', 'Done'),
+    ], default='process')
 
 
 class ManpowerCategory(models.Model):

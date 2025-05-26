@@ -19,6 +19,7 @@ class TravelRequest(models.Model):
     tickets = fields.Char()
     hotels = fields.Char()
     other = fields.Char()
+    is_hr = fields.Boolean(compute="_compute_is_hr")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done')
@@ -27,6 +28,12 @@ class TravelRequest(models.Model):
     def action_confirm(self):
         for line in self:
             line.state = 'done'
+
+    def _compute_is_hr(self):
+        for line in self:
+            line.is_hr = False
+            if self.env.user.has_group('sale_custome.hr_ga_custom_group') or self.env.user.has_group('ga_custom.ga_custom_groups'):
+                line.is_hr = True
 
     @api.onchange('employee_id')
     def onchange_employee(self):
