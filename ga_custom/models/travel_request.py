@@ -24,6 +24,7 @@ class TravelRequest(models.Model):
         ('draft', 'Draft'),
         ('done', 'Done')
     ], default='draft')
+    description = fields.Text()
 
     def action_confirm(self):
         for line in self:

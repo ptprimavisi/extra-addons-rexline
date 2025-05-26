@@ -42,6 +42,7 @@
                                     <field name="tickets" />
                                     <field name="hotels" />
                                     <field name="other" />
+                                    <field name="description" string="Description" />
                                 </group>
                             </page>
                         </notebook>
