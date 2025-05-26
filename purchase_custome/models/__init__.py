@@ -1,1 +1,1 @@
-from . import purchase, requisition, multy_approval
+from . import purchase, requisition, multy_approval, stock
