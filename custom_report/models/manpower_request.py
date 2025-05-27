@@ -12,6 +12,10 @@ import re
 class ManpowerRequestInherit(models.Model):
     _inherit = 'manpower.request'
 
+    def format_date(self,date):
+        show = date.date_order.strftime('%d-%m-%Y')
+        return show
+
     def approval_data(self):
         for line in self:
             model_name = self._name
