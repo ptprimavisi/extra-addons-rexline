@@ -13,7 +13,8 @@ class ManpowerRequestInherit(models.Model):
     _inherit = 'manpower.request'
 
     def format_date(self,date):
-        show = date.date_order.strftime('%d-%m-%Y')
+        date_form = date
+        show = date_form.strftime('%d-%m-%Y')
         return show
 
     def approval_data(self):
