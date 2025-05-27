@@ -6,7 +6,7 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">custom_report.template_report_travel</field>
             <field name="report_file">custom_report.template_report_travel</field>
-            <field name="print_report_name">'%s - %s' % ('CRM', object.name)</field>
+            <field name="print_report_name">'%s' % (object.name)</field>
         </record>
         <template id="template_report_travel">
             <t t-call="web.html_container">
@@ -20,7 +20,7 @@
                            <t t-esc="docs.name or 'Unknow'"/>
                         </h4>
                     </div>
-                    <br></br>
+                    <br/>
                     <div class="page" style="font-family: Calibri, sans-serif; ">
                         <div class="row">
                             <div class="col col-6">
@@ -28,15 +28,15 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: left; width: 40%; padding-bottom: 15px; color: black;">Employee name</th>
-                                            <td  style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.employee_id.name"/></td>
+                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.employee_id.name"/></td>
                                         </tr>
                                         <tr>
                                             <th style="text-align: left; width: 40%; padding-bottom: 15px; color: black;">Travel purpose</th>
-                                            <td  style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.purpose"/></td>
+                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.purpose"/></td>
                                         </tr>
                                         <tr>
                                             <th style="text-align: left; width: 40%; padding-bottom: 15px; color: black;">SO Number (if any)</th>
-                                            <td  style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.so_number"/></td>
+                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.so_number"/></td>
                                         </tr>
                                     </thead>
                                 </table>
@@ -46,22 +46,22 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: left; width: 40%; padding-bottom: 15px; color: black;">Department</th>
-                                            <td  style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.department_id.name"/></td>
+                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.department_id.name"/></td>
                                         </tr>
                                         <tr>
                                             <th style="text-align: left; width: 40%; padding-bottom: 15px; color: black;">Destination</th>
-                                            <td  style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.destination"/></td>
+                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.destination"/></td>
                                         </tr>
                                         <tr>
                                             <th style="text-align: left; width: 40%; padding-bottom: 15px; color: black;">Request Date</th>
-                                            <td  style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.request_date"/></td>
+                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.request_date"/></td>
                                         </tr>
                                     </thead>
                                 </table>
                             </div>
                         </div>
 
-                        <br></br>
+                        <br/>
                         <div class="row">
                             <div class="col col-4">
                                 <p><strong>From : <t t-esc="doc.dest_from"/></strong></p>
@@ -69,7 +69,7 @@
                             <div class="col col-4"><p><strong>To : <t t-esc="doc.dest_to"/></strong></p></div>
                             <div class="col col-4"><p><strong>Days : <t t-esc="doc.days"/></strong></p></div>
                         </div>
-                        <br></br>
+                        <br/>
                         <table class="table table-bordered">
                             <tbody>
                                 <tr style="border: 1.5px solid black;">
@@ -80,7 +80,7 @@
                                 <tr style="border: 1.5px solid black;">
                                     <td style="border: 1.5px solid black;">
                                         <strong>Estimated budget.</strong>
-                                        <br></br>
+                                        <br/>
                                         <table class="table table-bordered">
                                             <tbody>
                                                 <tr style="border: 1.5px solid black;">
@@ -115,13 +115,21 @@
                                                         <t t-esc="doc.other"/>
                                                     </td>
                                                 </tr>
+                                                <tr style="border: 1.5px solid black;">
+                                                    <td style="border: 1.5px solid black; width: 30%; padding: 15px;">
+                                                        Description
+                                                    </td>
+                                                    <td style="border: 1.5px solid black; padding: 15px;">
+                                                        <t t-esc="doc.description"/>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <br></br>
+                        <br/>
                         <div class="container">
                             <div class="row text-center">
                                 <t t-foreach="docs.approval_data()[0:4]" t-as="lines">
@@ -154,7 +162,7 @@
                                 </t>
                             </div>
                         </div>
-                        <br></br>
+                        <br/>
                         <div class="container">
                             <div class="row justify-content-center text-center">
                                 <t t-foreach="docs.approval_data()[4:]" t-as="lines">

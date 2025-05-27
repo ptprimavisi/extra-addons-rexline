@@ -22,18 +22,28 @@ class TravelRequest(models.Model):
     is_hr = fields.Boolean(compute="_compute_is_hr")
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('process', 'On Process'),
         ('done', 'Done')
     ], default='draft')
     description = fields.Text()
 
     def action_confirm(self):
         for line in self:
+            line.state = 'process'
+
+    def action_mark_done(self):
+        for line in self:
             line.state = 'done'
+
+    def action_reset_to_draft(self):
+        for line in self:
+            line.state = 'draft'
 
     def _compute_is_hr(self):
         for line in self:
             line.is_hr = False
-            if self.env.user.has_group('sale_custome.hr_ga_custom_group') or self.env.user.has_group('ga_custom.ga_custom_groups'):
+            if self.env.user.has_group('sale_custome.hr_ga_custom_group') or self.env.user.has_group(
+                    'ga_custom.ga_custom_groups'):
                 line.is_hr = True
 
     @api.onchange('employee_id')

@@ -9,7 +9,7 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                         <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
-                        <button name="action_mark_done" string="Confirm" type="object" groups="sale_custome.hr_ga_custom_group,ga_custom.ga_custom_groups" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
+                        <button name="action_mark_done" string="Mark as Done" type="object" groups="sale_custome.hr_ga_custom_group,ga_custom.ga_custom_groups" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
                         <button name="action_reset" string="Reset to Draft" type="object" invisible="id == False or state in ['draft', 'done']"/>
 <!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
                     </header>

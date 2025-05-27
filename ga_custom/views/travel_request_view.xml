@@ -8,8 +8,10 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,process,done"/>
                         <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_mark_done" string="Mark as Done" type="object" groups="sale_custome.hr_ga_custom_group,ga_custom.ga_custom_groups" class="oe_highlight" invisible="id == False or state != 'process'"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="id == False or state in ['draft', 'process']"/>
 <!--                  <button name="action_create_quotation" string="Create Quotation" type="object" invisible="state != 'to_purchase' or is_purchase == False or id == False or state == 'cancel'"/>&ndash;&gt;-->
                     </header>
                     <sheet>
@@ -20,29 +22,29 @@
                         </div>
                         <group>
                             <group>
-                                <field name="employee_id" required="1"/>
-                                <field name="purpose" string="Travel Purpose" required="1"/>
-                                <field name="so_number" string="SO Number"/>
-                                <field name="dest_from" string="From" required="1"/>
-                                <field name="dest_to" string="To" required="1"/>
+                                <field name="employee_id" required="1" readonly="state == 'done'"/>
+                                <field name="purpose" string="Travel Purpose" required="1" readonly="state == 'done'"/>
+                                <field name="so_number" string="SO Number" readonly="state == 'done'"/>
+                                <field name="dest_from" string="From" required="1" readonly="state == 'done'"/>
+                                <field name="dest_to" string="To" required="1" readonly="state == 'done'"/>
                             </group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <group>
                                 <field name="department_id" required="1" readonly="1"/>
-                                <field name="department_id" required="1" invisible="1"/>
-                                <field name="destination" required="1"/>
+                                <field name="department_id" required="1" invisible="1" readonly="state == 'done'"/>
+                                <field name="destination" required="1"  readonly="state == 'done'"/>
                                 <field name="request_date" required="1" readonly="1"/>
-                                <field name="days" required="1"/>
+                                <field name="days" required="1" readonly="state == 'done'"/>
                             </group>
 
                         </group>
                         <notebook>
                             <page string="Estimated Budget">
                                 <group string="Type of expense" name="type_expense" priority="1">
-                                    <field name="tickets" />
-                                    <field name="hotels" />
-                                    <field name="other" />
-                                    <field name="description" string="Description" />
+                                    <field name="tickets" readonly="state == 'done'"/>
+                                    <field name="hotels" readonly="state == 'done'"/>
+                                    <field name="other" readonly="state == 'done'"/>
+                                    <field name="description" string="Description" readonly="state == 'done'"/>
                                 </group>
                             </page>
                         </notebook>
