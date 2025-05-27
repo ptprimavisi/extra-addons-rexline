@@ -29,6 +29,7 @@
                             <page string="Manpower Lines">
                                 <field name="manpower_ids" readonly="state == 'done'">
                                     <tree editable="bottom">
+                                        <field name="division_id" string="Division" required="1"/>
                                         <field name="position_id" required="1"/>
                                         <field name="required_qty" required="1"/>
                                         <field name="hr_feedback" string="HR Feedback" readonly="is_hr == False"/>

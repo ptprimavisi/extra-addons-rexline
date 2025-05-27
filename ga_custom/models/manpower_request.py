@@ -47,6 +47,7 @@ class ManpowerRequest(models.Model):
 class ManpowerRequestLine(models.Model):
     _name = 'manpower.request.line'
 
+    division_id = fields.Many2one('manpower.division')
     position_id = fields.Many2one('manpower.category')
     required_qty = fields.Float()
     hr_feedback = fields.Char()
@@ -68,5 +69,11 @@ class ManpowerRequestLine(models.Model):
 
 class ManpowerCategory(models.Model):
     _name = 'manpower.category'
+
+    name = fields.Char()
+
+
+class ManpowerDevision(models.Model):
+    _name = 'manpower.division'
 
     name = fields.Char()

@@ -53,6 +53,40 @@ class ManpowerRequestInherit(models.Model):
             # test = self.approval_data()
             # print(test)
             # exit()
+            # manpower_line = self.manpower_line()
+            # print(manpower_line)
+            # exit()
             return self.env.ref('custom_report.action_manpower_request').with_context(
                 paperformat=4, landscape=False).report_action(self)
+
+    def manpower_line(self):
+        result = {}
+        for line in self.manpower_ids:
+            division_name = line.division_id.name
+            position_name = line.position_id.name
+            required_qty = line.required_qty
+            hr_feedback = line.hr_feedback
+            replacement = line.replacement
+            day_required = line.day_required
+            existing_required = line.existing_required
+            remark = line.remark
+            state = line.state
+
+            if division_name not in result:
+                result[division_name] = []
+
+            result[division_name].append({
+                "position_name": position_name,
+                "required_qty": required_qty,
+                "hr_feedback": hr_feedback,
+                "replacement": replacement,
+                "day_required": day_required,
+                "existing_required": existing_required,
+                "remark": remark,
+                "state": state,
+            })
+        return result
+
+
+
 
