@@ -9,6 +9,7 @@
         "wizard/count_quotation_views.xml",
         "views/payment_request_views.xml",
         "views/stock_quant.xml",
+        "views/asset_borrowing_view.xml",
         # "views/stock_picking_views.xml",
         "wizard/purchase_order_wizard.xml",
         "report/report.xml",

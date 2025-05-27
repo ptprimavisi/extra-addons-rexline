@@ -1,5 +1,4 @@
 <odoo>
-<!--    <menuitem id="requisition_root" name="Purchase Requisition" sequence="10"/>-->
     <data>
         <record id="payment_request_form_view" model="ir.ui.view">
             <field name="name">payment.request.form.view</field>
