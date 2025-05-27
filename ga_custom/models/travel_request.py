@@ -48,3 +48,11 @@ class TravelRequest(models.Model):
         # if vals.get('name', '/') == '/':
         vals['name'] = self.env['ir.sequence'].next_by_code('TREQ')
         return super(TravelRequest, self).create(vals)
+
+
+class HrEmployeeInherit(models.Model):
+    _inherit = 'hr.employee'
+
+    bank_name = fields.Char()
+    bank_number = fields.Char()
+    account_holder = fields.Char()
