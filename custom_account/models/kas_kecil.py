@@ -85,9 +85,9 @@ class PermintaanDana(models.Model):
 
     def action_print_report(self):
         for line in self:
-            data = self.approval_data()
-            print(data)
-            exit()
+            # data = self.approval_data()
+            # print(data)
+            # exit()
             # raise UserError(line.tax_list)
             return self.env.ref('custom_account.action_report_advance_request').with_context(
                 paperformat=4, landscape=False).report_action(self)
@@ -327,7 +327,7 @@ class PermintaanDana(models.Model):
 
             approval_list = [
                 {
-                    'name': "Prepared",
+                    'name': "Prepared by,",
                     'status': str(status),
                     'users': str(line.employee_id.name),
                     'date': str(date_confirm),
