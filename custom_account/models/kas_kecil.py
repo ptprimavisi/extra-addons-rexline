@@ -122,6 +122,16 @@ class PermintaanDana(models.Model):
     gm_approve = fields.Boolean(compute="_compute_gm_approve")
     coo_approve = fields.Boolean(compute="_compute_coo_approve")
 
+    @api.onchange('employee_id')
+    def onchage_employee(self):
+        for line in self:
+            line.bank_note = False
+            if line.employee_id:
+                bank_name = line.employee_id.bank_name or ''
+                bank_number = line.employee_id.bank_number or ''
+                account_holder = line.employee_id.account_holder or ''
+                line.bank_note = f"{bank_name} {bank_number} {account_holder}"
+
     def _compute_manager_approve(self):
         for line in self:
             model_name = self._name
