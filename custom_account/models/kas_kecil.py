@@ -3,6 +3,7 @@ from abc import ABC
 from odoo import models, api, fields
 from datetime import datetime
 from odoo.exceptions import UserError
+import pytz
 
 
 class JobTittleGM(models.Model):
@@ -84,6 +85,9 @@ class PermintaanDana(models.Model):
 
     def action_print_report(self):
         for line in self:
+            data = self.approval_data()
+            print(data)
+            exit()
             # raise UserError(line.tax_list)
             return self.env.ref('custom_account.action_report_advance_request').with_context(
                 paperformat=4, landscape=False).report_action(self)
@@ -121,6 +125,7 @@ class PermintaanDana(models.Model):
     manager_approve = fields.Boolean(compute="_compute_manager_approve")
     gm_approve = fields.Boolean(compute="_compute_gm_approve")
     coo_approve = fields.Boolean(compute="_compute_coo_approve")
+    date_confirm = fields.Datetime()
 
     @api.onchange('employee_id')
     def onchage_employee(self):
@@ -291,6 +296,62 @@ class PermintaanDana(models.Model):
                         raise UserError('description and amount is mandatory field!')
             self.message_post(body="This document has been confirm.")
             line.state = 'confirm'
+            line.date_confirm = fields.Datetime.now()
+
+    def format_datetime(self, datetimes):
+        tz = pytz.timezone('Asia/Jakarta')
+
+        # Konversi ke lokal timezone
+        datetime_local = datetimes.astimezone(tz)
+
+        # Format jika diperlukan
+        formatted = datetime_local.strftime('%d-%m-%Y %H:%M:%S')
+        return formatted
+
+    def approval_data(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            approval = self.env['multi.approval'].search(
+                [('origin_ref', '=', origin_ref)],
+                order='create_date desc',
+                limit=1
+            )
+            status = ''
+            date_confirm = ''
+            if line.date_confirm:
+                date_confirm = self.format_datetime(line.date_confirm)
+            if line.state != 'draft':
+                status = 'Approved'
+
+            approval_list = [
+                {
+                    'name': "Prepared",
+                    'status': str(status),
+                    'users': str(line.employee_id.name),
+                    'date': str(date_confirm),
+                },
+                {
+                    'name': "PIC",
+                    'status': str(status),
+                    'users': str(line.user_id.name),
+                    'date': str(date_confirm),
+                }
+            ]
+            if approval:
+                for lines in approval.line_ids:
+                    datetime_utc = lines.write_date  # record = instance dari model
+
+                    # Set timezone lokal
+                    formatted = self.format_datetime(datetime_utc)
+                    approval_list.append({
+                        'name': str(lines.name),
+                        'status': str(lines.state),
+                        'users': str(lines.user_id.name),
+                        'date': str(formatted),
+                    })
+            return approval_list
 
     def action_transfer(self):
         for line in self:

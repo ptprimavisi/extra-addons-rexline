@@ -77,34 +77,34 @@
                                     <table class="table" style="width: 80%; border-collapse: collapse;  font-size: 12px;">
                                         <tbody>
                                             <tr>
-                                            <td style="text-align: center; height: 10px; border: 1px solid black;" colspan="3"><strong>REQUESTER</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align: center; width: 33%; height: 15px; border: 1px solid black;">Prepared by,</td>
-                                            <td style="text-align: center; width: 34%; height: 15px; border: 1px solid black;">PIC</td>
-                                            <td style="text-align: center; width: 33%; height: 15px; border: 1px solid black;">Manager</td>
-                                        </tr>
-                                         <tr>
-                                            <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
-                                                <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
-                                            </td>
-                                            <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
-                                                <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
-                                            </td>
-                                            <t t-if="docs.manager_approve">
+                                                <td style="text-align: center; height: 10px; border: 1px solid black;" colspan="3"><strong>REQUESTER</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align: center; width: 33%; height: 15px; border: 1px solid black;">Prepared by,</td>
+                                                <td style="text-align: center; width: 34%; height: 15px; border: 1px solid black;">PIC</td>
+                                                <td style="text-align: center; width: 33%; height: 15px; border: 1px solid black;">Manager</td>
+                                            </tr>
+                                             <tr>
                                                 <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
                                                     <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
                                                 </td>
-                                            </t>
-                                            <t t-else="">
-                                                <td style="text-align: center; height: 80px; border: 1px solid black;"/>
-                                            </t>
-                                        </tr>
-                                         <tr>
-                                            <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="docs.user_id.partner_id.name or ''"/></td>
-                                            <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="docs.employee_id.name or ''"/></td>
-                                            <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="docs.department.manager_id.name or ''"/></td>
-                                        </tr>
+                                                <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
+                                                    <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
+                                                </td>
+                                                <t t-if="docs.manager_approve">
+                                                    <td style="text-align: center; height: 80px; border: 1px solid black;vertical-align: middle;">
+                                                        <span style="background-color: green; color: white; padding: 10px 10px; font-weight: bold;">APPROVED</span>
+                                                    </td>
+                                                </t>
+                                                <t t-else="">
+                                                    <td style="text-align: center; height: 80px; border: 1px solid black;"/>
+                                                </t>
+                                            </tr>
+                                             <tr>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="docs.user_id.partner_id.name or ''"/></td>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="docs.employee_id.name or ''"/></td>
+                                                <td style="text-align: center; height: 40px; border: 1px solid black;"><t t-esc="docs.department.manager_id.name or ''"/></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
