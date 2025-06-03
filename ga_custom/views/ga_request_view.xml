@@ -52,6 +52,17 @@
 
                         </group>
                         <notebook>
+                            <page string="Product List">
+                                <field name="line_ids">
+                                    <tree editable="bottom">
+                                        <field name="product" string="Product Name" required="1"/>
+                                        <field name="description" required="1"/>
+                                        <field name="qty" string="Quantity" required="1"/>
+                                        <field name="price_unit" string="Estimate Price" required="1"/>
+                                        <field name="subtotal"/>
+                                    </tree>
+                                </field>
+                            </page>
                             <page string="Description">
                                 <group string="Detail Request" name="detail_request" priority="1">
                                     <field name="description" string="Request Description" required="1"/>

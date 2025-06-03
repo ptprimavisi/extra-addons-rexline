@@ -28,6 +28,7 @@ class GaRequest(models.Model):
         ('requisition', 'Requisition')
     ], compute="_compute_requisition_state")
     user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+    line_ids = fields.One2many('ga.request.line', 'request_id')
     active = fields.Boolean(default=True)
 
     @api.depends('count_requisition')
@@ -81,6 +82,14 @@ class GaRequest(models.Model):
 
     def action_create_mrf(self):
         for line in self:
+            product_line = []
+            for lines in line.line_ids:
+                product_line.append((0,0, {
+                    "product_request": lines.product,
+                    "name": lines.description,
+                    "quantity": lines.qty,
+                    "price_unit": lines.price_unit,
+                }))
             return {
                 "type": "ir.actions.act_window",
                 "res_model": "purchase.requisition",
@@ -94,7 +103,8 @@ class GaRequest(models.Model):
                     'default_department_id': line.department_id.id,
                     'default_requisition_date': line.date_request,
                     'default_due_date': line.due_date,
-                    'default_category': 'ga'
+                    'default_category': 'ga',
+                    'default_requisition_line': product_line,
                 }
             }
 
@@ -122,3 +132,22 @@ class GaRequest(models.Model):
                 'view_mode': 'tree,form',
                 'context': {'create': False}
             }
+
+
+class GaRequestLine(models.Model):
+    _name = 'ga.request.line'
+    _description = 'Ga Request Line'
+
+    request_id = fields.Many2one('ga.request')
+    product = fields.Char()
+    description = fields.Char()
+    qty = fields.Float()
+    price_unit = fields.Float()
+    subtotal = fields.Float(compute="_compute_subtotal")
+
+    @api.depends('price_unit', 'qty')
+    def _compute_subtotal(self):
+        for line in self:
+            line.subtotal = line.price_unit * line.qty
+
+

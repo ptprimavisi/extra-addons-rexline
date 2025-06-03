@@ -403,18 +403,22 @@ class RequisitionLine(models.Model):
 
     def _compute_qty_ordered(self):
         for line in self:
-            purchase = self.env['purchase.order.line'].search(
-                [('order_id.requisition_id', '=', int(line.requisition_id.id)), ('state', '=', 'purchase'),
-                 ('product_id', '=', line.product_id.id)])
-            line.qty_ordered = sum(purchase.mapped('product_qty'))
+            line.qty_ordered = False
+            if line.product_id and line.requisition_id:
+                purchase = self.env['purchase.order.line'].search(
+                    [('order_id.requisition_id', '=', int(line.requisition_id.id)), ('state', '=', 'purchase'),
+                     ('product_id', '=', line.product_id.id)])
+                line.qty_ordered = sum(purchase.mapped('product_qty'))
 
     def _compute_qty_received(self):
         for line in self:
-            purchase = self.env['purchase.order.line'].search(
-                [('order_id.requisition_id', '=', int(line.requisition_id.id)), ('order_id.state', '=', 'purchase'),
-                 ('product_id', '=', line.product_id.id)])
-            # print(purchase)
-            line.qty_received = sum(purchase.mapped('qty_received'))
+            line.qty_received = False
+            if line.product_id and line.requisition_id:
+                purchase = self.env['purchase.order.line'].search(
+                    [('order_id.requisition_id', '=', int(line.requisition_id.id)), ('order_id.state', '=', 'purchase'),
+                     ('product_id', '=', line.product_id.id)])
+                # print(purchase)
+                line.qty_received = sum(purchase.mapped('qty_received'))
 
     def _compute_is_it(self):
         for line in self:
