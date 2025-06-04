@@ -166,6 +166,7 @@ class PermintaanDana(models.Model):
     description = fields.Text()
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     date_journal = fields.Date(default=lambda self: datetime.now())
+    pic_user = fields.Many2one('res.users', default=lambda self: self.env.uid)
     finance_state = fields.Selection([
         ('no', 'No Response'),
         ('waiting', 'Waiting Confirmation'),
@@ -469,7 +470,7 @@ class PermintaanDana(models.Model):
                 {
                     'name': "PIC",
                     'status': str(status),
-                    'users': str(line.user_id.name),
+                    'users': str(line.pic_user.name),
                     'date': str(date_confirm),
                 }
             ]
