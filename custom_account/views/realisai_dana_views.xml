@@ -8,7 +8,7 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                         <button name="action_post" string="Posted" type="object" class="oe_highlight" groups="sale_custome.accounting_custom_group" invisible="id == False or state != 'draft'"/>
-                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="Proses ini akan mempengaruhi saldo dan journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'posted'"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="This process will affect the balance and journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'posted'"/>
                         <button name="action_print_report" string="Print" type="object"  invisible="id == False"/>
                     </header>
                     <sheet>
@@ -109,9 +109,10 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">saldo.dana</field>
             <field name="view_mode">tree</field>
+            <field name="domain">[('user_domain', '=', 1)]</field>
         </record>
         <menuitem id="menu_saldo_dana"
-                name="Saldo"
+                name="Balance"
                 action="custom_account.action_saldo_dana"
                 parent="custom_account.kas_kecil"
                 sequence="3"/>
@@ -121,11 +122,12 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">realisasi.dana</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('user_domain', '=', 1)]</field>
         </record>
 
 <!--        <menuitem id="kas_kecil" name="Kas Kecil" sequence="10"/>-->
         <menuitem id="menu_realisasi_dana"
-                name="Realisasi Dana"
+                name="Expense Report"
                 action="custom_account.action_realisasi_dana"
                 parent="custom_account.kas_kecil"
                 sequence="2"/>

@@ -23,5 +23,12 @@
                 </data>
             </field>
         </record>
+
+        <record id="multi_level_approval.multi_approval_request_action" model="ir.actions.act_window">
+            <field name="domain">[('user_domain', '=', 1)]</field>
+        </record>
+        <record id="multi_level_approval.multi_approval_approval_action" model="ir.actions.act_window">
+            <field name="domain">[('user_domain', '=', 1)]</field>
+        </record>
     </data>
 </odoo>

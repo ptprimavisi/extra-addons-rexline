@@ -10,7 +10,7 @@
 
                 <xpath expr="//header" position="inside">
 <!--                    <header>-->
-                    <button name="action_sync_employee" confirm="Apakah Anda Ingin Update Employee?" string="Sync Employee" type="object"
+                    <button name="action_sync_employee" confirm="Do you want to Update Employee?" string="Sync Employee" type="object"
                             class="btn-primary ms-1"
                             display="always"/>
                     <button name="action_report_manpower" string="Report Manpower" type="object"
@@ -30,7 +30,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//kanban" position="inside">
                     <header>
-                        <button name="action_sync_employee" confirm="Apakah Anda Ingin Update Employee?" string="Sync Employee" type="object"
+                        <button name="action_sync_employee" confirm="Do you want to Update Employee?" string="Sync Employee" type="object"
                                 class="btn-primary ms-1"
                                 display="always"/>
                         <button name="action_report_manpower" string="Report Manpower" type="object"

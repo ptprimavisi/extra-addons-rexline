@@ -1,5 +1,5 @@
 <odoo>
-    <menuitem id="requisition_root" name="Purchase Requisition" sequence="10"/>
+    <menuitem id="requisition_root" name="Purchase Requisition" groups="ga_custom.ga_custom_groups,sale_custome.it_custom_group" sequence="10"/>
     <data>
         <record id="requisition_form_view" model="ir.ui.view">
             <field name="name">purchase.requisition.form.view</field>
@@ -178,6 +178,13 @@
 <!--            <field name="domain">[('users_branch','=',1)]</field>-->
             <field name="view_mode">tree,form</field>
         </record>
+        <record id="action_requisition" model="ir.actions.act_window">
+            <field name="name">Purchase Requisition</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="domain">[('users_branch','=',1)]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <record id="action_requisition_po" model="ir.actions.act_window">
             <field name="name">Purchase Requisition IT</field>
@@ -191,18 +198,20 @@
         <menuitem id="purchase_requisition_menuitem"
                   name="Purchase Requisition"
                   sequence="1"
-                  parent="requisition_root"/>
+                  parent="requisition_root"
+                  action="action_requisition"
+        />
 
-        <menuitem id="purchase_requisition_ga_menuitem"
-                  name="GA"
-                  sequence="1"
-                  parent="purchase_requisition_menuitem"
-                  action="action_requisition_ga"/>
-        <menuitem id="purchase_requisition_it_menuitem"
-                  name="IT"
-                  sequence="2"
-                  parent="purchase_requisition_menuitem"
-                  action="action_requisition_it"/>
+<!--        <menuitem id="purchase_requisition_ga_menuitem"-->
+<!--                  name="GA"-->
+<!--                  sequence="1"-->
+<!--                  parent="purchase_requisition_menuitem"-->
+<!--                  action="action_requisition_ga"/>-->
+<!--        <menuitem id="purchase_requisition_it_menuitem"-->
+<!--                  name="IT"-->
+<!--                  sequence="2"-->
+<!--                  parent="purchase_requisition_menuitem"-->
+<!--                  action="action_requisition_it"/>-->
 
         <menuitem id="requisition_purchase"
                   name="Purchase Requisition"

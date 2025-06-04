@@ -165,7 +165,7 @@
         </record>
         <menuitem id="surat_tugas" name="Surat Tugas" sequence="10"/>
         <menuitem id="menu_surat_tugas"
-                name="Surat Tugas"
+                name="Assignment Letter"
                 action="sale_custome.surat_tugas_action"
                 parent="sale_custome.surat_tugas"
                 sequence="1"/>

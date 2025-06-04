@@ -67,11 +67,11 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,transfer"/>
-                        <button name="action_confirm" string="Confirm" confirm="Apakah anda sudah yakin?" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
-                        <button name="action_transfer" string="Transfer" confirm="Apakah anda ingin melakukan transfer?" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="id == False or state not in ['confirm','transfer'] or transfer_status == 'Transfer'"/>
-                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="Proses ini akan mempengaruhi saldo dan journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'transfer'"/>
-                        <button name="action_realisasi" string="Realisasi" confirm="Apakah anda ingin membuat realisasi?" type="object" invisible="state != 'transfer'"/>
-                        <button name="action_refund" string="Refund" confirm="Apakah anda ingin melakukan refund?" type="object" invisible="state != 'transfer'"/>
+                        <button name="action_confirm" string="Confirm" confirm="Do you want to confirm?" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
+                        <button name="action_transfer" string="Transfer" confirm="Do you want to transfer?" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="id == False or state not in ['confirm','transfer'] or transfer_status == 'Transfer'"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="This process will affect the balance and journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'transfer'"/>
+                        <button name="action_realisasi" string="Realisasi" confirm="Do you want to create expense report?" type="object" invisible="state != 'transfer'"/>
+                        <button name="action_refund" string="Refund" confirm="Do you want to refund?" type="object" invisible="state != 'transfer'"/>
                         <button name="action_print_report" string="Print" type="object" invisible="id == False"/>
                     </header>
                     <sheet>
@@ -258,11 +258,12 @@
             <field name="name">Permintaan Dana</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">permintaan.dana</field>
+            <field name="domain">[('user_domain', '=', 1)]</field>
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="kas_kecil" name="Cash Advance" sequence="10"/>
         <menuitem id="menu_permintaan_dana"
-                name="Permintaan Dana"
+                name="Advance Request"
                 action="custom_account.action_permintaan_dana"
                 parent="custom_account.kas_kecil"
                 sequence="1"/>

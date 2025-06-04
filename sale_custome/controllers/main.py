@@ -89,6 +89,15 @@ class SaleOrderController(http.Controller):
             "database": request.db
         }
 
+    @http.route('/web/message', type='json', auth="none")
+    def get_message(self):
+        # name = kwargs.get('name', 'Guest')
+
+        return {
+            'status': 'success',
+            'message': f'Hello,! This is a simple message from Odoo 17.'
+        }
+
     @http.route('/web/attendance', type='json', auth="none")
     def apiAttandance(self):
         db = 'rexline'

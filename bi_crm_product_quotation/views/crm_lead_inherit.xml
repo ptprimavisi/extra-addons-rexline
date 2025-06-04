@@ -14,7 +14,7 @@
 <!--                <field name="category_project"/>-->
 <!--            </xpath>-->
             <xpath expr="//button[@name='iap_enrich']" position="after">
-                <button string="Create and View Quotation" confirm="Apakah anda ingin membuat quotation?" name="action_quotations_view" type="object" class="oe_highlight" invisible="type == 'lead' and probability == 0 or not active or is_crm_quotation"/>
+                <button string="Create and View Quotation" confirm="DO you want to create Quotation?" name="action_quotations_view" type="object" class="oe_highlight" invisible="type == 'lead' and probability == 0 or not active or is_crm_quotation"/>
 <!--                <button string="Approve Cost Estimation" name="action_approve_cost_estimation" type="object" invisible="id == False or is_approve == True"/>-->
             </xpath>
             <xpath expr="//button[@name='action_schedule_meeting']" position="before">

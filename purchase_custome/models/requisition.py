@@ -8,6 +8,8 @@ ROMAWI_BULAN = {
     5: "V", 6: "VI", 7: "VII", 8: "VIII",
     9: "IX", 10: "X", 11: "XI", 12: "XII"
 }
+
+
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
@@ -59,7 +61,7 @@ class PurchaseRequisition(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'To Confirm'),
-        ('ready', 'Confirm'),
+        ('ready', 'Confirmed'),
         ('to_purchase', 'Process to Purchase'),
         ('po', 'Purchase Order Created'),
         ('cancel', 'Cancel'),
@@ -96,7 +98,6 @@ class PurchaseRequisition(models.Model):
             line.approval_status = 'Nothing to approval'
             if approval:
                 line.approval_status = approval.state
-
 
     @api.depends('create_uid')
     def _compute_employee_created(self):
@@ -185,41 +186,44 @@ class PurchaseRequisition(models.Model):
                 if not self.env.user.has_group('sale_custome.it_custom_group'):
                     line.akses_proccess = False
 
-    # users_branch = fields.Char(compute="branch", search="branch_search")
+    users_branch = fields.Char(compute="branch", search="branch_search")
+
+    #
+    def branch(self):
+        id = self.env.uid
+        self.users_branch = self.env['res.users'].search([('id', '=', id)])
+
     #
     # #
-    # def branch(self):
-    #     id = self.env.uid
-    #     self.users_branch = self.env['res.users'].search([('id', '=', id)])
-    #
-    # #
-    # def branch_search(self, operator, value):
-    #     # for i in self:
-    #     # if self.env.user.has_group('sale_custome.hr_ga_custom_group'):
-    #     #     pr = self.env['purchase.requisition'].search([('category', '=', 'ga')])
-    #     #
-    #     #     # print('lihat employee', contract.id)
-    #     #     domain = [('id', 'in', pr.ids)]
-    #     # if self.env.user.has_group('sale_custome.it_custom_group'):
-    #     #     pr = self.env['purchase.requisition'].search([('category', '=', 'ut')])
-    #     #
-    #     #     # print('lihat employee', contract.id)
-    #     #     domain = [('id', 'in', pr.ids)]
-    #     # if self.env.user.has_group('sale_custome.hr_ga_custom_group') and self.env.user.has_group('sale_custome.it_custom_group'):
-    #     #     pr = self.env['purchase.requisition'].search([('category', 'in', ['ut','ga'])])
-    #     #
-    #     #     # print('lihat employee', contract.id)
-    #     #     domain = [('id', 'in', pr.ids)]
-    #     # if self.env.user.has_group('sale_custome.purchasing_custom_group'):
-    #     #     pr = self.env['purchase.requisition'].search([('category', 'in', ['ut','ga'])])
-    #     #
-    #     #     # print('lihat employee', contract.id)
-    #     #     domain = [('id', '!=', False)]
-    #     # else:
-    #     # pr = self.env['purchase.requisition'].search([('responsible', '=', self.env.uid)])
-    #     domain = [('id', '!=',False)]
-    #
-    #     return domain
+    def branch_search(self, operator, value):
+        domain = [('id', '!=', False)]
+        if self.env.user.has_group('ga_custom.ga_custom_groups'):
+            pr = self.env['purchase.requisition'].search([('category', '=', 'ga')])
+
+            # print('lihat employee', contract.id)
+            domain = [('id', 'in', pr.ids)]
+        if self.env.user.has_group('sale_custome.it_custom_group'):
+
+            pr = self.env['purchase.requisition'].search([('category', '=', 'ut')])
+
+            # print('lihat employee', contract.id)
+            domain = [('id', 'in', pr.ids)]
+        if self.env.user.has_group('ga_custom.ga_custom_groups') and self.env.user.has_group(
+                'sale_custome.it_custom_group'):
+            pr = self.env['purchase.requisition'].search([('category', 'in', ['ut', 'ga'])])
+
+            # print('lihat employee', contract.id)
+            domain = [('id', 'in', pr.ids)]
+        if self.env.user.has_group('sale_custome.purchasing_custom_group'):
+            pr = self.env['purchase.requisition'].search([('state', 'in', ['to_purchase', 'po'])])
+
+            # print('lihat employee', contract.id)
+            domain = [('id', 'in', pr.ids)]
+        # else:
+        # pr = self.env['purchase.requisition'].search([('responsible', '=', self.env.uid)])
+        # domain = [('id', '!=',False)]
+
+        return domain
 
     @api.model
     def create(self, vals):

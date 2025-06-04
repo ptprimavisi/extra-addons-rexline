@@ -7,7 +7,7 @@
                 <form create="false">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
-                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="Proses ini akan mempengaruhi saldo dan journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'posted'"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" confirm="This process will affect the balance and journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'posted'"/>
                         <button name="action_post" string="Posted" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
                     </header>
                     <sheet>
@@ -67,6 +67,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">refund.dana</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('user_domain', '=', 1)]</field>
         </record>
 
         <menuitem id="menu_refund_dana"

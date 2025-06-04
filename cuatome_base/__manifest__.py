@@ -2,7 +2,7 @@
     'name': 'Custome Base',
     'category': 'Base',
     'description': 'odoo custome base module',
-    'depends': ['base'],
+    'depends': ['base','multi_level_approval'],
     'data': [
         "views/res_user_views.xml",
     ],

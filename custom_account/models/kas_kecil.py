@@ -220,6 +220,24 @@ class PermintaanDana(models.Model):
     outstanding = fields.Float(compute="_compute_outstanding")
     transfer_status = fields.Char(compute="_compute_transfer_status")
 
+    user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    def _user_domain(self):
+        uid = self.env.uid
+        self.user_domain = self.env['res.users'].search([('id', '=', uid)])
+
+    def _search_domain(self, operator, value):
+        uid = self.env.uid
+        print(uid)
+        if self.env.user.has_group('sale_custome.accounting_custom_group') or uid in [1, 2]:
+            domain = [("id", '!=', False)]
+        else:
+            employee = self.env['hr.employee'].search([('user_id', '=', int(uid))])
+            domain = [("user_id", '=', int(uid))]
+            if employee:
+                domain = ['|', ("user_id", '=', int(uid)), ("employee_id", '=', int(employee.id))]
+        return domain
+
     def _compute_transfer_status(self):
         for line in self:
             line.transfer_status = 'Not Transfer'
@@ -353,7 +371,7 @@ class PermintaanDana(models.Model):
     def unlink(self):
         for line in self:
             if line.state == 'transfer':
-                raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
+                raise UserError('Cannot be deleted this document, Status Posted!')
         return super().unlink()
 
     @api.onchange('employee_id')
@@ -475,7 +493,7 @@ class PermintaanDana(models.Model):
                 raise UserError('Please change field Payment Response to "Approve" first ')
                 exit()
             if not line.date_journal:
-                raise UserError('Tanggal journal tidak boleh kosong!')
+                raise UserError('Field Date Journal is mandatory field!')
                 exit()
             if not line.source_account:
                 raise UserError('Source account is mandatory fields!')
@@ -554,10 +572,10 @@ class PermintaanDana(models.Model):
             realisasi_dana = self.env['realisasi.dana'].search([('permintaan_id', '=', int(line.id))])
             refund_dana = self.env['refund.dana'].search([('dana_id', '=', int(line.id))])
             if realisasi_dana:
-                raise UserError('Sudah dilakukan realisasi, batalkan dan hapus realisasi terlebih dahulu!')
+                raise UserError('Expense report already created, please cancel and delete first!')
                 exit()
             if refund_dana:
-                raise UserError('Sudah dilakukan refund, batalkan dan hapus refund terlebih dahulu!')
+                raise UserError('Refund already created, please cancel and delete first!')
                 exit()
             saldo_update = saldo.saldo - line.total_amount
             saldo.write({'saldo': saldo_update})
@@ -693,6 +711,24 @@ class RealisasiDana(models.Model):
     )
     date_journal = fields.Date(default=lambda self: datetime.now())
 
+    user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    def _user_domain(self):
+        uid = self.env.uid
+        self.user_domain = self.env['res.users'].search([('id', '=', uid)])
+
+    def _search_domain(self, operator, value):
+        uid = self.env.uid
+        print(uid)
+        if self.env.user.has_group('sale_custome.accounting_custom_group') or uid in [1, 2]:
+            domain = [("id", '!=', False)]
+        else:
+            employee = self.env['hr.employee'].search([('user_id', '=', int(uid))])
+            domain = [("user_id", '=', int(uid))]
+            if employee:
+                domain = ['|', ("user_id", '=', int(uid)), ("employee_id", '=', int(employee.id))]
+        return domain
+
     @api.depends('employee_id')
     def _compute_department(self):
         for line in self:
@@ -714,7 +750,7 @@ class RealisasiDana(models.Model):
     def unlink(self):
         for line in self:
             if line.state == 'posted':
-                raise UserError('Tidak dapat menghapus dokumen, Status Posted!')
+                raise UserError('This document cannot be deleted, Status Posted!')
         return super().unlink()
 
     def format_datetime(self, datetimes):
@@ -756,17 +792,17 @@ class RealisasiDana(models.Model):
     def action_post(self):
         for line in self:
             if not line.date_journal:
-                raise UserError('Tanggal journal tidak boleh kosong!')
+                raise UserError('Date journa is mandatory field!')
                 exit()
             if line.total_amount <= 0:
-                raise UserError('amount tidak boleh 0.0')
+                raise UserError('amount cannot be 0.0')
             if not line.realisasi_line:
-                raise UserError('lines item tidak boleh kosong')
+                raise UserError('Item Line cannot be empty')
             if line.total_amount > line.saldo:
-                raise UserError('saldo tidak mencukupi')
+                raise UserError('insufficient balance')
             for linesss in line.realisasi_line:
                 if not linesss.account_id:
-                    raise UserError('account id tidak boleh kosong')
+                    raise UserError('account id cannot be empty')
             partner_id = self.env['res.users'].browse(line.user_id.id).partner_id
             move = self.env['account.move'].create({
                 'journal_id': 3,
@@ -845,16 +881,16 @@ class RealisasiDana(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         if any(vals['total_amount'] > vals['saldo'] for vals in vals_list):
-            raise UserError('Saldo Tidak mencukupi')
+            raise UserError('insufficient balance')
         if not any(vals['realisasi_line'] for vals in vals_list):
-            raise UserError('Silahkan tambahkan item pada line terlebih dahulu')
+            raise UserError('Please add item line first!')
         # if vals_list.get('total_amount') > vals_list.get('saldo'):
         #     raise UserError('Saldo tidak mencukupi!')
         for value in vals_list:
             for lines in value['realisasi_line']:
                 # print(lines[2]['amount'])
                 if lines[2]['amount'] <= 0:
-                    raise UserError('Amount tidak boleh 0.0')
+                    raise UserError('Amount cannot be 0.0')
         # for line in self:
         #     if not line.realisasi_line:
         #         raise UserError('Silahkan tambahkan item pada line terlebih dahulu')
@@ -905,6 +941,24 @@ class RefundDana(models.Model):
         ('draft', 'Draft'),
         ('posted', 'Posted')
     ], default='draft')
+
+    user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    def _user_domain(self):
+        uid = self.env.uid
+        self.user_domain = self.env['res.users'].search([('id', '=', uid)])
+
+    def _search_domain(self, operator, value):
+        uid = self.env.uid
+        print(uid)
+        if self.env.user.has_group('sale_custome.accounting_custom_group') or uid in [1, 2]:
+            domain = [("id", '!=', False)]
+        else:
+            employee = self.env['hr.employee'].search([('user_id', '=', int(uid))])
+            domain = [("user_id", '=', int(uid))]
+            if employee:
+                domain = ['|', ("user_id", '=', int(uid)), ("employee_id", '=', int(employee.id))]
+        return domain
 
     def unlink(self):
         for line in self:
@@ -998,6 +1052,21 @@ class SaldoKas(models.Model):
 
     employee_id = fields.Many2one('hr.employee')
     saldo = fields.Float()
+    user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    def _user_domain(self):
+        uid = self.env.uid
+        self.user_domain = self.env['res.users'].search([('id', '=', uid)])
+
+    def _search_domain(self, operator, value):
+        uid = self.env.uid
+        print(uid)
+        if self.env.user.has_group('sale_custome.accounting_custom_group') or uid in [1, 2]:
+            domain = [("id", '!=', False)]
+        else:
+            employee = self.env['hr.employee'].search([('user_id', '=', int(uid))])
+            domain = [("employee_id", '=', int(employee.id))]
+        return domain
 
 
 class HrDepartmentINh(models.Model):

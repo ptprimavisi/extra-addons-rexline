@@ -17,3 +17,21 @@ class InquirySales(models.Model):
     is_production = fields.Boolean()
     is_hr = fields.Boolean()
     is_operation = fields.Boolean()
+
+
+class MultiApproval(models.Model):
+    _inherit = 'multi.approval'
+
+    user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+
+    def _user_domain(self):
+        uid = self.env.uid
+        self.user_domain = self.env['res.users'].search([('id', '=', uid)])
+
+    def _search_domain(self, operator, value):
+        uid = self.env.uid
+        if uid in [1, 2]:
+            domain = [("id", '!=', False)]
+        else:
+            domain = ['|', ('user_id', '=', int(uid)), ('pic_id', '=', int(uid))]
+        return domain

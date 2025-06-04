@@ -18,6 +18,21 @@ class ManpowerRequest(models.Model):
         ('confirm', 'Process'),
         ('done', 'Done')
     ], default='draft')
+    # user_domain = fields.Char(compute="_user_domain", search="_search_domain")
+    #
+    # def _user_domain(self):
+    #     uid = self.env.uid
+    #     self.user_domain = self.env['res.users'].search([('id', '=', uid)])
+    #
+    # def _search_domain(self, operator, value):
+    #     uid = self.env.uid
+    #     print(uid)
+    #     if self.env.user.has_group('ga_custom.ga_custom_groups') or uid in [1, 2]:
+    #         domain = [("id", '!=', False)]
+    #     else:
+    #         employee = self.env['hr.employee'].search([('user_id', '=', int(uid))])
+    #         domain = [("employee_id", '=', int(employee.id))]
+    #     return domain
 
     def _compute_is_hr(self):
         for line in self:
