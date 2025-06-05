@@ -10,6 +10,7 @@
         "views/hr_employee_view.xml",
         "views/manpower_request_view.xml",
         "views/manpower_request_view.xml",
+        "views/ga_assets_view.xml",
         "wizard/ga_maintenance_wizard.xml",
         "security/security.xml",
     ],

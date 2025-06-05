@@ -15,6 +15,7 @@
         "report/report.xml",
         "report/report_payment_request.xml",
         "wizard/report_budget_project.xml",
+        "wizard/payment_request_view.xml",
     ],
 
     'installable': True,

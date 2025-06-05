@@ -834,9 +834,10 @@ class PaymentRequestDp(models.Model):
 
     order_id = fields.Many2one('purchase.order',
                                domain="[('state','=','purchase'), ('invoice_status','in',['no','to invoice'])]")
-    amount_total = fields.Float(compute='_compute_amount_totals')
+    amount_total = fields.Monetary(compute='_compute_amount_totals', currency_field="currency_id")
     percentage = fields.Float()
-    amount = fields.Float()
+    currency_id = fields.Many2one('res.currency', compute="_compute_currency")
+    amount = fields.Monetary(currency_field="currency_id")
     payment_id = fields.Many2one('payment.request')
     payment_state = fields.Boolean(compute='_compute_payment_state')
     state = fields.Selection([
@@ -844,6 +845,11 @@ class PaymentRequestDp(models.Model):
         ('confirmed', 'Confirm'),
         ('validate', 'Validate')
     ], related="payment_id.state")
+
+    @api.depends('order_id')
+    def _compute_currency(self):
+        for line in self:
+            line.currency_id = line.order_id.currency_id.id
 
     def _compute_payment_state(self):
         for line in self:
@@ -874,7 +880,7 @@ class PaymentRequestDp(models.Model):
         for line in self:
             return {
                 "type": "ir.actions.act_window",
-                "res_model": "account.payment",
+                "res_model": "payment.request.wizard",
                 "name": "Create Payment Vendor",
                 'view_mode': 'form',
                 'target': 'new',
@@ -882,14 +888,34 @@ class PaymentRequestDp(models.Model):
                     "create": False,
                     'default_request_payment_id': int(line.id),
                     'default_amount': line.amount,
+                    'default_currency_id': line.currency_id.id,
                     'default_partner_id': line.order_id.partner_id.id,
-                    'default_payment_type': 'outbound',
-                    'default_partner_type': 'supplier',
-                    'search_default_outbound_filter': 1,
-                    'default_move_journal_types': ('bank', 'cash'),
-                    'display_account_trust': True,
+                    # 'default_payment_type': 'outbound',
+                    # 'default_partner_type': 'supplier',
+                    # 'search_default_outbound_filter': 1,
+                    # 'default_move_journal_types': ('bank', 'cash'),
+                    # 'display_account_trust': True,
                 }
             }
+            # return {
+            #     "type": "ir.actions.act_window",
+            #     "res_model": "account.payment",
+            #     "name": "Create Payment Vendor",
+            #     'view_mode': 'form',
+            #     'target': 'new',
+            #     'context': {
+            #         "create": False,
+            #         'default_request_payment_id': int(line.id),
+            #         'default_amount': line.amount,
+            #         'default_currency_id': 1,
+            #         'default_partner_id': line.order_id.partner_id.id,
+            #         'default_payment_type': 'outbound',
+            #         'default_partner_type': 'supplier',
+            #         'search_default_outbound_filter': 1,
+            #         'default_move_journal_types': ('bank', 'cash'),
+            #         'display_account_trust': True,
+            #     }
+            # }
 
     @api.onchange('percentage')
     def onchange_persentage(self):

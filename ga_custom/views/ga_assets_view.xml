@@ -1,0 +1,58 @@
+<odoo>
+    <data>
+        <record id="view_form_ga_assets" model="ir.ui.view">
+            <field name="name">ga.assets.form</field>
+            <field name="model">ga.assets</field>
+            <field name="arch" type="xml">
+                <form string="GA Assets">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="number" string="Asset Number" required="1"/>
+                            <field name="location" required="1"/>
+                            <field name="jumlah" string="Quantity/Unit"/>
+                            <field name="asset_type" required="1"/>
+                        </group>
+                        <group string="Vehicle Info" invisible="asset_type != 'vehicle'">
+                            <field name="no_plat" string="Number Plate" required="asset_type == 'vehicle'"/>
+                            <field name="no_rangka" string="Frame Number" required="asset_type == 'vehicle'"/>
+                            <field name="no_mesin" string="Machine Number" required="asset_type == 'vehicle'"/>
+                            <field name="insurance" required="asset_type == 'vehicle'"/>
+                            <field name="start" required="asset_type == 'vehicle'"/>
+                            <field name="expired" required="asset_type == 'vehicle'"/>
+                        </group>
+                        <group>
+                            <field name="remark"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_tree_ga_assets" model="ir.ui.view">
+            <field name="name">ga.assets.tree</field>
+            <field name="model">ga.assets</field>
+            <field name="arch" type="xml">
+                <tree string="GA Assets">
+                    <field name="name"/>
+                    <field name="number"/>
+                    <field name="location"/>
+                    <field name="jumlah"/>
+                    <field name="asset_type"/>
+                    <field name="no_plat"/>
+                    <field name="expired"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_ga_assets" model="ir.actions.act_window">
+            <field name="name">GA Assets</field>
+            <field name="res_model">ga.assets</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_ga_assets_root" name="GA Management"/>
+        <menuitem id="menu_ga_assets" name="Assets" parent="ga_management_menu" action="action_ga_assets"/>
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record id="payment_request_form_wizard_view" model="ir.ui.view">
+            <field name="name">payment.request.wizard.view</field>
+            <field name="model">payment.request.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="partner_id" string="Vendor" required="1" readonly="1"/>
+                            <field name="currency_id" required="1"/>
+                            <field name="amount" required="1"/>
+                            <field name="journal_id" string="Bank" required="1"/>
+                            <field name="date" string="Date" required="1"/>
+<!--                            <field name="date" string="Request Date" readonly="1"/>-->
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_payment" string="Payment" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

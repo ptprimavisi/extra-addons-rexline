@@ -32,6 +32,7 @@
                                 <field name="payment_request_dp_ids" required="1" readonly="state != 'draft'">
                                     <tree editable="bottom">
                                         <field name="order_id" string="No. PO" required="1"/>
+                                        <field name="currency_id"/>
                                         <field name="amount_total" string="Amount PO"/>
                                         <field name="percentage" string="Persentase %"/>
                                         <field name="state" invisible="1" nolabel="1"/>
