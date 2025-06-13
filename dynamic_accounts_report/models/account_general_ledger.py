@@ -197,6 +197,17 @@ class AccountGeneralLedger(models.TransientModel):
             account_dict['account_totals'] = account_totals
         return account_dict
 
+    def action_wizard(self):
+        action = {
+            'name': "Generate General Ledger",
+            'type': 'ir.actions.act_window',
+            'res_model': 'dynamic.general.wizard',
+            'context': {'create': False},
+            'view_mode': 'form',
+            'target': 'new'
+        }
+        return action
+
     @api.model
     def get_xlsx_report(self, data, response, report_name, report_action):
         """
@@ -327,3 +338,23 @@ class AccountGeneralLedger(models.TransientModel):
         output.seek(0)
         response.stream.write(output.read())
         output.close()
+
+
+class DynamicGeneralWizard(models.TransientModel):
+    _name = 'dynamic.general.wizard'
+    _description = 'Dynamic General Ledger Wizard'
+
+    date_from = fields.Date()
+    date_to = fields.Date()
+
+    # def action_generate(self):
+    #     return {
+    #         'type': 'ir.actions.client',
+    #         'tag': 'gen_l',
+    #         'name': 'General Ledger',
+    #         'params': {
+    #             'date_from': str(self.date_from),
+    #             'date_to': str(self.date_to),
+    #         }
+    #     }
+

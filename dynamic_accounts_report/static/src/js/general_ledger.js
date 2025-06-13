@@ -6,7 +6,7 @@ import { useRef, useState } from "@odoo/owl";
 import { BlockUI } from "@web/core/ui/block_ui";
 import { download } from "@web/core/network/download";
 const actionRegistry = registry.category("actions");
-
+var ini = this;
 class GeneralLedger extends owl.Component {
     setup() {
         super.setup(...arguments);
@@ -37,6 +37,13 @@ class GeneralLedger extends owl.Component {
                         'accural': true
                     },
         });
+////        console.log("Record ID:", this.env.context.record_id);
+//        const context = this.env.context || {};
+//        this.extraInfo = context.extra_info || null;
+//
+////        console.log("Extra Info:", this.extraInfo);
+
+//        this.state.date_range
         this.load_data(self.initial_render = true);
     }
     async load_data() {
@@ -47,6 +54,25 @@ class GeneralLedger extends owl.Component {
         let currency;
         var self = this;
         var action_title = self.props.action.display_name;
+        const params = this.props?.action?.params || {};
+
+//        if (params.date_from && params.date_to) {
+//            console.log("Date From:", params.date_from);
+//            console.log("Date To:", params.date_to);
+//            if (val.target.name === 'start_date') {
+//                    this.state.date_range = {
+//                        ...this.state.date_range,
+//                        start_date: val.target.value
+//                    };
+//                } else if (val.target.name === 'end_date') {
+//                    this.state.date_range = {
+//                        ...this.state.date_range,
+//                        end_date: val.target.value
+//                    };
+//            this.applyFilter(self.initial_render = true)
+//        } else {
+//            console.log("date_from atau date_to tidak tersedia di props.action.params");
+//        }
         try {
             var self = this;
             self.state.account_data = await self.orm.call("account.general.ledger", "view_report", [[this.wizard_id], action_title,]);
@@ -172,6 +198,7 @@ class GeneralLedger extends owl.Component {
         this.state.account_data = null
         this.state.account_total = null
         this.state.filter_applied = true;
+        console.log("test filter function");
         if (ev) {
             if (ev.input && ev.input.attributes.placeholder.value == 'Account' && !is_delete) {
                 this.state.selected_analytic.push(val[0].id)

@@ -26,6 +26,7 @@ class ManpowerRequest(models.Model):
     #
     # def _search_domain(self, operator, value):
     #     uid = self.env.uid
+    #     uid = self.env.uid
     #     print(uid)
     #     if self.env.user.has_group('ga_custom.ga_custom_groups') or uid in [1, 2]:
     #         domain = [("id", '!=', False)]

@@ -66,7 +66,7 @@ class AccountWizard(models.TransientModel):
                 "SITE ALLOWANCE", "OVERTIME", "BACKPACK SALARY", "MEAL ALLOWANCE (SITE)", "SITE ALLOWANCE (SITE)",
                 "TRAVEL ALLOWANCE", "MEAL ALLOWANCE", "JHT EMPLOYEE ALLOWANCE", "BPJSK ALLOWANCE EMPLOYEE",
                 "MISCELLANEOUS BENEFITS", "POSITION ALLOWANCE", "ABSENCE DEDUCTIONS", "MISCELLANEOUS DEDUCTIONS",
-                "PPH 21", "JHT EMPLOYEES", "GROSS", "NET", "BANK ACCOUNT"
+                "PPH 21", "JHT EMPLOYEES", "GROSS", "NET", "BANK NAME", "BANK NUMBER", "ACCOUNT HOLDER",
             ]
             for col, title in enumerate(headers):
                 sheet.write(3, col, title, align_header)
@@ -94,6 +94,9 @@ class AccountWizard(models.TransientModel):
                 ptkp = contract.ptkp_id.name if contract and contract.ptkp_id else ''
                 bank_account = payslip.employee_id.bank_account_id
                 bank_num = f"{bank_account.acc_number} - {bank_account.bank_id.name}" if bank_account else ''
+                bank_name = employee.bank_name or ''
+                bank_number = employee.bank_number or ''
+                account_holder = employee.account_holder or ''
 
                 self._cr.execute("SELECT code, amount FROM hr_payslip_line WHERE slip_id = %s", (line['id'],))
                 result_lines = self._cr.dictfetchall()
@@ -116,7 +119,7 @@ class AccountWizard(models.TransientModel):
                     amounts['MALLSITE'], amounts['STALLSITE'], amounts['Travel'], amounts['Meal'],
                     amounts['JHTALW'], amounts['BPJSALW'], amounts['MSCB'], amounts['POLAW'],
                     amounts['ABSDED'], amounts['MCDED'], amounts['PPH21'], amounts['JHTDED'],
-                    amounts['GROSS'], amounts['NET'], bank_num
+                    amounts['GROSS'], amounts['NET'], bank_name, bank_number, account_holder
                 ]
 
                 for col, val in enumerate(values):
