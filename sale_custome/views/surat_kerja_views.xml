@@ -143,6 +143,20 @@
 <!--            </tree>-->
         </field>
     </record>
+
+    <record id="hr_employee_inhrt_trees_view" model="ir.ui.view">
+        <field name="name">
+            hr.employee.alert.inherit
+        </field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='coach_id']" position="after">
+                <field name="bpjs_number"/>
+                <field name="npwp"/>
+            </xpath>
+        </field>
+    </record>
         <record id="hr_employee_tree_view" model="ir.ui.view">
             <field name="name">hr.employee.inherit.alert</field>
             <field name="model">hr.employee</field>

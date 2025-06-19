@@ -17,9 +17,23 @@
                             <field name="no_plat" string="Number Plate" required="asset_type == 'vehicle'"/>
                             <field name="no_rangka" string="Frame Number" required="asset_type == 'vehicle'"/>
                             <field name="no_mesin" string="Machine Number" required="asset_type == 'vehicle'"/>
+                            <field name="tahun_buat" required="asset_type == 'vehicle'"/>
+                            <field name="merk" required="asset_type == 'vehicle'"/>
+                            <field name="bbm" required="asset_type == 'vehicle'"/>
+                            <field name="capacity_pass" required="asset_type == 'vehicle'"/>
                             <field name="insurance" required="asset_type == 'vehicle'"/>
                             <field name="start" required="asset_type == 'vehicle'"/>
                             <field name="expired" required="asset_type == 'vehicle'"/>
+                            <field name="stnk" required="asset_type == 'vehicle'"/>
+                            <field name="username" required="asset_type == 'vehicle'"/>
+                            <field name="purchase_date" required="asset_type == 'vehicle'"/>
+                        </group>
+
+                        <group string="Leasing Info" invisible="asset_type != 'leasing'">
+                            <field name="no_plat" string="Number Plate" required="asset_type == 'leaing'"/>
+                            <field name="expired" string="Expired Date" required="asset_type == 'leasing'"/>
+                            <field name="days_remaining" string="Days Remaining" readonly="1"/>
+
                         </group>
                         <group>
                             <field name="remark"/>
@@ -41,6 +55,7 @@
                     <field name="asset_type"/>
                     <field name="no_plat"/>
                     <field name="expired"/>
+                    <field name="sisa_hari" readonly="1" class="oe_inline"/>
                 </tree>
             </field>
         </record>

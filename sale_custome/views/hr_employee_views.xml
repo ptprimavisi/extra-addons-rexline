@@ -71,5 +71,35 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_employee_form_mutation_lines" model="ir.ui.view">
+            <field name="name">hr.employee.mutation.lines</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='public']" position="before">
+                    <page string="Mutation History">
+                        <field name="mutation_line_ids">
+                            <tree editable="bottom">
+                                <field name="position"/>
+                                <field name="department_id"/>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="location_id"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="position"/>
+                                    <field name="department_id"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="location_id"/>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

@@ -67,7 +67,7 @@
                                 <group string="Detail Request" name="detail_request" priority="1">
                                     <field name="description" string="Request Description" required="1"/>
                                     <field name="justification" required="1"/>
-                                    <field name="estimate_price" string="Estimate Price (IDR)" required="1"/>
+<!--                                    <field name="estimate_price" string="Estimate Price (IDR)" required="1"/>-->
                                 </group>
                             </page>
                         </notebook>

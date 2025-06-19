@@ -9,6 +9,7 @@ class TravelRequest(models.Model):
     name = fields.Char()
     employee_id = fields.Many2one('hr.employee')
     department_id = fields.Many2one('hr.department')
+    job_id = fields.Many2one('hr.job', 'Job Position')
     purpose = fields.Char()
     destination = fields.Char()
     so_number = fields.Char()
@@ -26,6 +27,24 @@ class TravelRequest(models.Model):
         ('done', 'Done')
     ], default='draft')
     description = fields.Text()
+
+    transport_type = fields.Selection([
+        ('kapal', 'Ship'),
+        ('pesawat', 'Flight'),
+        ('bus', 'Bus'),
+        ('kereta', 'Train'),
+        ('mobil', 'Car')
+    ])
+    tax = fields.Integer('Tax')
+    vendor = fields.Char('Vendor')
+    payment_method = fields.Selection([
+        ('tunai', 'Cash'),
+        ('tempo', 'Tempo'),
+        ('credit', 'Credit Card')
+    ])
+    start_travel = fields.Date('Date From')
+    end_travel = fields.Date('Date To')
+    total_prices = fields.Integer('Total Price')
 
     def action_confirm(self):
         for line in self:
@@ -50,9 +69,10 @@ class TravelRequest(models.Model):
     def onchange_employee(self):
         for line in self:
             line.department_id = False
-            if line.employee_id.department_id:
+            line.job_id = False
+            if line.employee_id.department_id and line.employee_id.job_id:
                 line.department_id = line.employee_id.department_id.id
-
+                line.job_id = line.employee_id.job_id
     @api.model
     def create(self, vals):
         # if vals.get('name', '/') == '/':

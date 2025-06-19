@@ -23,6 +23,8 @@
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <field name="date" required="1"/>
                             <field name="type" required="1"/>
+                            <field name="start_date_insurance" required="type == 'insurance' " invisible=" type != 'insurance' "/>
+                            <field name="exp_date_insurance" required="type == 'insurance' " invisible=" type != 'insurance' "/>
                             <field name="user_id" required="1"/>
                             <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
                         </group>
@@ -54,6 +56,8 @@
                 <tree>
                     <field name="name" string="Name"/>
                     <field name="date" required="1"/>
+                    <field name="start_date_insurance" required="type == 'insurance' " invisible=" type != 'insurance' "/>
+                    <field name="exp_date_insurance" required="type == 'insurance' " invisible=" type != 'insurance' "/>
                     <field name="type" required="1"/>
                     <field name="state" required="1"/>
                 </tree>
