@@ -187,7 +187,7 @@
         </record>
 
         <record id="action_requisition_po" model="ir.actions.act_window">
-            <field name="name">Purchase Requisition IT</field>
+            <field name="name">Purchase Requisition</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.requisition</field>
             <field name="context">{"search_default_requisition_po":1}</field>

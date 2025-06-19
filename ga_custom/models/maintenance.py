@@ -13,8 +13,6 @@ class GaMaintenanceReport(models.Model):
     date = fields.Date()
     type = fields.Selection([
         ('gps', 'GPS'),
-        ('cctv', 'CCTV'),
-        ('maintenance', 'Maintenance'),
     ])
     state = fields.Selection([
         ('draft', 'Draft'),
