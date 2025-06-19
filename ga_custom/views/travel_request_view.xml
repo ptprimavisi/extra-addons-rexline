@@ -27,9 +27,13 @@
                                 <field name="so_number" string="SO Number" readonly="state == 'done'"/>
                                 <field name="dest_from" string="From" required="1" readonly="state == 'done'"/>
                                 <field name="dest_to" string="To" required="1" readonly="state == 'done'"/>
+                                <field name="start_travel" required="1" readonly="state == 'done'"/>
+                                <field name="end_travel" required="1" readonly="state == 'done'"/>
                             </group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <group>
+                                <field name="job_id" required="1" readonly="1"/>
+                                <field name="job_id" required="1" readonly="state == 'done'" invisible="1"/>
                                 <field name="department_id" required="1" readonly="1"/>
                                 <field name="department_id" required="1" invisible="1" readonly="state == 'done'"/>
                                 <field name="destination" required="1"  readonly="state == 'done'"/>
@@ -41,9 +45,14 @@
                         <notebook>
                             <page string="Estimated Budget">
                                 <group string="Type of expense" name="type_expense" priority="1">
+                                    <field name="transport_type" readonly="state == 'done'"/>
+                                    <field name="vendor" readonly="state == 'done'"/>
                                     <field name="tickets" readonly="state == 'done'"/>
                                     <field name="hotels" readonly="state == 'done'"/>
                                     <field name="other" readonly="state == 'done'"/>
+                                    <field name="payment_method" readonly="state == 'done'"/>
+                                    <field name="tax" readonly="state == 'done'"/>
+                                    <field name="total_prices" readonly="state == 'done'"/>
                                     <field name="description" string="Description" readonly="state == 'done'"/>
                                 </group>
                             </page>

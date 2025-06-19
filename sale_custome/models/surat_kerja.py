@@ -98,6 +98,18 @@ class SuratKerja(models.Model):
     #         hours_difference = time_difference_seconds / 3600
     #         return 8
 
+class EmployeeMutationLine(models.Model):
+    _name = 'employee.mutation.line'
+    _description = 'Employee Mutation Entry'
+    _order = 'date_from desc'
+
+    name = fields.Char(string='Nama')
+    date_from = fields.Date(string='Date From')
+    date_to = fields.Date(string='Date To')
+    position = fields.Char(string='Position')
+    department_id = fields.Many2one('hr.department', string='Department')
+    location_id = fields.Char()
+    employee_id = fields.Many2one('hr.employee', string='Employee', ondelete='cascade')
 
 class SuratKerjaLine(models.Model):
     _name = 'surat.kerja.line'
@@ -134,6 +146,9 @@ class HrEmployeeInherit(models.Model):
 
     alert_state = fields.Boolean(compute="_compute_contract", store=True)
     color_field = fields.Char(string='Background color')
+    mutation_line_ids = fields.One2many('employee.mutation.line', 'employee_id', string='Mutations')
+    npwp = fields.Char('NPWP Number')
+    bpjs_number = fields.Char('BPJS Number')
 
     @api.depends('contract_ids')
     def _compute_contract(self):

@@ -13,9 +13,17 @@ class GaMaintenanceReport(models.Model):
     date = fields.Date()
     type = fields.Selection([
         ('gps', 'GPS'),
-        ('cctv', 'CCTV'),
-        ('maintenance', 'Maintenance'),
+        ('vehicles','Vehicles'),
+        ('office_assets', 'Office Assets'),
+        ('office_stationery', 'Office Stationery'),
+        ('travel_reports', 'Travel Reports'),
+        ('company_documents', 'Company Documents'),
+        ('insurance', 'Insurance'),
+        ('vehicle_regis', 'Vehicle Registration (STNK)'),
     ])
+
+    start_date_insurance = fields.Date(string="Start Date")
+    exp_date_insurance = fields.Date(string='Expiration Date')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done')

@@ -17,7 +17,7 @@ class GaRequest(models.Model):
     due_date = fields.Date()
     description = fields.Text()
     justification = fields.Text()
-    estimate_price = fields.Float()
+    # estimate_price = fields.Float()
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done'),
