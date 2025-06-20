@@ -155,6 +155,9 @@
                 <field name="bpjs_number"/>
                 <field name="npwp"/>
             </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_user" string="Create User" confirm="Do you want to create users for this employee ? " type="object" class="oe_highlight" invisible="user_id != False"/>
+            </xpath>
         </field>
     </record>
         <record id="hr_employee_tree_view" model="ir.ui.view">

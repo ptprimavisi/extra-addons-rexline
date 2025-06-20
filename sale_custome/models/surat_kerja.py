@@ -167,3 +167,35 @@ class HrEmployeeInherit(models.Model):
                 line.alert_state = True
                 line.color_field = '#fdc6c673'
 
+    def action_create_user(self):
+        for line in self:
+            department = line.department_id.id
+            if department:
+                employee = self.env['hr.employee'].search([
+                    ('department_id', '=', int(line.department_id.id)),
+                    ('user_id', '!=', False),
+                    ('user_id.state', '=', 'active')
+                ], order='create_date desc', limit=1)
+                if not line.user_id:
+                    if line.work_email:
+                        if employee and employee.user_id:
+                            new_user = employee.user_id.copy()
+
+                            # Update field pada user baru
+                            new_user.write({
+                                'name': line.name,
+                                'login': line.work_email,
+                            })
+
+                            # Set user_id di line
+                            line.user_id = new_user.id
+                        else:
+                            raise UserError('Work Email is Missing')
+                            exit()
+                        # print(final)
+                        # exit()
+                        # line.user_id = int(final.id)
+
+
+
+
