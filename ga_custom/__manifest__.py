@@ -2,7 +2,7 @@
     'name': 'Custom General Affair',
     'category': 'account',
     'description': 'odoo custom GA',
-    'depends': ['account', 'base', 'hr'],
+    'depends': ['account', 'base', 'hr', 'sale'],
     'data': [
         "views/ga_request_view.xml",
         "views/ga_maintenance_view.xml",

@@ -7,6 +7,7 @@ class ManpowerRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
+    sale_id = fields.Many2one('sale.order')
     project_name = fields.Char()
     project_location = fields.Char()
     date_request = fields.Date(default=lambda self: fields.Datetime.today())
@@ -18,6 +19,15 @@ class ManpowerRequest(models.Model):
         ('confirm', 'Process'),
         ('done', 'Done')
     ], default='draft')
+    is_no_edit = fields.Boolean(compute="_compute_is_no_edit")
+
+    def _compute_is_no_edit(self):
+        for line in self:
+            uid = self.env.uid
+            line.is_no_edit = False
+            users = self.env['res.users'].search([('id', '=', int(uid))])
+            if users.login == 'rizal.sholfyah@rexlineengineering.com':
+                line.is_no_edit = True
     # user_domain = fields.Char(compute="_user_domain", search="_search_domain")
     #
     # def _user_domain(self):
@@ -34,6 +44,15 @@ class ManpowerRequest(models.Model):
     #         employee = self.env['hr.employee'].search([('user_id', '=', int(uid))])
     #         domain = [("employee_id", '=', int(employee.id))]
     #     return domain
+
+    @api.onchange('sale_id')
+    def onchange_sale(self):
+        for line in self:
+            line.project_name = False
+            line.project_location = False
+            if line.sale_id.opportunity_id:
+                line.project_name = line.sale_id.opportunity_id.note_header or ''
+                line.project_location = line.sale_id.opportunity_id.location or ''
 
     def _compute_is_hr(self):
         for line in self:
@@ -67,6 +86,7 @@ class ManpowerRequestLine(models.Model):
     position_id = fields.Many2one('manpower.category')
     required_qty = fields.Float()
     hr_feedback = fields.Char()
+    job_position = fields.Char()
     replacement = fields.Selection([
         ('new', 'New Manpower'),
         ('replacement', 'Replacement'),

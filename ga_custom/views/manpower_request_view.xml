@@ -20,17 +20,20 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="project_name" required="1" readonly="state == 'done'"/>
-                            <field name="project_location" required="1" readonly="state == 'done'"/>
-                            <field name="date_request" readonly="state == 'done'"/>
-                            <field name="date_requirement" string="Date of Requirement" required="1" readonly="state == 'done'"/>
+                            <field name="is_no_edit" invisible="1"/>
+                            <field name="project_name" required="1" readonly="state == 'done' or is_no_edit == True"/>
+                            <field name="sale_id" string="SO Number" readonly="state == 'done' or is_no_edit == True"/>
+                            <field name="project_location" required="1" readonly="state == 'done' or is_no_edit == True"/>
+                            <field name="date_request" readonly="state == 'done' or is_no_edit == True"/>
+                            <field name="date_requirement" string="Date of Requirement" required="1" readonly="state == 'done' or is_no_edit == True"/>
                         </group>
                         <notebook>
                             <page string="Manpower Lines">
-                                <field name="manpower_ids" readonly="state == 'done'">
+                                <field name="manpower_ids" readonly="state == 'done' or is_no_edit == True">
                                     <tree editable="bottom">
                                         <field name="division_id" string="Division" required="1"/>
                                         <field name="position_id" required="1"/>
+                                        <field name="job_position" string="Job Description" required="1"/>
                                         <field name="required_qty" required="1"/>
                                         <field name="hr_feedback" string="HR Feedback" readonly="is_hr == False"/>
                                         <field name="replacement" string="Replacement or New" required="1"/>

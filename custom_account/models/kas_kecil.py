@@ -173,6 +173,10 @@ class PermintaanDana(models.Model):
         ('approve', 'Approve'),
         ('refused', 'Refused'),
     ], default="no")
+    advance_type = fields.Selection([
+        ('personal', 'Personal'),
+        ('project', 'Project')
+    ], default="personal")
 
     def action_print_report(self):
         for line in self:
@@ -464,13 +468,13 @@ class PermintaanDana(models.Model):
                 {
                     'name': "Prepared by,",
                     'status': str(status),
-                    'users': str(line.employee_id.name),
+                    'users': str(line.user_id.name),
                     'date': str(date_confirm),
                 },
                 {
                     'name': "PIC",
                     'status': str(status),
-                    'users': str(line.pic_user.name),
+                    'users': str(line.employee_id.name),
                     'date': str(date_confirm),
                 }
             ]
