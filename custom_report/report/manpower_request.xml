@@ -21,174 +21,177 @@
                         </h4>
                     </div>
                     <br/>
-                    <div class="page" style="font-family: Calibri, sans-serif; ">
-                        <div class="row">
-                            <div class="col">
-                                <table style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Project Name</th>
-                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.project_name"/></td>
-                                        </tr>
-                                        <tr>
-                                            <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Project Location</th>
-                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.project_location"/></td>
-                                        </tr>
-                                        <tr>
-                                            <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Date of Request</th>
-                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.format_date(doc.date_request)"/></td>
-                                        </tr>
-                                        <tr>
-                                            <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Date of Requirement</th>
-                                            <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.format_date(doc.date_requirement)"/></td>
-                                        </tr>
-                                    </thead>
-                                </table>
+                    <div class="mb-3" style="padding-left: 40px; padding-top: 10px; margin-right: 20px;">
+
+                        <div class="page" style="font-family: Calibri, sans-serif; ">
+                            <div class="row">
+                                <div class="col">
+                                    <table style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Project Name</th>
+                                                <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.project_name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Project Location</th>
+                                                <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.project_location"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Date of Request</th>
+                                                <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.format_date(doc.date_request)"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: left; width: 30%; padding-bottom: 15px; color: black;">Date of Requirement</th>
+                                                <td style="text-align: left; padding-bottom: 15px; color: black;">: <t t-esc="doc.format_date(doc.date_requirement)"/></td>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <hr/>
-                    <h4 style="font-size: 16px;">
-                        <strong>Manpower Requirement</strong>
-                    </h4>
-                    <br/>
-                    <t t-set="lines" t-value="doc.manpower_line()"/>
-                    <t t-set="c" t-value="1"/>
-                    <t t-foreach="lines.items()" t-as="entry">
-                        <t t-set="key" t-value="entry[0]"/>
-                        <t t-set="items" t-value="entry[1]"/>
+                        <hr/>
                         <h4 style="font-size: 16px;">
-                            <t t-esc="c"/>. <t t-esc="key"/> :
+                            <strong>Manpower Requirement</strong>
                         </h4>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr style="background-color: red;">
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Position
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Required Qty
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        HR Feedback
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Replacement
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Day Required
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Existing Required
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Remark
-                                    </th>
-                                    <th style="border: 1.5px solid black; color: white;">
-                                        Status
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="items" t-as="details">
-                                    <tr>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['position_name']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['required_qty']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['hr_feedback']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['replacement']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['day_required']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['existing_required']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['remark']"/>
-                                        </td>
-                                        <td style="border: 1.5px solid black; color: black;">
-                                            <t t-esc="details['state']"/>
-                                        </td>
-                                    </tr>
-                                </t>
-
-                            </tbody>
-                        </table>
                         <br/>
+                        <t t-set="lines" t-value="doc.manpower_line()"/>
+                        <t t-set="c" t-value="1"/>
+                        <t t-foreach="lines.items()" t-as="entry">
+                            <t t-set="key" t-value="entry[0]"/>
+                            <t t-set="items" t-value="entry[1]"/>
+                            <h4 style="font-size: 16px;">
+                                <t t-esc="c"/>. <t t-esc="key"/> :
+                            </h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr style="background-color: red;">
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Position
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Required Qty
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            HR Feedback
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Replacement
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Day Required
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Existing Required
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Remark
+                                        </th>
+                                        <th style="border: 1.5px solid black; color: white;">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="items" t-as="details">
+                                        <tr>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['position_name']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['required_qty']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['hr_feedback']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['replacement']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['day_required']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['existing_required']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['remark']"/>
+                                            </td>
+                                            <td style="border: 1.5px solid black; color: black;">
+                                                <t t-esc="details['state']"/>
+                                            </td>
+                                        </tr>
+                                    </t>
 
-                        <t t-set="c" t-value="c + 1"/>
-                    </t>
-                    <hr/>
-                    <div class="container">
-                        <div class="row text-center">
-                            <t t-foreach="docs.approval_data()[0:4]" t-as="lines">
-                                <div class="col col-3">
-                                    <table class="table table-bordered" style="width: 98%;">
-                                        <thead>
-                                            <tr style="border: 1.5px solid black; background-color: red;">
-                                                <td style="border: 1.5px solid black; color: white;"><t t-esc="lines['name']"/></td>
-                                            </tr>
-                                            <tr style="border: 1.5px solid black;">
-                                                <td style="border: 1.5px solid black; width: 40px; height: 30px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                    <t t-if="lines['status'] == 'Approved'">
-                                                        <strong><t t-esc="lines['status']"/></strong>
-                                                    </t>
-                                                </td>
-                                            </tr>
-                                            <tr style="border: 1.5px solid black;">
-                                                <td style="border: 1.5px solid black; width: 40px; height: 25px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                    <t t-if="lines['status'] == 'Approved'">
-                                                        <strong><t t-esc="lines['date']"/></strong>
-                                                    </t>
-                                                </td>
-                                            </tr>
-                                            <tr style="border: 1.5px solid black; background-color: #0e72e6;">
-                                                <td style="border: 1.5px solid black;  color: white;"><t t-esc="lines['users']"/></td>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </t>
+                                </tbody>
+                            </table>
+                            <br/>
+
+                            <t t-set="c" t-value="c + 1"/>
+                        </t>
+                        <hr/>
+                        <div class="container">
+                            <div class="row text-center">
+                                <t t-foreach="docs.approval_data()[0:4]" t-as="lines">
+                                    <div class="col col-3">
+                                        <table class="table table-bordered" style="width: 98%;">
+                                            <thead>
+                                                <tr style="border: 1.5px solid black; background-color: red;">
+                                                    <td style="border: 1.5px solid black; color: white;"><t t-esc="lines['name']"/></td>
+                                                </tr>
+                                                <tr style="border: 1.5px solid black;">
+                                                    <td style="border: 1.5px solid black; width: 40px; height: 30px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                        <t t-if="lines['status'] == 'Approved'">
+                                                            <strong><t t-esc="lines['status']"/></strong>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: 1.5px solid black;">
+                                                    <td style="border: 1.5px solid black; width: 40px; height: 25px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                        <t t-if="lines['status'] == 'Approved'">
+                                                            <strong><t t-esc="lines['date']"/></strong>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: 1.5px solid black; background-color: #0e72e6;">
+                                                    <td style="border: 1.5px solid black;  color: white;"><t t-esc="lines['users']"/></td>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
-                    </div>
-                    <br/>
-                    <div class="container">
-                        <div class="row justify-content-center text-center">
-                            <t t-foreach="docs.approval_data()[4:]" t-as="lines">
-                                <div class="col col-3">
-                                    <table class="table table-bordered" style="width: 98%;">
-                                        <thead>
-                                            <tr style="border: 1.5px solid black;  background-color: red;">
-                                                <td style="border: 1.5px solid black; color: white;"><t t-esc="lines['name']"/></td>
-                                            </tr>
-                                            <tr style="border: 1.5px solid black;">
-                                                <td style="border: 1.5px solid black; width: 40px; height: 30px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                    <t t-if="lines['status'] == 'Approved'">
-                                                        <strong><t t-esc="lines['status']"/></strong>
-                                                    </t>
-                                                </td>
-                                            </tr>
-                                            <tr style="border: 1.5px solid black;">
-                                                <td style="border: 1.5px solid black; width: 40px; height: 25px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                    <t t-if="lines['status'] == 'Approved'">
-                                                        <strong><t t-esc="lines['date']"/></strong>
-                                                    </t>
-                                                </td>
-                                            </tr>
-                                            <tr style="border: 1.5px solid black;  background-color: #0e72e6;">
-                                                <td style="border: 1.5px solid black;  color: white;"><t t-esc="lines['users']"/></td>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </t>
+                        <br/>
+                        <div class="container">
+                            <div class="row justify-content-center text-center">
+                                <t t-foreach="docs.approval_data()[4:]" t-as="lines">
+                                    <div class="col col-3">
+                                        <table class="table table-bordered" style="width: 98%;">
+                                            <thead>
+                                                <tr style="border: 1.5px solid black;  background-color: red;">
+                                                    <td style="border: 1.5px solid black; color: white;"><t t-esc="lines['name']"/></td>
+                                                </tr>
+                                                <tr style="border: 1.5px solid black;">
+                                                    <td style="border: 1.5px solid black; width: 40px; height: 30px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                        <t t-if="lines['status'] == 'Approved'">
+                                                            <strong><t t-esc="lines['status']"/></strong>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: 1.5px solid black;">
+                                                    <td style="border: 1.5px solid black; width: 40px; height: 25px; color: black; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                        <t t-if="lines['status'] == 'Approved'">
+                                                            <strong><t t-esc="lines['date']"/></strong>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: 1.5px solid black;  background-color: #0e72e6;">
+                                                    <td style="border: 1.5px solid black;  color: white;"><t t-esc="lines['users']"/></td>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
                     </div>
                 </t>

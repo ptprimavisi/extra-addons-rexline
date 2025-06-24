@@ -9,141 +9,143 @@
                         GENERAL DAILY REPORT
                     </h4>
                 </div>
+                <div class="mb-3" style="padding-left: 40px; padding-top: 10px; margin-right: 20px;">
 
-                <div class="page" style="font-family: Calibri, sans-serif;">
-                    <h4 style="text-align: center; font-size: 16px;">GENERAL DAILY REPORT</h4>
-                   <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px; border: none;">
-                        <tr style="border: none;">
-                            <td style="border: none;padding: 0 auto;margin: 0 auto;">CUSTOMER / CLIENT</td>
-                            <td style="border: none;">:</td>
-                            <td style="border: none;"><t t-esc="doc.partner_id.name or 'Unknow'"/></td>
-                            <td style="border: none;">DATE</td>
-                            <td style="border: none;">:</td>
-                            <td style="border: none;"><t t-esc="doc.date or 'Unknow'"/></td>
-                        </tr>
-                        <tr style="border: none;">
-                            <td style="border: none;">SO / PROJECT</td>
-                            <td style="border: none;">:</td>
-                            <td style="border: none;"><t t-esc="doc.sale_id.name or 'Unknow'"/></td>
-                            <td colspan="3" style="border: none;"></td>
-                        </tr>
-                        <tr style="border: none;">
-                            <td style="border: none;">LOCATION</td>
-                            <td style="border: none;">:</td>
-                            <td style="border: none;"><t t-esc="doc.location or 'Unknow'"/></td>
-                            <td colspan="3" style="border: none;"></td>
-                        </tr>
-                    </table>
-
-                    <hr></hr>
-                     <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
-                        A. PEKERJAAN
-                    </h4>
-                   <t t-set="line_number" t-value="0"/>
-                        <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
-                            <tr>
-                                <td rowspan="2" style="text-align: center;padding-top: 20px;">NO</td>
-                                <td rowspan="2" style="text-align: center;padding-top: 20px;">MAN POWER</td>
-                                <td rowspan="2" style="text-align: center;padding-top: 20px">KEGIATAN</td>
-                                <td colspan="3" style="text-align: center;">DIMENSI (MM)</td>
-                                <td rowspan="2" style="text-align: center;">QTY</td>
+                    <div class="page" style="font-family: Calibri, sans-serif;">
+                        <h4 style="text-align: center; font-size: 16px;">GENERAL DAILY REPORT</h4>
+                       <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px; border: none;">
+                            <tr style="border: none;">
+                                <td style="border: none;padding: 0 auto;margin: 0 auto;">CUSTOMER / CLIENT</td>
+                                <td style="border: none;">:</td>
+                                <td style="border: none;"><t t-esc="doc.partner_id.name or 'Unknow'"/></td>
+                                <td style="border: none;">DATE</td>
+                                <td style="border: none;">:</td>
+                                <td style="border: none;"><t t-esc="doc.date or 'Unknow'"/></td>
                             </tr>
-                            <tr>
-                                <td style="text-align: center;">P</td>
-                                <td style="text-align: center;">L</td>
-                                <td style="text-align: center;">T</td>
+                            <tr style="border: none;">
+                                <td style="border: none;">SO / PROJECT</td>
+                                <td style="border: none;">:</td>
+                                <td style="border: none;"><t t-esc="doc.sale_id.name or 'Unknow'"/></td>
+                                <td colspan="3" style="border: none;"></td>
                             </tr>
-                            <t t-foreach="doc.man_power_ids" t-as="line">
-                                <tr>
-                                    <td style="text-align: center;">
-                                        <t t-set="line_number" t-value="line_number + 1"/>
-                                        <t t-esc="line_number"/>
-                                    </td>
-                                    <td style="text-align: center;"><t t-esc="line.employee_id.name or 'Unknow'"/></td>
-                                    <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
-                                    <td style="text-align: center;"><t t-esc="line.p or 'Unknow'"/></td>
-                                    <td style="text-align: center;"><t t-esc="line.t or 'Unknow'"/></td>
-                                    <td style="text-align: center;"><t t-esc="line.l or 'Unknow'"/></td>
-                                    <td style="text-align: center;"><t t-esc="line.quantity or 0"/></td>
-                                </tr>
-                            </t>
+                            <tr style="border: none;">
+                                <td style="border: none;">LOCATION</td>
+                                <td style="border: none;">:</td>
+                                <td style="border: none;"><t t-esc="doc.location or 'Unknow'"/></td>
+                                <td colspan="3" style="border: none;"></td>
+                            </tr>
                         </table>
 
-
-                    <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
-                        B. KENDALA
-                    </h4>
-                   <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;table-layout: fixed;">
-                       <tr>
-                            <td style="text-align: center;padding-top: 20px;width: 80px;">NO</td>
-                            <td style="text-align: center;padding-top: 20px;">URAIAN</td>
-                       </tr>
-                       <t t-set="line_number2" t-value="0"/>
-                        <t t-foreach="doc.problem_ids" t-as="line">
+                        <hr></hr>
+                         <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
+                            A. PEKERJAAN
+                        </h4>
+                       <t t-set="line_number" t-value="0"/>
+                            <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
                                 <tr>
-                                    <td style="text-align: center;">
-                                        <t t-set="line_number" t-value="line_number2 + 1"/>
-                                        <t t-esc="line_number"/>
-                                    </td>
-                                    <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
+                                    <td rowspan="2" style="text-align: center;padding-top: 20px;">NO</td>
+                                    <td rowspan="2" style="text-align: center;padding-top: 20px;">MAN POWER</td>
+                                    <td rowspan="2" style="text-align: center;padding-top: 20px">KEGIATAN</td>
+                                    <td colspan="3" style="text-align: center;">DIMENSI (MM)</td>
+                                    <td rowspan="2" style="text-align: center;">QTY</td>
                                 </tr>
-                            </t>
-                   </table>
+                                <tr>
+                                    <td style="text-align: center;">P</td>
+                                    <td style="text-align: center;">L</td>
+                                    <td style="text-align: center;">T</td>
+                                </tr>
+                                <t t-foreach="doc.man_power_ids" t-as="line">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <t t-set="line_number" t-value="line_number + 1"/>
+                                            <t t-esc="line_number"/>
+                                        </td>
+                                        <td style="text-align: center;"><t t-esc="line.employee_id.name or 'Unknow'"/></td>
+                                        <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
+                                        <td style="text-align: center;"><t t-esc="line.p or 'Unknow'"/></td>
+                                        <td style="text-align: center;"><t t-esc="line.t or 'Unknow'"/></td>
+                                        <td style="text-align: center;"><t t-esc="line.l or 'Unknow'"/></td>
+                                        <td style="text-align: center;"><t t-esc="line.quantity or 0"/></td>
+                                    </tr>
+                                </t>
+                            </table>
 
 
-                    <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
-                        C. SOLVING
-                    </h4>
-                   <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;table-layout: fixed;">
-                       <tr>
-                            <td style="text-align: center;padding-top: 20px;width: 80px;">NO</td>
-                            <td style="text-align: center;padding-top: 20px;">URAIAN</td>
-                       </tr>
-                       <t t-set="line_number3" t-value="0"/>
-                        <t t-foreach="doc.solving_ids" t-as="line">
-                                <tr>
-                                    <td style="text-align: center;">
-                                        <t t-set="line_number" t-value="line_number3 + 1"/>
-                                        <t t-esc="line_number"/>
-                                    </td>
-                                    <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
-                                </tr>
-                            </t>
-                   </table>
-                    <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
-                        E. TARGET BERIKUTNYA
-                    </h4>
-                   <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;table-layout: fixed;">
-                       <tr>
-                            <td style="text-align: center;padding-top: 20px;width: 80px;">NO</td>
-                            <td style="text-align: center;padding-top: 20px;">DESKRIPSI PEKERJAAN</td>
-                       </tr>
-                       <t t-set="line_number4" t-value="0"/>
-                        <t t-foreach="doc.target_ids" t-as="line">
-                                <tr>
-                                    <td style="text-align: center;">
-                                        <t t-set="line_number" t-value="line_number4 + 1"/>
-                                        <t t-esc="line_number"/>
-                                    </td>
-                                    <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
-                                </tr>
-                            </t>
-                   </table>
-                    <hr></hr>
-                    <h4 style="text-align: center; padding-top: 10px;font-size: 12px;">
-                        LAMPIRAN
-                    </h4>
-                    <t t-foreach="doc.attachment_ids" t-as="attachment">
-                        <div>
-                            <hr></hr>
-                            <img t-if="attachment.mimetype.startswith('image')"
-         t-attf-src="data:image/*;base64,#{attachment.datas.decode('utf-8')}"
-         style="display: block; margin: 0 auto; max-width: 50%; height: auto;"/>
-                            <p style="text-align: center; margin-top: 10px;">
-                                <t t-esc="attachment.name" /> <!-- Menampilkan nama file -->
-                            </p>
-                        </div>
-                    </t>
+                        <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
+                            B. KENDALA
+                        </h4>
+                       <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;table-layout: fixed;">
+                           <tr>
+                                <td style="text-align: center;padding-top: 20px;width: 80px;">NO</td>
+                                <td style="text-align: center;padding-top: 20px;">URAIAN</td>
+                           </tr>
+                           <t t-set="line_number2" t-value="0"/>
+                            <t t-foreach="doc.problem_ids" t-as="line">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <t t-set="line_number" t-value="line_number2 + 1"/>
+                                            <t t-esc="line_number"/>
+                                        </td>
+                                        <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
+                                    </tr>
+                                </t>
+                       </table>
+
+
+                        <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
+                            C. SOLVING
+                        </h4>
+                       <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;table-layout: fixed;">
+                           <tr>
+                                <td style="text-align: center;padding-top: 20px;width: 80px;">NO</td>
+                                <td style="text-align: center;padding-top: 20px;">URAIAN</td>
+                           </tr>
+                           <t t-set="line_number3" t-value="0"/>
+                            <t t-foreach="doc.solving_ids" t-as="line">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <t t-set="line_number" t-value="line_number3 + 1"/>
+                                            <t t-esc="line_number"/>
+                                        </td>
+                                        <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
+                                    </tr>
+                                </t>
+                       </table>
+                        <h4 style="text-align: left; padding-top: 10px;font-size: 12px;">
+                            E. TARGET BERIKUTNYA
+                        </h4>
+                       <table class="table" style="margin-top: 20px; border-collapse: separate; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;table-layout: fixed;">
+                           <tr>
+                                <td style="text-align: center;padding-top: 20px;width: 80px;">NO</td>
+                                <td style="text-align: center;padding-top: 20px;">DESKRIPSI PEKERJAAN</td>
+                           </tr>
+                           <t t-set="line_number4" t-value="0"/>
+                            <t t-foreach="doc.target_ids" t-as="line">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <t t-set="line_number" t-value="line_number4 + 1"/>
+                                            <t t-esc="line_number"/>
+                                        </td>
+                                        <td style="text-align: left;"><t t-esc="line.description or 'Unknow'"/></td>
+                                    </tr>
+                                </t>
+                       </table>
+                        <hr></hr>
+                        <h4 style="text-align: center; padding-top: 10px;font-size: 12px;">
+                            LAMPIRAN
+                        </h4>
+                        <t t-foreach="doc.attachment_ids" t-as="attachment">
+                            <div>
+                                <hr></hr>
+                                <img t-if="attachment.mimetype.startswith('image')"
+             t-attf-src="data:image/*;base64,#{attachment.datas.decode('utf-8')}"
+             style="display: block; margin: 0 auto; max-width: 50%; height: auto;"/>
+                                <p style="text-align: center; margin-top: 10px;">
+                                    <t t-esc="attachment.name" /> <!-- Menampilkan nama file -->
+                                </p>
+                            </div>
+                        </t>
+                    </div>
                 </div>
             </t>
         </t>
