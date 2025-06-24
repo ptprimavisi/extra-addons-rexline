@@ -2160,19 +2160,20 @@ class InquiryLineDocument(models.Model):
     stage = fields.Char()
     source = fields.Char()
     inquiry_id = fields.Many2one('inquiry.inquiry')
-    dicipline_category = fields.Selection([
-        ('site_plan', 'SITE PLAN'),
-        ('workshop_building', 'WORKSHOP BUILDING'),
-        ('office_building', 'OFFICE BUILDING'),
-        ('fabrication_building', 'FABRICATION BUILDING'),
-        ('tyreshop_building', 'TYRESHOP BUILDING'),
-        ('mechanical', 'MECHANICAL'),
-        ('electrical_instrument', 'ELECTRICAL & INSTRUMENT'),
-        ('calculation', 'CALCULATION'),
-        ('technical_data_sheet', 'TECHNICAL DATA SHEET'),
-        ('approval_brand', 'APPROVAL BRAND'),
-        ('qc_document', 'QC DOCUMENT'),
-    ], string="Discipline Category")
+    dicipline_category = fields.Many2one('dicipline.category')
+    # dicipline_category = fields.Selection([
+    #     ('site_plan', 'SITE PLAN'),
+    #     ('workshop_building', 'WORKSHOP BUILDING'),
+    #     ('office_building', 'OFFICE BUILDING'),
+    #     ('fabrication_building', 'FABRICATION BUILDING'),
+    #     ('tyreshop_building', 'TYRESHOP BUILDING'),
+    #     ('mechanical', 'MECHANICAL'),
+    #     ('electrical_instrument', 'ELECTRICAL & INSTRUMENT'),
+    #     ('calculation', 'CALCULATION'),
+    #     ('technical_data_sheet', 'TECHNICAL DATA SHEET'),
+    #     ('approval_brand', 'APPROVAL BRAND'),
+    #     ('qc_document', 'QC DOCUMENT'),
+    # ], string="Discipline Category")
     jumlah = fields.Float()
     submitted = fields.Float()
     ifa = fields.Float()
@@ -2194,6 +2195,9 @@ class InquiryLineDocument(models.Model):
                 final = total * 100
                 line.percentage = final
 
+class DiciplineCategory(models.Model):
+    _name = 'dicipline.category'
+    name_category = fields.Char()
 
 class InquiryLineTask(models.Model):
     _name = 'inquiry.line.task'
