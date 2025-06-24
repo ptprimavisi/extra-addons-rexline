@@ -15,6 +15,8 @@ class InheritResCompany(models.Model):
     watermark_mrf = fields.Image('Watermark MRF', store=True)
     watermark = fields.Image('Watermark', store=True)
     info = fields.Image('Info', store=True)
+    info_landscape = fields.Image('Info', store=True)
+
 
     @api.model
     def default_get(self, fields_list):

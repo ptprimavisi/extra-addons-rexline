@@ -43,7 +43,8 @@
                     <field name="sale_logo" widget="image" class="oe_avatar"/>
                     <field name="watermark_mrf" widget="image" class="oe_avatar"/>
                     <field name="watermark" widget="image" class="oe_avatar"/>
-                    <field name="info" widget="image" class="oe_avatar"/>
+                    <field name="info" string="Kop Portrait" widget="image" class="oe_avatar"/>
+                    <field name="info_landscape" string="Kop Landscape" widget="image" class="oe_avatar"/>
                 </xpath>
             </field>
         </record>
