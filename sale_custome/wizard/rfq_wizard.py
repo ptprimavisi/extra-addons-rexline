@@ -29,6 +29,12 @@ class RfqWizard(models.TransientModel):
             inquiry = self.env['inquiry.inquiry'].browse(int(line.inquiry_id.id))
             inquiry.write({'state': 'done'})
             for lines in line.rfq_line_ids:
+                qty_purchase = 0
+                if lines.quantity or lines.available_qty:
+                    total = lines.quantity - lines.available_qty
+                    if lines.quantity < lines.available_qty:
+                        total = 0.0
+                    qty_purchase = total
                 line_list.append((0, 0, {
                     "product_id": int(lines.product_id.id),
                     "type": str(lines.type),
@@ -37,6 +43,7 @@ class RfqWizard(models.TransientModel):
                     "brand": lines.brand,
                     'unit_weight': lines.unit_weight,
                     "quantity": lines.quantity,
+                    "qty_purchase": qty_purchase,
                     "product_uom_id": lines.product_uom.id,
                     "budget": float(int(lines.budget)),
                     "unit_cost": float(lines.unit_cost),

@@ -1,24 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template t-name="purchase_custome.report_payment_request">
-            <t t-call="web.html_container">
-
-                <div class="header" style="font-family: Calibri, sans-serif; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <div class="left" style="text-align: left; width: 50%;">
-                        <p t-esc="'{}\n{}\n{}'.format(res_company.name, res_company.street, res_company.phone)" style="font-size: 12px; margin-top: 5px; white-space: pre-line;"/>
-                    </div>
-
-                    <div class="right" style="text-align: right;position: absolute; top: 0;right: 0;">
-                        <div style="display: inline-block; text-align: center;">
-                            <img t-attf-src="data:image/png;base64,#{res_company.logo}"
-                                 alt="Company Logo"
-                                 style="width: 100px; height: auto; margin-bottom: 5px;"/>
-                            <p t-esc="res_company.website"
-                               style="font-size: 12px; margin-top: 5px; white-space: nowrap;"/>
-                        </div>
-                    </div>
-                </div>
-
+          <t t-call="web.html_container">
+                <t t-call="web.external_layout">
                     <h4 style="text-align: center; padding-top: 10px !important;">
                         PAYMENT REQUEST
                     </h4>
@@ -26,204 +10,222 @@
                    <p style="text-align: center;">
                         <t t-esc="number or 'Unknow'"/>
                     </p>
-
-                <div class="page" style="font-family: Calibri, sans-serif;">
-                    <table class="table" style="width: 40%; font-size: 14px;" border="0">
-                        <tr style="border: none;">
-                            <td style="width: 23%; border: none;">DATE</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="date or 'Unknow'"/></td>
-                        </tr>
-                        <tr style="border: none;">
-                            <td style="width: 23%; border: none;">DEPARTMENT</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"/>
-                        </tr>
-                        <tr border="0">
-                            <td style="width: 23%; border: none;white-space: nowrap;">VENDOR NAME</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="vendor or 'Unknow'"/></td>
-                        </tr>
-                        <tr border="0">
-                            <td style="width: 23%; border: none;">DUE DATE</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="due_date or 'Unknow'"/></td>
-                        </tr>
-                        <tr border="0">
-                            <td style="width: 23%; border: none;">MRF</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="mrf or 'Unknow'"/></td>
-                        </tr>
-                        <tr border="0">
-                            <td style="width: 23%; border: none;">SALE ORDER</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="so or 'Unknow'"/></td>
-                        </tr>
-                        <tr border="0">
-                            <td style="width: 23%; border: none;">PURCHASE ORDER</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="po or 'Unknow'"/></td>
-                        </tr>
-                        <tr style="border: none;">
-                            <td style="width: 23%; border: none;">STATUS</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="type or 'Unknow'"/></td>
-                        </tr>
-                        <tr style="border: none;">
-                            <td style="width: 23%; border: none;">CURRENCY</td>
-                            <td style="border: none; width: 2%;">:</td>
-                            <td style="border: none;"><t t-esc="currency or 'Unknow'"/></td>
-                        </tr>
-                    </table>
-
-                    <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
-                            <tbody>
-                              <tr style="background-color: #2b61bd;">
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">NO.</th>
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">DESCRIPTION</th>
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">AMOUNT</th>
-                                <th style="border: 1px solid black; padding: 8px; text-align: center;">REMARK</th>
-                              </tr>
-                              <t t-if="type == 'Full Payment'">
-                                <t t-set="c" t-value="0"/>
-                                <t t-set="total" t-value="0"/>
-                                <t t-foreach="item_detail" t-as="data">
-                                    <t t-set="c" t-value="c + 1"/>
-                                    <t t-set="total" t-value="total + data['price_total']"/>
-                                    <tr>
-                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="c"/></td>
-                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['product']"/></td>
-                                        <td style="text-align: left; border: 1px solid black; padding: 8px;">
-                                            <t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(data['price_total']))"/>
-                                        </td>
-                                        <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
-                                        <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['uom']"/></td>-->
-                                        <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['qty']"/></td>-->
-                                        <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['cost']"/></td>-->
-                                        <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['subtotal']"/></td>-->
-                                    </tr>
-                                </t>
-                                 <tr>
-                                    <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"></td>-->
-                                    <td colspan="2" style="text-align: right; border: 1px solid black; padding: 8px;"><strong>TOTAL PAYMENT</strong></td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(total))"/></td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
-
+                    <div class="mb-3" style="padding-left: 40px; padding-top: 10px; margin-right: 20px;">
+                        <div class="page" style="font-family: Calibri, sans-serif;">
+                            <table class="table" style="width: 40%; font-size: 14px;" border="0">
+                                <tr style="border: none;">
+                                    <td style="width: 23%; border: none;">DATE</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="date or 'Unknow'"/></td>
                                 </tr>
-                            </t>
-                            <t t-else="">
-                                <tr>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;">1.</td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="desc"/></td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;">
-                                        <t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(price_dp))"/>
-                                    </td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
-
+                                <tr style="border: none;">
+                                    <td style="width: 23%; border: none;">DEPARTMENT</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"/>
                                 </tr>
-                                <tr>
-                                    <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"></td>-->
-                                    <td colspan="2" style="text-align: right; border: 1px solid black; padding: 8px;"><strong>TOTAL PAYMENT</strong></td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(price_dp))"/></td>
-                                    <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
-
+                                <tr border="0">
+                                    <td style="width: 23%; border: none;white-space: nowrap;">VENDOR NAME</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="vendor or 'Unknow'"/></td>
                                 </tr>
-                            </t>
-
-                            </tbody>
-                        </table>
-<div style="display: flex; justify-content: space-between;widht: 100%;">
-    <div class="row" style="background-color: #2b61bd; display: inline-block;width: 100%;margin-top: 15px;padding-top: 10px;padding-bottom: 20px;">
-        <div style="margin-left: 20px;">
-                            <table style="border-collapse: collapse;">
-                                <tr>
-                                    <td>Please Transfer To</td>
-                                    <td>: </td>
-                                    <td>
-                                        <t t-foreach="bank" t-as="banks">
-                                            <div style="white-space: nowrap;"><t t-esc="banks['bank_name']"/></div>
-                                        </t>
-                                    </td>
-
+                                <tr border="0">
+                                    <td style="width: 23%; border: none;">DUE DATE</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="due_date or 'Unknow'"/></td>
                                 </tr>
-
-                                <tr>
-                                    <td/>
-                                    <td/>
-                                    <td>
-                                        <t t-foreach="bank" t-as="banks">
-                                            <div style="display: inline;"><t t-esc="banks['bank_number']"/></div>
-                                        </t>
-                                    </td>
+                                <tr border="0">
+                                    <td style="width: 23%; border: none;">MRF</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="mrf or 'Unknow'"/></td>
                                 </tr>
-
-                                <tr>
-                                    <td/>
-                                    <td/>
-                                    <td>
-                                        <t t-foreach="bank" t-as="banks">
-                                            <div style="display: inline;"><t t-esc="banks['bank_partner']"/></div>
-                                        </t>
-                                    </td>
+                                <tr border="0">
+                                    <td style="width: 23%; border: none;">SALE ORDER</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="so or 'Unknow'"/></td>
+                                </tr>
+                                <tr border="0">
+                                    <td style="width: 23%; border: none;">PURCHASE ORDER</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="po or 'Unknow'"/></td>
+                                </tr>
+                                <tr style="border: none;">
+                                    <td style="width: 23%; border: none;">STATUS</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="type or 'Unknow'"/></td>
+                                </tr>
+                                <tr style="border: none;">
+                                    <td style="width: 23%; border: none;">CURRENCY</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="currency or 'Unknow'"/></td>
                                 </tr>
                             </table>
+
+                            <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
+                                    <tbody>
+                                      <tr style="background-color: #2b61bd;">
+                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">NO.</th>
+                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">DESCRIPTION</th>
+                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">AMOUNT</th>
+                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">REMARK</th>
+                                      </tr>
+                                      <t t-if="type == 'Full Payment'">
+                                        <t t-set="c" t-value="0"/>
+                                        <t t-set="total" t-value="0"/>
+                                        <t t-foreach="item_detail" t-as="data">
+                                            <t t-set="c" t-value="c + 1"/>
+                                            <t t-set="total" t-value="total + data['price_total']"/>
+                                            <tr>
+                                                <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="c"/></td>
+                                                <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['product']"/></td>
+                                                <td style="text-align: left; border: 1px solid black; padding: 8px;">
+                                                    <t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(data['price_total']))"/>
+                                                </td>
+                                                <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+                                                <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['uom']"/></td>-->
+                                                <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['qty']"/></td>-->
+                                                <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['cost']"/></td>-->
+                                                <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="data['subtotal']"/></td>-->
+                                            </tr>
+                                        </t>
+                                         <tr>
+                                            <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"></td>-->
+                                            <td colspan="2" style="text-align: right; border: 1px solid black; padding: 8px;"><strong>TOTAL PAYMENT</strong></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(total))"/></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;">1.</td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="desc"/></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;">
+                                                <t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(price_dp))"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+
+                                        </tr>
+                                        <tr>
+                                            <!--<td style="text-align: left; border: 1px solid black; padding: 8px;"></td>-->
+                                            <td colspan="2" style="text-align: right; border: 1px solid black; padding: 8px;"><strong>TOTAL PAYMENT</strong></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="symbol "/>. <t t-esc="'{:,.2f}'.format(float(price_dp))"/></td>
+                                            <td style="text-align: left; border: 1px solid black; padding: 8px;"/>
+
+                                        </tr>
+                                    </t>
+
+                                    </tbody>
+                                </table>
+        <div style="display: flex; justify-content: space-between;widht: 100%;">
+            <div class="row" style="background-color: #2b61bd; display: inline-block;width: 100%;margin-top: 15px;padding-top: 10px;padding-bottom: 20px;">
+                <div style="margin-left: 20px;">
+                                    <table style="border-collapse: collapse;">
+                                        <tr>
+                                            <td>Please Transfer To</td>
+                                            <td>: </td>
+                                            <td>
+                                                <t t-foreach="bank" t-as="banks">
+                                                    <div style="white-space: nowrap;"><t t-esc="banks['bank_name']"/></div>
+                                                </t>
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td/>
+                                            <td/>
+                                            <td>
+                                                <t t-foreach="bank" t-as="banks">
+                                                    <div style="display: inline;"><t t-esc="banks['bank_number']"/></div>
+                                                </t>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td/>
+                                            <td/>
+                                            <td>
+                                                <t t-foreach="bank" t-as="banks">
+                                                    <div style="display: inline;"><t t-esc="banks['bank_partner']"/></div>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    </div>
+                                </div>
+                                <!--<table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;padding-right: 15px;">-->
+                                <!--        <tr>-->
+                                <!--            <th colspan="3" style="font-weight: bold; border: 1px solid black;padding: 10px;">REQUESTER</th>-->
+                                <!--            <th rowspan="2" style="border: 1px solid black; text-align: center;padding: 10px;">Director</th>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Admin</th>-->
+                                <!--            <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Purchasing</th>-->
+                                <!--            <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Manager</th>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">M.K Anam</td>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Awang</td>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Yaser A.</td>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Rizvi S.</td>-->
+                                <!--        </tr>-->
+                                <!--    </table>-->
+
+                                <!--     <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;margin-left: 40px;">-->
+                                <!--        <tr>-->
+                                <!--            <th colspan="2" style="border: 1px solid black; text-align: center;padding: 10px;">ACCOUNT</th>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-left: 90px;"/>-->
+                                <!--            <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Senior/Manager</th>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>-->
+                                <!--        </tr>-->
+                                <!--    </table>-->
+
+                                <!--    <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;margin-left: 40px;">-->
+                                <!--        <tr>-->
+                                <!--            <th colspan="2" style="border: 1px solid black; text-align: center;padding: 21px;">MANAGEMENT</th>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <td style="border: 1px solid black; height: 100px; text-align: center;"/>-->
+                                <!--        </tr>-->
+                                <!--        <tr>-->
+                                <!--            <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>-->
+                                <!--        </tr>-->
+                                <!--    </table>-->
                             </div>
                         </div>
-                        <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;padding-right: 15px;">
-                                <tr>
-                                    <th colspan="3" style="font-weight: bold; border: 1px solid black;padding: 10px;">REQUESTER</th>
-                                    <th rowspan="2" style="border: 1px solid black; text-align: center;padding: 10px;">Director</th>
-                                </tr>
-                                <tr>
-                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Admin</th>
-                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Purchasing</th>
-                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Manager</th>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">M.K Anam</td>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Awang</td>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Yaser A.</td>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap;">Rizvi S.</td>
-                                </tr>
-                            </table>
-
-                             <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;margin-left: 40px;">
-                                <tr>
-                                    <th colspan="2" style="border: 1px solid black; text-align: center;padding: 10px;">ACCOUNT</th>
-                                </tr>
-                                <tr>
-                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-left: 90px;"/>
-                                    <th style="border: 1px solid black; text-align: center;padding-left: 10px;padding-right: 10px;">Senior/Manager</th>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>
-                                </tr>
-                            </table>
-
-                            <table style="width: 10%; border-collapse: collapse;float: left;margin-top: 15px;margin-left: 40px;">
-                                <tr>
-                                    <th colspan="2" style="border: 1px solid black; text-align: center;padding: 21px;">MANAGEMENT</th>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; height: 100px; text-align: center;"/>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; height: 30px; font-weight: bold; text-align: center;"/>
-                                </tr>
-                            </table>
                     </div>
-                </div>
+
+                    </t>
+
+                <!--<div class="header" style="font-family: Calibri, sans-serif; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%;">-->
+                <!--    <div class="left" style="text-align: left; width: 50%;">-->
+                <!--        <p t-esc="'{}\n{}\n{}'.format(res_company.name, res_company.street, res_company.phone)" style="font-size: 12px; margin-top: 5px; white-space: pre-line;"/>-->
+                <!--    </div>-->
+
+                <!--    <div class="right" style="text-align: right;position: absolute; top: 0;right: 0;">-->
+                <!--        <div style="display: inline-block; text-align: center;">-->
+                <!--            <img t-attf-src="data:image/png;base64,#{res_company.logo}" alt="Company Logo" style="width: 100px; height: auto; margin-bottom: 5px;"/>-->
+                <!--            <p t-esc="res_company.website" style="font-size: 12px; margin-top: 5px; white-space: nowrap;"/>-->
+                <!--        </div>-->
+                <!--    </div>-->
+                <!--</div>-->
+
+
             </t>
-        </template>
+    </template>
 </odoo>

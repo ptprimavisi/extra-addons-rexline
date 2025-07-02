@@ -363,7 +363,7 @@ class MrfLine(models.Model):
     quantity = fields.Float(default=1)
     qty_onhand = fields.Float(compute="_compute_qty_onhand")
     avilable_qty = fields.Float(compute="_compute_available_qty")
-    qty_purchase = fields.Float(compute='_compute_qty_purchase', readonly=False)
+    qty_purchase = fields.Float()
     qty_ordered = fields.Float(compute='_compute_ordered')
     qty_received = fields.Float(compute='_compute_received')
     unit_cost = fields.Float()
