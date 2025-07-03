@@ -85,6 +85,25 @@ class PurchaseRequisition(models.Model):
     active = fields.Boolean(default=True)
     approval_status = fields.Char(compute="_compute_approval")
 
+    product_id = fields.Many2one(
+        'product.product',
+        string="Product (Line)",
+        compute='_compute_product_id',
+        search='_search_product_id',
+        store=False
+    )
+
+    def _compute_product_id(self):
+        for rec in self:
+            rec.product_id = rec.requisition_line[:1].product_id if rec.requisition_line else False
+
+    def _search_product_id(self, operator, value):
+        line_ids = self.env['requisition.line'].search([
+            ('product_id', operator, value)
+        ])
+        requisition_ids = line_ids.mapped('requisition_id').ids
+        return [('id', 'in', requisition_ids)]
+
     def _compute_approval(self):
         for line in self:
             model_name = self._name

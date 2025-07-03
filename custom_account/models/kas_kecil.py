@@ -22,9 +22,9 @@ class TransferDanaWizard(models.TransientModel):
             transfer_amount = sum(transfer.mapped('amount'))
             outstanding_amount = dana_amount - transfer_amount
             cek_amount = outstanding_amount
-        if self.amount > cek_amount:
-            raise UserError('Nominal transfer more than request !')
-            exit()
+        # if self.amount > cek_amount:
+        #     raise UserError('Nominal transfer more than request !')
+        #     exit()
 
         transfer = self.env['transfer.dana'].create({
             "date_transfer": self.date_transfer,
@@ -171,6 +171,7 @@ class PermintaanDana(models.Model):
         ('no', 'No Response'),
         ('waiting', 'Waiting Confirmation'),
         ('approve', 'Approve'),
+        ('close', 'Close'),
         ('refused', 'Refused'),
     ], default="no")
     advance_type = fields.Selection([
@@ -224,6 +225,7 @@ class PermintaanDana(models.Model):
     transfer_ids = fields.One2many('transfer.dana', 'dana_id')
     outstanding = fields.Float(compute="_compute_outstanding")
     transfer_status = fields.Char(compute="_compute_transfer_status")
+    nominal_transfer = fields.Float(compute="_compute_nominal_transfer")
 
     user_domain = fields.Char(compute="_user_domain", search="_search_domain")
 
@@ -242,6 +244,13 @@ class PermintaanDana(models.Model):
             if employee:
                 domain = ['|', ("user_id", '=', int(uid)), ("employee_id", '=', int(employee.id))]
         return domain
+
+    @api.depends('transfer_ids.amount')
+    def _compute_nominal_transfer(self):
+        for line in self:
+            amount = line.transfer_ids
+            amount_total = sum(amount.mapped('amount'))
+            line.nominal_transfer = amount_total
 
     def _compute_transfer_status(self):
         for line in self:
@@ -263,6 +272,8 @@ class PermintaanDana(models.Model):
                 total_amount = line.total_amount
                 transfer_amount = sum(outstanding.mapped('amount'))
                 outstanding_amount = total_amount - transfer_amount
+                if outstanding_amount < 0:
+                    outstanding_amount = 0
                 line.outstanding = outstanding_amount
 
     @api.onchange('employee_id')
@@ -592,7 +603,8 @@ class PermintaanDana(models.Model):
 
     def action_realisasi(self):
         for line in self:
-            saldo_permintaan = line.total_amount
+            # transfer = line.transfer_ids
+            saldo_permintaan = line.nominal_transfer
             realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', line.id)])
             refund = self.env['refund.dana'].search([('dana_id', '=', line.id)])
             if realisasi:
@@ -604,6 +616,9 @@ class PermintaanDana(models.Model):
             if refund:
                 saldo_refund = sum(refund.mapped('amount'))
                 saldo_permintaan = float(saldo_permintaan) - float(saldo_refund)
+            if line.finance_state == 'close':
+                raise UserError('This session already closed!')
+                exit()
             if saldo_permintaan <= 0.0:
                 raise UserError('Saldo is 0')
                 exit()
@@ -625,7 +640,7 @@ class PermintaanDana(models.Model):
 
     def action_refund(self):
         for line in self:
-            saldo_permintaan = line.total_amount
+            saldo_permintaan = line.nominal_transfer
             realisasi = self.env['realisasi.dana'].search([('permintaan_id', '=', line.id)])
             refund = self.env['refund.dana'].search([('dana_id', '=', line.id)])
             if realisasi:
@@ -635,11 +650,14 @@ class PermintaanDana(models.Model):
                 #     raise UserError('Saldo is 0!')
                 #     exit()
             if refund:
-                saldo_refund = sum(realisasi.mapped('amount'))
+                saldo_refund = sum(refund.mapped('amount'))
                 saldo_permintaan = float(saldo_permintaan) - float(saldo_refund)
                 # if saldo_permintaan <= 0.0:
                 #     raise UserError('Saldo is 0!')
-                #     exit()
+                #     exit()\
+            if line.finance_state == 'close':
+                raise UserError('This session already closed!')
+                exit()
             if saldo_permintaan <= 0.0:
                 raise UserError('Saldo is 0!')
                 exit()

@@ -68,7 +68,8 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,transfer"/>
                         <button name="action_confirm" string="Confirm" confirm="Do you want to confirm?" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
-                        <button name="action_transfer" string="Transfer" confirm="Do you want to transfer?" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="id == False or state not in ['confirm','transfer'] or transfer_status == 'Transfer'"/>
+<!--                        <button name="action_transfer" string="Transfer" confirm="Do you want to transfer?" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="id == False or state not in ['confirm','transfer'] or transfer_status == 'Transfer'"/>-->
+                        <button name="action_transfer" string="Transfer" confirm="Do you want to transfer?" groups="sale_custome.accounting_custom_group" type="object" class="oe_highlight" invisible="id == False or state not in ['confirm','transfer'] or finance_state == 'close'"/>
                         <button name="action_reset_to_draft" string="Reset to Draft" confirm="This process will affect the balance and journal !" groups="sale_custome.accounting_custom_group" type="object" invisible="id == False or state != 'transfer'"/>
                         <button name="action_realisasi" string="Realisasi" confirm="Do you want to create expense report?" type="object" invisible="state != 'transfer'"/>
                         <button name="action_refund" string="Refund" confirm="Do you want to refund?" type="object" invisible="state != 'transfer'"/>
@@ -148,6 +149,7 @@
                             <group colspan="4">
                                 <group class="oe_subtotal_footer oe_right" >
                                     <field name="total_amount" widget="monetary" string="Total Amount" readonly="1"/>
+                                    <field name="nominal_transfer" widget="monetary" string="Total Transfer Amount" readonly="1"/>
                                 </group>
                             </group>
                         </group>
@@ -222,6 +224,7 @@
                     <field name="employee_id"/>
                     <field name="date_request"/>
                     <field name="total_amount"/>
+                    <field name="nominal_transfer" string="Total Transfer Amount"/>
                     <field name="state"
                             decoration-warning="state == 'confirm'"
                             decoration-success="state == 'transfer'"
