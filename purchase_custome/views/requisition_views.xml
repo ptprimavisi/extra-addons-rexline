@@ -123,7 +123,7 @@
                         <!-- Define your filters here -->
                         <field name="name" string="Number"/>
                         <field name="product_id" string="Product"/>
-<!--                        <field name="requisition_line.product_request" string="Product Request"/>-->
+                        <field name="product_request" string="Product Request"/>
                         <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
                         <filter string="GA" name="requisition_ga" domain="[('category', '=', 'ga')]"/>
                         <filter string="IT" name="requisition_it" domain="[('category', '=', 'ut')]"/>

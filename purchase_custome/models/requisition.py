@@ -104,6 +104,25 @@ class PurchaseRequisition(models.Model):
         requisition_ids = line_ids.mapped('requisition_id').ids
         return [('id', 'in', requisition_ids)]
 
+    product_request = fields.Char(
+        string="Product Request",
+        compute='_compute_product_name',
+        store=False,
+        search='_search_product_name'
+    )
+
+    def _compute_product_name(self):
+        for rec in self:
+            product_names = rec.requisition_line_ids.mapped('product_request')
+            rec.product_name = ', '.join(product_names) if product_names else ''
+
+    def _search_product_name(self, operator, value):
+        line_ids = self.env['requisition.line'].search([
+            ('product_request', operator, value)
+        ])
+        requisition_ids = line_ids.mapped('requisition_id').ids
+        return [('id', 'in', requisition_ids)]
+
     def _compute_approval(self):
         for line in self:
             model_name = self._name
