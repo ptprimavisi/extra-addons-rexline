@@ -1,6 +1,7 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
 from datetime import datetime, timedelta
+import pytz
 
 
 class AcoountMove(models.Model):
@@ -601,6 +602,66 @@ class PaymentRequest(models.Model):
         ('confirmed', 'Confirm'),
         ('validate', 'Validate')
     ], default='draft')
+    bank_name = fields.Char()
+    bank_number = fields.Char()
+    account_holder = fields.Char()
+    datetime_confirm = fields.Datetime()
+
+    def datetime_c(self, format):
+        # Ambil datetime dari database (biasanya UTC)
+        if format:
+            datetime_utc = format  # record = instance dari model
+
+            # Set timezone lokal
+            tz = pytz.timezone('Asia/Jakarta')
+
+            # Konversi ke lokal timezone
+            datetime_local = datetime_utc.astimezone(tz)
+
+            # Format jika diperlukan
+            formatted = datetime_local.strftime('%d-%m-%Y %H:%M:%S')
+        else:
+            formatted = ''
+        return formatted
+
+    def approval_data(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            approval = self.env['multi.approval'].search(
+                [('origin_ref', '=', origin_ref)],
+                order='create_date desc',
+                limit=1
+            )
+            status = ''
+            date_confirm = ''
+            if line.datetime_confirm:
+                date_confirm = self.datetime_c(line.datetime_confirm)
+            if line.state != 'draft':
+                status = 'Approved'
+
+            approval_list = [
+                {
+                    'name': "Requester",
+                    'status': str(status),
+                    'users': str(line.user_id.name),
+                    'date': str(date_confirm),
+                },
+            ]
+            if approval:
+                for lines in approval.line_ids:
+                    datetime_utc = lines.write_date  # record = instance dari model
+
+                    # Set timezone lokal
+                    formatted = self.datetime_c(datetime_utc)
+                    approval_list.append({
+                        'name': str(lines.name),
+                        'status': str(lines.state),
+                        'users': str(lines.user_id.name),
+                        'date': str(formatted),
+                    })
+            return approval_list
 
     def action_confirm(self):
         for line in self:
@@ -621,6 +682,7 @@ class PaymentRequest(models.Model):
                 if len(line.payment_request_bill_ids) > 1:
                     raise UserError('Document Bill Cannot be More Than 1')
             self.message_post(body=f"This document has been confirm")
+            line.datetime_confirm = fields.Datetime.now()
             line.state = 'confirmed'
 
     def action_print(self):
@@ -628,18 +690,24 @@ class PaymentRequest(models.Model):
             if line.type == 'dp':
                 po_ids = []
                 list = []
-                bank_list = []
+                # bank_list = [
+                #     {
+                #         'bank_name': line.bank_name,
+                #         'bank_number': line.bank_number,
+                #         'account_holder': line.account_holder,
+                #     }
+                # ]
                 type = 'Down Payment'
                 if line.payment_request_dp_ids:
                     price_dp = 0
                     for lines in line.payment_request_dp_ids:
                         if lines.order_id:
-                            for bank_line in lines.order_id.partner_id.bank_ids:
-                                bank_list.append({
-                                    'bank_name': bank_line.bank_id.name,
-                                    'bank_number': bank_line.acc_number,
-                                    'bank_partner': bank_line.partner_id.name
-                                })
+                            # for bank_line in lines.order_id.partner_id.bank_ids:
+                            #     bank_list.append({
+                            #         'bank_name': bank_line.bank_id.name,
+                            #         'bank_number': bank_line.acc_number,
+                            #         'bank_partner': bank_line.partner_id.name
+                            #     })
                             price_dp += lines.amount
                             percent = ''
                             if lines.percentage:
@@ -688,15 +756,22 @@ class PaymentRequest(models.Model):
                 list = []
                 type = 'Full Payment'
                 desc = ''
+                # bank_list = [
+                #     {
+                #         'bank_name': line.bank_name,
+                #         'bank_number': line.bank_number,
+                #         'account_holder': line.account_holder,
+                #     }
+                # ]
                 if line.payment_request_bill_ids:
                     for lines in line.payment_request_bill_ids:
                         if lines.bill_id:
-                            for bank_line in lines.bill_id.partner_id.bank_ids:
-                                bank_list.append({
-                                    'bank_name': bank_line.bank_id.name,
-                                    'bank_number': bank_line.acc_number,
-                                    'bank_partner': bank_line.partner_id.name
-                                })
+                            # for bank_line in lines.bill_id.partner_id.bank_ids:
+                            #     bank_list.append({
+                            #         'bank_name': bank_line.bank_id.name,
+                            #         'bank_number': bank_line.acc_number,
+                            #         'bank_partner': bank_line.partner_id.name
+                            #     })
                             invoice = self.env['account.move'].search([('id', '=', lines.bill_id.id)])
                             vendor = lines.bill_id.partner_id.name or 'Unknown'
                             purchase_ids = invoice.mapped('line_ids.purchase_line_id.order_id')
@@ -753,6 +828,13 @@ class PaymentRequest(models.Model):
             #         # 'cost': lines.cost_price,
             #         # 'subtotal': lines.subtotal,
             #     })
+            bank_list = [
+                {
+                    'bank_name': line.bank_name or '',
+                    'bank_number': line.bank_number or '',
+                    'account_holder': line.account_holder or '',
+                }
+            ]
             print('account bank', bank_list)
             data = {
                 'number': line.name,
@@ -769,7 +851,8 @@ class PaymentRequest(models.Model):
                 'desc': desc,
                 'bank': bank_list,
                 # 'customer': line.partner_id.name,
-                'item_detail': list
+                'item_detail': list,
+                'approval_data': line.approval_data()
             }
 
             return self.env.ref('purchase_custome.action_report_payment_request').with_context(

@@ -60,6 +60,14 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Bank Information">
+                                <group>
+                                    <field name="bank_name"/>
+                                    <field name="bank_number"/>
+                                    <field name="account_holder"/>
+                                </group>
+
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
