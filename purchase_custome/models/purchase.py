@@ -247,11 +247,11 @@ class MaterialRequestForm(models.Model):
 
     def action_confirm(self):
         for line in self:
-            for lines in line.mrf_line_ids:
-                if lines.budget == 0:
-                    raise UserError('Budget cannot be empty!')
-                if lines.qty_budget == 0:
-                    raise UserError('Please fill Qty Budget first!')
+            # for lines in line.mrf_line_ids:
+            #     if lines.budget == 0:
+            #         raise UserError('Budget cannot be empty!')
+            #     if lines.qty_budget == 0:
+            #         raise UserError('Please fill Qty Budget first!')
             line.state = 'confirm'
 
     def action_inventory(self):
