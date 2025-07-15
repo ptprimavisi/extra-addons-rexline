@@ -21,7 +21,7 @@
                                 <tr style="border: none;">
                                     <td style="width: 23%; border: none;">DEPARTMENT</td>
                                     <td style="border: none; width: 2%;">:</td>
-                                    <td style="border: none;"/>
+                                    <td style="border: none;"><t t-esc="department or 'Unknow'"/></td>
                                 </tr>
                                 <tr border="0">
                                     <td style="width: 23%; border: none;white-space: nowrap;">VENDOR NAME</td>
@@ -54,10 +54,16 @@
                                     <td style="border: none;"><t t-esc="type or 'Unknow'"/></td>
                                 </tr>
                                 <tr style="border: none;">
+                                    <td style="width: 23%; border: none;">PROJECT/CUSTOMER</td>
+                                    <td style="border: none; width: 2%;">:</td>
+                                    <td style="border: none;"><t t-esc="customer or 'Unknow'"/></td>
+                                </tr>
+                                <tr style="border: none;">
                                     <td style="width: 23%; border: none;">CURRENCY</td>
                                     <td style="border: none; width: 2%;">:</td>
                                     <td style="border: none;"><t t-esc="currency or 'Unknow'"/></td>
                                 </tr>
+
                             </table>
 
                             <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
@@ -214,7 +220,7 @@
                                         <tr>
                                             <t t-foreach="approval_data[0:4]" t-as="lines">
                                                 <td style="text-align: center;">
-                                                    <table class="table table-bordered" style="width: 200px; margin: 0 auto;">
+                                                    <table class="table table-bordered" style="width: 180px; margin: 0 auto;">
                                                         <thead>
                                                             <tr style="background-color: red;">
                                                                 <td style="border: 1.5px solid black; color: white; text-align: center;"><t t-esc="lines['name']"/></td>
@@ -234,7 +240,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr style="background-color: #0e72e6;">
-                                                                <td style="border: 1.5px solid black;  color: white; text-align: center;"><t t-esc="lines['users']"/></td>
+                                                                <td style="font-size: 13px; border: 1.5px solid black;  color: white; text-align: center;"><t t-esc="lines['users']"/></td>
                                                             </tr>
                                                         </thead>
                                                     </table>
@@ -271,7 +277,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr style="background-color: #0e72e6;">
-                                                                <td style="border: 1.5px solid black; color: white; text-align: center;">
+                                                                <td style="font-size: 13px; border: 1.5px solid black; color: white; text-align: center;">
                                                                     <t t-esc="lines['users']"/>
                                                                 </td>
                                                             </tr>

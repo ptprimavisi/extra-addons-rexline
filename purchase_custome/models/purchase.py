@@ -606,6 +606,8 @@ class PaymentRequest(models.Model):
     bank_number = fields.Char()
     account_holder = fields.Char()
     datetime_confirm = fields.Datetime()
+    department_id = fields.Many2one('hr.department')
+    customer = fields.Char()
 
     def datetime_c(self, format):
         # Ambil datetime dari database (biasanya UTC)
@@ -850,7 +852,8 @@ class PaymentRequest(models.Model):
                 'price_dp': price_dp,
                 'desc': desc,
                 'bank': bank_list,
-                # 'customer': line.partner_id.name,
+                'department': line.department_id.name or '',
+                'customer': line.customer or '',
                 'item_detail': list,
                 'approval_data': line.approval_data()
             }

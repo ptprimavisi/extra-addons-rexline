@@ -20,9 +20,11 @@
                         <group>
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <field name="user_id" string="Responsible" readonly="state != 'draft'"/>
+                            <field name="department_id" string="Department" readonly="state != 'draft'"/>
                             <field name="date" string="Date Request" required="1" readonly="state != 'draft'"/>
                             <field name="due_date" required="1" readonly="state != 'draft'"/>
                             <field name="type" required="1" readonly="state != 'draft'"/>
+                            <field name="customer" string="CUSTOMER/PROJECT" required="1" readonly="state != 'draft'"/>
 <!--                            <field name="priority" widget="priority" nolabel="1" class="oe_inline align-top"/>-->
 
                         </group>
