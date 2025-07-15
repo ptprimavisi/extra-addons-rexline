@@ -932,7 +932,7 @@ class PaymentRequestBill(models.Model):
 
     payment_id = fields.Many2one('payment.request')
     bill_id = fields.Many2one('account.move',
-                              domain="[('journal_id','=', 2), ('move_type','=', 'in_invoice'), ('state','=', 'posted'), ('payment_state', '!=', 'paid')]")
+                              domain="[('journal_id','=', 2), ('move_type','=', 'in_invoice'), ('state','in', ['draft','posted']), ('payment_state', '!=', 'paid')]")
     amount = fields.Float(compute='_compute_amount')
     bill_status = fields.Boolean(compute="_compute_bill_status")
     state = fields.Selection([
