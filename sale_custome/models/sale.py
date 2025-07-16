@@ -2197,7 +2197,8 @@ class InquiryLineDocument(models.Model):
 
 class DiciplineCategory(models.Model):
     _name = 'dicipline.category'
-    name_category = fields.Char()
+
+    name = fields.Char()
 
 class InquiryLineTask(models.Model):
     _name = 'inquiry.line.task'
