@@ -177,6 +177,7 @@ class MaterialRequestForm(models.Model):
     total_budget = fields.Float(compute="_compute_total_budget")
     total_budget_use = fields.Float(compute="_compute_total_budget_use")
     picking_type_id = fields.Many2one('stock.picking.type', domain="[('code','=','incoming')]")
+    department_id = fields.Many2one('hr.department')
 
     def action_print(self):
         return self.env.ref('custom_report.action_report_mrf').with_context(

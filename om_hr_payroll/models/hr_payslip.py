@@ -785,8 +785,6 @@ class HrPayslip(models.Model):
                         gaji_net.write({'amount': gaji_net.amount - final_amount})
                     if pph_alw:
                         pph_alw.write({'amount': amount})
-
-
             else:
                 basic_amount = 0.0
                 alw_amount = 0.0

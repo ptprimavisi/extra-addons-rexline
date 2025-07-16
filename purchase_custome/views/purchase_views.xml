@@ -27,7 +27,7 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,to_inventory,request,confirm,cancel"/>
-                        <button name="action_inventory" string="To Inventory" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_inventory" string="To Inventory" type="object" class="oe_highlight" invisible="id == False or state != 'draft'"/>
                         <button name="request_budget" string="Request Budget" type="object" groups="sale_custome.inventory_custom_group" class="oe_highlight" invisible="state != 'to_inventory'"/>
                         <button name="action_confirm" string="Confirm" class="oe_highlight" groups="sale_custome.cost_control" type="object" invisible="state == 'confirm' or id == False or state != 'request' or state == 'cancel'"/>
                         <button name="action_print" string="Print" type="object" invisible="state == 'draft' or id == False or state == 'cancel'"/>
@@ -45,16 +45,17 @@
                         </div>
                         <div class="oe_title">
                             <h1>
-                                <field name="name"/>
+                                <field name="name" invisible="id == False" readonly="1"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="partner_id" string="Customer" required="1"/>
-                                <field name="inquiry_id" readonly="1"/>
+                                <field name="inquiry_id" readonly="state != 'draft'"/>
                                 <field name="request_date"/>
                                 <field name="to_inventory" invisible="1"/>
                                 <field name="picking_type_id" string="Deliver To" required="1"/>
+                                <field name="department_id"/>
                             </group>
                             <group>
                                 <field name="due_date" required="1"/>
@@ -71,7 +72,7 @@
 <!--                        <group>-->
 <!--                            -->
 <!--                        </group>-->
-                        <button string="Create Purchase Order" name="action_rfq" type="object" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
+                        <button string="Create Purchase Order" name="action_rfq" groups="sale_custome.purchasing_custom_group" type="object" class="oe_highlight" invisible="id == False or state != 'confirm'"/>
                         <notebook>
 <!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
                             <page string="Product Lines">

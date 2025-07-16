@@ -216,7 +216,7 @@
                             <b>Message</b><br/><br/>
                             <p>Terms &amp; Conditions:</p>
                             <div class="row">
-                                <span style="font-size: 16px;"><pre t-raw="data['so_tnc']"/></span>
+                                <span style="font-size: 16px;"><pre t-esc="data['so_tnc']"/></span>
                             </div>
 
                         </div>
