@@ -1,5 +1,5 @@
 <odoo>
-    <menuitem id="ga_management_menu" name="General Affair" sequence="20" groups="ga_custom.ga_custom_groups"/>
+    <menuitem id="ga_management_menu" name="General Affair" sequence="20"/>
     <data>
         <record id="ga_maintenance_report_form_view" model="ir.ui.view">
             <field name="name">ga.maintenance.report.form.view</field>
