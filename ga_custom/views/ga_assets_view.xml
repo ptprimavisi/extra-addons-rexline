@@ -67,7 +67,7 @@
         </record>
 
         <!-- Menu -->
-        <menuitem id="menu_ga_assets_root" name="GA Management"/>
-        <menuitem id="menu_ga_assets" name="Assets" parent="ga_management_menu" action="action_ga_assets"/>
+<!--        <menuitem id="menu_ga_assets_root" name="GA Management"/>-->
+        <menuitem id="menu_ga_assets" name="Assets" parent="ga_management_menu" action="action_ga_assets" sequence="2"/>
     </data>
 </odoo>

@@ -119,8 +119,8 @@
         </record>
         <menuitem id="ga_request_menuitem"
         name="GA Request"
-        sequence="1"
-        parent="ga_request_root"
+        sequence="3"
+        parent="ga_management_menu"
         action="action_ga_request"
         />
     </data>

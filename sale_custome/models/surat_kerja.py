@@ -178,8 +178,23 @@ class HrEmployeeInherit(models.Model):
                 ], order='create_date desc', limit=1)
                 if not line.user_id:
                     if line.work_email:
-                        if employee and employee.user_id:
+                        if employee or employee.user_id:
                             new_user = employee.user_id.copy()
+
+                            # Update field pada user baru
+                            new_user.write({
+                                'name': line.name,
+                                'login': line.work_email,
+                            })
+                            new_user.partner_id.email = line.work_email
+
+                            # Set user_id di line
+                            line.user_id = new_user.id
+                        else:
+                            new_user = self.env['res.users'].create({
+                                'name': line.name,
+                                'login': line.work_email,
+                            })
 
                             # Update field pada user baru
                             new_user.write({
@@ -188,13 +203,17 @@ class HrEmployeeInherit(models.Model):
                             })
 
                             # Set user_id di line
+                            new_user.partner_id.email = line.work_email
                             line.user_id = new_user.id
-                        else:
-                            raise UserError('Work Email is Missing')
-                            exit()
+
+                    else:
+                        raise UserError('Work Email is Missing')
+                        exit()
                         # print(final)
                         # exit()
                         # line.user_id = int(final.id)
+            else:
+                raise UserError('Missing department!')
 
 
 

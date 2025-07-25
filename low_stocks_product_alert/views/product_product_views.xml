@@ -8,7 +8,7 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <field name="pos_categ_ids" position="after">
+            <field name="product_tag_ids" position="after">
                 <field name="alert_tag"/>
             </field>
         </field>

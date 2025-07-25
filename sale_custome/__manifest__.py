@@ -19,6 +19,7 @@
         'report/report.xml',
         'wizard/report_manpower.xml',
         'wizard/account_wizard.xml',
+        'wizard/mail_memo_views.xml',
         # "views/rfq_views.xml",
         "views/crm_views.xml",
         "views/bom_views.xml",
@@ -35,7 +36,8 @@
         "views/maintenance_report_views.xml",
         "views/hr_surat_tugas_views.xml",
         'views/manajemen_assets.xml',
-        'views/hari_kerja_views.xml'
+        'views/hari_kerja_views.xml',
+        'views/hr_memo_views.xml'
     ],
     'assets': {
         'web.assets_backend': [

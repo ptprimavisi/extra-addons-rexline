@@ -1,0 +1,23 @@
+<odoo>
+    <data>
+        <record id="hr_memo_email_wizard_view" model="ir.ui.view">
+            <field name="name">hr.mail.memo.wizard.view.form</field>
+            <field name="model">hr.mail.memo</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="employee_ids" string="Recipients" widget="many2many_tags" required="1"/>
+                            <field name="subject" string="Subject" required="1"/>
+                            <field name="content" widget="html" required="1"/>
+<!--                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>-->
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="send_request_mail" string="Send" type="object" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

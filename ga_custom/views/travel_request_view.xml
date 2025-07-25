@@ -103,8 +103,8 @@
         </record>
         <menuitem id="travel_request_menuitem"
         name="Travel Request"
-        sequence="1"
-        parent="travel_request_root"
+        sequence="5"
+        parent="ga_management_menu"
         action="action_travel_request"
         />
     </data>

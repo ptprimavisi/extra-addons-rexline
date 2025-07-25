@@ -93,8 +93,8 @@
         </record>
         <menuitem id="manpower_request_menuitem"
         name="Manpower Request"
-        sequence="1"
-        parent="manpower_request_root"
+        sequence="4"
+        parent="ga_management_menu"
         action="action_manpower_request"
         />
     </data>

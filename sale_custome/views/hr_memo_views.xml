@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <menuitem id="hr_memo_root" name="Memo" sequence="10" groups="sale_custome.hr_ga_custom_group"/>
+        <record id="hr_memo_form_view" model="ir.ui.view">
+            <field name="name">hr.memo.form.inherit</field>
+            <field name="model">hr.memo</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                        <button name="action_send_send" string="Send memo" type="object" invisible="id == False"/>
+                        <button name="action_mark_done" string="Mark as Done" confirm="Apakah anda ingin mengubah status menjadi 'Done'?" type="object" invisible="id == False or state != 'draft'"/>
+                    </header>
+                    <sheet>
+                        <div class="o_lead_opportunity_form_inline_fields">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" reqdonly="1" invisible="id == False"/>
+                                </h1>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_ids" string="Recipients" widget="many2many_tags" required="1"/>
+                                <field name="subject" required="1"/>
+                                <field name="content" widget="html"/>
+                                <field name="date" required="1"/>
+                                <field name="attachment_ids" string="Attachments" widget="many2many_binary"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_memo_tree_view" model="ir.ui.view">
+            <field name="name">hr.memo.tree.view</field>
+            <field name="model">hr.memo</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="subject"/>
+                </tree>
+            </field>
+        </record>
+        <record id="seq_hr_memo" model="ir.sequence">
+            <field name="name">Hr Memo</field>
+            <field name="code">MEMO</field>
+            <field name="prefix">MEMO/%(y)s/000</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="action_hr_memo" model="ir.actions.act_window">
+            <field name="name">Memo</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.memo</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="hr_memo_menu_item"
+                name="Memo"
+                action="sale_custome.action_hr_memo"
+                parent="sale_custome.hr_memo_root"
+                sequence="1"/>
+
+
+
+    </data>
+</odoo>

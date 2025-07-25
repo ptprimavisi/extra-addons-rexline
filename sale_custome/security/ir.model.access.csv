@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 custom_sale_access,sale_access,model_inquiry_inquiry,group_sales_custom,1,1,1,1
 custom_inquiry_line,sale_inquiry_line,model_inquiry_line,group_sales_custom,1,1,1,1
 access_dicipline_category_user,dicipline.category user,model_dicipline_category,group_sales_custom,1,1,1,1
+access_hr_memo_user,Hr Memo Access,model_hr_memo,hr_ga_custom_group,1,1,1,1
+access_hr_mail_memo_user,Hr Mail Memo Access,model_hr_mail_memo,hr_ga_custom_group,1,1,1,1

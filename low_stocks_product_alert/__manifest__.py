@@ -32,7 +32,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['stock', 'point_of_sale'],
+    'depends': ['stock'],
     'data': [
         'views/res_config_settings_views.xml',
         'views/product_product_views.xml',

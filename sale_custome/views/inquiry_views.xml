@@ -16,7 +16,7 @@
                         <button name="action_reset_toboq" string="Reset to BOQ" type="object" confirm="Do you want reset state to BOQ?" invisible="id == False or state != 'cost' or pic_akses == False"/>
                         <button name="action_mark_won" string="Mark as Won" type="object" confirm="Do you want to update status to Won?" invisible="crm_state != 'Sale Order' or state != 'cost' or pic_akses == False"/>
 <!--                        <button name="action_create_rfq" string="Create RFQ" class="oe_highlight" type="object" invisible="state_count_rfq == True or id == False"/>-->
-<!--                        <button name="action_send_send" string="Request For Information" class="oe_highlight" type="object" invisible="state_count_rfq == True or id == False"/>-->
+<!--                        <button name="action_send_send" string="Request For Information" class="oe_highlight" type="object" invisible="id == False"/>-->
 
                     </header>
                     <sheet>

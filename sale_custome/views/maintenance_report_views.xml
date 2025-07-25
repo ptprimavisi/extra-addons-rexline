@@ -1,5 +1,5 @@
 <odoo>
-    <menuitem id="maintenance_report_menu" name="IT Management" sequence="20" groups="sale_custome.it_custom_group"/>
+    <menuitem id="maintenance_report_menu" name="IT" sequence="20"/>
     <menuitem id="it_request_root" name="IT Request" sequence="21"/>
     <data>
         <record id="maintenance_report_form_view" model="ir.ui.view">
@@ -181,8 +181,8 @@
         </record>
         <menuitem id="it_request_menuitem"
         name="IT Request"
-        sequence="1"
-        parent="it_request_root"
+        sequence="50"
+        parent="maintenance_report_menu"
         action="action_it_request"
         />
     </data>

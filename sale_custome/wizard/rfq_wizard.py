@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 from datetime import datetime, timedelta
 
 
-class RfqWizard(models.TransientModel):
+class RfqWizard(models.Model):
     _name = 'rfq.wizard'
 
     name = fields.Char()
@@ -99,7 +99,7 @@ class RfqWizard(models.TransientModel):
         return defaults
 
 
-class RfqLine(models.TransientModel):
+class RfqLine(models.Model):
     _name = 'rfq.wizard.line'
 
     product_id = fields.Many2one('product.product')

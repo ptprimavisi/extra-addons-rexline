@@ -1,84 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="general_daily_report_wizard_view" model="ir.ui.view">
-            <field name="name">general.daily.report.view.form</field>
-            <field name="model">general.daily.report</field>
+        <record id="account_wizard_view" model="ir.ui.view">
+            <field name="name">Wizard</field>
+            <field name="model">account.wizard</field>
             <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <button name="action_print" string="Print PDF" type="object" class="oe_highlight" invisible="id == False"/>
-                        <button name="action_print_excel" string="Print Excel" type="object" class="oe_highlight" invisible="id == False"/>
-                    </header>
-                    <sheet>
-                        <group>
-                            <field name="partner_id" string="Customer" />
-                            <field name="schedule_id" string="Schedule Ref" readonly="1"/>
-                            <field name="sale_id" string="SO / Project" />
-                            <field name="location" string="Location"/>
-                            <field name="date" string="Date"/>
-                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
-                        </group>
-                        <notebook>
-                            <page string="Man Power">
-                                <field name="man_power_ids">
-                                    <tree editable="bottom">
-                                        <field name="employee_id" required="1"/>
-                                        <field name="position" required="1"/>
-                                        <field name="description" widget="many2many_tags" string="Activity"/>
-                                        <field name="work_hours" required="1"/>
-                                        <field name="p" string="P/mm" />
-                                        <field name="t" string="T/mm"/>
-                                        <field name="l" string="L/mm"/>
-                                        <field name="quantity" string="Qty"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Problem">
-                                <field name="problem_ids">
-                                    <tree editable="bottom">
-                                        <field name="description" string="Description"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Solving">
-                                <field name="solving_ids">
-                                    <tree editable="bottom">
-                                        <field name="description" string="Description"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Target">
-                                <field name="target_ids">
-                                    <tree editable="bottom">
-                                        <field name="description" string="Description"/>
-                                    </tree>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
-<!--                    <footer>-->
-<!--                        <button name="action_print" string="Print" type="object" class="oe_highlight" />-->
-<!--                    </footer>-->
+                <form string="Report Options">
+                    <group col="4">
+                        <!-- <field name="branch_id"/> -->
+                        <!-- <field name="target_move" widget="radio"/> -->
+                        <!-- <field name="levels"/> -->
+                        <!-- <field name="department_id"/> -->
+                        <field name="batch_id"/>
+                    </group>
+                    <footer>
+                        <button name="generate_gaji" string="Generate Laporan"
+                                type="object" default_focus="1"
+                                class="oe_highlight"/>
+                        <!-- <button name="generate_laporan_bulanan" string="Laporan Bulanan"
+                                type="object" default_focus="1"
+                                class="oe_highlight"/>
+                        <button name="generate_rekap_laporan_mingguan" string="Laporan Rekap Mingguan"
+                                type="object" default_focus="1"
+                                class="oe_highlight"/>
+                        <button name="generate_report_bank" string="Bank"
+                                type="object" default_focus="1"
+                                class="oe_highlight"/> -->
+                        <button string="Cancel" class="btn btn-secondary"
+                                special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>
-        <record id="general_daily_report_tree_view" model="ir.ui.view">
-            <field name="name">general.daily.report.tree.view</field>
-            <field name="model">general.daily.report</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="partner_id" string="Customer" readonly="1"/>
-                    <field name="schedule_id" string="Schedule Ref" readonly="1"/>
-                    <field name="sale_id" string="SO / Project" readonly="1"/>
-                    <field name="location" string="Location"/>
-                    <field name="date" string="Date"/>
-                </tree>
-            </field>
+        <record id="action_account_wizard" model="ir.actions.act_window">
+            <field name="name">Export Laporan Gaji Bulanan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.wizard</field>
+<!--            <field name="view_id" ref="advance_cash_flow_statements.account_wizard_view"/>-->
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
         </record>
+        <menuitem id="menu_financial_reports" sequence="90"
+          name="Reporting"
+          parent="om_hr_payroll.menu_hr_payroll_root"/>
+
+        <menuitem id="account_bank_book_menu"
+          name="Export Gaji"
+          action="sale_custome.action_account_wizard"
+          parent="menu_financial_reports"
+          sequence="1"/>
     </data>
 </odoo>
