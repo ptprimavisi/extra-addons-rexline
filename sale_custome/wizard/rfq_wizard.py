@@ -24,50 +24,51 @@ class RfqWizard(models.Model):
 
     def button_save(self):
         for line in self:
-            mrf = self.env['mrf.mrf'].search([])
-            line_list = []
-            inquiry = self.env['inquiry.inquiry'].browse(int(line.inquiry_id.id))
-            inquiry.write({'state': 'done'})
-            for lines in line.rfq_line_ids:
-                qty_purchase = 0
-                if lines.quantity or lines.available_qty:
-                    total = lines.quantity - lines.available_qty
-                    if lines.quantity < lines.available_qty:
-                        total = 0.0
-                    qty_purchase = total
-                line_list.append((0, 0, {
-                    "product_id": int(lines.product_id.id),
-                    "type": str(lines.type),
-                    "description": lines.description,
-                    "specs_detail": lines.specs_detail,
-                    "brand": lines.brand,
-                    'unit_weight': lines.unit_weight,
-                    "quantity": lines.quantity,
-                    "qty_purchase": qty_purchase,
-                    "product_uom_id": lines.product_uom.id,
-                    "budget": float(int(lines.budget)),
-                    "unit_cost": float(lines.unit_cost),
-                    "wh_id": int(lines.wh_id.id),
-                    "schedule_date": lines.schedule_date,
-                    "sale_id": int(line.sale_id.id),
-                    "avilable_qty": lines.available_qty,
-                    'attachment': lines.attachment
-                }))
-            # print(line_list)
-            # exit()
-            data = {
-                # "name": self.env['ir.sequence'].next_by_code('RFQ'),
-                'state': 'to_inventory',
-                "partner_id": line.partner_id.id,
-                "request_date": datetime.now(),
-                'due_date': str(line.due_date),
-                'validity': str(line.validity),
-                'lead_time': str(line.lead_time),
-                "inquiry_id": line.inquiry_id.id,
-                "picking_type_id": line.picking_type_id.id,
-                "mrf_line_ids": line_list
-            }
-            mrf.create(data)
+            pass
+            # mrf = self.env['mrf.mrf'].search([])
+            # line_list = []
+            # inquiry = self.env['inquiry.inquiry'].browse(int(line.inquiry_id.id))
+            # inquiry.write({'state': 'done'})
+            # for lines in line.rfq_line_ids.filtered(lambda l: isinstance(l.id, int)):
+            #     qty_purchase = 0
+            #     if lines.quantity or lines.available_qty:
+            #         total = lines.quantity - lines.available_qty
+            #         if lines.quantity < lines.available_qty:
+            #             total = 0.0
+            #         qty_purchase = total
+            #     line_list.append((0, 0, {
+            #         "product_id": int(lines.product_id.id),
+            #         "type": str(lines.type),
+            #         "description": lines.description,
+            #         "specs_detail": lines.specs_detail,
+            #         "brand": lines.brand,
+            #         'unit_weight': lines.unit_weight,
+            #         "quantity": lines.quantity,
+            #         "qty_purchase": qty_purchase,
+            #         "product_uom_id": lines.product_uom.id,
+            #         "budget": float(int(lines.budget)),
+            #         "unit_cost": float(lines.unit_cost),
+            #         "wh_id": int(lines.wh_id.id),
+            #         "schedule_date": lines.schedule_date,
+            #         "sale_id": int(line.sale_id.id),
+            #         "avilable_qty": lines.available_qty,
+            #         'attachment': lines.attachment
+            #     }))
+            # # print(line_list)
+            # # exit()
+            # data = {
+            #     # "name": self.env['ir.sequence'].next_by_code('RFQ'),
+            #     'state': 'to_inventory',
+            #     "partner_id": line.partner_id.id,
+            #     "request_date": datetime.now(),
+            #     'due_date': str(line.due_date),
+            #     'validity': str(line.validity),
+            #     'lead_time': str(line.lead_time),
+            #     "inquiry_id": line.inquiry_id.id,
+            #     "picking_type_id": line.picking_type_id.id,
+            #     "mrf_line_ids": line_list
+            # }
+            # mrf.create(data)
 
     def _compute_inquiry(self):
         for line in self:
