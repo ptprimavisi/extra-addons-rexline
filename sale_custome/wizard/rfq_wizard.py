@@ -21,6 +21,17 @@ class RfqWizard(models.Model):
     #     ('boq', 'Cost Estimation'),
     #     ('mrf', 'MRF')
     # ], default='rfp')
+    def action_clear_product(self):
+        for line in self:
+            line.rfq_line_ids = [(5, 0, 0)]  # Hapus semua item
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',  # penting! agar tetap dalam modal wizard
+        }
 
     def button_save(self):
         for line in self:
@@ -28,32 +39,34 @@ class RfqWizard(models.Model):
             line_list = []
             inquiry = self.env['inquiry.inquiry'].browse(int(line.inquiry_id.id))
             inquiry.write({'state': 'done'})
-            for lines in line.rfq_line_ids.filtered(lambda l: isinstance(l.id, int)):
-                qty_purchase = 0
-                if lines.quantity or lines.available_qty:
-                    total = lines.quantity - lines.available_qty
-                    if lines.quantity < lines.available_qty:
-                        total = 0.0
-                    qty_purchase = total
-                line_list.append((0, 0, {
-                    "product_id": int(lines.product_id.id),
-                    "type": str(lines.type),
-                    "description": lines.description,
-                    "specs_detail": lines.specs_detail,
-                    "brand": lines.brand,
-                    'unit_weight': lines.unit_weight,
-                    "quantity": lines.quantity,
-                    "qty_purchase": qty_purchase,
-                    "product_uom_id": lines.product_uom.id,
-                    "budget": float(int(lines.budget)),
-                    "unit_cost": float(lines.unit_cost),
-                    "wh_id": int(lines.wh_id.id),
-                    "schedule_date": lines.schedule_date,
-                    "sale_id": int(line.sale_id.id),
-                    "avilable_qty": lines.available_qty,
-                    'attachment': lines.attachment
-                }))
+            for lines in line.rfq_line_ids:
+                if lines.select:
+                    qty_purchase = 0
+                    if lines.quantity or lines.available_qty:
+                        total = lines.quantity - lines.available_qty
+                        if lines.quantity < lines.available_qty:
+                            total = 0.0
+                        qty_purchase = total
+                    line_list.append((0, 0, {
+                        "product_id": int(lines.product_id.id),
+                        "type": str(lines.type),
+                        "description": lines.description,
+                        "specs_detail": lines.specs_detail,
+                        "brand": lines.brand,
+                        'unit_weight': lines.unit_weight,
+                        "quantity": lines.quantity,
+                        "qty_purchase": qty_purchase,
+                        "product_uom_id": lines.product_uom.id,
+                        "budget": float(int(lines.budget)),
+                        "unit_cost": float(lines.unit_cost),
+                        "wh_id": int(lines.wh_id.id),
+                        "schedule_date": lines.schedule_date,
+                        "sale_id": int(line.sale_id.id),
+                        "avilable_qty": lines.available_qty,
+                        'attachment': lines.attachment
+                    }))
             # print(line_list)
+
             # exit()
             data = {
                 # "name": self.env['ir.sequence'].next_by_code('RFQ'),
@@ -103,6 +116,7 @@ class RfqLine(models.Model):
     _name = 'rfq.wizard.line'
 
     product_id = fields.Many2one('product.product')
+    select = fields.Boolean(default=True)
     type = fields.Char()
     description = fields.Char()
     specs_detail = fields.Char()
@@ -119,8 +133,9 @@ class RfqLine(models.Model):
     rfq_id = fields.Many2one('rfq.wizard')
     attachment = fields.Binary(string='Attachment', attachment=True)
     attachment_name = fields.Char(string='Attachment Name')
-    schedule_date = fields.Date(default= lambda self: self.rfq_id.due_date)
-    wh_id = fields.Many2one('stock.warehouse', domain=lambda self: [('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)],
+    schedule_date = fields.Date(default=lambda self: self.rfq_id.due_date)
+    wh_id = fields.Many2one('stock.warehouse', domain=lambda self: [
+        ('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)],
                             default=lambda self: self.env['stock.warehouse'].search(
                                 [('company_id', '=', self.env['res.users'].browse(self.env.uid).company_id.id)],
                                 limit=1).id)
@@ -183,7 +198,8 @@ class SheduleWizard(models.TransientModel):
                 dates = start + timedelta(days=days)
                 # datess = datetime.strptime(str(dates), '%Y-%m-%d')
                 pr.create({
-                    'name' : str(self.env['mrp.production'].browse(self.env.context.get('mo_id')).name) + str("/Progres "+str(days + 1)+"  ("+str(dates)+")"),
+                    'name': str(self.env['mrp.production'].browse(self.env.context.get('mo_id')).name) + str(
+                        "/Progres " + str(days + 1) + "  (" + str(dates) + ")"),
                     'mo_id': int(mo_id),
                     'product_id': int(product_id),
                     'activity_date': str(dates),

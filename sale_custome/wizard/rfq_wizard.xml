@@ -22,11 +22,14 @@
                             <field name="lead_time" required="1"/>
                             <field name="validity" required="1"/>
                             <field name="picking_type_id" string="Deliver To" required="1"/>
+
                         </group>
+                        <button name="action_clear_product" string="Clear Product" type="object"/>
                         <notebook>
                             <page string="Product Lines">
                                 <field name="rfq_line_ids">
                                     <tree editable="bottom">
+                                        <field name="select" invisible="product_id == False"/>
                                         <field name="product_id"/>
                                         <field name="type" string="type / category"/>
                                         <field name="description"/>
@@ -36,14 +39,14 @@
                                         <field name="available_qty"/>
                                         <field name="qty_purchase"/>
                                         <field name="product_uom" string="Uom"/>
-                                        <field name="unit_weight"/>
-                                        <field name="total_weight"/>
-                                        <field name="budget"/>
-                                        <field name="unit_cost"/>
-                                        <field name="schedule_date"/>
-                                        <field name="wh_id" string="Dest Location"/>
-                                        <field name="subtotal" readonly="1"/>
-                                        <field name="attachment" widget="binary" filename="attachment_name"/>
+                                        <field name="unit_weight" optional="hide"/>
+                                        <field name="total_weight" optional="hide"/>
+                                        <field name="budget" optional="hide"/>
+                                        <field name="unit_cost" optional="hide"/>
+                                        <field name="schedule_date" optional="hide"/>
+                                        <field name="wh_id" string="Dest Location" optional="hide"/>
+                                        <field name="subtotal" readonly="1" optional="hide"/>
+                                        <field name="attachment" widget="binary" filename="attachment_name" optional="hide"/>
 
                                     </tree>
                                 </field>
