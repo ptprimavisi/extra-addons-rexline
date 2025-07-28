@@ -126,6 +126,7 @@
                             <page string="Bom Lines" invisible="project_category == 'supply'">
                                 <field name="inquiry_line_ids" readonly="pic_akses == False" >
                                     <tree editable="bottom">
+                                        <field name="select"/>
                                         <field name="bom_id" required="1"/>
                                         <field name="quantity"/>
                                         <field name="kategory" readonly="1"/>

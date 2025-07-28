@@ -18,15 +18,11 @@
                             </h1>
                         </div>
                         <group>
-<!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <field name="user_id" string="Responsible" readonly="state != 'draft'"/>
                             <field name="department_id" string="Department" readonly="state != 'draft'"/>
                             <field name="date" string="Date Request" required="1" readonly="state != 'draft'"/>
                             <field name="due_date" required="1" readonly="state != 'draft'"/>
                             <field name="type" required="1" readonly="state != 'draft'"/>
-                            <field name="customer" string="CUSTOMER/PROJECT" required="1" readonly="state != 'draft'"/>
-<!--                            <field name="priority" widget="priority" nolabel="1" class="oe_inline align-top"/>-->
-
                         </group>
                         <notebook>
 <!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
@@ -34,6 +30,10 @@
                                 <field name="payment_request_dp_ids" required="1" readonly="state != 'draft'">
                                     <tree editable="bottom">
                                         <field name="order_id" string="No. PO" required="1"/>
+                                        <field name="customer"/>
+                                        <field name="mrf"/>
+                                        <field name="sale_order"/>
+                                        <field name="purchase_order"/>
                                         <field name="currency_id"/>
                                         <field name="amount_total" string="Amount PO"/>
                                         <field name="percentage" string="Persentase %"/>
@@ -50,6 +50,10 @@
                                     <tree editable="bottom">
 
                                         <field name="bill_id" string="No. Bill" required=""/>
+                                        <field name="customer"/>
+                                        <field name="mrf"/>
+                                        <field name="sale_order"/>
+                                        <field name="purchase_order"/>
                                         <field name="bill_status" string="Status Pembayaran"/>
                                         <field name="state" invisible="1" nolabel="1"/>
 

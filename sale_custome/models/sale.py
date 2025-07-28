@@ -1638,22 +1638,45 @@ class InquirySales(models.Model):
                     raise UserError('Sale order more than 1')
                     exit()
                 bom_line = self.env['mrp.bom.line'].search([('bom_id', 'in', bom.ids)])
-                for lines in line.inquiry_line_detail:
-                    # if not any(lines.product_tmpl_id.id == items.product_tmpl_id.id for items in bom):
-                    # product = self.env['product.product'].search(
-                    #     [('product_tmpl_id', '=', int(lines.product_tmpl_id.id))])
-                    list.append((0, 0, {
-                        'product_id': int(lines.product_id.id),
-                        'type': str(line.project_category),
-                        'quantity': lines.product_uom_quantity,
-                        'product_uom': lines.product_uom.id,
-                        'unit_weight': lines.unit_weight,
-                        'description': str(lines.name),
-                        'specs_detail': str(lines.specs),
-                        'brand': str(lines.brand),
-                        'unit_cost': lines.cost_price
+                for lines in line.inquiry_line_ids:
+                    if lines.select:
+                        for liness in lines.bom_id.bom_line_ids:
+                            product_in_bom = self.env['mrp.bom'].search(
+                                [('product_tmpl_id', '=', liness.product_id.product_tmpl_id.id)])
+                            if not product_in_bom:
+                                if not any(item[2]['product_id'] == liness.product_id.id for item in list):
+                                    boq_line = self.env['inquiry.line.detail'].search(
+                                        [('inquiry_id', '=', int(line.id)),
+                                         ('product_id', '=', int(liness.product_id.id))])
+                                    list.append((0, 0, {
+                                        'product_id': int(liness.product_id.id),
+                                        'type': str(line.project_category),
+                                        'quantity': liness.product_qty,
+                                        'product_uom': liness.product_uom_id.id,
+                                        'unit_weight': boq_line.unit_weight,
+                                        'description': str(boq_line.name) or '',
+                                        'specs_detail': str(boq_line.specs) or '',
+                                        'brand': str(boq_line.brand) or '',
+                                        'unit_cost': boq_line.cost_price
 
-                    }))
+                                    }))
+                                else:
+                                    for list_data in list:
+                                        if list_data[2]['product_id'] == liness.product_id.id:
+                                            list_data[2]['quantity'] += liness.product_qty
+                # for lines in line.inquiry_line_detail:
+                #     list.append((0, 0, {
+                #         'product_id': int(lines.product_id.id),
+                #         'type': str(line.project_category),
+                #         'quantity': lines.product_uom_quantity,
+                #         'product_uom': lines.product_uom.id,
+                #         'unit_weight': lines.unit_weight,
+                #         'description': str(lines.name),
+                #         'specs_detail': str(lines.specs),
+                #         'brand': str(lines.brand),
+                #         'unit_cost': lines.cost_price
+                #
+                #     }))
                 return {
                     'type': 'ir.actions.act_window',
                     'name': 'Material Request',
@@ -2090,6 +2113,7 @@ class InquiryLine(models.Model):
     _name = 'inquiry.line'
 
     bom_id = fields.Many2one('mrp.bom')
+    select = fields.Boolean(default=True)
     quantity = fields.Float(related="bom_id.product_qty")
     inquiry_id = fields.Many2one('inquiry.inquiry')
     bom_cost = fields.Float()

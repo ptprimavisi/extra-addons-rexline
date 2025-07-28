@@ -592,11 +592,11 @@ class PaymentRequest(models.Model):
     name = fields.Char()
     priority = fields.Selection(AVAILABLE_PRIORITIES, select=True)
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
-    date = fields.Date()
+    date = fields.Date(default=lambda self: fields.Datetime.today())
     due_date = fields.Date()
     type = fields.Selection([
         ('dp', 'Down Payment'),
-        ('bill', 'Bill')
+        ('bill', 'Full Bill')
     ])
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -609,6 +609,18 @@ class PaymentRequest(models.Model):
     datetime_confirm = fields.Datetime()
     department_id = fields.Many2one('hr.department')
     customer = fields.Char()
+    mrf = fields.Char()
+    sale_order = fields.Char()
+    purchase_order = fields.Char()
+    payment_category = fields.Selection([
+        ('local', 'Local'),
+        ('overseas', 'Overseas'),
+        ('tracking', 'Tracking')
+    ], default='local')
+
+    @api.onchange('payment_request_bill_ids.bill_id')
+    def onchange_order_id(self):
+        print('bill id')
 
     def datetime_c(self, format):
         # Ambil datetime dari database (biasanya UTC)
@@ -932,6 +944,28 @@ class PaymentRequestDp(models.Model):
         ('confirmed', 'Confirm'),
         ('validate', 'Validate')
     ], related="payment_id.state")
+    customer = fields.Char()
+    mrf = fields.Char()
+    sale_order = fields.Char()
+    purchase_order = fields.Char()
+
+    @api.onchange('order_id')
+    def onchange_order_id(self):
+        for line in self:
+            line.customer = False
+            line.mrf = False
+            line.sale_order = False
+            line.purchase_order = False
+            if line.order_id:
+                line.purchase_order = line.order_id.name
+                line.customer = line.order_id.partner_id.name
+                if line.order_id.mrf_id:
+                    line.mrf = line.order_id.mrf_id.name
+                    so_data = self.env['sale.order'].search(
+                        [('opportunity_id', '=', line.order_id.mrf_id.inquiry_id.opportunity_id.id),
+                         ('state', '=', 'sale')], limit=1)
+                    if so_data:
+                        line.sale_order = so_data.name
 
     @api.depends('order_id')
     def _compute_currency(self):
@@ -1027,6 +1061,37 @@ class PaymentRequestBill(models.Model):
         ('confirmed', 'Confirm'),
         ('validate', 'Validate')
     ], related="payment_id.state")
+    customer = fields.Char()
+    mrf = fields.Char()
+    sale_order = fields.Char()
+    purchase_order = fields.Char()
+    customer = fields.Char()
+    mrf = fields.Char()
+    sale_order = fields.Char()
+    purchase_order = fields.Char()
+
+    @api.onchange('bill_id')
+    def onchange_bill_id(self):
+        for line in self:
+            # line.customer = False
+            line.mrf = False
+            line.sale_order = False
+            line.purchase_order = False
+            if line.bill_id:
+                invoice = self.env['account.move'].search([('id', '=', line.bill_id.id)])
+                vendor = line.bill_id.partner_id.name or 'Unknown'
+                purchase_ids = invoice.mapped('line_ids.purchase_line_id.order_id')
+                # id_purchase = int(purchase_ids)
+                purchase = self.env['purchase.order'].search([('id', '=', int(purchase_ids))])
+                if purchase:
+                    line.purchase_order = purchase.name
+                    if purchase.mrf_id:
+                        line.mrf = purchase.mrf_id.name
+                        so_data = self.env['sale.order'].search(
+                            [('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id),
+                             ('state', '=', 'sale')], limit=1)
+                        if so_data:
+                            line.sale_order = so_data.name
 
     @api.depends('bill_id')
     def _compute_bill_status(self):
