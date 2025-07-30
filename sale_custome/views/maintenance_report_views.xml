@@ -156,7 +156,7 @@
             <field name="name">it.request.tree.view</field>
             <field name="model">it.request</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree default_order="name desc">
                     <field name="name" string="Name"/>
                     <field name="employee_id" required="1"/>
                     <field name="department_id" required="1"/>

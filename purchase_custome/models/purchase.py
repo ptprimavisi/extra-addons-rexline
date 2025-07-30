@@ -729,36 +729,36 @@ class PaymentRequest(models.Model):
                                 percent = f'{int(lines.percentage)}%'
                             desc = f'Down Payment {percent} of PO {lines.order_id.name}'
                             po_ids.append(lines.order_id.id)
-                            po = lines.order_id.name
-                            vendor = lines.order_id.partner_id.name or 'Unknown'
+                            po = lines.purchase_order or ''
+                            vendor = lines.order_id.partner_id.name or ''
                             mrf_data = self.env['mrf.mrf'].search([('id', '=', lines.order_id.mrf_id.id)])
                             if mrf_data:
-                                mrf = lines.order_id.mrf_id.name or 'Unknown'
+                                mrf = lines.mrf or ''
                                 so_data = self.env['sale.order'].search(
                                     [('opportunity_id', '=', lines.order_id.mrf_id.inquiry_id.opportunity_id.id),
                                      ('state', '=', 'sale')], limit=1)
                                 if so_data:
-                                    so = so_data.name or 'Unknown'
+                                    so = lines.sale_order or ''
                                 else:
-                                    so = 'No SO Data'
+                                    so = ''
                             else:
-                                so = 'No MRF Data'
-                                mrf = 'No MRF'
+                                so = ''
+                                mrf = ''
                         else:
-                            desc = 'Unknown'
-                            vendor = 'Unknown'
-                            mrf = 'Unknown'
-                            so = 'Unknown'
-                            po = 'Unknown'
+                            desc = ''
+                            vendor = ''
+                            mrf = ''
+                            so = ''
+                            po = ''
                 else:
                     price_dp = 0
-                    desc = 'No DP Line Data'
-                    vendor = 'No DP Line Data'
-                    mrf = 'No DP Line Data'
-                    so = 'No DP Line Data'
-                    po = 'No DP Line Data'
+                    desc = ''
+                    vendor = ''
+                    mrf = ''
+                    so = ''
+                    po = ''
                 purchase_data = self.env['purchase.order'].browse(po_ids)
-                currency = purchase_data.currency_id.name or 'Unknown'
+                currency = purchase_data.currency_id.name or ''
                 symbol = purchase_data.currency_id.symbol
                 for po_lines in purchase_data.order_line:
                     list.append({
@@ -788,7 +788,7 @@ class PaymentRequest(models.Model):
                             #         'bank_partner': bank_line.partner_id.name
                             #     })
                             invoice = self.env['account.move'].search([('id', '=', lines.bill_id.id)])
-                            vendor = lines.bill_id.partner_id.name or 'Unknown'
+                            vendor = lines.bill_id.partner_id.name or ''
                             purchase_ids = invoice.mapped('line_ids.purchase_line_id.order_id')
                             # id_purchase = int(purchase_ids)
                             purchase = self.env['purchase.order'].search([('id', '=', int(purchase_ids))])
@@ -802,30 +802,30 @@ class PaymentRequest(models.Model):
                                 #         mrf_ids.append(purchase_line.mrf_id.id)
                                 # mrf_data = self.env['mrf.mrf'].search([('id','in', mrf_ids)])
                                 if purchase.mrf_id:
-                                    mrf = purchase.mrf_id.name or 'Unknown'
+                                    mrf = lines.mrf or ''
                                     so_data = self.env['sale.order'].search(
                                         [('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id),
                                          ('state', '=', 'sale')], limit=1)
                                     if so_data:
-                                        so = so_data.name or 'Unknown'
+                                        so = lines.sale_order or ''
                                 else:
-                                    mrf = 'No MRF'
-                                    so = 'No MRF Data'
+                                    mrf = ''
+                                    so = ''
                             else:
-                                mrf = 'No Purchase Data'
-                                so = 'No Purchase Data'
-                                po = 'Unknown'
+                                mrf = ''
+                                so = ''
+                                po = ''
                         else:
-                            vendor = 'Unknown'
-                            mrf = 'Unknown'
-                            po = 'No Bill Document'
+                            vendor = ''
+                            mrf = ''
+                            po = ''
                 else:
-                    vendor = 'No BIll line Data'
-                    mrf = 'No Bill Line Data'
-                    so = 'No Bill line data'
-                    po = 'No Bill line data'
+                    vendor = ''
+                    mrf = ''
+                    so = ''
+                    po = ''
                 purchase_data = self.env['purchase.order'].browse(po_ids)
-                currency = purchase_data.currency_id.name or 'Unknown'
+                currency = purchase_data.currency_id.name or ''
                 symbol = currency_id = purchase_data.currency_id.symbol
                 for po_lines in purchase_data.order_line:
                     list.append({

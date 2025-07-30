@@ -136,7 +136,7 @@
             <field name="name">purchase.requisition.tree.view</field>
             <field name="model">purchase.requisition</field>
             <field name="arch" type="xml">
-                <tree default_order="name asc">
+                <tree default_order="name desc">
                     <field name="name" string="Number"/>
                     <field name="category" string="Requisition Category"/>
                     <field name="purpose" string="Purpose"/>

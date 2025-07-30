@@ -50,7 +50,7 @@ class MailMemo(models.TransientModel):
                 "state": "outgoing",
             }
         )
-        mail.send()
+        # mail.send()
 
     def send_request_mail(self):
         for line in self:
