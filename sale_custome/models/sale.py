@@ -2173,6 +2173,7 @@ class InquiryLine(models.Model):
                     'schedule_date': datetime.now(),
                     'product_qty': 1,
                     'origin': str(so.name),
+                    'bom_id': int(line.bom_id.id)
                 }
             }
 

@@ -16,6 +16,7 @@ class ManufacturWizard(models.TransientModel):
     _name = 'manufactur.wizard'
 
     product_id = fields.Many2one('product.product')
+    bom_id = fields.Many2one('mrp.bom')
     schedule_date = fields.Datetime()
     product_qty = fields.Float()
     warehouse_id = fields.Many2one('stock.warehouse')
@@ -28,8 +29,10 @@ class ManufacturWizard(models.TransientModel):
         Schedule_date = self.env.context.get('schedule_date', False)
         product_qty = self.env.context.get('product_qty', False)
         origin = self.env.context.get('origin', False)
+        bom_id = self.env.context.get('bom_id', False)
         if product_id:
             defaults['product_id'] = product_id
+            defaults['bom_id'] = bom_id
             defaults['schedule_date'] = Schedule_date
             defaults['product_qty'] = product_qty
             defaults['origin'] = origin
@@ -42,6 +45,7 @@ class ManufacturWizard(models.TransientModel):
             picking_type = self.env['stock.picking.type'].search([('warehouse_id','=',line.warehouse_id.id),('code','=','mrp_operation')])
             create_mo = mo.create({
                 'product_id': int(line.product_id.id),
+                'bom_id': int(line.bom_id.id),
                 'product_qty': line.product_qty,
                 'origin': str(line.origin),
                 'picking_type_id': picking_type.id,
