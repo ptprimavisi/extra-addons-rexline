@@ -94,21 +94,21 @@
                                         <field name="qty_ordered"/>
                                         <field name="qty_received"/>
                                         <field name="product_uom_id"/>
-                                        <field name="unit_weight" string="Unit weight/kg"/>
-                                        <field name="total_weight" string="Total weight/kg"/>
-                                        <field name="qty_budget" readonly="is_accounting != True"/>
-                                        <field name="budget" readonly="is_accounting != True"/>
-                                        <field name="subtotal_budget"/>
-                                        <field name="budget_use" readonly="1"/>
-                                        <field name="best_price" invisible_column="is_accounting == True"/>
-                                        <field name="year" readonly="is_accounting != True"/>
+                                        <field name="unit_weight" string="Unit weight/kg" optional="hide"/>
+                                        <field name="total_weight" string="Total weight/kg" optional="hide"/>
+                                        <field name="qty_budget" readonly="is_accounting != True" optional="hide"/>
+                                        <field name="budget" readonly="is_accounting != True" optional="hide"/>
+                                        <field name="subtotal_budget" optional="hide"/>
+                                        <field name="budget_use" readonly="1" optional="hide"/>
+                                        <field name="best_price" invisible_column="is_accounting == True" optional="hide"/>
+                                        <field name="year" readonly="is_accounting != True" optional="hide"/>
                                         <field name="unit_cost"/>
                                         <field name="subtotal" readonly="1"/>
-                                        <field name="product_uom_category_id" invisible="1" nolabel="1"/>
-                                        <field name="schedule_date"/>
-                                        <field name="wh_id" string="Dest Location"/>
+                                        <field name="product_uom_category_id" invisible="1" nolabel="1" optional="hide"/>
+                                        <field name="schedule_date" optional="hide"/>
+                                        <field name="wh_id" string="Dest Location" optional="hide"/>
 <!--                                        <field name="vendor_id" string="Vendor" required="1"/>-->
-                                        <field name="attachment" widget="binary" filename="attachment_name"/>
+                                        <field name="attachment" widget="binary" filename="attachment_name" optional="hide"/>
                                         <field name="is_accounting" invisible="1" nolabel="1"/>
                                     </tree>
                                 </field>
