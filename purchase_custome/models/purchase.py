@@ -398,10 +398,11 @@ class MrfLine(models.Model):
     @api.depends('product_id')
     def _budget_use(self):
         for line in self:
-            purchase = self.env['purchase.order.line'].search(
-                [('order_id.mrf_id', '=', int(line.mrf_id.id)), ('state', '=', 'purchase'),
-                 ('product_id', '=', line.product_id.id)])
-            line.budget_use = sum(purchase.mapped('price_unit'))
+            if line.mrf_id:
+                purchase = self.env['purchase.order.line'].search(
+                    [('order_id.mrf_id', '=', line.mrf_id.id), ('state', '=', 'purchase'),
+                     ('product_id', '=', line.product_id.id)])
+                line.budget_use = sum(purchase.mapped('price_unit'))
 
     @api.depends('qty_budget', 'budget')
     def _compute_sub_budget(self):
