@@ -616,7 +616,7 @@ class PaymentRequest(models.Model):
     payment_category = fields.Selection([
         ('local', 'Local'),
         ('overseas', 'Overseas'),
-        ('tracking', 'Tracking')
+        ('tracking', 'Trucking')
     ], default='local')
 
     @api.onchange('payment_request_bill_ids.bill_id')
