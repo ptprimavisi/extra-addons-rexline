@@ -23,6 +23,7 @@
                             <field name="date" string="Date Request" required="1" readonly="state != 'draft'"/>
                             <field name="due_date" required="1" readonly="state != 'draft'"/>
                             <field name="type" required="1" readonly="state != 'draft'"/>
+                            <field name="payment_category" required="1" readonly="state != 'draft'"/>
                         </group>
                         <notebook>
 <!--                            <button name="action_rfq" string="Cretae Quotations" type="object" class="btn-primary" icon="fa-plus"/>-->
