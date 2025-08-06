@@ -735,7 +735,7 @@ class PaymentRequest(models.Model):
                             mrf_data = self.env['mrf.mrf'].search([('id', '=', lines.order_id.mrf_id.id)])
                             mrf = lines.mrf or ''
                             so = lines.sale_order or ''
-                            cust = lines.custoemr or ''
+                            cust = lines.customer or ''
                             # if mrf_data:
                             #     mrf = lines.mrf or ''
                             #     so_data = self.env['sale.order'].search(
@@ -807,7 +807,7 @@ class PaymentRequest(models.Model):
                                 # mrf_data = self.env['mrf.mrf'].search([('id','in', mrf_ids)])
                                 mrf = lines.mrf or ''
                                 so = lines.sale_order or ''
-                                cust = lines.custoemr or ''
+                                cust = lines.customer or ''
                                 # if purchase.mrf_id:
                                 #     mrf = lines.mrf or ''
                                 #     so_data = self.env['sale.order'].search(
