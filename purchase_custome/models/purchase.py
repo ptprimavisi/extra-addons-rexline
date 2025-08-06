@@ -733,18 +733,21 @@ class PaymentRequest(models.Model):
                             po = lines.purchase_order or ''
                             vendor = lines.order_id.partner_id.name or ''
                             mrf_data = self.env['mrf.mrf'].search([('id', '=', lines.order_id.mrf_id.id)])
-                            if mrf_data:
-                                mrf = lines.mrf or ''
-                                so_data = self.env['sale.order'].search(
-                                    [('opportunity_id', '=', lines.order_id.mrf_id.inquiry_id.opportunity_id.id),
-                                     ('state', '=', 'sale')], limit=1)
-                                if so_data:
-                                    so = lines.sale_order or ''
-                                else:
-                                    so = ''
-                            else:
-                                so = ''
-                                mrf = ''
+                            mrf = lines.mrf or ''
+                            so = lines.sale_order or ''
+                            cust = lines.custoemr or ''
+                            # if mrf_data:
+                            #     mrf = lines.mrf or ''
+                            #     so_data = self.env['sale.order'].search(
+                            #         [('opportunity_id', '=', lines.order_id.mrf_id.inquiry_id.opportunity_id.id),
+                            #          ('state', '=', 'sale')], limit=1)
+                            #     if so_data:
+                            #         so = lines.sale_order or ''
+                            #     else:
+                            #         so = ''
+                            # else:
+                            #     so = ''
+                            #     mrf = ''
                         else:
                             desc = ''
                             vendor = ''
@@ -802,16 +805,19 @@ class PaymentRequest(models.Model):
                                 #     if purchase_line.mrf_id:
                                 #         mrf_ids.append(purchase_line.mrf_id.id)
                                 # mrf_data = self.env['mrf.mrf'].search([('id','in', mrf_ids)])
-                                if purchase.mrf_id:
-                                    mrf = lines.mrf or ''
-                                    so_data = self.env['sale.order'].search(
-                                        [('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id),
-                                         ('state', '=', 'sale')], limit=1)
-                                    if so_data:
-                                        so = lines.sale_order or ''
-                                else:
-                                    mrf = ''
-                                    so = ''
+                                mrf = lines.mrf or ''
+                                so = lines.sale_order or ''
+                                cust = lines.custoemr or ''
+                                # if purchase.mrf_id:
+                                #     mrf = lines.mrf or ''
+                                #     so_data = self.env['sale.order'].search(
+                                #         [('opportunity_id', '=', purchase.mrf_id.inquiry_id.opportunity_id.id),
+                                #          ('state', '=', 'sale')], limit=1)
+                                #     if so_data:
+                                #         so = lines.sale_order or ''
+                                # else:
+                                #     mrf = ''
+                                #     so = ''
                             else:
                                 mrf = ''
                                 so = ''
@@ -867,7 +873,7 @@ class PaymentRequest(models.Model):
                 'desc': desc,
                 'bank': bank_list,
                 'department': line.department_id.name or '',
-                'customer': line.customer or '',
+                'customer': cust or '',
                 'item_detail': list,
                 'approval_data': line.approval_data()
             }
@@ -959,7 +965,7 @@ class PaymentRequestDp(models.Model):
             line.purchase_order = False
             if line.order_id:
                 line.purchase_order = line.order_id.name
-                line.customer = line.order_id.partner_id.name
+
                 if line.order_id.mrf_id:
                     line.mrf = line.order_id.mrf_id.name
                     so_data = self.env['sale.order'].search(
@@ -967,6 +973,7 @@ class PaymentRequestDp(models.Model):
                          ('state', '=', 'sale')], limit=1)
                     if so_data:
                         line.sale_order = so_data.name
+                        line.customer = so_data.partner_id.name
 
     @api.depends('order_id')
     def _compute_currency(self):
@@ -1074,7 +1081,7 @@ class PaymentRequestBill(models.Model):
     @api.onchange('bill_id')
     def onchange_bill_id(self):
         for line in self:
-            # line.customer = False
+            line.customer = False
             line.mrf = False
             line.sale_order = False
             line.purchase_order = False
@@ -1093,6 +1100,7 @@ class PaymentRequestBill(models.Model):
                              ('state', '=', 'sale')], limit=1)
                         if so_data:
                             line.sale_order = so_data.name
+                            line.customer = so_data.partner_id.name
 
     @api.depends('bill_id')
     def _compute_bill_status(self):
