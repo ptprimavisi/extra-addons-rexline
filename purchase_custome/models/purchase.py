@@ -100,6 +100,15 @@ class PurchaseOrder(models.Model):
     paymen_term_id = fields.Many2one('account.payment.term')
     source_doc = fields.Char()
     tag_ids = fields.Many2many('purchase.tag')
+    sale_id = fields.Many2one('sale.order', compute="_compute_sale_order")
+
+    @api.depends('mrf_id')
+    def _compute_sale_order(self):
+        for line in self:
+            line.sale_id = False
+            if line.mrf_id:
+                if line.mrf_id.inquiry_id.sale_id:
+                    line.sale_id = line.mrf_id.inquiry_id.sale_id.id
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):

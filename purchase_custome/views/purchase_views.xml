@@ -182,6 +182,28 @@
                 </tree>
             </field>
         </record>
+        <record id="purchase_order_tree_view_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.inherit.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="mrf_id" string="MRF"/>
+                    <field name="sale_id" string="SO No"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="purchase_order_trees_view_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.inherits.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="mrf_id" string="MRF"/>
+                    <field name="sale_id" string="SO No"/>
+                </xpath>
+            </field>
+        </record>
 
         <record id="purchase_order_form_view_inherit" model="ir.ui.view">
             <field name="name">purchase.order.inherit.form</field>
@@ -191,6 +213,8 @@
                 <xpath expr="//field[@name='picking_type_id']" position="after">
                     <field name="source_doc"/>
                     <field name="tag_ids" string="Tags" widget="many2many_tags"/>
+                    <field name="mrf_id" string="MRF"/>
+                    <field name="sale_id" string="SO No"/>
                 </xpath>
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="down_payment" string="Down Payment" readonly="1"/>
