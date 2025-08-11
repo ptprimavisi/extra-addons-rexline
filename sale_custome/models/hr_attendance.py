@@ -81,6 +81,7 @@ class HrEmployee(models.Model):
                     for employes in employee:
                         if not employes.work_email and employes.private_email:
                             str_err = f"Plesae fill private email and work email first ({employes.name})"
+                            raise UserError(str_err)
 
                         urls = 'https://rexline.primasen.id/api/attendance/add-users'
 
