@@ -19,7 +19,7 @@ class HrExpense(models.Model):
         for line in self:
             line_ids = line.line_ids
             total = sum(line_ids.mapped('amount'))
-            line.total_amount = total
+            line.total_amounts = total
 
     @api.onchange('total_amounts')
     def onchange_totals(self):
