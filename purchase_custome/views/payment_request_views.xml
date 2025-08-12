@@ -19,6 +19,7 @@
                         </div>
                         <group>
                             <field name="user_id" string="Responsible" readonly="state != 'draft'"/>
+                            <field name="partner_id" string="Vendor"/>
                             <field name="department_id" string="Department" readonly="state != 'draft'"/>
                             <field name="date" string="Date Request" required="1" readonly="state != 'draft'"/>
                             <field name="due_date" required="1" readonly="state != 'draft'"/>
@@ -94,6 +95,7 @@
                 <tree>
                     <field name="priority" widget="priority"/>
                     <field name="name" string="Number"/>
+                    <field name="partner_id" string="Vendor"/>
                     <field name="date" string="Request Date"/>
                     <field name="type" string="Type"/>
                     <field name="state" string="Stage"/>

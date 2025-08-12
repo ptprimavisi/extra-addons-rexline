@@ -101,6 +101,70 @@ class PurchaseOrder(models.Model):
     source_doc = fields.Char()
     tag_ids = fields.Many2many('purchase.tag')
     sale_id = fields.Many2one('sale.order', compute="_compute_sale_order")
+    payment_request_status = fields.Char(compute="_compute_payment_request_status")
+    count_payment_request = fields.Integer(compute="_compute_count_paymreq")
+
+    def _compute_count_paymreq(self):
+        for line in self:
+            count = 0
+            payment_request_dp = self.env['payment.request.dp'].search([('order_id', '=' , int(line.id))])
+            payment_request_bill = self.env['payment.request.bill'].search([('bill_id', 'in' , line.invoice_ids.ids)])
+            if payment_request_dp:
+                for lines in payment_request_dp:
+                    count += 1
+            if payment_request_bill:
+                for liness in payment_request_bill:
+                    count += 1
+            line.count_payment_request = count
+
+    def action_view_payment_req(self):
+        for line in self:
+            ids = []
+            payment_request_dp = self.env['payment.request.dp'].search([('order_id', '=', int(line.id))])
+            payment_request_bill = self.env['payment.request.bill'].search([('bill_id', 'in', line.invoice_ids.ids)])
+            if payment_request_dp:
+                for lines in payment_request_dp:
+                    ids.append(lines.payment_id.id)
+            if payment_request_bill:
+                for liness in payment_request_bill:
+                    ids.append(liness.payment_id.id)
+
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "payment.request",
+            "domain": [('id', 'in', ids)],
+            "context": {"create": False},
+            "name": "Progress",
+            'view_mode': 'tree,form',
+        }
+
+
+    def _compute_payment_request_status(self):
+        for line in self:
+            line.payment_request_status = 'Nothing to Request'
+            if line.state == 'purchase':
+                line.payment_request_status = 'Waiting Request'
+            if line.invoice_ids:
+                payment_req_dp = self.env['payment.request.dp'].search([('order_id', '=', int(line.id))], limit=1)
+                if payment_req_dp:
+                    type_label = dict(
+                        payment_req_dp.payment_id._fields['type'].selection
+                    ).get(payment_req_dp.payment_id.type, '')
+                    line.payment_request_status = type_label
+                payment_req = self.env['payment.request.bill'].search([('bill_id','in',line.invoice_ids.ids)], limit=1)
+                if payment_req:
+                    type_label = dict(
+                        payment_req.payment_id._fields['type'].selection
+                    ).get(payment_req.payment_id.type, '')
+                    line.payment_request_status = type_label
+            else:
+                payment_req_dp = self.env['payment.request.dp'].search([('order_id', '=', int(line.id))], limit=1)
+                if payment_req_dp:
+                    type_label = dict(
+                        payment_req_dp.payment_id._fields['type'].selection
+                    ).get(payment_req_dp.payment_id.type, '')
+                    line.payment_request_status = type_label
+
 
     @api.depends('mrf_id')
     def _compute_sale_order(self):
@@ -601,6 +665,7 @@ class PaymentRequest(models.Model):
 
     name = fields.Char()
     priority = fields.Selection(AVAILABLE_PRIORITIES, select=True)
+    partner_id = fields.Many2one('res.partner', compute="_compute_partner_id")
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     date = fields.Date(default=lambda self: fields.Datetime.today())
     due_date = fields.Date()
@@ -627,6 +692,26 @@ class PaymentRequest(models.Model):
         ('overseas', 'Overseas'),
         ('tracking', 'Trucking')
     ], default='local')
+
+    def _compute_partner_id(self):
+        for line in self:
+            line.partner_id = False
+            if line.type == 'dp':
+                dp = self.env['payment.request.dp'].search([('id', 'in', line.payment_request_dp_ids.ids)], limit=1)
+                if dp and dp.order_id:
+                    line.partner_id = dp.order_id.partner_id.id
+            if line.type == 'bill':
+                bill = self.env['payment.request.bill'].search([('id', 'in', line.payment_request_bill_ids.ids)], limit=1)
+                if bill and bill.bill_id:
+                    line.partner_id = bill.bill_id.partner_id.id
+
+    @api.onchange('type')
+    def onchange_type(self):
+        for line in self:
+            if line.type == 'dp':
+                line.payment_request_bill_ids = [(5, 0, 0)]  # hapus semua isi One2many
+            elif line.type == 'bill':
+                line.payment_request_dp_ids = [(5, 0, 0)]  # hapus semua isi One2many
 
     @api.onchange('payment_request_bill_ids.bill_id')
     def onchange_order_id(self):
@@ -928,8 +1013,19 @@ class PaymentRequest(models.Model):
     def create(self, vals_list):
         moves = super().create(vals_list)
         moves['name'] = self.env['ir.sequence'].next_by_code('PR')
+        if len(moves.payment_request_dp_ids) > 1 or len(moves.payment_request_bill_ids) > 1:
+            raise UserError("Source Record cannot be more than 1")
 
         return moves
+
+    def write(self, vals):
+        res = super().write(vals)
+
+        for rec in self:
+            if len(rec.payment_request_dp_ids) > 1 or len(rec.payment_request_bill_ids) > 1:
+                raise UserError("Source Record cannot be more than 1")
+
+        return res
 
 
 def action_view_report():
@@ -992,7 +1088,15 @@ class PaymentRequestDp(models.Model):
     def _compute_payment_state(self):
         for line in self:
             line.payment_state = False
-            payment = self.env['account.payment'].search([('request_payment_id', '=', int(line.id))])
+
+            # Skip kalau record belum disimpan
+            if not line.id or isinstance(line.id, models.NewId):
+                continue
+
+            payment = self.env['account.payment'].search([
+                ('request_payment_id', '=', line.id)
+            ], limit=1)
+
             if payment:
                 line.payment_state = True
 

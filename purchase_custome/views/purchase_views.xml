@@ -190,7 +190,9 @@
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="mrf_id" string="MRF"/>
                     <field name="sale_id" string="SO No"/>
+                    <field name="payment_request_status" string="PR Status"/>
                 </xpath>
+
             </field>
         </record>
         <record id="purchase_order_trees_view_inherit" model="ir.ui.view">
@@ -201,6 +203,7 @@
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="mrf_id" string="MRF"/>
                     <field name="sale_id" string="SO No"/>
+                    <field name="payment_request_status" string="PR Status"/>
                 </xpath>
             </field>
         </record>
@@ -225,6 +228,11 @@
                     <field name="budget"/>
                     <field name="best_price"/>
                     <field name="source_po"/>
+                </xpath>
+                <xpath expr="//button[@name='action_view_invoice']" position="after">
+                    <button type="object" name="action_view_payment_req" class="oe_stat_button" icon="fa-dollar" invisible="count_payment_request == 0 or state in ('draft', 'sent', 'to approve')">
+                            <field name="count_payment_request" widget="statinfo" string="Payment Request"/>
+                        </button>
                 </xpath>
             </field>
         </record>
