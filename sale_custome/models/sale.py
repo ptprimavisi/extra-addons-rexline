@@ -2346,7 +2346,8 @@ class ResCustomer(models.Model):
         # rank = new_record.customer_rank
         # value = new_record.name
         # newname = value.isupper()
-        new_record.name = new_record.name.upper()
+        if new_record:
+            new_record.name = new_record.name.upper()
         #
         # raise UserError(newname)
 
