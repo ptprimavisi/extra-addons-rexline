@@ -12,7 +12,7 @@ class HrExpense(models.Model):
         ('payment', 'Payment Request')
     ], default="reimbursement")
     line_ids = fields.One2many('hr.expense.items', 'expense_id')
-    total_amount = fields.Float(compute="_compute_totals")
+    total_amounts = fields.Float(compute="_compute_totals")
 
     @api.depends('line_ids')
     def _compute_totals(self):
@@ -21,10 +21,10 @@ class HrExpense(models.Model):
             total = sum(line_ids.mapped('amount'))
             line.total_amount = total
 
-    @api.onchange('total_amount')
+    @api.onchange('total_amounts')
     def onchange_totals(self):
         for line in self:
-            line.total_amount_currency = line.total_amount
+            line.total_amount_currency = line.total_amounts
 
 
 

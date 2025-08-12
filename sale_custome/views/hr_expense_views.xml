@@ -10,7 +10,7 @@
                     <label id="loss" for="type_expense"/>
                     <div id="type_expense">
                         <field name="type_expense" readonly="state in ['approved','done','refused']"/>
-                        <field name="total_amount" invisible="1"/>
+                        <field name="total_amounts" invisible="1"/>
                     </div>
                 </xpath>
                 <xpath expr="//sheet" position="inside">
