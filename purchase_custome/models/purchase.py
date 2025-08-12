@@ -665,7 +665,8 @@ class PaymentRequest(models.Model):
 
     name = fields.Char()
     priority = fields.Selection(AVAILABLE_PRIORITIES, select=True)
-    partner_id = fields.Many2one('res.partner', compute="_compute_partner_id")
+    partner_id = fields.Many2one('res.partner', compute="_compute_partner_id", store=True)
+    order_id = fields.Many2one('purchase.order', compute="_compute_purchase", store=True)
     user_id = fields.Many2one('res.users', default=lambda self: self.env.uid)
     date = fields.Date(default=lambda self: fields.Datetime.today())
     due_date = fields.Date()
@@ -690,19 +691,34 @@ class PaymentRequest(models.Model):
     payment_category = fields.Selection([
         ('local', 'Local'),
         ('overseas', 'Overseas'),
-        ('tracking', 'Trucking')
+        ('tracking', 'Trucking'),
     ], default='local')
 
+    @api.depends('payment_request_dp_ids', 'payment_request_bill_ids')
+    def _compute_purchase(self):
+        for line in self:
+            line.order_id = False
+            if line.type == 'dp':
+                dp = self.env['payment.request.dp'].search([('id', 'in', line.payment_request_dp_ids.ids)], limit=1)
+                if dp and dp.order_id:
+                    line.order_id = dp.order_id.id
+            if line.type == 'bill':
+                bill = self.env['payment.request.bill'].search([('id', 'in', line.payment_request_bill_ids.ids)], limit=1)
+                if bill and bill.bill_id:
+                    if bill.bill_id.line_ids.purchase_line_id.order_id:
+                        line.order_id = bill.bill_id.line_ids.purchase_line_id.order_id.id
+
+    @api.depends('payment_request_dp_ids','payment_request_bill_ids')
     def _compute_partner_id(self):
         for line in self:
             line.partner_id = False
             if line.type == 'dp':
                 dp = self.env['payment.request.dp'].search([('id', 'in', line.payment_request_dp_ids.ids)], limit=1)
-                if dp and dp.order_id:
+                if dp and dp.order_id.partner_id:
                     line.partner_id = dp.order_id.partner_id.id
             if line.type == 'bill':
                 bill = self.env['payment.request.bill'].search([('id', 'in', line.payment_request_bill_ids.ids)], limit=1)
-                if bill and bill.bill_id:
+                if bill and bill.bill_id.partner_id:
                     line.partner_id = bill.bill_id.partner_id.id
 
     @api.onchange('type')

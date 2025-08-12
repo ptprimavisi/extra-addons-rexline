@@ -20,6 +20,7 @@
                         <group>
                             <field name="user_id" string="Responsible" readonly="state != 'draft'"/>
                             <field name="partner_id" string="Vendor"/>
+                            <field name="order_id" string="PO Number"/>
                             <field name="department_id" string="Department" readonly="state != 'draft'"/>
                             <field name="date" string="Date Request" required="1" readonly="state != 'draft'"/>
                             <field name="due_date" required="1" readonly="state != 'draft'"/>
@@ -95,6 +96,7 @@
                 <tree>
                     <field name="priority" widget="priority"/>
                     <field name="name" string="Number"/>
+                    <field name="order_id" string="PO Number"/>
                     <field name="partner_id" string="Vendor"/>
                     <field name="date" string="Request Date"/>
                     <field name="type" string="Type"/>
@@ -112,6 +114,8 @@
                         <filter string="Payment" name="finance_check" domain="[('state', '=', 'confirmed')]"/>
 <!--                        <filter string="To Cost Control" name="cost_control" domain="[('state', '=', 'request')]"/>-->
                         <field name="name"/>
+                        <field name="partner_id" string="Vendor"/>
+                        <field name="order_id" string="PO Number"/>
 
                     </search>
             </field>
