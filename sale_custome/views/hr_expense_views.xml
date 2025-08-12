@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="hr_expense_form_inherit" model="ir.ui.view">
+            <field name="name">hr.expense.form.inherit</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='payment_mode']" position="after">
+                    <label id="loss" for="type_expense"/>
+                    <div id="type_expense">
+                        <field name="type_expense" readonly="state in ['approved','done','refused']"/>
+                        <field name="total_amount" invisible="1"/>
+                    </div>
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page string="Item Detail" invisible="type_expense != 'payment'">
+                            <field name="line_ids" readonly="state in ['approved','done','refused']">
+                                <tree editable="bottom">
+                                    <field name="name" string="Description"/>
+                                    <field name="amount"/>
+                                    <field name="remark"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

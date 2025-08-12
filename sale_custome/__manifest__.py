@@ -2,7 +2,8 @@
     'name': 'Sales Custom',
     'category': 'Accounting',
     'description': 'odoo Sale Custom',
-    'depends': ['base','account', 'sale', 'crm', 'mrp','web','mail', 'bi_crm_product_quotation', 'hr', 'stock', 'product', 'hr_holidays'],
+    'depends': ['base','account', 'sale', 'crm', 'mrp','web','mail', 'bi_crm_product_quotation',
+                'hr', 'stock', 'product', 'hr_holidays', 'hr_expense'],
     'data': [
         "views/inquiry_views.xml",
         "security/security.xml",
@@ -37,7 +38,8 @@
         "views/hr_surat_tugas_views.xml",
         'views/manajemen_assets.xml',
         'views/hari_kerja_views.xml',
-        'views/hr_memo_views.xml'
+        'views/hr_memo_views.xml',
+        'views/hr_expense_views.xml'
     ],
     'assets': {
         'web.assets_backend': [
