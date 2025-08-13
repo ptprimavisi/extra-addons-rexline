@@ -947,6 +947,7 @@ class PaymentRequest(models.Model):
                 for po_lines in purchase_data.order_line:
                     list.append({
                         'product': po_lines.product_id.name,
+                        'description': po_lines.name or '',
                         'price_total': po_lines.price_total
                     })
             # for lines in line.request_line_ids:

@@ -77,6 +77,7 @@ class PurchaseOrderInh(models.Model):
                         tax_name = '-'
                     order_lines.append({
                         "product_name": order_line.product_id.product_tmpl_id.name,
+                        "description": order_line.name or '',
                         "unit_price": f"{int(order_line.price_unit):,}",
                         "qty": order_line.product_uom_qty,
                         "discount": order_line.discount,
