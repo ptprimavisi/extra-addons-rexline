@@ -11,6 +11,31 @@ class StockPicking(models.Model):
     jenis_kendaraan = fields.Char()
     contact_person = fields.Text()
     street = fields.Text()
+    purchase_id = fields.Many2one('purchase.order', compute="_compute_purchase")
+    show_po_number = fields.Boolean(compute='_compute_show_po_number')
+
+    @api.depends_context('restricted_picking_type_code')
+    def _compute_show_po_number(self):
+        for rec in self:
+            rec.show_po_number = False
+            po = self.env.context.get('restricted_picking_type_code')
+            if po == 'incoming':
+                rec.show_po_number = True
+
+            # raise UserError(rec.show_po_number)
+
+    @api.depends('move_ids_without_package')
+    def _compute_purchase(self):
+        for line in self:
+            line.purchase_id = False
+            if line.move_ids_without_package:
+                purchase_lines = line.move_ids_without_package.mapped('purchase_line_id')
+                order_lines = self.env['purchase.order.line'].search([
+                    ('id', 'in', purchase_lines.ids)
+                ])
+                if order_lines:
+                    purchase_id = order_lines.mapped('order_id')
+                    line.purchase_id = int(purchase_id)
 
     @api.onchange('partner_id')
     def oc_partenr(self):
