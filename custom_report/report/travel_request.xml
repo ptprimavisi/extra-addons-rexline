@@ -76,6 +76,43 @@
                                 <tbody>
                                     <tr style="border: 1.5px solid black;">
                                         <td style="border: 1.5px solid black;">
+                                            Employee Information
+                                        </td>
+                                    </tr>
+                                    <tr style="border: 1.5px solid black;">
+                                        <td style="border: 1.5px solid black;">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr style="border: 1.5px solid black;">
+                                                        <th style="border: 1.5px solid black; width: 30%; text-align: center; padding: 15px;">
+                                                            No
+                                                        </th>
+                                                        <th style="border: 1.5px solid black;  text-align: center; padding: 15px;">
+                                                            Employee Name
+                                                        </th>
+                                                    </tr>
+                                                    <t t-if="doc.freelance_id">
+                                                        <t t-set="c" t-value="1"/>
+                                                        <t t-foreach="doc.freelance_id" t-as="lance">
+                                                            <tr>
+                                                                <td style="width: 10%;"><t t-esc="c"/></td>
+                                                                <td><t t-esc="lance.name"/></td>
+                                                                <t t-set="c" t-value="c + 1"/>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr style="border: 1.5px solid black;">
+                                        <td style="border: 1.5px solid black;">
                                             Filled By General Affair
                                         </td>
                                     </tr>
