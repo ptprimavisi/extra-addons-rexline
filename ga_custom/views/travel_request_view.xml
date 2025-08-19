@@ -34,8 +34,8 @@
 <!--                            <field name="partner_id" string="Customer" required="1"/>-->
                             <group>
                                 <field name="job_id" required="1" readonly="state == 'done'"/>
-                                <field name="department_id" required="1" readonly="1"/>
-                                <field name="department_id" required="1" invisible="1" readonly="state == 'done'"/>
+<!--                                <field name="department_id" required="1" readonly="1"/>-->
+                                <field name="department_id" required="1" readonly="state == 'done'"/>
                                 <field name="destination" required="1"  readonly="state == 'done'"/>
                                 <field name="request_date" required="1" readonly="1"/>
                                 <field name="days" required="1" readonly="state == 'done'"/>

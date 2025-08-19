@@ -22,7 +22,74 @@
         <template id="template_report_expense">
             <t t-call="web.html_container">
                 <t t-set="doc" t-value="docs"/>
-                <h3>TEST</h3>
+                <t t-call="web.external_layout">
+                    <div style="font-family: Calibri, sans-serif;">
+                        <h4 style="font-size: 16px; text-align: center; padding-top: 10px !important;">
+                           <strong>EXPENSES</strong>
+                        </h4>
+                        <h4 style="font-size: 16px; text-align: center; padding-top: 10px !important;">
+                           <t t-esc="docs.name or ''"/>
+                        </h4>
+                    </div>
+                    <br/>
+                    <div class="mb-3" style="padding-left: 40px; padding-top: 10px; margin-right: 20px;">
+                        <div class="page" style="font-family: Calibri, sans-serif;">
+                            <table class="table" style="width: 60%; font-size: 14px;" border="0">
+                                <tr style="border: none;">
+                                    <td style="width: 27%; border: none;">Expense Category</td>
+                                    <td style="border: none; width: 1%;">:</td>
+                                    <td style="border: none;"><t t-esc="doc.product_id.name or ''"/></td>
+                                </tr>
+                                <tr style="border: none;">
+                                    <td style="width: 27%; border: none;">Employee</td>
+                                    <td style="border: none; width: 1%;">:</td>
+                                    <td style="border: none;"><t t-esc="doc.employee_id.name or ''"/></td>
+                                </tr>
+                                <tr style="border: none;">
+                                    <td style="width: 27%; border: none;">Type Expense</td>
+                                    <td style="border: none; width: 1%;">:</td>
+                                    <t t-set="type"
+                                       t-value="'Reimbursement' if doc.type_expense == 'reimbursement' else
+                                                ('Payment Request' if doc.type_expense == 'payment' else False)"/>
+                                    <td style="border: none;"><t t-esc="type or ''"/></td>
+                                </tr>
+                                <tr style="border: none;">
+                                    <td style="width: 27%; border: none;">Currency</td>
+                                    <td style="border: none; width: 1%;">:</td>
+                                    <td style="border: none;"><t t-esc="doc.currency_id.name or ''"/></td>
+                                </tr>
+                                <tr style="border: none;">
+                                    <td style="width: 27%; border: none;">Amount Total</td>
+                                    <td style="border: none; width: 1%;">:</td>
+                                    <!--<td style="border: none;"><t t-esc="doc.total_amount_currency or ''"/></td>-->
+                                    <td style="border: none;"><t t-esc="doc.currency_id.symbol "/>. <t t-esc="'{:,.0f}'.format(float(doc.total_amount_currency))"/></td>
+                                </tr>
+                            </table>
+                            <br/>
+                            <t t-if="doc.type_expense == 'payment'">
+                                <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
+                                    <tbody>
+                                      <tr style="background-color: #2b61bd;">
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">NO.</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">DESCRIPTION</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">AMOUNT</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">REMARK</th>
+                                      </tr>
+                                      <t t-set="c" t-value="1"/>
+                                      <t t-foreach="doc.line_ids" t-as="lines">
+                                          <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="c"/></td>
+                                          <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="lines.name or ''"/></td>
+                                          <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="'{:,.0f}'.format(float(lines.amount))"/></td>
+                                          <td style="text-align: left; border: 1px solid black; padding: 8px;"><t t-esc="lines.remark or ''"/></td>
+                                          <t t-set="c" t-value="c + 1"/>
+                                      </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
             </t>
         </template>
     </data>

@@ -69,10 +69,10 @@
                             <table class="table" style="margin-top: 20px; border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 12px;">
                                     <tbody>
                                       <tr style="background-color: #2b61bd;">
-                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">NO.</th>
-                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">DESCRIPTION</th>
-                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">AMOUNT</th>
-                                        <th style="border: 1px solid black; padding: 8px; text-align: center;">REMARK</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">NO.</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">DESCRIPTION</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">AMOUNT</th>
+                                        <th style="border: 1px solid black; color: white; padding: 8px; text-align: center;">REMARK</th>
                                       </tr>
                                       <t t-if="type == 'Full Payment'">
                                         <t t-set="c" t-value="0"/>
@@ -122,16 +122,16 @@
 
                                     </tbody>
                                 </table>
-        <div style="display: flex; justify-content: space-between;widht: 100%;">
-            <div class="row" style="background-color: #2b61bd; display: inline-block;width: 100%;margin-top: 15px;padding-top: 10px;padding-bottom: 20px;">
-                <div style="margin-left: 20px;">
+                        <div style="display: flex; justify-content: space-between;widht: 100%;">
+                            <div class="row" style="background-color: #2b61bd; display: inline-block;width: 100%;margin-top: 15px;padding-top: 10px;padding-bottom: 20px;">
+                                <div style="margin-left: 20px;">
                                     <table style="border-collapse: collapse;">
                                         <tr>
-                                            <td>Please Transfer To</td>
-                                            <td>: </td>
+                                            <td style="color: white;">Please Transfer To</td>
+                                            <td style="color: white;">: </td>
                                             <td>
                                                 <t t-foreach="bank" t-as="banks">
-                                                    <div style="white-space: nowrap;"><t t-esc="banks['bank_name']"/></div>
+                                                    <div style="white-space: nowrap; color: white; padding-left: 10px;"><t t-esc="banks['bank_name']"/></div>
                                                 </t>
                                             </td>
 
@@ -142,7 +142,7 @@
                                             <td/>
                                             <td>
                                                 <t t-foreach="bank" t-as="banks">
-                                                    <div style="display: inline;"><t t-esc="banks['bank_number']"/></div>
+                                                    <div style="display: inline; color: white; padding-bottom: 10px; padding-left: 10px;"><t t-esc="banks['bank_number']"/></div>
                                                 </t>
                                             </td>
                                         </tr>
@@ -152,7 +152,7 @@
                                             <td/>
                                             <td>
                                                 <t t-foreach="bank" t-as="banks">
-                                                    <div style="display: inline;"><t t-esc="banks['account_holder']"/></div>
+                                                    <div style="display: inline; color: white; padding-bottom: 10px; padding-left: 10px;"><t t-esc="banks['account_holder']"/></div>
                                                 </t>
                                             </td>
                                         </tr>
@@ -215,7 +215,7 @@
                                 <!--    </table>-->
                             </div>
                         </div>
-                        <br></br>
+                        <br/>
                         <table class="table" style="border: 1.5px white;">
                                         <tr>
                                             <t t-foreach="approval_data[0:4]" t-as="lines">

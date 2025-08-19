@@ -48,7 +48,7 @@
                                 </field>
                             </page>
                             <page string="attachments">
-                                <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                                <field name="attachment_ids" required="1" widget="many2many_binary" string="Attachments"/>
                             </page>
                         </notebook>
                         <group col="12" class="oe_invoice_lines_tab">
