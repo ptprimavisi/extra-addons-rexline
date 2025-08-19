@@ -23,8 +23,8 @@ class PurchaseOrderInh(models.Model):
 
             partner_name = rec.partner_id.name,
             city = rec.partner_id.city or ''
-            state = rec.partner_id.name or ''
-            country = rec.country_id.name
+            state = rec.partner_id.state_id.name or ''
+            country = rec.partner_id.country_id.name
             alamat = f"{rec.partner_id.street or ''}, {city}, {state}, {country}"
             partner_street1 = alamat or ''
             po_name = rec.name or ''
