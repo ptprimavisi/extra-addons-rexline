@@ -1,0 +1,53 @@
+name: Sync default branch from upstream
+
+on:
+  workflow_dispatch: {}          # bisa dijalankan manual
+  schedule:
+    # 08:05 & 20:05 WIB (UTC+7) = 01:05 & 13:05 UTC
+    - cron: '5 1,13 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          # Jika Anda membuat secret UPSTREAM_URL (untuk private), workflow akan memakainya.
+          # Jika kosong, gunakan URL public di bawah ini.
+          UPSTREAM_URL="${{ secrets.UPSTREAM_URL }}"
+          if [ -z "$UPSTREAM_URL" ]; then
+            UPSTREAM_URL="https://github.com/helmi17/extra-addons-rexline.git"  # GANTI
+          fi
+          git remote add upstream "$UPSTREAM_URL"
+          git fetch upstream --tags
+
+      - name: Fast-forward default branch
+        env:
+          DEFAULT_BRANCH: main    # GANTI jika default branch Anda bukan 'main'
+        run: |
+          git checkout "$DEFAULT_BRANCH"
+          # Hanya fast-forward untuk menghindari merge commit & konflik otomatis.
+          git merge --ff-only "upstream/$DEFAULT_BRANCH" || {
+            echo "::error::Fast-forward gagal (kemungkinan default branch Anda punya commit sendiri)."
+            echo "Solusi: pindahkan perubahan lokal ke branch lain, atau resolve manual via PR."
+            exit 1
+          }
+          git push origin "$DEFAULT_BRANCH"
+
+      - name: Push tags (optional)
+        run: |
+          # Dorong tag dari upstream ke fork (opsional)
+          git push origin --tags
