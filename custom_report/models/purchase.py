@@ -22,7 +22,11 @@ class PurchaseOrderInh(models.Model):
             company_web = company.website or ''
 
             partner_name = rec.partner_id.name,
-            partner_street1 = rec.partner_id.street or ''
+            city = rec.partner_id.city or ''
+            state = rec.partner_id.name or ''
+            country = rec.country_id.name
+            alamat = f"{rec.partner_id.street or ''}, {city}, {state}, {country}"
+            partner_street1 = alamat or ''
             po_name = rec.name or ''
 
             po_date = rec.date_order.strftime('%d-%m-%Y')
