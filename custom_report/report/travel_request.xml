@@ -97,8 +97,8 @@
                                                             <tr>
                                                                 <td style="width: 10%;"><t t-esc="c"/></td>
                                                                 <td><t t-esc="lance.name"/></td>
-                                                                <t t-set="c" t-value="c + 1"/>
                                                             </tr>
+                                                            <t t-set="c" t-value="c + 1"/>
                                                         </t>
                                                     </t>
 
