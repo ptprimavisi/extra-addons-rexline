@@ -13,6 +13,7 @@
         "views/ga_assets_view.xml",
         "wizard/ga_maintenance_wizard.xml",
         "security/security.xml",
+        "security/ir.model.access.csv",
     ],
 
     'installable': True,

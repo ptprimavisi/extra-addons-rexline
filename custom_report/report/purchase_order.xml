@@ -119,12 +119,12 @@
                                 <th style="border: 1.5px solid black; padding: 5px;">No.</th>
                                 <th style="border: 1.5px solid black; padding: 5px;">Product</th>
                                 <th style="border: 1.5px solid black; padding: 5px;">Description</th>
-                                <th style="border: 1.5px solid black; padding: 5px;">Unit Price (RP.)</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Unit Price (<t t-esc="symbol"/>)</th>
                                 <th style="border: 1.5px solid black;">Qty</th>
                                 <th style="border: 1.5px solid black; padding: 5px;">Discount (%)</th>
                                 <!--&lt;!&ndash;<th style="border: 1.5px solid black;">Discount</th>&ndash;&gt;-->
                                 <th style="border: 1.5px solid black; padding: 5px;">Taxed</th>
-                                <th style="border: 1.5px solid black; padding: 5px;">Amount (Rp.)</th>
+                                <th style="border: 1.5px solid black; padding: 5px;">Amount (<t t-esc="symbol"/>)</th>
                                 <!--&lt;!&ndash;<th style="border: 1.5px solid black;">Tax Base (Rp.)</th>&ndash;&gt;-->
                             </tr>
                         </thead>

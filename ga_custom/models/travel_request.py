@@ -8,6 +8,7 @@ class TravelRequest(models.Model):
 
     name = fields.Char()
     employee_id = fields.Many2one('hr.employee')
+    freelance_id = fields.Many2many('hr.employee.freelance')
     department_id = fields.Many2one('hr.department')
     job_id = fields.Many2one('hr.job', 'Job Position')
     purpose = fields.Char()
@@ -86,3 +87,9 @@ class HrEmployeeInherit(models.Model):
     bank_name = fields.Char()
     bank_number = fields.Char()
     account_holder = fields.Char()
+
+
+class HrEmployeeFreelance(models.Model):
+    _name = 'hr.employee.freelance'
+
+    name = fields.Char()

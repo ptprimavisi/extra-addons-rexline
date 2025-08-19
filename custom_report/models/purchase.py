@@ -110,6 +110,7 @@ class PurchaseOrderInh(models.Model):
                 if self.env.company.sale_logo
                 else None
             )
+            symbol = rec.currency_id.symbol or ''
             watermark = (
                 f"data:image/png;base64,{self.env.company.watermark.decode('utf-8')}"
                 if self.env.company.watermark
@@ -157,6 +158,7 @@ class PurchaseOrderInh(models.Model):
                 'subtotal': subtotal,
                 'tags_info': tags_info,
                 'taxes': taxes,
+                'symbol': symbol,
                 'order_lines': order_lines,
                 # 'quotation_lines': quotation_lines,
                 # 'company_logo': company_logo,

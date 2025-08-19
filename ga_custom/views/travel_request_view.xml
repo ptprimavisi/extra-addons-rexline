@@ -22,7 +22,8 @@
                         </div>
                         <group>
                             <group>
-                                <field name="employee_id" required="1" readonly="state == 'done'"/>
+<!--                                <field name="employee_id" required="1" readonly="state == 'done'"/>-->
+                                <field name="freelance_id" string="Employee" widget="many2many_tags" required="1" readonly="state == 'done'"/>
                                 <field name="purpose" string="Travel Purpose" required="1" readonly="state == 'done'"/>
                                 <field name="so_number" string="SO Number" readonly="state == 'done'"/>
                                 <field name="dest_from" string="From" required="1" readonly="state == 'done'"/>
@@ -82,7 +83,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" string="Name"/>
-                    <field name="employee_id" required="1"/>
+                    <field name="freelance_id" widget="many2many_tags" string="Employee" required="1"/>
                     <field name="department_id" required="1"/>
                     <field name="request_date" required="1"/>
                     <field name="state" string="Status"
