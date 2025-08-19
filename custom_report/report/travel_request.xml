@@ -95,8 +95,8 @@
                                                         <t t-set="c" t-value="1"/>
                                                         <t t-foreach="doc.freelance_id" t-as="lance">
                                                             <tr>
-                                                                <td style="width: 10%;"><t t-esc="c"/></td>
-                                                                <td><t t-esc="lance.name"/></td>
+                                                                <th style="width: 10%;"><t t-esc="c"/></th>
+                                                                <th><t t-esc="lance.name"/></th>
                                                             </tr>
                                                             <t t-set="c" t-value="c + 1"/>
                                                         </t>
