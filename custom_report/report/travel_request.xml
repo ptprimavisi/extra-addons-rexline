@@ -94,9 +94,13 @@
                                                     <t t-if="doc.freelance_id">
                                                         <t t-set="c" t-value="1"/>
                                                         <t t-foreach="doc.freelance_id" t-as="lance">
-                                                            <tr>
-                                                                <th style="width: 10%;"><t t-esc="c"/></th>
-                                                                <th><t t-esc="lance.name"/></th>
+                                                            <tr style="border: 1.5px solid black;">
+                                                                <th style="border: 1.5px solid black; width: 30%; text-align: center; padding: 15px;">
+                                                                    <t t-esc="c"/>
+                                                                </th>
+                                                                <th style="border: 1.5px solid black;  text-align: center; padding: 15px;">
+                                                                    <t t-esc="lance.name"/>
+                                                                </th>
                                                             </tr>
                                                             <t t-set="c" t-value="c + 1"/>
                                                         </t>
