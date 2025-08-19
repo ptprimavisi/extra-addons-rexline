@@ -1,0 +1,47 @@
+from odoo import models, api, fields
+from odoo.exceptions import UserError
+from datetime import datetime, timedelta
+import pytz
+
+
+class HrExpenseInherit(models.Model):
+    _inherit = 'hr.expense'
+
+    def approval_data(self):
+        for line in self:
+            model_name = self._name
+            active_id = int(line.id)
+            origin_ref = f"{model_name},{active_id}"
+            approval = self.env['multi.approval'].search(
+                [('origin_ref', '=', origin_ref)],
+                order='create_date desc',
+                limit=1
+            )
+            approval_list = []
+            if approval:
+                for lines in approval.line_ids:
+                    datetime_utc = lines.write_date  # record = instance dari model
+
+                    # Set timezone lokal
+                    tz = pytz.timezone('Asia/Jakarta')
+
+                    # Konversi ke lokal timezone
+                    datetime_local = datetime_utc.astimezone(tz)
+
+                    # Format jika diperlukan
+                    formatted = datetime_local.strftime('%d-%m-%Y %H:%M:%S')
+                    approval_list.append({
+                        'name': str(lines.name),
+                        'status': str(lines.state),
+                        'users': str(lines.user_id.name),
+                        'date': str(formatted),
+                    })
+            return approval_list
+
+    def action_print(self):
+        for line in self:
+            # test = self.approval_data()
+            # print(test)
+            # exit()
+            return self.env.ref('custom_report.action_hr_expense_report').with_context(
+                paperformat=4, landscape=False).report_action(self)

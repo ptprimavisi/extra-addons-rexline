@@ -4,7 +4,7 @@
         Custom Report
     """,
     'category': 'Custom',
-    'depends': ['hr','sale_management','stock','account', 'base', 'hr','sale_custome','sale', 'purchase'],
+    'depends': ['hr','sale_management','stock','account', 'base', 'hr','sale_custome','sale', 'purchase','hr_expense'],
     'data': [
         'views/report_invoice.xml',
         'views/crm_lead.xml',
@@ -21,6 +21,7 @@
         'report/crm_report.xml',
         'report/travel_request.xml',
         'report/manpower_request.xml',
+        'report/hr_expense_report.xml',
     ],
     'assets': {
         'web.assets_backend': [

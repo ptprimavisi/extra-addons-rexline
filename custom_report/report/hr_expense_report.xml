@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <record id="view_purchase_form_inherit" model="ir.ui.view">
+            <field name="name">inherit.purchase.order</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <button name="button_confirm" position="after">
+                    <button name="action_print" string="Print PO" type="object" invisible="id == False"/>
+                </button>
+            </field>
+        </record>
+        <record id="action_hr_expense_report" model="ir.actions.report">
+            <field name="name">Print Hr Expense</field>
+            <field name="model">hr.expense</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_report.template_report_expense</field>
+            <field name="report_file">custom_report.template_report_expense</field>
+            <field name="print_report_name">'%s' % (object.name)</field>
+        </record>
+
+        <template id="template_report_expense">
+            <t t-call="web.html_container">
+                <t t-set="doc" t-value="docs"/>
+                <h3>TEST</h3>
+            </t>
+        </template>
+    </data>
+</odoo>
